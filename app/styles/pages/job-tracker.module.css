@@ -1,0 +1,126 @@
+@import "tailwindcss" reference;
+/* Job Tracker Page Styles */
+
+.container {
+  @apply min-h-screen;
+  background: linear-gradient(135deg, #F4F8FF 0%, #E9F1FF 100%);
+}
+
+.mainContent {
+  @apply max-w-7xl mx-auto space-y-12 py-8 lg:py-16;
+}
+
+.header {
+  @apply text-center space-y-8 animate-pulse;
+}
+
+.iconContainer {
+  @apply inline-flex items-center justify-center w-28 h-28 rounded-3xl shadow-lg mb-8;
+  background: linear-gradient(135deg, #2370FF, #79C7FF);
+}
+
+.title {
+  @apply text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight;
+  color: #2370FF;
+}
+
+.subtitle {
+  @apply text-xl lg:text-2xl text-gray-600 font-medium max-w-4xl mx-auto leading-relaxed;
+}
+
+.trackerSection {
+  @apply bg-white rounded-2xl shadow-sm border-2 p-8 animate-pulse;
+  border-color: #D5E4FF;
+}
+
+.trackerHeader {
+  @apply flex justify-between items-center mb-6;
+}
+
+.trackerTitle {
+  @apply text-3xl font-bold;
+  color: #2370FF;
+}
+
+.addJobButton {
+  @apply text-white px-6 py-3 rounded-xl font-bold shadow-lg hover:shadow-xl transition-all duration-300;
+  background: linear-gradient(135deg, #2370FF, #2B49C2);
+}
+
+.statusFilters {
+  @apply flex gap-4 mb-6;
+}
+
+.statusFilter {
+  @apply px-4 py-2 rounded-xl font-medium transition-all duration-300 cursor-pointer;
+}
+
+.statusFilterActive {
+  @apply text-white shadow-sm;
+  background: linear-gradient(135deg, #2370FF, #2B49C2);
+}
+
+.statusFilterInactive {
+  @apply bg-gray-200 text-gray-600 hover:bg-gray-300;
+}
+
+.jobsGrid {
+  @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6;
+}
+
+.jobCard {
+  @apply bg-white rounded-2xl shadow-sm border border-gray-300 hover:shadow-md transition-all duration-300 p-6 cursor-pointer;
+}
+
+.jobHeader {
+  @apply flex justify-between items-start mb-4;
+}
+
+.jobTitle {
+  @apply text-xl font-bold;
+  color: #2370FF;
+}
+
+.jobCompany {
+  @apply text-gray-600 font-medium;
+}
+
+.jobStatus {
+  @apply px-3 py-1 rounded-full text-sm font-medium;
+}
+
+.jobStatusApplied {
+  @apply bg-blue-100 text-blue-700;
+}
+
+.jobStatusInterview {
+  @apply bg-yellow-100 text-yellow-700;
+}
+
+.jobStatusOffer {
+  @apply bg-green-100 text-green-700;
+}
+
+.jobStatusRejected {
+  @apply bg-red-100 text-red-700;
+}
+
+.jobMeta {
+  @apply text-sm text-gray-500 mb-4;
+}
+
+.jobActions {
+  @apply flex gap-2;
+}
+
+.jobActionButton {
+  @apply px-3 py-1 rounded-lg font-medium transition-all duration-300;
+}
+
+.editButton {
+  @apply bg-gray-100 text-gray-700 hover:bg-gray-200;
+}
+
+.deleteButton {
+  @apply bg-red-100 text-red-700 hover:bg-red-200;
+}

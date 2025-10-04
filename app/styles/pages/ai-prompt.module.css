@@ -1,0 +1,215 @@
+@import "tailwindcss" reference;
+/* AI Prompt Page Styles */
+
+.container {
+  @apply min-h-screen flex items-center justify-center p-4;
+  background: linear-gradient(135deg, #F4F8FF 0%, #E9F1FF 100%);
+}
+
+.mainContent {
+  @apply w-full max-w-5xl space-y-10 animate-pulse;
+}
+
+.header {
+  @apply text-center space-y-8;
+}
+
+.iconContainer {
+  @apply mx-auto w-24 h-24 rounded-3xl flex items-center justify-center mb-8 shadow-lg;
+  background: linear-gradient(135deg, #2370FF, #79C7FF);
+}
+
+.title {
+  @apply text-5xl md:text-7xl font-bold tracking-tight;
+  color: #2370FF;
+}
+
+.subtitle {
+  @apply text-xl text-gray-600 font-medium max-w-3xl mx-auto leading-relaxed;
+}
+
+.promptCard {
+  @apply bg-white rounded-2xl shadow-sm border-2 p-8 animate-pulse;
+  border-color: #D5E4FF;
+}
+
+.promptHeader {
+  @apply space-y-6 pb-8;
+}
+
+.promptTitle {
+  @apply flex items-center gap-4 text-3xl font-bold;
+}
+
+.promptTitleIconContainer {
+  @apply w-12 h-12 rounded-2xl flex items-center justify-center shadow-sm;
+  background: linear-gradient(135deg, #2370FF, #79C7FF);
+}
+
+.promptTitleText {
+  color: #2370FF;
+}
+
+.promptDescription {
+  @apply text-lg text-gray-600 font-medium leading-relaxed;
+}
+
+.promptContent {
+  @apply space-y-8;
+}
+
+.textareaContainer {
+  @apply relative;
+}
+
+.textarea {
+  @apply w-full text-lg resize-none border-2 rounded-2xl p-6 font-medium leading-relaxed transition-all duration-300 focus:outline-none focus:ring-2;
+}
+
+.textareaDefault {
+  @apply border-gray-300 focus:ring-blue-400 focus:border-transparent;
+  background-color: #F6F7FA;
+}
+
+.textareaError {
+  @apply border-red-400 bg-red-50 focus:ring-red-400;
+}
+
+.wordCounter {
+  @apply absolute bottom-4 right-4 flex items-center gap-3;
+}
+
+.wordCountBadge {
+  @apply px-4 py-2 rounded-2xl text-sm font-semibold transition-all shadow-sm border;
+}
+
+.wordCountBadgeDefault {
+  @apply text-blue-700 border-blue-200;
+  background-color: #E9F1FF;
+}
+
+.wordCountBadgeWarning {
+  @apply bg-yellow-100 text-yellow-700 border-yellow-200;
+}
+
+.wordCountBadgeError {
+  @apply bg-red-100 text-red-700 border-red-200;
+}
+
+.proTip {
+  @apply rounded-2xl p-6 border;
+  background-color: #F4F8FF;
+  border-color: #D5E4FF;
+}
+
+.proTipContent {
+  @apply flex items-center gap-3 text-base;
+}
+
+.proTipLabel {
+  @apply flex items-center gap-2;
+  color: #2370FF;
+}
+
+.proTipText {
+  @apply text-gray-600 font-medium;
+}
+
+.samplesCard {
+  @apply bg-white rounded-2xl shadow-sm border border-gray-300 p-8 animate-pulse;
+}
+
+.samplesHeader {
+  @apply pb-8;
+}
+
+.samplesTitle {
+  @apply flex items-center gap-4 text-3xl font-bold;
+}
+
+.samplesTitleIconContainer {
+  @apply w-12 h-12 rounded-2xl flex items-center justify-center shadow-sm;
+  background: linear-gradient(135deg, #74A2FF, #9AB9FF);
+}
+
+.samplesTitleText {
+  color: #2370FF;
+}
+
+.samplesDescription {
+  @apply text-lg text-gray-600 font-medium leading-relaxed;
+}
+
+.samplesContent {
+  @apply space-y-4;
+}
+
+.samplePrompt {
+  @apply bg-white rounded-2xl shadow-sm border border-gray-300 hover:shadow-md transition-all duration-300 cursor-pointer p-6 lg:p-8 hover:border-blue-400 relative overflow-hidden;
+}
+
+.samplePromptContent {
+  @apply relative z-10;
+}
+
+.samplePromptHeader {
+  @apply flex items-center gap-4 mb-4;
+}
+
+.samplePromptNumber {
+  @apply w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-sm transition-all duration-300;
+  background: linear-gradient(135deg, #2370FF, #79C7FF);
+}
+
+.samplePromptTitle {
+  @apply font-bold text-xl text-gray-700 hover:text-blue-700 transition-colors;
+}
+
+.samplePromptText {
+  @apply text-base text-gray-600 leading-relaxed font-medium pl-16;
+}
+
+.navigation {
+  @apply flex justify-between items-center pt-8 animate-pulse;
+}
+
+.backButton {
+  @apply bg-white text-gray-700 px-8 py-4 rounded-xl font-semibold border border-gray-300 hover:border-blue-400 hover:text-blue-700 transition-all duration-300 flex items-center gap-3 text-lg;
+}
+
+.nextButton {
+  @apply px-12 py-5 text-xl font-bold rounded-xl transition-all duration-300 flex items-center gap-3;
+}
+
+.nextButtonEnabled {
+  @apply text-white shadow-sm hover:shadow-md;
+  background: linear-gradient(135deg, #2370FF, #2B49C2);
+}
+
+.nextButtonDisabled {
+  @apply opacity-50 cursor-not-allowed bg-gray-400 text-white;
+}
+
+.footer {
+  @apply text-center rounded-3xl p-8 border shadow-sm animate-pulse;
+  background-color: #F4F8FF;
+  border-color: #D5E4FF;
+}
+
+.footerHeader {
+  @apply flex items-center justify-center gap-3 mb-4;
+}
+
+.footerIcon {
+  @apply h-6 w-6 fill-current;
+  color: #2370FF;
+}
+
+.footerTitle {
+  @apply font-bold text-xl;
+  color: #2370FF;
+}
+
+.footerText {
+  @apply text-lg text-gray-600 font-medium leading-relaxed max-w-2xl mx-auto;
+}

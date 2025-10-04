@@ -1,0 +1,94 @@
+@import "tailwindcss" reference;
+/* Button UI Component Styles */
+
+.button {
+  @apply inline-flex items-center justify-center rounded-xl font-medium transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed;
+}
+
+/* Button Variants */
+.primary {
+  @apply text-white shadow-lg hover:shadow-xl;
+  background: linear-gradient(135deg, #2370FF, #2B49C2);
+}
+
+.primary:focus {
+  @apply ring-blue-500;
+}
+
+.secondary {
+  @apply bg-white border border-gray-300 text-gray-700 hover:border-blue-400 hover:text-blue-700;
+}
+
+.secondary:focus {
+  @apply ring-blue-500;
+}
+
+.outline {
+  @apply bg-transparent border-2 hover:shadow-sm;
+  border-color: #D5E4FF;
+  color: #2370FF;
+}
+
+.outline:hover {
+  border-color: #2370FF;
+  background-color: #F4F8FF;
+}
+
+.outline:focus {
+  @apply ring-blue-500;
+}
+
+.ghost {
+  @apply bg-transparent text-gray-700 hover:bg-gray-100;
+}
+
+.ghost:focus {
+  @apply ring-gray-500;
+}
+
+.destructive {
+  @apply bg-red-600 text-white hover:bg-red-700 shadow-lg hover:shadow-xl;
+}
+
+.destructive:focus {
+  @apply ring-red-500;
+}
+
+/* Button Sizes */
+.sm {
+  @apply px-3 py-2 text-sm;
+}
+
+.md {
+  @apply px-4 py-3 text-base;
+}
+
+.lg {
+  @apply px-6 py-4 text-lg;
+}
+
+.xl {
+  @apply px-8 py-5 text-xl;
+}
+
+/* Button States */
+.loading {
+  @apply cursor-wait;
+}
+
+.loadingSpinner {
+  @apply w-4 h-4 animate-spin mr-2;
+}
+
+/* Icon Buttons */
+.iconOnly {
+  @apply p-2;
+}
+
+.iconLeft {
+  @apply mr-2;
+}
+
+.iconRight {
+  @apply ml-2;
+}

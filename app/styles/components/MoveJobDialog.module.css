@@ -1,0 +1,111 @@
+@import "tailwindcss" reference;
+/* Move Job Dialog Component Styles */
+
+.overlay {
+  @apply fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50;
+}
+
+.dialog {
+  @apply bg-white rounded-2xl shadow-xl max-w-sm w-full animate-pulse;
+}
+
+.header {
+  @apply p-6 border-b border-gray-200;
+}
+
+.title {
+  @apply text-xl font-bold;
+  color: #2370FF;
+}
+
+.subtitle {
+  @apply text-gray-600 mt-1;
+}
+
+.content {
+  @apply p-6 space-y-4;
+}
+
+.statusOptions {
+  @apply space-y-3;
+}
+
+.statusOption {
+  @apply p-4 border-2 rounded-xl cursor-pointer transition-all duration-300;
+}
+
+.statusOptionDefault {
+  @apply border-gray-300 hover:border-blue-400;
+}
+
+.statusOptionSelected {
+  border-color: #2370FF;
+  background-color: #F4F8FF;
+}
+
+.statusOptionContent {
+  @apply flex items-center gap-3;
+}
+
+.statusIcon {
+  @apply w-8 h-8 rounded-full flex items-center justify-center;
+}
+
+.statusIconApplied {
+  @apply bg-blue-100 text-blue-700;
+}
+
+.statusIconInterview {
+  @apply bg-yellow-100 text-yellow-700;
+}
+
+.statusIconOffer {
+  @apply bg-green-100 text-green-700;
+}
+
+.statusIconRejected {
+  @apply bg-red-100 text-red-700;
+}
+
+.statusInfo {
+  @apply flex-1;
+}
+
+.statusName {
+  @apply font-medium text-gray-800;
+}
+
+.statusDescription {
+  @apply text-sm text-gray-600;
+}
+
+.notesSection {
+  @apply mt-4;
+}
+
+.notesLabel {
+  @apply text-sm font-medium text-gray-700 mb-2;
+}
+
+.notesTextarea {
+  @apply w-full px-4 py-3 border-2 rounded-xl font-medium transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent resize-none;
+  border-color: #D5E4FF;
+  background-color: #F6F7FA;
+}
+
+.footer {
+  @apply p-6 border-t border-gray-200 flex justify-end gap-3;
+}
+
+.cancelButton {
+  @apply bg-white text-gray-700 px-6 py-3 rounded-xl font-medium border border-gray-300 hover:border-gray-400 transition-all duration-300;
+}
+
+.moveButton {
+  @apply text-white px-6 py-3 rounded-xl font-bold shadow-lg hover:shadow-xl transition-all duration-300;
+  background: linear-gradient(135deg, #2370FF, #2B49C2);
+}
+
+.moveButtonDisabled {
+  @apply opacity-50 cursor-not-allowed bg-gray-400 text-white px-6 py-3 rounded-xl font-bold;
+}

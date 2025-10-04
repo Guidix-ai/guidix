@@ -1,0 +1,82 @@
+/* Home Page Styles */
+@import "tailwindcss" reference;
+
+.container {
+  @apply min-h-screen p-4 md:p-6 lg:p-8;
+  background: linear-gradient(135deg, #F4F8FF 0%, #E9F1FF 100%);
+}
+
+.mainContent {
+  @apply max-w-7xl mx-auto space-y-8 py-6 lg:py-12;
+}
+
+.header {
+  @apply text-center space-y-4 mb-8;
+}
+
+.title {
+  @apply text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight;
+  color: #2370FF;
+}
+
+.subtitle {
+  @apply text-base md:text-lg lg:text-xl text-gray-600 font-medium max-w-3xl mx-auto leading-relaxed;
+}
+
+.featuresSection {
+  @apply space-y-6;
+}
+
+.featuresGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+}
+
+/* Make Resume Builder and Job Search take up 2 columns */
+.featuresGrid > :nth-child(1),
+.featuresGrid > :nth-child(2) {
+  grid-column: span 2;
+}
+
+.insightsSection {
+  @apply mt-6;
+}
+
+/* Responsive styles */
+@media (min-width: 768px) {
+  .featuresGrid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+  }
+
+  /* Large cards take 2 columns */
+  .featuresGrid > :nth-child(1),
+  .featuresGrid > :nth-child(2) {
+    grid-column: span 2;
+  }
+
+  /* Normal cards take 1 column */
+  .featuresGrid > :nth-child(n+3) {
+    grid-column: span 1;
+  }
+}
+
+@media (min-width: 1024px) {
+  .featuresGrid {
+    gap: 2rem;
+  }
+}
+
+/* Mobile responsive */
+@media (max-width: 767px) {
+  .featuresGrid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .featuresGrid > :nth-child(1),
+  .featuresGrid > :nth-child(2) {
+    grid-column: span 1;
+  }
+}

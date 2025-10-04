@@ -1,0 +1,88 @@
+@import "tailwindcss" reference;
+/* Resume Builder Page Styles */
+
+.container {
+  @apply min-h-screen;
+  background: linear-gradient(135deg, #F4F8FF 0%, #E9F1FF 100%);
+}
+
+.mainContent {
+  @apply max-w-6xl mx-auto px-4 py-8 space-y-8;
+}
+
+.header {
+  @apply rounded-2xl text-white p-8 animate-pulse;
+  background: linear-gradient(135deg, #2370FF, #2B49C2);
+}
+
+.headerContent {
+  @apply flex flex-col md:flex-row md:items-center justify-between;
+}
+
+.headerText {
+  @apply space-y-2;
+}
+
+.headerTitle {
+  @apply text-4xl md:text-5xl font-bold text-white leading-tight;
+}
+
+.headerSubtitle {
+  @apply text-lg md:text-xl;
+  color: #E9F1FF;
+}
+
+.headerIcon {
+  @apply text-6xl md:text-8xl mt-4 md:mt-0;
+}
+
+.optionsSection {
+  @apply bg-white rounded-2xl shadow-sm border border-gray-300 p-8 animate-pulse;
+}
+
+.optionsHeader {
+  @apply text-center space-y-6 md:space-y-8;
+}
+
+.optionsIconContainer {
+  @apply w-16 h-16 rounded-2xl flex items-center justify-center mx-auto text-white shadow-sm;
+  background: linear-gradient(135deg, #2370FF, #79C7FF);
+}
+
+.optionsTitle {
+  @apply text-2xl md:text-3xl font-bold text-gray-800;
+}
+
+.optionsDescription {
+  @apply text-gray-600 leading-relaxed text-center max-w-2xl mx-auto;
+}
+
+.optionsGrid {
+  @apply grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto mt-8;
+}
+
+.optionCard {
+  @apply bg-white rounded-2xl shadow-sm border border-gray-300 hover:border-blue-400 hover:shadow-md transition-all duration-300 cursor-pointer p-8 text-center;
+}
+
+.optionIconContainer {
+  @apply w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6 transition-all duration-300;
+  background-color: #E9F1FF;
+  color: #2370FF;
+}
+
+.optionTitle {
+  @apply text-xl font-semibold text-gray-700 mb-3;
+}
+
+.optionDescription {
+  @apply text-gray-600 leading-relaxed;
+}
+
+.navigation {
+  @apply flex flex-col sm:flex-row justify-between items-center gap-4 mt-8;
+}
+
+.backButton {
+  @apply bg-white text-gray-700 px-6 py-3 rounded-xl font-medium border border-gray-300 hover:border-blue-400 hover:text-blue-700 transition-all duration-300 flex items-center gap-2;
+}

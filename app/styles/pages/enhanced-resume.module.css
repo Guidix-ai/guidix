@@ -1,0 +1,323 @@
+@import "tailwindcss" reference;
+/* Enhanced Resume Page Styles */
+
+.container {
+  @apply min-h-screen;
+  background: linear-gradient(135deg, #F4F8FF 0%, #E9F1FF 100%);
+}
+
+.mainContent {
+  @apply max-w-7xl mx-auto p-4 py-8 lg:py-12;
+}
+
+.header {
+  @apply flex items-center justify-between mb-8 lg:mb-12 animate-pulse;
+}
+
+.backButton {
+  @apply bg-white text-gray-700 border border-gray-300 hover:border-blue-400 hover:text-blue-700 transition-all duration-300 gap-3 px-6 py-3 text-lg font-semibold rounded-xl;
+}
+
+.enhancementsBadge {
+  @apply border-2 px-6 py-3 rounded-2xl font-bold text-base shadow-sm text-green-600;
+  background-color: rgba(16, 185, 129, 0.1);
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+.contentGrid {
+  @apply flex flex-col lg:flex-row gap-8;
+}
+
+.resumePreview {
+  @apply flex-1;
+}
+
+.resumeCard {
+  @apply bg-white rounded-2xl border-2 shadow-lg animate-pulse;
+  border-color: rgba(35, 112, 255, 0.3);
+}
+
+.resumeHeader {
+  @apply p-8;
+}
+
+.resumeHeaderContent {
+  @apply flex items-center justify-between;
+}
+
+.resumeTitle {
+  @apply flex items-center gap-4 text-3xl font-bold;
+}
+
+.resumeTitleIcon {
+  @apply w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg;
+  background: linear-gradient(135deg, #2370FF, #79C7FF);
+}
+
+.resumeTitleText {
+  color: #2370FF;
+}
+
+.downloadButton {
+  @apply text-white gap-3 px-8 py-4 text-lg font-bold shadow-lg hover:shadow-xl transition-all duration-300 rounded-xl;
+  background: linear-gradient(135deg, #2370FF, #2B49C2);
+}
+
+.resumeContent {
+  @apply space-y-8 p-8 lg:p-12;
+}
+
+.personalInfo {
+  @apply space-y-8;
+}
+
+.personalHeader {
+  @apply text-center border-b-2 pb-8;
+  border-color: #D5E4FF;
+}
+
+.nameSection {
+  @apply relative;
+}
+
+.nameInput {
+  @apply text-center text-4xl font-bold border-2 rounded-2xl py-4;
+  border-color: rgba(35, 112, 255, 0.3);
+}
+
+.nameTitle {
+  @apply text-4xl lg:text-5xl font-bold tracking-tight;
+  color: #2370FF;
+}
+
+.editButton {
+  @apply absolute -right-12 top-0 opacity-0 transition-opacity rounded-xl;
+}
+
+.titleSection {
+  @apply relative mt-4;
+}
+
+.titleInput {
+  @apply text-center text-2xl border-2 rounded-2xl py-3;
+  border-color: rgba(35, 112, 255, 0.3);
+}
+
+.titleText {
+  @apply text-2xl font-bold;
+  color: #2370FF;
+}
+
+.saveButton {
+  @apply bg-white border border-gray-300 hover:border-blue-400 hover:text-blue-700 transition-all duration-300 rounded-xl;
+  color: #2370FF;
+}
+
+.contactInfo {
+  @apply flex flex-wrap justify-center gap-6 mt-6 text-lg text-gray-600;
+}
+
+.contactItem {
+  @apply flex items-center gap-2 font-medium;
+}
+
+.contactIcon {
+  @apply h-5 w-5;
+  color: #2370FF;
+}
+
+.resumeSection {
+  @apply relative p-4 rounded-lg border-2 border-transparent cursor-pointer transition-all;
+}
+
+.resumeSectionEditing {
+  border-color: #2370FF;
+  background-color: rgba(35, 112, 255, 0.05);
+}
+
+.sectionHeader {
+  @apply flex items-center justify-between mb-2;
+}
+
+.sectionTitle {
+  @apply text-xl font-semibold;
+}
+
+.sectionActions {
+  @apply flex gap-2 opacity-0 transition-opacity;
+}
+
+.sectionButton {
+  @apply gap-1;
+}
+
+.experienceItem {
+  @apply relative;
+}
+
+.experienceHeader {
+  @apply flex justify-between items-start mb-2;
+}
+
+.experiencePosition {
+  @apply font-semibold;
+}
+
+.experienceCompany {
+  color: #2370FF;
+}
+
+.experienceList {
+  @apply list-disc list-inside space-y-1 text-muted-foreground;
+}
+
+.experienceAchievement {
+  @apply leading-relaxed;
+}
+
+.experienceEditButton {
+  position: absolute;
+  top: 0;
+  right: -2rem;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.experienceItem:hover .experienceEditButton {
+  opacity: 1;
+}
+
+.skillsGrid {
+  @apply flex flex-wrap gap-2;
+}
+
+.skillBadge {
+  @apply variant-secondary;
+}
+
+.skillBadgeEnhanced {
+  @apply bg-green-100 text-green-700 border border-green-200;
+}
+
+.educationInfo {
+  /* Education section styles */
+}
+
+.educationDegree {
+  @apply font-semibold;
+}
+
+.educationSchool {
+  color: #2370FF;
+}
+
+.educationYear {
+  @apply text-muted-foreground;
+}
+
+.aiSidebar {
+  @apply w-full lg:w-80;
+}
+
+.aiCard {
+  @apply bg-white rounded-2xl border-2 shadow-sm;
+  border-color: rgba(16, 185, 129, 0.2);
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.05), rgba(16, 185, 129, 0.1));
+}
+
+.aiHeader {
+  /* AI improvements header */
+}
+
+.aiTitle {
+  @apply flex items-center gap-2 text-green-600;
+}
+
+.aiContent {
+  @apply space-y-4;
+}
+
+.aiImprovement {
+  @apply flex items-start gap-3 p-3 rounded-lg;
+  background-color: rgba(35, 112, 255, 0.05);
+}
+
+.aiImprovementIcon {
+  @apply w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0;
+  background-color: rgba(35, 112, 255, 0.1);
+}
+
+.aiImprovementIconSuccess {
+  @apply h-4 w-4 text-green-600;
+}
+
+.aiImprovementIconPrimary {
+  @apply h-4 w-4;
+  color: #2370FF;
+}
+
+.aiImprovementContent {
+  @apply flex-1;
+}
+
+.aiImprovementTitle {
+  @apply font-medium text-sm;
+}
+
+.aiImprovementDescription {
+  @apply text-xs text-muted-foreground mt-1;
+}
+
+.aiImprovementBadge {
+  @apply mt-2 text-xs;
+}
+
+.aiScore {
+  @apply pt-4 border-t;
+}
+
+.aiScoreContent {
+  @apply text-center;
+}
+
+.aiScoreValue {
+  @apply text-2xl font-bold;
+  color: #2370FF;
+}
+
+.aiScoreLabel {
+  @apply text-sm text-muted-foreground;
+}
+
+.callToAction {
+  @apply mt-12 text-center animate-pulse;
+}
+
+.ctaCard {
+  @apply rounded-3xl p-8 lg:p-12 border-2 shadow-lg;
+  background-color: #F4F8FF;
+  border-color: #D5E4FF;
+}
+
+.ctaTitle {
+  @apply text-3xl lg:text-4xl font-bold mb-4 tracking-tight;
+  color: #2370FF;
+}
+
+.ctaDescription {
+  @apply text-xl text-gray-600 font-medium mb-8 max-w-3xl mx-auto leading-relaxed;
+}
+
+.ctaButtons {
+  @apply flex flex-col sm:flex-row gap-6 justify-center;
+}
+
+.ctaPrimaryButton {
+  @apply text-white px-10 py-5 text-xl font-bold shadow-lg hover:shadow-xl transition-all duration-300 rounded-xl;
+  background: linear-gradient(135deg, #2370FF, #2B49C2);
+}
+
+.ctaSecondaryButton {
+  @apply bg-white border border-gray-300 hover:border-blue-400 hover:text-blue-700 transition-all duration-300 px-10 py-5 text-xl font-bold rounded-xl;
+  color: #2370FF;
+}

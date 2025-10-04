@@ -1,0 +1,359 @@
+@import "tailwindcss" reference;
+/* Resume Builder Module Styles - Fixed with Standard Tailwind */
+
+/* Main Layout */
+.container {
+  @apply min-h-screen;
+  background: linear-gradient(135deg, #F4F8FF 0%, #E9F1FF 100%);
+}
+
+.pageContainer {
+  @apply max-w-6xl mx-auto px-4 py-8 space-y-8;
+}
+
+/* Header Sections */
+.headerSection {
+  background: linear-gradient(135deg, #2370FF, #2B49C2);
+  @apply rounded-2xl text-white p-8 animate-pulse;
+}
+
+.headerContent {
+  @apply flex flex-col md:flex-row md:items-center justify-between;
+}
+
+.headerText {
+  @apply space-y-2;
+}
+
+.headerTitle {
+  @apply text-4xl md:text-5xl font-bold text-white leading-tight;
+}
+
+.headerSubtitle {
+  color: #E9F1FF;
+  @apply text-lg md:text-xl;
+}
+
+.headerIcon {
+  @apply text-6xl md:text-8xl mt-4 md:mt-0;
+}
+
+/* Content Sections */
+.contentSection {
+  @apply bg-white rounded-2xl shadow-sm border border-gray-300 p-8 animate-slide-up;
+}
+
+.sectionHeader {
+  @apply text-center space-y-6 md:space-y-8;
+}
+
+.sectionIcon {
+  @apply w-16 h-16 rounded-2xl flex items-center justify-center mx-auto;
+  background: linear-gradient(135deg, #2370FF, #79C7FF);
+  @apply text-white shadow-sm;
+}
+
+.iconPrimary {
+  background: linear-gradient(135deg, #2370FF, #79C7FF);
+  @apply text-white shadow-sm;
+}
+
+.sectionTitle {
+  @apply text-2xl md:text-3xl font-bold text-gray-800;
+}
+
+.sectionDescription {
+  @apply text-gray-600 leading-relaxed text-center max-w-2xl mx-auto;
+}
+
+/* Selection Cards */
+.selectionGrid {
+  @apply grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto;
+}
+
+.selectionCard {
+  @apply bg-white rounded-2xl shadow-sm border border-gray-300 hover:border-blue-400 hover:shadow-md transition-all duration-300 cursor-pointer p-8 text-center;
+}
+
+.selectionCardSelected {
+  background-color: #F4F8FF;
+  border-color: #2370FF;
+  @apply shadow-md;
+}
+
+.selectionCardIcon {
+  @apply w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6 transition-all duration-300;
+}
+
+.selectionCardIconDefault {
+  background-color: #E9F1FF;
+  color: #2370FF;
+}
+
+.selectionCardIconSelected {
+  background: linear-gradient(135deg, #2370FF, #79C7FF);
+  @apply text-white shadow-sm;
+}
+
+.selectionCardTitle {
+  @apply text-xl font-semibold text-gray-700 mb-3;
+}
+
+.selectionCardDescription {
+  @apply text-gray-600 leading-relaxed;
+}
+
+.selectionCardCheckmark {
+  @apply absolute top-4 right-4 animate-scale-in;
+}
+
+.checkmarkIcon {
+  background-color: #2370FF;
+  @apply w-8 h-8 rounded-full text-white flex items-center justify-center shadow-md;
+}
+
+/* Field Selection Grid */
+.fieldGrid {
+  @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto;
+}
+
+.fieldCard {
+  @apply bg-white rounded-2xl shadow-sm border border-gray-300 hover:border-blue-400 hover:shadow-md transition-all duration-300 cursor-pointer p-6 relative overflow-hidden;
+}
+
+.fieldCardSelected {
+  background-color: #F4F8FF;
+  border-color: #2370FF;
+  @apply shadow-md ring-2;
+  --tw-ring-color: #2370FF;
+}
+
+.fieldCardContent {
+  @apply relative z-10;
+}
+
+.fieldCardIcon {
+  @apply w-14 h-14 rounded-xl flex items-center justify-center mb-4 transition-all duration-300;
+}
+
+.fieldCardIconDefault {
+  background-color: #E9F1FF;
+  color: #2370FF;
+}
+
+.fieldCardIconSelected {
+  background: linear-gradient(135deg, #2370FF, #79C7FF);
+  @apply text-white shadow-sm;
+}
+
+.fieldCardTitle {
+  @apply text-lg font-semibold mb-2 text-gray-700;
+}
+
+.fieldCardTitleSelected {
+  color: #2370FF;
+}
+
+.fieldCardDescription {
+  @apply text-gray-500 text-sm leading-relaxed;
+}
+
+/* Navigation */
+.navigationContainer {
+  @apply flex flex-col sm:flex-row justify-between items-center gap-4 mt-8;
+}
+
+.backButton {
+  @apply bg-white text-gray-700 px-6 py-3 rounded-xl font-medium border border-gray-300 hover:border-blue-400 hover:text-blue-700 transition-all duration-300 flex items-center gap-2;
+}
+
+.continueButton {
+  background: linear-gradient(135deg, #2370FF, #2B49C2);
+  @apply text-white px-8 py-4 rounded-xl font-medium shadow-sm hover:shadow-md transition-all duration-300 flex items-center gap-2 text-lg;
+}
+
+.continueButtonDisabled {
+  @apply opacity-50 cursor-not-allowed hover:shadow-sm;
+}
+
+/* Template Selection */
+.templateGrid {
+  @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto;
+}
+
+.templateCard {
+  @apply card-interactive overflow-hidden transition-all duration-300;
+}
+
+.templateCardSelected {
+  @apply card-selected ring-2 ring-primary-500 transform scale-[1.02];
+}
+
+.templatePreview {
+  @apply relative aspect-[3/4] bg-gradient-to-br from-primary-50 to-primary-100 overflow-hidden;
+}
+
+.templatePreviewSelected {
+  @apply from-primary-100 to-primary-200;
+}
+
+.templateBadge {
+  @apply absolute top-4 right-4 badge-primary;
+}
+
+.templateContent {
+  @apply p-6 space-y-4;
+}
+
+.templateHeader {
+  @apply flex items-center justify-between;
+}
+
+.templateName {
+  @apply text-xl font-bold text-neutral-700;
+}
+
+.templateNameSelected {
+  @apply text-primary-700;
+}
+
+.templateRating {
+  @apply flex items-center gap-1;
+}
+
+.templateDescription {
+  @apply text-body;
+}
+
+.templateFeatures {
+  @apply flex items-center justify-between;
+}
+
+.templateCategory {
+  @apply badge-neutral;
+}
+
+.templateDownloads {
+  @apply text-subtle font-medium;
+}
+
+.templateButton {
+  @apply btn-secondary w-full;
+}
+
+/* Loading Screen */
+.loadingContainer {
+  @apply min-h-screen flex items-center justify-center;
+  background: linear-gradient(135deg, #F4F8FF 0%, #E9F1FF 100%);
+}
+
+.loadingContent {
+  @apply max-w-2xl space-y-12 animate-pulse;
+}
+
+.loadingIcon {
+  @apply text-center space-y-8;
+}
+
+.loadingIconContainer {
+  @apply relative mx-auto;
+}
+
+.loadingIconBg {
+  @apply w-32 h-32 rounded-3xl flex items-center justify-center shadow-lg;
+  background: linear-gradient(135deg, var(--primary), var(--primary-600));
+}
+
+.loadingText {
+  @apply space-y-4;
+}
+
+.loadingTitle {
+  @apply heading-medium text-center;
+}
+
+.loadingDescription {
+  @apply text-body text-center;
+}
+
+.loadingProgress {
+  @apply text-2xl font-bold text-center;
+  color: var(--primary);
+}
+
+/* Progress Steps */
+.stepsContainer {
+  @apply section-container space-y-6;
+}
+
+.stepItem {
+  @apply flex items-center gap-4 transition-all duration-500;
+}
+
+.stepIcon {
+  @apply w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-500;
+}
+
+.stepIconCompleted {
+  @apply bg-green-500 text-white;
+}
+
+.stepIconCurrent {
+  @apply icon-primary;
+}
+
+.stepIconPending {
+  @apply bg-neutral-300 text-neutral-500;
+}
+
+.stepText {
+  @apply flex-1 text-lg font-medium transition-all duration-300;
+}
+
+.stepTextCompleted {
+  @apply line-through opacity-60 text-neutral-500;
+}
+
+.stepTextCurrent {
+  @apply text-primary-700;
+}
+
+.stepTextPending {
+  @apply text-neutral-500;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .headerIcon {
+    @apply text-5xl;
+  }
+
+  .selectionGrid,
+  .fieldGrid,
+  .templateGrid {
+    @apply grid-cols-1 gap-4;
+  }
+
+  .navigationContainer {
+    @apply space-y-4;
+  }
+
+  .continueButton {
+    @apply w-full justify-center;
+  }
+}
+
+@media (max-width: 640px) {
+  .pageContainer {
+    @apply px-4 py-6 space-y-6;
+  }
+
+  .contentSection {
+    @apply p-6;
+  }
+
+  .selectionCard,
+  .fieldCard {
+    @apply p-6;
+  }
+}

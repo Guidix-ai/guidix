@@ -1,0 +1,144 @@
+@import "tailwindcss" reference;
+/* Dialog UI Component Styles */
+
+.overlay {
+  @apply fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50;
+}
+
+.overlayAnimated {
+  @apply animate-pulse;
+}
+
+.dialog {
+  @apply bg-white rounded-2xl shadow-xl max-w-md w-full;
+}
+
+.dialogAnimated {
+  @apply animate-pulse;
+}
+
+.dialogLarge {
+  @apply max-w-2xl;
+}
+
+.dialogExtraLarge {
+  @apply max-w-4xl;
+}
+
+.dialogFullScreen {
+  @apply max-w-full max-h-full w-full h-full rounded-none;
+}
+
+.dialogScrollable {
+  @apply max-h-screen overflow-y-auto;
+}
+
+/* Dialog Header */
+.header {
+  @apply p-6 border-b border-gray-200;
+}
+
+.headerCompact {
+  @apply p-4;
+}
+
+.headerWithClose {
+  @apply flex justify-between items-start;
+}
+
+.title {
+  @apply text-2xl font-bold;
+  color: #2370FF;
+}
+
+.titleSmall {
+  @apply text-xl;
+}
+
+.titleLarge {
+  @apply text-3xl;
+}
+
+.description {
+  @apply text-gray-600 mt-1;
+}
+
+.closeButton {
+  @apply text-gray-400 hover:text-gray-600 transition-colors duration-200 p-1 rounded-lg hover:bg-gray-100;
+}
+
+.closeIcon {
+  @apply w-6 h-6;
+}
+
+/* Dialog Content */
+.content {
+  @apply p-6;
+}
+
+.contentCompact {
+  @apply p-4;
+}
+
+.contentNoPadding {
+  @apply p-0;
+}
+
+.contentScrollable {
+  @apply max-h-96 overflow-y-auto;
+}
+
+/* Dialog Footer */
+.footer {
+  @apply p-6 border-t border-gray-200 flex justify-end gap-3;
+}
+
+.footerCompact {
+  @apply p-4;
+}
+
+.footerBetween {
+  @apply justify-between;
+}
+
+.footerCenter {
+  @apply justify-center;
+}
+
+.footerLeft {
+  @apply justify-start;
+}
+
+/* Dialog Types */
+.alert {
+  @apply border-l-4 border-yellow-400;
+}
+
+.confirm {
+  @apply border-l-4 border-red-400;
+}
+
+.info {
+  @apply border-l-4;
+  border-color: #2370FF;
+}
+
+.success {
+  @apply border-l-4 border-green-400;
+}
+
+/* Animation Classes */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-pulse {
+  animation: fadeIn 0.2s ease-out;
+}

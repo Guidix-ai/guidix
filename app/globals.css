@@ -1,0 +1,174 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+@import "tailwindcss";
+
+:root {
+  /* Base colors */
+  --background: #ffffff;
+  --foreground: #171717;
+
+  /* Brand color palette */
+  --brand-primary: #2370FF;
+  --brand-primary-dark: #2B49C2;
+  --brand-primary-darker: #0355BE;
+  --brand-primary-darkest: #002A79;
+
+  /* Secondary colors */
+  --brand-secondary-lightest: #F4F8FF;
+  --brand-secondary-light: #E9F1FF;
+  --brand-secondary: #D5E4FF;
+  --brand-secondary-medium: #BCCDF9;
+
+  /* Accent colors */
+  --brand-accent-light: #9AB9FF;
+  --brand-accent: #74A2FF;
+  --brand-accent-bright: #79C7FF;
+
+  /* Neutral colors */
+  --neutral-white: #FFFFFF;
+  --neutral-lightest: #F6F7FA;
+  --neutral-light: #F3F7FF;
+  --neutral-medium-light: #E1E4EB;
+  --neutral-medium: #C4C9D6;
+  --neutral-medium-dark: #8A96C9;
+  --neutral-dark: #7D85BF;
+  --neutral-darker: #23355C;
+  --neutral-darkest: #192150;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+
+  /* Custom utilities */
+  --max-width-8xl: 88rem;
+
+  /* Animation utilities */
+  --animate-pulse: fadeIn 0.6s ease-out;
+}
+
+/* Group utility for hover states */
+.group {
+  position: relative;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+/* Custom animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-pulse {
+  animation: fadeIn 0.6s ease-out;
+}
+
+/* Additional utility classes */
+.max-w-8xl {
+  max-width: var(--max-width-8xl);
+}
+
+.hover\:bg-opacity-10:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+
+* {
+  font-family: 'Inter', sans-serif !important;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: 'Inter', sans-serif;
+}
+
+/* Utility classes for the design system */
+.brand-gradient {
+  background: linear-gradient(135deg, var(--brand-primary), var(--brand-primary-dark));
+}
+
+.brand-bg-light {
+  background: linear-gradient(135deg, var(--brand-secondary-lightest), var(--brand-secondary-light));
+}
+
+.brand-text {
+  color: var(--brand-primary);
+}
+
+.brand-border {
+  border-color: var(--brand-primary);
+}
+
+.brand-hover:hover {
+  border-color: var(--brand-primary);
+}
+
+/* Print/PDF styles for resume templates */
+@media print {
+  @page {
+    size: A4;
+    margin: 0;
+  }
+
+  /* Print-specific styles */
+  * {
+    box-shadow: none !important;
+  }
+
+  .resume-container {
+    overflow: visible !important;
+  }
+}
+
+/* Resume template specific styles */
+.resume-container {
+  font-family: 'Inter', sans-serif;
+  line-height: 1.4;
+  font-size: 14px;
+  color: #333;
+}
+
+.resume-container h1,
+.resume-container h2,
+.resume-container h3,
+.resume-container h4,
+.resume-container h5,
+.resume-container h6 {
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.resume-container p {
+  margin: 0;
+}
+
+.resume-container .break-words {
+  word-break: break-words;
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+
+.resume-container .break-all {
+  word-break: break-all;
+}
+
+/* Better text wrapping for resume content */
+.resume-text {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}

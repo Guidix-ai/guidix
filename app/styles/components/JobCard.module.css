@@ -1,0 +1,96 @@
+@import "tailwindcss" reference;
+/* Job Card Component Styles */
+
+.jobCard {
+  @apply bg-white rounded-2xl shadow-sm border border-gray-300 hover:shadow-md transition-all duration-300 p-6 cursor-pointer;
+}
+
+.jobHeader {
+  @apply flex justify-between items-start mb-4;
+}
+
+.jobInfo {
+  @apply flex-1;
+}
+
+.jobTitle {
+  @apply text-xl font-bold mb-1;
+  color: #2370FF;
+}
+
+.jobCompany {
+  @apply text-gray-600 font-medium mb-2;
+}
+
+.jobLocation {
+  @apply text-sm text-gray-500;
+}
+
+.jobStatus {
+  @apply px-3 py-1 rounded-full text-sm font-medium;
+}
+
+.statusApplied {
+  @apply bg-blue-100 text-blue-700;
+}
+
+.statusInterview {
+  @apply bg-yellow-100 text-yellow-700;
+}
+
+.statusOffer {
+  @apply bg-green-100 text-green-700;
+}
+
+.statusRejected {
+  @apply bg-red-100 text-red-700;
+}
+
+.statusSaved {
+  @apply bg-gray-100 text-gray-700;
+}
+
+.jobDescription {
+  @apply text-gray-600 leading-relaxed mb-4 line-clamp-3;
+}
+
+.jobMeta {
+  @apply flex items-center justify-between text-sm text-gray-500 mb-4;
+}
+
+.salary {
+  @apply font-medium;
+}
+
+.datePosted {
+  @apply text-gray-400;
+}
+
+.jobActions {
+  @apply flex gap-2;
+}
+
+.actionButton {
+  @apply px-3 py-1 rounded-lg font-medium transition-all duration-300;
+}
+
+.applyButton {
+  @apply text-white shadow-sm hover:shadow-md;
+  background: linear-gradient(135deg, #2370FF, #2B49C2);
+}
+
+.saveButton {
+  @apply bg-gray-100 text-gray-700 hover:bg-gray-200;
+}
+
+.editButton {
+  @apply bg-blue-100 text-blue-700 hover:bg-blue-200;
+}
+
+.deleteButton {
+  @apply bg-red-100 text-red-700 hover:bg-red-200;
+}
+
+.viewButton {
+  @apply bg-green-100 text-green-700 hover:bg-green-200;
+}

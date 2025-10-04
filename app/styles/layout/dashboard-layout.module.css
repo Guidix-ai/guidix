@@ -1,0 +1,134 @@
+@import "tailwindcss" reference;
+/* Dashboard Layout Component Styles */
+
+.layout {
+  @apply min-h-screen;
+  background: linear-gradient(135deg, #F4F8FF 0%, #E9F1FF 100%);
+}
+
+.container {
+  @apply max-w-7xl mx-auto;
+}
+
+.header {
+  @apply sticky top-0 z-40 border-b border-gray-200;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+}
+
+.headerContent {
+  @apply flex items-center justify-between px-4 py-4;
+}
+
+.brand {
+  @apply flex items-center gap-3;
+}
+
+.brandIcon {
+  @apply w-10 h-10 rounded-xl flex items-center justify-center shadow-sm;
+  background: linear-gradient(135deg, #2370FF, #79C7FF);
+}
+
+.brandText {
+  @apply text-2xl font-bold;
+  color: #2370FF;
+}
+
+.navigation {
+  @apply flex items-center gap-6;
+}
+
+.navItem {
+  @apply text-gray-600 hover:text-blue-700 font-medium transition-colors duration-300 cursor-pointer;
+}
+
+.navItemActive {
+  color: #2370FF;
+  @apply font-semibold;
+}
+
+.userMenu {
+  @apply flex items-center gap-3;
+}
+
+.userAvatar {
+  @apply w-10 h-10 rounded-full;
+  background: linear-gradient(135deg, #2370FF, #79C7FF);
+}
+
+.userInfo {
+  @apply hidden md:block;
+}
+
+.userName {
+  @apply text-sm font-medium text-gray-800;
+}
+
+.userRole {
+  @apply text-xs text-gray-500;
+}
+
+.sidebar {
+  @apply fixed left-0 top-16 h-full w-64 bg-white border-r border-gray-200 z-30 transform transition-transform duration-300;
+}
+
+.sidebarOpen {
+  @apply translate-x-0;
+}
+
+.sidebarClosed {
+  @apply -translate-x-full;
+}
+
+.sidebarContent {
+  @apply p-6 space-y-6;
+}
+
+.sidebarSection {
+  @apply space-y-2;
+}
+
+.sidebarTitle {
+  @apply text-xs uppercase text-gray-500 font-semibold tracking-wider mb-3;
+}
+
+.sidebarItem {
+  @apply flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all duration-300 cursor-pointer;
+}
+
+.sidebarItemDefault {
+  @apply text-gray-600 hover:text-blue-700 hover:bg-blue-50;
+}
+
+.sidebarItemActive {
+  @apply text-white shadow-sm;
+  background: linear-gradient(135deg, #2370FF, #2B49C2);
+}
+
+.sidebarIcon {
+  @apply w-5 h-5;
+}
+
+.main {
+  @apply transition-all duration-300;
+}
+
+.mainWithSidebar {
+  @apply md:ml-64;
+}
+
+.mainContent {
+  @apply p-4 md:p-6 lg:p-8;
+}
+
+.mobileOverlay {
+  @apply fixed inset-0 bg-black/50 z-20 md:hidden;
+}
+
+.mobileMenuButton {
+  @apply md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors duration-300;
+}
+
+.mobileMenuIcon {
+  @apply w-6 h-6 text-gray-600;
+}

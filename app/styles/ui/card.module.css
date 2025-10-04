@@ -1,0 +1,114 @@
+@import "tailwindcss" reference;
+/* Card UI Component Styles */
+
+.card {
+  @apply bg-white rounded-2xl shadow-sm border border-gray-200;
+}
+
+.cardAnimated {
+  @apply transition-all duration-300 hover:shadow-md;
+}
+
+.cardClickable {
+  @apply cursor-pointer hover:shadow-lg;
+}
+
+.cardSelected {
+  @apply ring-2 shadow-lg;
+  --tw-ring-color: #2370FF;
+  border-color: #2370FF;
+}
+
+.cardError {
+  @apply border-red-300 bg-red-50;
+}
+
+.cardSuccess {
+  @apply border-green-300 bg-green-50;
+}
+
+.cardWarning {
+  @apply border-yellow-300 bg-yellow-50;
+}
+
+.cardInfo {
+  @apply border-blue-300;
+  background-color: #F4F8FF;
+  border-color: #D5E4FF;
+}
+
+/* Card Header */
+.header {
+  @apply p-6 border-b border-gray-200;
+}
+
+.headerCompact {
+  @apply p-4;
+}
+
+.title {
+  @apply text-xl font-bold text-gray-900;
+}
+
+.titleLarge {
+  @apply text-2xl;
+}
+
+.titleSmall {
+  @apply text-lg;
+}
+
+.description {
+  @apply text-gray-600 mt-1;
+}
+
+/* Card Content */
+.content {
+  @apply p-6;
+}
+
+.contentCompact {
+  @apply p-4;
+}
+
+.contentNoPadding {
+  @apply p-0;
+}
+
+/* Card Footer */
+.footer {
+  @apply p-6 border-t border-gray-200 bg-gray-50 rounded-b-2xl;
+}
+
+.footerCompact {
+  @apply p-4;
+}
+
+.footerActions {
+  @apply flex justify-end gap-3;
+}
+
+.footerActionsBetween {
+  @apply flex justify-between items-center;
+}
+
+/* Gradient Cards */
+.gradientPrimary {
+  background: linear-gradient(135deg, #2370FF, #2B49C2);
+  @apply text-white border-0;
+}
+
+.gradientSecondary {
+  background: linear-gradient(135deg, #F4F8FF, #E9F1FF);
+  border-color: #D5E4FF;
+}
+
+/* Special Effects */
+.glow {
+  @apply shadow-lg;
+  box-shadow: 0 10px 25px rgba(35, 112, 255, 0.15);
+}
+
+.glowHover:hover {
+  box-shadow: 0 15px 35px rgba(35, 112, 255, 0.25);
+}

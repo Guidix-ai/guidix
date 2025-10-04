@@ -1,0 +1,145 @@
+@import "tailwindcss" reference;
+/* Loading Screen Page Styles */
+
+.container {
+  @apply min-h-screen flex items-center justify-center p-4;
+  background: linear-gradient(135deg, #F4F8FF 0%, #E9F1FF 100%);
+}
+
+.mainContent {
+  @apply w-full max-w-2xl space-y-12;
+}
+
+.loadingAnimation {
+  @apply text-center space-y-10 animate-pulse;
+}
+
+.iconContainer {
+  @apply relative;
+}
+
+.iconCircle {
+  @apply w-40 h-40 mx-auto rounded-3xl flex items-center justify-center shadow-lg;
+  background: linear-gradient(135deg, #2370FF, #79C7FF);
+}
+
+.iconSpinning {
+  @apply h-20 w-20 text-white animate-spin;
+}
+
+.iconBouncing {
+  @apply h-20 w-20 text-white animate-bounce;
+}
+
+.progressRing {
+  @apply absolute inset-0 w-40 h-40 mx-auto transform -rotate-90;
+}
+
+.progressRingBackground {
+  @apply transition-all duration-700 ease-out;
+}
+
+.textContent {
+  @apply space-y-6;
+}
+
+.title {
+  @apply text-4xl lg:text-5xl font-bold tracking-tight;
+  color: #2370FF;
+}
+
+.description {
+  @apply text-xl text-gray-600 font-medium leading-relaxed max-w-lg mx-auto;
+}
+
+.progressText {
+  @apply text-3xl font-bold animate-bounce;
+  color: #2370FF;
+}
+
+.stepsProgress {
+  @apply bg-white rounded-2xl border-2 shadow-sm animate-pulse;
+  border-color: #D5E4FF;
+}
+
+.stepsContent {
+  @apply p-8;
+}
+
+.stepsList {
+  @apply space-y-6;
+}
+
+.stepItem {
+  @apply flex items-center gap-5 transition-all duration-500;
+}
+
+.stepCompleted {
+  @apply text-green-600;
+}
+
+.stepCurrent {
+  color: #2370FF;
+}
+
+.stepPending {
+  @apply text-gray-400;
+}
+
+.stepIcon {
+  @apply w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-500;
+}
+
+.stepIconCompleted {
+  @apply text-white shadow-lg;
+  background: linear-gradient(135deg, #10B981, #34D399);
+}
+
+.stepIconCurrent {
+  @apply text-white shadow-lg;
+  background: linear-gradient(135deg, #2370FF, #79C7FF);
+}
+
+.stepIconPending {
+  @apply bg-gray-200 text-gray-400;
+}
+
+.stepIconCurrentBouncing {
+  @apply animate-bounce;
+}
+
+.stepText {
+  @apply flex-1;
+}
+
+.stepTitle {
+  @apply text-lg font-semibold transition-all duration-300;
+}
+
+.stepTitleCompleted {
+  @apply line-through opacity-60;
+}
+
+.stepCompletedIndicator {
+  @apply animate-pulse;
+}
+
+.stepCompletedIcon {
+  @apply w-8 h-8 rounded-xl flex items-center justify-center shadow-lg text-white;
+  background-color: #10B981;
+}
+
+.encouragement {
+  @apply text-center animate-pulse rounded-3xl p-8 border-2 shadow-sm;
+  background-color: #F4F8FF;
+  border-color: #D5E4FF;
+}
+
+.encouragementTitle {
+  @apply text-xl font-bold leading-relaxed;
+  color: #2370FF;
+}
+
+.encouragementText {
+  @apply text-lg text-gray-600 font-medium mt-3;
+}

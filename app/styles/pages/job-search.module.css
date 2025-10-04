@@ -1,0 +1,97 @@
+@import "tailwindcss" reference;
+/* Job Search Page Styles */
+
+.container {
+  @apply min-h-screen;
+  background: linear-gradient(135deg, #F4F8FF 0%, #E9F1FF 100%);
+}
+
+.mainContent {
+  @apply max-w-7xl mx-auto space-y-12 py-8 lg:py-16;
+}
+
+.header {
+  @apply text-center space-y-8 animate-pulse;
+}
+
+.iconContainer {
+  @apply inline-flex items-center justify-center w-28 h-28 rounded-3xl shadow-lg mb-8;
+  background: linear-gradient(135deg, #2370FF, #79C7FF);
+}
+
+.title {
+  @apply text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight;
+  color: #2370FF;
+}
+
+.subtitle {
+  @apply text-xl lg:text-2xl text-gray-600 font-medium max-w-4xl mx-auto leading-relaxed;
+}
+
+.searchSection {
+  @apply bg-white rounded-2xl shadow-sm border-2 p-8 animate-pulse;
+  border-color: #D5E4FF;
+}
+
+.searchTitle {
+  @apply text-3xl font-bold mb-6;
+  color: #2370FF;
+}
+
+.searchGrid {
+  @apply grid grid-cols-1 md:grid-cols-3 gap-4 mb-6;
+}
+
+.searchInput {
+  @apply w-full px-4 py-3 border-2 rounded-xl font-medium transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent;
+  border-color: #D5E4FF;
+  background-color: #F6F7FA;
+}
+
+.searchButton {
+  @apply text-white px-8 py-3 rounded-xl font-bold shadow-lg hover:shadow-xl transition-all duration-300;
+  background: linear-gradient(135deg, #2370FF, #2B49C2);
+}
+
+.resultsSection {
+  @apply space-y-6;
+}
+
+.resultCard {
+  @apply bg-white rounded-2xl shadow-sm border border-gray-300 hover:shadow-md transition-all duration-300 p-6;
+}
+
+.resultHeader {
+  @apply flex justify-between items-start mb-4;
+}
+
+.resultTitle {
+  @apply text-xl font-bold;
+  color: #2370FF;
+}
+
+.resultCompany {
+  @apply text-gray-600 font-medium;
+}
+
+.resultMeta {
+  @apply flex gap-4 text-sm text-gray-500;
+}
+
+.resultDescription {
+  @apply text-gray-600 leading-relaxed mb-4;
+}
+
+.resultActions {
+  @apply flex gap-3;
+}
+
+.applyButton {
+  @apply text-white px-6 py-2 rounded-xl font-medium shadow-sm hover:shadow-md transition-all duration-300;
+  background: linear-gradient(135deg, #2370FF, #2B49C2);
+}
+
+.saveButton {
+  @apply bg-white border border-gray-300 hover:border-blue-400 hover:text-blue-700 transition-all duration-300 px-6 py-2 rounded-xl font-medium;
+  color: #2370FF;
+}

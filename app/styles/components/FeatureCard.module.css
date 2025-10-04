@@ -1,0 +1,143 @@
+@import "tailwindcss" reference;
+
+.featureCard {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  border: none;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: white;
+  cursor: pointer;
+}
+
+.featureCardLarge {
+  aspect-ratio: 2 / 1;
+}
+
+.featureCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+}
+
+.cardContent {
+  padding: 0;
+  height: 100%;
+  position: relative;
+}
+
+.cardGradient {
+  position: absolute;
+  inset: 0;
+  opacity: 0.1;
+  transition: opacity 0.3s ease;
+}
+
+.featureCard:hover .cardGradient {
+  opacity: 0.15;
+}
+
+.cardInner {
+  position: relative;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 1.5rem;
+  z-index: 1;
+}
+
+.iconContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 0.75rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  transition: transform 0.3s ease;
+}
+
+.featureCard:hover .iconContainer {
+  transform: scale(1.1);
+}
+
+.icon {
+  width: 2rem;
+  height: 2rem;
+  color: white;
+}
+
+.textContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1rem 0;
+}
+
+.title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1f2937;
+  line-height: 1.3;
+}
+
+.description {
+  font-size: 0.875rem;
+  color: #6b7280;
+  line-height: 1.5;
+}
+
+.arrowContainer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.arrow {
+  width: 1.5rem;
+  height: 1.5rem;
+  color: #6b7280;
+  transition: all 0.3s ease;
+}
+
+.featureCard:hover .arrow {
+  color: #667eea;
+  transform: translateX(4px);
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .featureCard {
+    aspect-ratio: 1.2;
+  }
+
+  .featureCardLarge {
+    aspect-ratio: 1.2;
+  }
+
+  .cardInner {
+    padding: 1.25rem;
+  }
+
+  .iconContainer {
+    width: 3rem;
+    height: 3rem;
+  }
+
+  .icon {
+    width: 1.75rem;
+    height: 1.75rem;
+  }
+
+  .title {
+    font-size: 1.125rem;
+  }
+
+  .description {
+    font-size: 0.8125rem;
+  }
+}

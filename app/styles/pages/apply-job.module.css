@@ -1,0 +1,96 @@
+@import "tailwindcss" reference;
+/* Apply Job Page Styles */
+
+.container {
+  @apply min-h-screen;
+  background: linear-gradient(135deg, #F4F8FF 0%, #E9F1FF 100%);
+}
+
+.mainContent {
+  @apply max-w-4xl mx-auto space-y-12 py-8 lg:py-16;
+}
+
+.header {
+  @apply text-center space-y-8 animate-pulse;
+}
+
+.iconContainer {
+  @apply inline-flex items-center justify-center w-28 h-28 rounded-3xl shadow-lg mb-8;
+  background: linear-gradient(135deg, #2370FF, #79C7FF);
+}
+
+.title {
+  @apply text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight;
+  color: #2370FF;
+}
+
+.subtitle {
+  @apply text-xl lg:text-2xl text-gray-600 font-medium max-w-4xl mx-auto leading-relaxed;
+}
+
+.applicationForm {
+  @apply bg-white rounded-2xl shadow-sm border-2 p-8 animate-pulse;
+  border-color: #D5E4FF;
+}
+
+.formTitle {
+  @apply text-3xl font-bold mb-8;
+  color: #2370FF;
+}
+
+.formGrid {
+  @apply grid grid-cols-1 md:grid-cols-2 gap-6 mb-6;
+}
+
+.formGroup {
+  @apply space-y-2;
+}
+
+.formLabel {
+  @apply text-sm font-medium text-gray-700;
+}
+
+.formInput {
+  @apply w-full px-4 py-3 border-2 rounded-xl font-medium transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent;
+  border-color: #D5E4FF;
+  background-color: #F6F7FA;
+}
+
+.formTextarea {
+  @apply w-full px-4 py-3 border-2 rounded-xl font-medium transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent resize-none;
+  border-color: #D5E4FF;
+  background-color: #F6F7FA;
+}
+
+.resumeUpload {
+  @apply border-2 border-dashed rounded-xl p-8 text-center transition-all duration-300 hover:border-blue-400;
+  border-color: #D5E4FF;
+  background-color: #F6F7FA;
+}
+
+.uploadIcon {
+  @apply w-12 h-12 mx-auto mb-4;
+  color: #2370FF;
+}
+
+.uploadText {
+  @apply text-gray-600 font-medium;
+}
+
+.uploadButton {
+  @apply text-white px-6 py-2 rounded-xl font-medium shadow-sm hover:shadow-md transition-all duration-300 mt-4;
+  background: linear-gradient(135deg, #2370FF, #2B49C2);
+}
+
+.formActions {
+  @apply flex justify-between items-center pt-6;
+}
+
+.backButton {
+  @apply bg-white text-gray-700 px-6 py-3 rounded-xl font-medium border border-gray-300 hover:border-blue-400 hover:text-blue-700 transition-all duration-300;
+}
+
+.submitButton {
+  @apply text-white px-8 py-3 rounded-xl font-bold shadow-lg hover:shadow-xl transition-all duration-300;
+  background: linear-gradient(135deg, #2370FF, #2B49C2);
+}

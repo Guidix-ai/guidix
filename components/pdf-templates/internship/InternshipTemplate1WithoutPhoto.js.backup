@@ -1,0 +1,371 @@
+import React from 'react';
+import { Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer';
+
+const styles = StyleSheet.create({
+  page: {
+    flexDirection: 'column',
+    backgroundColor: '#ffffff',
+    paddingTop: 30,
+    paddingBottom: 30,
+    paddingHorizontal: 35,
+    fontFamily: 'Helvetica',
+  },
+  header: {
+    textAlign: 'center',
+    marginBottom: 25,
+    paddingBottom: 20,
+    borderBottomWidth: 3,
+    borderBottomColor: '#dc2626',
+  },
+  name: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: '#111827',
+    marginBottom: 8,
+    letterSpacing: 1,
+  },
+  title: {
+    fontSize: 16,
+    color: '#dc2626',
+    fontWeight: 'bold',
+    marginBottom: 12,
+    textTransform: 'uppercase',
+    letterSpacing: 2,
+  },
+  contactInfo: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    flexWrap: 'wrap',
+    fontSize: 11,
+    color: '#6b7280',
+  },
+  contactItem: {
+    marginHorizontal: 12,
+    marginVertical: 3,
+  },
+  content: {
+    flex: 1,
+  },
+  section: {
+    marginBottom: 22,
+  },
+  sectionTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#dc2626',
+    marginBottom: 12,
+    textTransform: 'uppercase',
+    letterSpacing: 1.5,
+    borderBottomWidth: 2,
+    borderBottomColor: '#dc2626',
+    paddingBottom: 4,
+  },
+  sectionContent: {
+    fontSize: 11,
+    color: '#374151',
+    lineHeight: 1.6,
+    textAlign: 'justify',
+  },
+  experienceItem: {
+    marginBottom: 18,
+  },
+  experienceHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginBottom: 6,
+  },
+  experienceTitle: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#111827',
+    flex: 1,
+  },
+  experienceDate: {
+    fontSize: 11,
+    color: '#dc2626',
+    fontWeight: 'bold',
+    fontStyle: 'italic',
+  },
+  experienceCompany: {
+    fontSize: 12,
+    color: '#4b5563',
+    fontWeight: 'bold',
+    marginBottom: 6,
+  },
+  experienceLocation: {
+    fontSize: 10,
+    color: '#6b7280',
+    marginBottom: 8,
+  },
+  bulletPoint: {
+    fontSize: 11,
+    color: '#374151',
+    marginBottom: 4,
+    marginLeft: 15,
+    lineHeight: 1.5,
+  },
+  educationItem: {
+    marginBottom: 15,
+  },
+  educationDegree: {
+    fontSize: 13,
+    fontWeight: 'bold',
+    color: '#111827',
+    marginBottom: 4,
+  },
+  educationSchool: {
+    fontSize: 12,
+    color: '#dc2626',
+    fontWeight: 'bold',
+    marginBottom: 4,
+  },
+  educationDetails: {
+    fontSize: 10,
+    color: '#6b7280',
+    marginBottom: 6,
+  },
+  skillsContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
+  skillCategory: {
+    marginBottom: 12,
+    marginRight: 20,
+  },
+  skillCategoryTitle: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: '#111827',
+    marginBottom: 6,
+  },
+  skillItem: {
+    fontSize: 10,
+    color: '#4b5563',
+    marginBottom: 3,
+  },
+  projectItem: {
+    marginBottom: 16,
+    paddingBottom: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#e5e7eb',
+  },
+  projectTitle: {
+    fontSize: 13,
+    fontWeight: 'bold',
+    color: '#111827',
+    marginBottom: 4,
+  },
+  projectDate: {
+    fontSize: 10,
+    color: '#dc2626',
+    fontStyle: 'italic',
+    marginBottom: 6,
+  },
+  projectDescription: {
+    fontSize: 11,
+    color: '#374151',
+    lineHeight: 1.5,
+    marginBottom: 6,
+  },
+  projectTech: {
+    fontSize: 10,
+    color: '#6b7280',
+    fontStyle: 'italic',
+  },
+});
+
+const InternshipTemplate1WithoutPhoto = ({ resumeData }) => {
+  const {
+    personalInfo = {},
+    experience = [],
+    education = [],
+    skills = [],
+    projects = [],
+    summary = '',
+    certifications = [],
+  } = resumeData || {};
+
+  // Organize skills by category if they have categories
+  const organizeSkills = (skillsArray) => {
+    const categorized = {};
+    const uncategorized = [];
+
+    skillsArray.forEach(skill => {
+      if (typeof skill === 'object' && skill.category) {
+        if (!categorized[skill.category]) {
+          categorized[skill.category] = [];
+        }
+        categorized[skill.category].push(skill.name || skill);
+      } else {
+        uncategorized.push(skill);
+      }
+    });
+
+    return { categorized, uncategorized };
+  };
+
+  const { categorized: skillCategories, uncategorized } = organizeSkills(skills);
+
+  return (
+    <Document>
+      <Page size="A4" style={styles.page}>
+        {/* Header */}
+        <View style={styles.header}>
+          <Text style={styles.name}>
+            {personalInfo.firstName} {personalInfo.lastName}
+          </Text>
+          <Text style={styles.title}>
+            {personalInfo.title || 'Internship Candidate'}
+          </Text>
+          <View style={styles.contactInfo}>
+            <Text style={styles.contactItem}>
+              {personalInfo.email}
+            </Text>
+            <Text style={styles.contactItem}>
+              {personalInfo.phone}
+            </Text>
+            <Text style={styles.contactItem}>
+              {personalInfo.location}
+            </Text>
+            {personalInfo.linkedin && (
+              <Text style={styles.contactItem}>
+                {personalInfo.linkedin}
+              </Text>
+            )}
+          </View>
+        </View>
+
+        <View style={styles.content}>
+          {/* Professional Summary */}
+          {summary && (
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>Professional Summary</Text>
+              <Text style={styles.sectionContent}>{summary}</Text>
+            </View>
+          )}
+
+          {/* Education */}
+          {education.length > 0 && (
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>Education</Text>
+              {education.map((edu, index) => (
+                <View key={index} style={styles.educationItem}>
+                  <Text style={styles.educationDegree}>
+                    {edu.degree} in {edu.fieldOfStudy}
+                  </Text>
+                  <Text style={styles.educationSchool}>
+                    {edu.institution}
+                  </Text>
+                  <Text style={styles.educationDetails}>
+                    {edu.startDate} - {edu.endDate} • GPA: {edu.gpa || 'N/A'}
+                  </Text>
+                  {edu.relevantCoursework && (
+                    <Text style={styles.sectionContent}>
+                      Relevant Coursework: {edu.relevantCoursework}
+                    </Text>
+                  )}
+                  {edu.honors && (
+                    <Text style={styles.sectionContent}>
+                      Honors: {edu.honors}
+                    </Text>
+                  )}
+                </View>
+              ))}
+            </View>
+          )}
+
+          {/* Experience */}
+          {experience.length > 0 && (
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>Experience</Text>
+              {experience.map((exp, index) => (
+                <View key={index} style={styles.experienceItem}>
+                  <View style={styles.experienceHeader}>
+                    <Text style={styles.experienceTitle}>{exp.position}</Text>
+                    <Text style={styles.experienceDate}>
+                      {exp.startDate} - {exp.endDate}
+                    </Text>
+                  </View>
+                  <Text style={styles.experienceCompany}>{exp.company}</Text>
+                  <Text style={styles.experienceLocation}>{exp.location}</Text>
+                  {exp.responsibilities && exp.responsibilities.map((resp, idx) => (
+                    <Text key={idx} style={styles.bulletPoint}>
+                      • {resp}
+                    </Text>
+                  ))}
+                </View>
+              ))}
+            </View>
+          )}
+
+          {/* Projects */}
+          {projects.length > 0 && (
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>Academic & Personal Projects</Text>
+              {projects.map((project, index) => (
+                <View key={index} style={styles.projectItem}>
+                  <Text style={styles.projectTitle}>{project.name}</Text>
+                  <Text style={styles.projectDate}>
+                    {project.startDate} - {project.endDate}
+                  </Text>
+                  <Text style={styles.projectDescription}>
+                    {project.description}
+                  </Text>
+                  {project.technologies && (
+                    <Text style={styles.projectTech}>
+                      Technologies Used: {project.technologies.join(', ')}
+                    </Text>
+                  )}
+                </View>
+              ))}
+            </View>
+          )}
+
+          {/* Skills */}
+          {skills.length > 0 && (
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>Technical Skills</Text>
+              <View style={styles.skillsContainer}>
+                {Object.keys(skillCategories).map((category, index) => (
+                  <View key={index} style={styles.skillCategory}>
+                    <Text style={styles.skillCategoryTitle}>{category}:</Text>
+                    {skillCategories[category].map((skill, idx) => (
+                      <Text key={idx} style={styles.skillItem}>
+                        • {skill}
+                      </Text>
+                    ))}
+                  </View>
+                ))}
+                {uncategorized.length > 0 && (
+                  <View style={styles.skillCategory}>
+                    <Text style={styles.skillCategoryTitle}>Additional Skills:</Text>
+                    {uncategorized.map((skill, idx) => (
+                      <Text key={idx} style={styles.skillItem}>
+                        • {skill}
+                      </Text>
+                    ))}
+                  </View>
+                )}
+              </View>
+            </View>
+          )}
+
+          {/* Certifications */}
+          {certifications.length > 0 && (
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>Certifications</Text>
+              {certifications.map((cert, index) => (
+                <Text key={index} style={styles.sectionContent}>
+                  • {cert.name} - {cert.issuer} ({cert.date})
+                </Text>
+              ))}
+            </View>
+          )}
+        </View>
+      </Page>
+    </Document>
+  );
+};
+
+export default InternshipTemplate1WithoutPhoto;

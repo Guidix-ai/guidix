@@ -1,0 +1,100 @@
+@import "tailwindcss" reference;
+/* LinkedIn Optimizer Page Styles */
+
+.container {
+  @apply min-h-screen;
+  background: linear-gradient(135deg, #F4F8FF 0%, #E9F1FF 100%);
+}
+
+.mainContent {
+  @apply max-w-7xl mx-auto space-y-12 py-8 lg:py-16;
+}
+
+.header {
+  @apply text-center space-y-8 animate-pulse;
+}
+
+.iconContainer {
+  @apply inline-flex items-center justify-center w-28 h-28 rounded-3xl shadow-lg mb-8;
+  background: linear-gradient(135deg, #2370FF, #79C7FF);
+}
+
+.title {
+  @apply text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight;
+  color: #2370FF;
+}
+
+.subtitle {
+  @apply text-xl lg:text-2xl text-gray-600 font-medium max-w-4xl mx-auto leading-relaxed;
+}
+
+.optimizerSection {
+  @apply bg-white rounded-2xl shadow-sm border-2 p-8 animate-pulse;
+  border-color: #D5E4FF;
+}
+
+.optimizerTitle {
+  @apply text-3xl font-bold mb-6;
+  color: #2370FF;
+}
+
+.profileSection {
+  @apply space-y-6;
+}
+
+.sectionHeader {
+  @apply flex justify-between items-center mb-4;
+}
+
+.sectionTitle {
+  @apply text-xl font-semibold text-gray-800;
+}
+
+.improveButton {
+  @apply text-white px-4 py-2 rounded-xl font-medium shadow-sm hover:shadow-md transition-all duration-300;
+  background: linear-gradient(135deg, #2370FF, #2B49C2);
+}
+
+.profileInput {
+  @apply w-full px-4 py-3 border-2 rounded-xl font-medium transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent;
+  border-color: #D5E4FF;
+  background-color: #F6F7FA;
+}
+
+.profileTextarea {
+  @apply w-full px-4 py-3 border-2 rounded-xl font-medium transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent resize-none;
+  border-color: #D5E4FF;
+  background-color: #F6F7FA;
+}
+
+.suggestionsPanel {
+  @apply mt-8 p-6 rounded-xl border-2;
+  background-color: #F4F8FF;
+  border-color: #D5E4FF;
+}
+
+.suggestionsTitle {
+  @apply text-lg font-bold mb-4;
+  color: #2370FF;
+}
+
+.suggestionsList {
+  @apply space-y-3;
+}
+
+.suggestionItem {
+  @apply flex items-start gap-3 p-3 bg-white rounded-lg border border-gray-200;
+}
+
+.suggestionIcon {
+  @apply w-6 h-6 text-green-600 flex-shrink-0;
+}
+
+.suggestionText {
+  @apply text-gray-700 font-medium;
+}
+
+.optimizeButton {
+  @apply text-white px-8 py-4 rounded-xl font-bold shadow-lg hover:shadow-xl transition-all duration-300 mt-6;
+  background: linear-gradient(135deg, #2370FF, #2B49C2);
+}

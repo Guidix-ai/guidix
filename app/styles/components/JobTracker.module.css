@@ -1,0 +1,83 @@
+@import "tailwindcss" reference;
+/* Job Tracker Component Styles */
+
+.container {
+  @apply space-y-6;
+}
+
+.header {
+  @apply flex justify-between items-center mb-6;
+}
+
+.title {
+  @apply text-3xl font-bold;
+  color: #2370FF;
+}
+
+.addButton {
+  @apply text-white px-6 py-3 rounded-xl font-bold shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2;
+  background: linear-gradient(135deg, #2370FF, #2B49C2);
+}
+
+.filters {
+  @apply flex gap-4 mb-6 flex-wrap;
+}
+
+.filterButton {
+  @apply px-4 py-2 rounded-xl font-medium transition-all duration-300 cursor-pointer;
+}
+
+.filterActive {
+  @apply text-white shadow-sm;
+  background: linear-gradient(135deg, #2370FF, #2B49C2);
+}
+
+.filterInactive {
+  @apply bg-gray-200 text-gray-600 hover:bg-gray-300;
+}
+
+.stats {
+  @apply grid grid-cols-2 md:grid-cols-4 gap-4 mb-6;
+}
+
+.statCard {
+  @apply bg-white rounded-xl p-4 border border-gray-200;
+}
+
+.statValue {
+  @apply text-2xl font-bold;
+  color: #2370FF;
+}
+
+.statLabel {
+  @apply text-sm text-gray-600;
+}
+
+.jobsGrid {
+  @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6;
+}
+
+.emptyState {
+  @apply text-center py-12;
+}
+
+.emptyIcon {
+  @apply w-16 h-16 mx-auto mb-4 text-gray-400;
+}
+
+.emptyTitle {
+  @apply text-xl font-bold text-gray-600 mb-2;
+}
+
+.emptyText {
+  @apply text-gray-500;
+}
+
+.loadingState {
+  @apply flex justify-center items-center py-12;
+}
+
+.loadingSpinner {
+  @apply w-8 h-8 animate-spin;
+  color: #2370FF;
+}

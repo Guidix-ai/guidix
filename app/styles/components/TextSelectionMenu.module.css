@@ -1,0 +1,33 @@
+@import "tailwindcss" reference;
+/* Text Selection Menu Component Styles */
+
+.menu {
+  @apply fixed bg-white rounded-xl shadow-lg border-2 p-2 z-50 animate-pulse;
+  border-color: #D5E4FF;
+}
+
+.menuButton {
+  @apply flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-300 w-full text-left hover:shadow-sm;
+  color: #2370FF;
+  background-color: #F4F8FF;
+}
+
+.menuButton:hover {
+  background-color: #E9F1FF;
+}
+
+.menuIcon {
+  @apply w-4 h-4;
+}
+
+.menuText {
+  @apply text-sm;
+}
+
+.tooltip {
+  @apply absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-1 bg-gray-800 text-white text-xs rounded-lg whitespace-nowrap opacity-0 pointer-events-none transition-opacity duration-300;
+}
+
+.tooltipVisible {
+  @apply opacity-100;
+}

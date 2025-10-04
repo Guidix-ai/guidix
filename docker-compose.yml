@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  # Next.js application for Google Cloud Run
+  guidix-frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: guidix-frontend
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      # Production API URLs
+      - NEXT_PUBLIC_API_BASE_URL=https://api.guidix.ai
+      - NEXT_PUBLIC_RESUME_API_URL=https://api.guidix.ai
+      - NEXT_PUBLIC_AUTO_APPLY_API_URL=https://api.guidix.ai
+      - NEXT_PUBLIC_JOB_SERVICE_URL=https://api.guidix.ai
+      - NEXT_PUBLIC_RESUME_SERVICE_URL=https://api.guidix.ai
+      - NODE_ENV=production
+      - PORT=8080
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s

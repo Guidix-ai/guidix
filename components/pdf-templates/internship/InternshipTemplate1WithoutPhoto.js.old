@@ -1,0 +1,255 @@
+import React from 'react';
+import { Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer';
+import { stripMarkdown } from '../utils';
+
+const styles = StyleSheet.create({
+  page: {
+    flexDirection: 'column',
+    backgroundColor: '#ffffff',
+    paddingTop: 40,
+    paddingBottom: 40,
+    paddingHorizontal: 50,
+    fontFamily: 'Helvetica',
+  },
+  header: {
+    marginBottom: 25,
+    paddingBottom: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: '#333333',
+  },
+  name: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#000000',
+    marginBottom: 8,
+  },
+  title: {
+    fontSize: 12,
+    color: '#555555',
+    marginBottom: 10,
+  },
+  contactInfo: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    fontSize: 10,
+    color: '#555555',
+  },
+  contactItem: {
+    marginRight: 15,
+  },
+  contactSeparator: {
+    marginRight: 15,
+    color: '#cccccc',
+  },
+  section: {
+    marginBottom: 20,
+  },
+  sectionTitle: {
+    fontSize: 11,
+    fontWeight: 'bold',
+    color: '#000000',
+    marginBottom: 10,
+    textTransform: 'uppercase',
+    letterSpacing: 1,
+    borderBottomWidth: 1,
+    borderBottomColor: '#000000',
+    paddingBottom: 3,
+  },
+  sectionContent: {
+    fontSize: 10,
+    color: '#333333',
+    lineHeight: 1.5,
+  },
+  experienceItem: {
+    marginBottom: 15,
+  },
+  experienceHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 4,
+  },
+  experienceTitle: {
+    fontSize: 11,
+    fontWeight: 'bold',
+    color: '#000000',
+  },
+  experienceDate: {
+    fontSize: 10,
+    color: '#555555',
+  },
+  experienceCompany: {
+    fontSize: 10,
+    color: '#555555',
+    marginBottom: 6,
+  },
+  bulletPoint: {
+    fontSize: 10,
+    color: '#333333',
+    marginBottom: 4,
+    marginLeft: 15,
+    lineHeight: 1.4,
+  },
+  skillsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
+  skillItem: {
+    fontSize: 10,
+    color: '#333333',
+    marginRight: 15,
+    marginBottom: 5,
+  },
+  educationItem: {
+    marginBottom: 10,
+  },
+  educationDegree: {
+    fontSize: 11,
+    fontWeight: 'bold',
+    color: '#000000',
+    marginBottom: 2,
+  },
+  educationSchool: {
+    fontSize: 10,
+    color: '#555555',
+    marginBottom: 2,
+  },
+  educationDetails: {
+    fontSize: 10,
+    color: '#555555',
+  },
+});
+
+const InternshipTemplate1WithoutPhoto = ({ resumeData }) => {
+  const {
+    personalInfo = {},
+    experience = [],
+    education = [],
+    skills = [],
+    projects = [],
+    summary = '',
+  } = resumeData || {};
+
+  return (
+    <Document>
+      <Page size="A4" style={styles.page}>
+        {/* Header */}
+        <View style={styles.header}>
+          <Text style={styles.name}>
+            {personalInfo.firstName} {personalInfo.lastName}
+          </Text>
+          <Text style={styles.title}>
+            {personalInfo.title || 'Internship Candidate'}
+          </Text>
+          <View style={styles.contactInfo}>
+            <Text style={styles.contactItem}>{personalInfo.email}</Text>
+            <Text style={styles.contactSeparator}>|</Text>
+            <Text style={styles.contactItem}>{personalInfo.phone}</Text>
+            <Text style={styles.contactSeparator}>|</Text>
+            <Text style={styles.contactItem}>{personalInfo.location}</Text>
+            {personalInfo.linkedin && (
+              <>
+                <Text style={styles.contactSeparator}>|</Text>
+                <Text style={styles.contactItem}>{personalInfo.linkedin}</Text>
+              </>
+            )}
+          </View>
+        </View>
+
+        {/* Professional Summary */}
+        {summary && (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>PROFESSIONAL SUMMARY</Text>
+            <Text style={styles.sectionContent}>{stripMarkdown(summary)}</Text>
+          </View>
+        )}
+
+        {/* Education */}
+        {education.length > 0 && (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>EDUCATION</Text>
+            {education.map((edu, index) => (
+              <View key={index} style={styles.educationItem}>
+                <Text style={styles.educationDegree}>
+                  {edu.degree} in {edu.fieldOfStudy}
+                </Text>
+                <Text style={styles.educationSchool}>
+                  {edu.institution}
+                </Text>
+                <Text style={styles.educationDetails}>
+                  {edu.startDate} - {edu.endDate}
+                  {edu.gpa && ` | GPA: ${edu.gpa}`}
+                </Text>
+              </View>
+            ))}
+          </View>
+        )}
+
+        {/* Experience */}
+        {experience.length > 0 && (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>EXPERIENCE</Text>
+            {experience.map((exp, index) => (
+              <View key={index} style={styles.experienceItem}>
+                <View style={styles.experienceHeader}>
+                  <Text style={styles.experienceTitle}>{exp.position}</Text>
+                  <Text style={styles.experienceDate}>
+                    {exp.startDate} - {exp.endDate}
+                  </Text>
+                </View>
+                <Text style={styles.experienceCompany}>
+                  {exp.company} | {exp.location}
+                </Text>
+                {exp.responsibilities && exp.responsibilities.map((resp, idx) => (
+                  <Text key={idx} style={styles.bulletPoint}>
+                    • {stripMarkdown(resp)}
+                  </Text>
+                ))}
+              </View>
+            ))}
+          </View>
+        )}
+
+        {/* Projects */}
+        {projects.length > 0 && (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>PROJECTS</Text>
+            {projects.map((project, index) => (
+              <View key={index} style={styles.experienceItem}>
+                <View style={styles.experienceHeader}>
+                  <Text style={styles.experienceTitle}>{project.name}</Text>
+                  <Text style={styles.experienceDate}>
+                    {project.startDate} - {project.endDate}
+                  </Text>
+                </View>
+                <Text style={styles.sectionContent}>
+                  {stripMarkdown(project.description)}
+                </Text>
+                {project.technologies && (
+                  <Text style={styles.sectionContent}>
+                    Technologies: {project.technologies.join(', ')}
+                  </Text>
+                )}
+              </View>
+            ))}
+          </View>
+        )}
+
+        {/* Skills */}
+        {skills.length > 0 && (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>SKILLS</Text>
+            <View style={styles.skillsGrid}>
+              {skills.map((skill, index) => (
+                <Text key={index} style={styles.skillItem}>
+                  • {skill}
+                </Text>
+              ))}
+            </View>
+          </View>
+        )}
+      </Page>
+    </Document>
+  );
+};
+
+export default InternshipTemplate1WithoutPhoto;

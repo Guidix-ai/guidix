@@ -1,0 +1,131 @@
+@import "tailwindcss" reference;
+/* Field Selection Page Styles */
+
+.container {
+  @apply min-h-screen;
+  background: linear-gradient(135deg, #F4F8FF 0%, #E9F1FF 100%);
+}
+
+.mainContent {
+  @apply max-w-6xl mx-auto px-4 py-8 space-y-8;
+}
+
+.header {
+  @apply rounded-2xl text-white p-8 animate-pulse;
+  background: linear-gradient(135deg, #2370FF, #2B49C2);
+}
+
+.headerContent {
+  @apply flex flex-col md:flex-row md:items-center justify-between;
+}
+
+.headerText {
+  @apply space-y-2;
+}
+
+.headerTitle {
+  @apply text-4xl md:text-5xl font-bold text-white leading-tight;
+}
+
+.headerSubtitle {
+  @apply text-lg md:text-xl;
+  color: #E9F1FF;
+}
+
+.headerIcon {
+  @apply text-6xl md:text-8xl mt-4 md:mt-0;
+}
+
+.fieldSelection {
+  @apply bg-white rounded-2xl shadow-sm border border-gray-300 p-8 animate-pulse;
+}
+
+.fieldHeader {
+  @apply text-center space-y-6 md:space-y-8;
+}
+
+.fieldIconContainer {
+  @apply w-16 h-16 rounded-2xl flex items-center justify-center mx-auto text-white shadow-sm;
+  background: linear-gradient(135deg, #2370FF, #79C7FF);
+}
+
+.fieldTitle {
+  @apply text-2xl md:text-3xl font-bold text-gray-800;
+}
+
+.fieldDescription {
+  @apply text-gray-600 leading-relaxed text-center max-w-2xl mx-auto;
+}
+
+.educationBadge {
+  @apply px-6 py-3 rounded-full text-base font-medium;
+  background-color: #E9F1FF;
+  color: #2370FF;
+}
+
+.fieldGrid {
+  @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto mt-8;
+}
+
+.fieldCard {
+  @apply bg-white rounded-2xl shadow-sm border border-gray-300 hover:border-blue-400 hover:shadow-md transition-all duration-300 cursor-pointer p-6 relative overflow-hidden;
+}
+
+.fieldCardSelected {
+  @apply shadow-md ring-2;
+  background-color: #F4F8FF;
+  border-color: #2370FF;
+  --tw-ring-color: #2370FF;
+}
+
+.fieldCardIconContainer {
+  @apply w-14 h-14 rounded-xl flex items-center justify-center mb-4 transition-all duration-300;
+}
+
+.fieldCardIconContainerDefault {
+  background-color: #E9F1FF;
+  color: #2370FF;
+}
+
+.fieldCardIconContainerSelected {
+  background: linear-gradient(135deg, #2370FF, #79C7FF);
+  color: white;
+}
+
+.fieldCardTitle {
+  @apply text-lg font-semibold mb-2;
+}
+
+.fieldCardTitleDefault {
+  @apply text-gray-700;
+}
+
+.fieldCardTitleSelected {
+  color: #2370FF;
+}
+
+.fieldCardDescription {
+  @apply text-gray-500 text-sm leading-relaxed;
+}
+
+.checkmark {
+  @apply absolute top-4 right-4 animate-pulse;
+}
+
+.checkmarkIcon {
+  @apply w-8 h-8 rounded-full text-white flex items-center justify-center shadow-md;
+  background-color: #2370FF;
+}
+
+.continueButton {
+  @apply text-white px-8 py-4 rounded-xl font-medium shadow-sm hover:shadow-md transition-all duration-300 flex items-center gap-2 text-lg;
+  background: linear-gradient(135deg, #2370FF, #2B49C2);
+}
+
+.navigation {
+  @apply flex flex-col sm:flex-row justify-between items-center gap-4 mt-8;
+}
+
+.backButton {
+  @apply bg-white text-gray-700 px-6 py-3 rounded-xl font-medium border border-gray-300 hover:border-blue-400 hover:text-blue-700 transition-all duration-300 flex items-center gap-2;
+}

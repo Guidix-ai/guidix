@@ -1,0 +1,227 @@
+/* JobTracker Component Styles */
+
+.container {
+  @apply space-y-6;
+}
+
+.header {
+  @apply flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4;
+}
+
+.title {
+  @apply text-2xl font-semibold text-gray-900;
+}
+
+.subtitle {
+  @apply text-gray-600 mt-1;
+}
+
+.modeIndicator {
+  @apply text-xs px-2 py-1 rounded mt-2;
+}
+
+.mobileMode {
+  @apply bg-orange-100 text-orange-800;
+}
+
+.desktopMode {
+  @apply bg-green-100 text-green-800;
+}
+
+/* Search and Filter Section */
+.searchFilterContainer {
+  @apply bg-white rounded-lg border border-gray-200 p-4;
+}
+
+.searchFilterRow {
+  @apply flex flex-col sm:flex-row gap-3;
+}
+
+.searchContainer {
+  @apply relative flex-1;
+}
+
+.searchIcon {
+  @apply absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4;
+}
+
+.searchInput {
+  @apply pl-10 border-gray-300 focus:border-gray-400 focus:ring-0;
+}
+
+.filterControls {
+  @apply flex items-center gap-2;
+}
+
+.filterButton {
+  @apply border-gray-300;
+}
+
+.clearButton {
+  @apply text-gray-500;
+}
+
+.filterOptions {
+  @apply mt-4 pt-4 border-t border-gray-100;
+}
+
+.filterTags {
+  @apply flex flex-wrap gap-2;
+}
+
+.filterTag {
+  @apply h-8 text-sm;
+}
+
+/* Results Summary */
+.resultsSummary {
+  @apply bg-blue-50 border border-blue-200 rounded-lg p-3;
+}
+
+.resultsText {
+  @apply text-sm text-blue-800;
+}
+
+/* Mobile View */
+.mobileView {
+  @apply space-y-4;
+}
+
+.mobileColumn {
+  @apply border border-gray-200;
+}
+
+.mobileColumnHeader {
+  @apply pb-3;
+}
+
+.mobileColumnTitle {
+  @apply flex items-center justify-between;
+}
+
+.columnTitle {
+  @apply text-base font-medium text-gray-900;
+}
+
+.columnBadge {
+  @apply bg-gray-100 text-gray-700;
+}
+
+.addJobButton {
+  @apply w-full mt-2 border-dashed border-gray-300 text-gray-600 hover:border-gray-400;
+}
+
+.mobileColumnContent {
+  @apply space-y-3 min-h-[100px];
+}
+
+.emptyState {
+  @apply flex flex-col items-center justify-center py-8 text-gray-400;
+}
+
+.emptyStateIcon {
+  @apply text-2xl mb-2;
+}
+
+.emptyStateText {
+  @apply text-sm;
+}
+
+/* Desktop View */
+.desktopView {
+  @apply overflow-x-auto;
+}
+
+.desktopGrid {
+  @apply flex gap-6 min-w-max pb-4;
+}
+
+.desktopColumn {
+  @apply w-80 flex-shrink-0;
+}
+
+.columnCard {
+  @apply h-full border border-gray-200 border-t-4;
+}
+
+.shortlistColumn {
+  @apply border-t-blue-500;
+}
+
+.autoApplyColumn {
+  @apply border-t-purple-500;
+}
+
+.appliedColumn {
+  @apply border-t-yellow-500;
+}
+
+.interviewColumn {
+  @apply border-t-green-500;
+}
+
+.rejectedColumn {
+  @apply border-t-red-500;
+}
+
+.desktopColumnHeader {
+  @apply pb-3 bg-gray-50/50;
+}
+
+.desktopColumnTitle {
+  @apply flex items-center justify-between;
+}
+
+.desktopColumnBadge {
+  @apply bg-white border border-gray-200 text-gray-700;
+}
+
+.desktopAddJobButton {
+  @apply w-full mt-2 border-dashed border-gray-300 text-gray-600 hover:border-gray-400 hover:bg-white;
+}
+
+.desktopColumnContent {
+  @apply space-y-3 min-h-[500px] p-4 transition-colors;
+}
+
+.dragOverState {
+  @apply bg-gray-50 border-2 border-dashed border-gray-300;
+}
+
+.desktopEmptyState {
+  @apply flex flex-col items-center justify-center py-16 text-gray-400;
+}
+
+.desktopEmptyIcon {
+  @apply text-4xl mb-3 opacity-50;
+}
+
+.desktopEmptyTitle {
+  @apply text-sm font-medium;
+}
+
+.desktopEmptySubtitle {
+  @apply text-xs text-center mt-1;
+}
+
+/* Drag and Drop Effects */
+.draggingItem {
+  @apply opacity-75 rotate-2 scale-105 shadow-lg;
+}
+
+.hoverItem {
+  @apply hover:scale-[1.01];
+}
+
+.dragTransition {
+  @apply transition-transform;
+}
+
+/* Loading State */
+.loadingContainer {
+  @apply flex items-center justify-center py-16;
+}
+
+.loadingText {
+  @apply text-gray-500;
+}

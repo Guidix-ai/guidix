@@ -1,0 +1,275 @@
+@import "tailwindcss" reference;
+/* Page Layout Styles */
+
+/* Dashboard Page */
+.dashboardContainer {
+  @apply max-w-7xl mx-auto space-y-6;
+}
+
+.dashboardHeader {
+  @apply bg-gradient-to-r from-blue-600 to-blue-800 rounded-xl shadow-sm text-white p-6 lg:p-8;
+}
+
+.dashboardHeaderContent {
+  @apply flex flex-col lg:flex-row lg:items-center justify-between;
+}
+
+.dashboardTitle {
+  @apply text-2xl lg:text-3xl font-bold mb-2;
+}
+
+.dashboardSubtitle {
+  @apply text-blue-100 text-sm lg:text-base;
+}
+
+.dashboardIcon {
+  @apply mt-4 lg:mt-0 text-4xl lg:text-6xl;
+}
+
+.quickStatsGrid {
+  @apply grid grid-cols-2 lg:grid-cols-4 gap-4;
+}
+
+.statCard {
+  @apply bg-white rounded-xl shadow-sm border border-gray-200 p-4 lg:p-6;
+}
+
+.statHeader {
+  @apply flex items-center justify-between mb-2;
+}
+
+.statValue {
+  @apply text-xl lg:text-2xl font-bold text-gray-900;
+}
+
+.statChange {
+  @apply text-xs lg:text-sm font-medium px-2 py-1 rounded-full;
+}
+
+.statChangeUp {
+  @apply bg-green-100 text-green-800;
+}
+
+.statChangeDown {
+  @apply bg-red-100 text-red-800;
+}
+
+.statLabel {
+  @apply text-xs lg:text-sm text-gray-600;
+}
+
+.mainContentGrid {
+  @apply grid grid-cols-1 lg:grid-cols-3 gap-6;
+}
+
+.activitySection {
+  @apply lg:col-span-2 bg-white rounded-xl shadow-sm border border-gray-200 p-6;
+}
+
+.sectionTitle {
+  @apply text-lg lg:text-xl font-semibold text-gray-900 mb-4;
+}
+
+.activityList {
+  @apply space-y-4;
+}
+
+.activityItem {
+  @apply flex items-start space-x-3 p-3 bg-gray-50 rounded-lg;
+}
+
+.activityIcon {
+  @apply flex-shrink-0 w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center;
+}
+
+.activityContent {
+  @apply flex-1 min-w-0;
+}
+
+.activityAction {
+  @apply text-sm font-medium text-gray-900;
+}
+
+.activityTime {
+  @apply text-xs text-gray-500;
+}
+
+.quickActionsSection {
+  @apply bg-white rounded-xl shadow-sm border border-gray-200 p-6;
+}
+
+.quickActionsList {
+  @apply space-y-3;
+}
+
+.quickActionButton {
+  @apply block w-full p-3 text-left rounded-lg border transition-colors;
+}
+
+.quickActionResume {
+  @apply bg-blue-50 hover:bg-blue-100 border-blue-200;
+}
+
+.quickActionJobSearch {
+  @apply bg-green-50 hover:bg-green-100 border-green-200;
+}
+
+.quickActionInterview {
+  @apply bg-purple-50 hover:bg-purple-100 border-purple-200;
+}
+
+.quickActionLinkedIn {
+  @apply bg-indigo-50 hover:bg-indigo-100 border-indigo-200;
+}
+
+.quickActionContent {
+  @apply flex items-center space-x-3;
+}
+
+.quickActionIcon {
+  @apply text-lg;
+}
+
+.quickActionText {
+  @apply text-sm font-medium;
+}
+
+.progressSection {
+  @apply bg-white rounded-xl shadow-sm border border-gray-200 p-6;
+}
+
+.progressChart {
+  @apply h-32 lg:h-48 bg-gray-50 rounded-lg flex items-center justify-center;
+}
+
+.progressPlaceholder {
+  @apply text-gray-500 text-sm lg:text-base;
+}
+
+/* Apply Job Page */
+.applyJobContainer {
+  @apply max-w-7xl mx-auto space-y-6;
+}
+
+.applyJobHeader {
+  @apply bg-gradient-to-r from-pink-600 to-rose-600 rounded-xl shadow-sm text-white p-6 lg:p-8;
+}
+
+.applyJobHeaderContent {
+  @apply flex flex-col lg:flex-row lg:items-center justify-between;
+}
+
+.formGrid {
+  @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4;
+}
+
+.formInput {
+  @apply w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent;
+}
+
+.formTextarea {
+  @apply w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent;
+}
+
+.formSelect {
+  @apply w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent;
+}
+
+.submitButton {
+  @apply bg-gradient-to-r from-pink-600 to-rose-600 text-white px-8 py-3 rounded-lg hover:from-pink-700 hover:to-rose-700 transition-all duration-200 font-medium text-lg shadow-sm;
+}
+
+.applicationsList {
+  @apply space-y-4;
+}
+
+.applicationItem {
+  @apply border border-gray-200 rounded-lg p-4 hover:border-pink-300 transition-colors;
+}
+
+.applicationHeader {
+  @apply flex flex-col lg:flex-row lg:items-center justify-between;
+}
+
+.applicationStatus {
+  @apply bg-pink-100 text-pink-800 px-2 py-1 rounded text-xs;
+}
+
+.applicationAction {
+  @apply text-pink-600 hover:text-pink-700 text-sm font-medium;
+}
+
+.tipsSection {
+  @apply bg-gradient-to-br from-pink-50 to-rose-50 rounded-xl border border-pink-200 p-6;
+}
+
+/* Job Tracker Page */
+.jobTrackerContainer {
+  @apply max-w-7xl mx-auto space-y-6;
+}
+
+.jobTrackerHeader {
+  @apply bg-gradient-to-r from-purple-600 to-indigo-600 rounded-xl shadow-sm text-white p-6 lg:p-8;
+}
+
+/* LinkedIn Optimizer Page */
+.linkedinContainer {
+  @apply max-w-7xl mx-auto space-y-6;
+}
+
+.linkedinHeader {
+  @apply bg-gradient-to-r from-blue-700 to-blue-900 rounded-xl shadow-sm text-white p-6 lg:p-8;
+}
+
+.sectionButton {
+  @apply p-4 border border-gray-200 rounded-lg hover:border-blue-300 hover:bg-blue-50 transition-all duration-200 text-left;
+}
+
+.sectionButtonTitle {
+  @apply font-semibold text-gray-900 mb-2 hover:text-blue-700;
+}
+
+.linkedinInput {
+  @apply w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent;
+}
+
+.linkedinSelect {
+  @apply w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent;
+}
+
+.linkedinButton {
+  @apply w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors;
+}
+
+.linkedinTips {
+  @apply bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl border border-blue-200 p-6;
+}
+
+/* Mock Interview Page */
+.mockInterviewContainer {
+  @apply max-w-7xl mx-auto space-y-6;
+}
+
+.mockInterviewHeader {
+  @apply bg-gradient-to-r from-orange-600 to-red-600 rounded-xl shadow-sm text-white p-6 lg:p-8;
+}
+
+.categoryButton {
+  @apply p-4 border border-gray-200 rounded-lg hover:border-orange-300 hover:bg-orange-50 transition-all duration-200 text-left;
+}
+
+.categoryButtonTitle {
+  @apply font-semibold text-gray-900 mb-2 hover:text-orange-700;
+}
+
+.mockInterviewInput {
+  @apply w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent;
+}
+
+.mockInterviewSelect {
+  @apply w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent;
+}
+
+.mockInterviewButton {
+  @apply w-full bg-orange-600 text-white py-2 rounded-lg hover:bg-orange-700 transition-colors;
+}

@@ -1,0 +1,214 @@
+@import "tailwindcss" reference;
+/* Template Selection Page Styles */
+
+.container {
+  @apply min-h-screen p-4;
+  background: linear-gradient(135deg, #F4F8FF 0%, #E9F1FF 100%);
+}
+
+.mainContent {
+  @apply max-w-7xl mx-auto space-y-12 py-8 lg:py-16;
+}
+
+.header {
+  @apply text-center space-y-8;
+}
+
+.iconContainer {
+  @apply inline-flex items-center justify-center w-28 h-28 rounded-3xl shadow-lg mb-8;
+  background: linear-gradient(135deg, #2370FF, #79C7FF);
+}
+
+.title {
+  @apply text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight;
+  color: #2370FF;
+}
+
+.subtitle {
+  @apply text-xl lg:text-2xl text-gray-600 font-medium max-w-4xl mx-auto leading-relaxed;
+}
+
+.subtitleHighlight {
+  @apply font-bold;
+  color: #2370FF;
+}
+
+.templatesGrid {
+  @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10;
+}
+
+.templateCard {
+  @apply bg-white rounded-2xl shadow-sm border-2 transition-all duration-300 relative overflow-hidden cursor-pointer;
+}
+
+.templateCardDefault {
+  @apply border-gray-300 hover:border-blue-400 hover:shadow-md hover:scale-102;
+}
+
+.templateCardSelected {
+  @apply ring-4 shadow-lg scale-105 border-blue-500;
+  background-color: #F4F8FF;
+  --tw-ring-color: #2370FF;
+}
+
+.templateHeader {
+  @apply p-0;
+}
+
+.templatePreview {
+  @apply relative aspect-[3/4] rounded-t-2xl overflow-hidden transition-all duration-500;
+}
+
+.templatePreviewDefault {
+  background: linear-gradient(to br, #F6F7FA, #E9F1FF);
+}
+
+.templatePreviewSelected {
+  background: linear-gradient(to br, #E9F1FF, #D5E4FF);
+}
+
+.premiumBadge {
+  @apply absolute top-4 right-4 text-white shadow-sm font-bold px-3 py-2 rounded-xl;
+  background: linear-gradient(to r, #F59E0B, #EAB308, #F97316);
+}
+
+.previewContent {
+  @apply absolute inset-0 flex items-center justify-center hover:scale-110 transition-all duration-500;
+}
+
+.previewInner {
+  @apply text-center space-y-4 p-8;
+}
+
+.previewIcon {
+  @apply w-20 h-20 rounded-2xl mx-auto shadow-sm transition-all duration-300;
+  background: linear-gradient(135deg, #2370FF, #79C7FF);
+}
+
+.previewLines {
+  @apply space-y-3;
+}
+
+.previewLine1 {
+  @apply h-3 rounded-full w-24 mx-auto;
+  background: linear-gradient(to r, #2370FF, #74A2FF);
+}
+
+.previewLine2 {
+  @apply h-2.5 rounded-full w-20 mx-auto;
+  background-color: #9AB9FF;
+}
+
+.previewDetails {
+  @apply space-y-2 pt-3;
+}
+
+.previewDetail1 {
+  @apply h-2 rounded-full w-28 mx-auto;
+  background: linear-gradient(to r, #74A2FF, #9AB9FF);
+}
+
+.previewDetail2 {
+  @apply h-2 rounded-full w-24 mx-auto;
+  background-color: #BCCDF9;
+}
+
+.previewDetail3 {
+  @apply h-2 rounded-full w-26 mx-auto;
+  background-color: #BCCDF9;
+}
+
+.selectedOverlay {
+  @apply absolute inset-0 rounded-t-2xl;
+  background: linear-gradient(to br, rgba(35, 112, 255, 0.1), rgba(116, 162, 255, 0.15));
+}
+
+.templateContent {
+  @apply p-6 lg:p-8 relative z-10;
+}
+
+.templateInfo {
+  @apply space-y-6;
+}
+
+.templateHeader {
+  /* Header content */
+}
+
+.templateTitleContainer {
+  @apply text-2xl font-bold flex items-center justify-between transition-colors;
+}
+
+.templateTitleDefault {
+  @apply text-gray-700 hover:text-blue-700;
+}
+
+.templateTitleSelected {
+  color: #2370FF;
+}
+
+.templateRating {
+  @apply flex items-center gap-2 text-base font-bold;
+}
+
+.ratingStar {
+  @apply h-5 w-5 fill-amber-400 text-amber-400;
+}
+
+.ratingScore {
+  @apply text-amber-600;
+}
+
+.templateDescription {
+  @apply text-base font-medium leading-relaxed mt-3 text-gray-600;
+}
+
+.templateMeta {
+  @apply flex items-center justify-between;
+}
+
+.categoryBadge {
+  @apply border-2 font-bold px-4 py-2 rounded-xl text-sm;
+  border-color: #9AB9FF;
+  color: #2370FF;
+}
+
+.downloadCount {
+  @apply text-base text-gray-500 font-semibold;
+}
+
+.advancedEditButton {
+  @apply w-full text-base font-bold py-3 bg-white border-2 rounded-xl transition-all duration-300 hover:shadow-sm;
+  border-color: #D5E4FF;
+  color: #2370FF;
+}
+
+.selectedIndicator {
+  @apply absolute top-4 left-4;
+}
+
+.selectedIndicatorIcon {
+  @apply w-10 h-10 rounded-2xl text-white flex items-center justify-center shadow-sm;
+  background-color: #2370FF;
+}
+
+.navigation {
+  @apply flex flex-col sm:flex-row justify-between items-center gap-6 pt-12;
+}
+
+.backButton {
+  @apply bg-white text-gray-700 px-8 py-4 rounded-xl font-semibold border border-gray-300 hover:border-blue-400 hover:text-blue-700 transition-all duration-300 flex items-center gap-3 text-lg w-full sm:w-auto;
+}
+
+.continueButton {
+  @apply px-16 py-5 text-xl font-bold rounded-xl transition-all duration-300 flex items-center gap-3 w-full sm:w-auto;
+}
+
+.continueButtonEnabled {
+  @apply text-white shadow-sm hover:shadow-md;
+  background: linear-gradient(135deg, #2370FF, #2B49C2);
+}
+
+.continueButtonDisabled {
+  @apply opacity-50 cursor-not-allowed bg-gray-400 text-white;
+}

@@ -1,0 +1,140 @@
+@import "tailwindcss" reference;
+/* Education Level Page Styles - Updated Color Palette */
+
+.container {
+  @apply min-h-screen;
+  background: linear-gradient(135deg, #F4F8FF 0%, #E9F1FF 100%);
+}
+
+.mainContent {
+  @apply max-w-6xl mx-auto px-4 py-8 space-y-8;
+}
+
+.header {
+  @apply rounded-2xl text-white p-8 animate-pulse;
+  background: linear-gradient(135deg, #2370FF, #2B49C2);
+}
+
+.headerContent {
+  @apply flex flex-col md:flex-row md:items-center justify-between;
+}
+
+.headerText {
+  @apply space-y-2;
+}
+
+.headerTitle {
+  @apply text-4xl md:text-5xl font-bold text-white leading-tight;
+}
+
+.headerSubtitle {
+  @apply text-lg md:text-xl;
+  color: #E9F1FF;
+}
+
+.headerIcon {
+  @apply text-6xl md:text-8xl mt-4 md:mt-0;
+  color: #79C7FF;
+}
+
+.educationSelection {
+  @apply bg-white rounded-2xl shadow-sm p-8 animate-pulse;
+  border: 1px solid #E1E4EB;
+}
+
+.educationHeader {
+  @apply text-center space-y-6 md:space-y-8;
+}
+
+.educationIconContainer {
+  @apply w-16 h-16 rounded-2xl flex items-center justify-center mx-auto text-white shadow-sm;
+  background: linear-gradient(135deg, #2370FF, #79C7FF);
+}
+
+.educationTitle {
+  @apply text-2xl md:text-3xl font-bold;
+  color: #23355C;
+}
+
+.educationDescription {
+  @apply leading-relaxed text-center max-w-2xl mx-auto;
+  color: #8A96C9;
+}
+
+.educationGrid {
+  @apply grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto mt-8;
+}
+
+.educationCard {
+  @apply bg-white rounded-2xl shadow-sm transition-all duration-300 cursor-pointer p-8 text-center relative;
+  border: 1px solid #E1E4EB;
+}
+
+.educationCard:hover {
+  box-shadow: 0 4px 6px -1px rgba(35, 112, 255, 0.1);
+  border-color: #BCCDF9;
+}
+
+.educationCardSelected {
+  @apply shadow-md;
+  background-color: #F4F8FF;
+  border-color: #2370FF;
+}
+
+.educationCardIconContainer {
+  @apply w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6 transition-all duration-300;
+}
+
+.educationCardIconContainerDefault {
+  background-color: #E9F1FF;
+  color: #2370FF;
+}
+
+.educationCardIconContainerSelected {
+  background: linear-gradient(135deg, #2370FF, #79C7FF);
+  color: white;
+}
+
+.educationCardTitle {
+  @apply text-xl font-semibold mb-3;
+  color: #23355C;
+}
+
+.educationCardDescription {
+  @apply leading-relaxed;
+  color: #7D85BF;
+}
+
+.checkmark {
+  @apply absolute top-4 right-4 animate-pulse;
+}
+
+.checkmarkIcon {
+  @apply w-8 h-8 rounded-full text-white flex items-center justify-center shadow-md;
+  background-color: #2370FF;
+}
+
+.continueButton {
+  @apply text-white px-8 py-4 rounded-xl font-medium shadow-sm hover:shadow-md transition-all duration-300 flex items-center gap-2 text-lg;
+  background: linear-gradient(135deg, #2370FF, #2B49C2);
+}
+
+.continueButton:hover {
+  background: linear-gradient(135deg, #0355BE, #002A79);
+  box-shadow: 0 10px 15px -3px rgba(35, 112, 255, 0.3);
+}
+
+.navigation {
+  @apply flex flex-col sm:flex-row justify-between items-center gap-4 mt-8;
+}
+
+.backButton {
+  @apply bg-white px-6 py-3 rounded-xl font-medium transition-all duration-300 flex items-center gap-2;
+  border: 1px solid #E1E4EB;
+  color: #7D85BF;
+}
+
+.backButton:hover {
+  border-color: #BCCDF9;
+  color: #2370FF;
+}
