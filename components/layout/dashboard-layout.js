@@ -10,125 +10,37 @@ import { logout as authLogout } from "@/utils/auth";
 const sidebarItems = [
   {
     title: "Home",
-    icon: (
-      <svg
-        className="w-4 h-4"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
-        />
-      </svg>
-    ),
+    icon: <Image src="/home.svg" alt="Home" width={16} height={16} />,
     href: "/",
   },
   {
     title: "AI Resume Builder",
-    icon: (
-      <svg
-        className="w-4 h-4"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-        />
-      </svg>
-    ),
+    icon: <Image src="/resumebuilder.svg" alt="Resume Builder" width={16} height={16} />,
     href: "/resume-builder",
   },
   {
     title: "AI Job Search",
-    icon: (
-      <svg
-        className="w-4 h-4"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-        />
-      </svg>
-    ),
+    icon: <Image src="/jobsearch.svg" alt="Job Search" width={16} height={16} />,
     href: "/job-search",
   },
   {
     title: "AI Job Apply",
-    icon: (
-      <svg
-        className="w-4 h-4"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
-        />
-      </svg>
-    ),
+    icon: <Image src="/jobapply.svg" alt="Job Apply" width={16} height={16} />,
     href: "/apply-job",
   },
   {
     title: "AI Job Tracker",
-    icon: (
-      <svg
-        className="w-4 h-4"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"
-        />
-      </svg>
-    ),
+    icon: <Image src="/jobtracker.svg" alt="Job Tracker" width={16} height={16} />,
     href: "/job-tracker",
   },
   {
     title: "AI Mock Interview",
-    icon: (
-      <svg
-        className="w-4 h-4"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-        />
-      </svg>
-    ),
+    icon: <Image src="/mockinterview.svg" alt="Mock Interview" width={16} height={16} />,
     href: "/mock-interview",
   },
   {
     title: "LinkedIn Optimiser",
-    icon: (
-      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-        <path d="M13 10V3L4 14h7v7l9-11h-7z" />
-      </svg>
-    ),
+    icon: <Image src="/linkedinoptimiser.svg" alt="LinkedIn Optimiser" width={16} height={16} />,
     href: "/linkedin-optimizer",
   },
 ];
@@ -182,6 +94,7 @@ export function DashboardLayout({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
   const [userEmail, setUserEmail] = useState('');
+  const [isDesktop, setIsDesktop] = useState(false);
 
   useEffect(() => {
     // TEMPORARILY COMMENTED OUT FOR DEVELOPMENT
@@ -199,6 +112,18 @@ export function DashboardLayout({ children }) {
     setUserEmail(localStorage.getItem('userEmail') || 'Developer');
   }, [router]);
 
+  useEffect(() => {
+    const handleResize = () => {
+      setIsDesktop(window.innerWidth >= 1024);
+    };
+
+    // Set initial value
+    handleResize();
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   const handleLogout = async () => {
     await authLogout();
   };
@@ -213,7 +138,15 @@ export function DashboardLayout({ children }) {
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#E9F1FF' }}>
       {/* Header - Full Width */}
-      <header className="border-b border-gray-200 px-4 sm:px-6 py-4 sticky top-0 z-30 h-16 w-full" style={{ backgroundColor: '#E9F1FF' }}>
+      <header className="px-4 sm:px-6 py-4 sticky top-0 z-30 h-16 w-full relative" style={{
+        backgroundColor: 'rgba(233, 241, 255, 0.8)',
+        backdropFilter: 'blur(10px)',
+        WebkitBackdropFilter: 'blur(10px)'
+      }}>
+        <div className="absolute bottom-0 left-0 right-0 h-px" style={{
+          backgroundColor: '#E1E4ED',
+          marginLeft: isDesktop ? '272px' : '0'
+        }}></div>
         <div className="flex items-center justify-between w-full h-full">
           {/* Left: Logo */}
           <div className="flex items-center space-x-2 sm:space-x-3">
@@ -236,8 +169,8 @@ export function DashboardLayout({ children }) {
               </svg>
             </button>
 
-            {/* Logo */}
-            <div className="flex items-center space-x-2">
+            {/* Logo - Hidden on desktop, shown on mobile */}
+            <div className="lg:hidden flex items-center space-x-2">
               <Image src="/guidix.ai logo.svg" alt="Guidix Logo" width={120} height={40} className="h-8 w-auto" />
             </div>
           </div>
@@ -261,14 +194,8 @@ export function DashboardLayout({ children }) {
               fontWeight: 500,
               lineHeight: '125%'
             }}>
-              <svg
-                className="w-3 h-3 inline mr-1"
-                fill="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path d="M7 14l5-5 5 5z" />
-              </svg>
-              <span className="hidden sm:inline">Upgrade Now</span>
+             
+              <span className="hidden sm:inline text-xs">Upgrade Now</span>
               <span className="sm:hidden">Upgrade</span>
             </button>
 
@@ -302,98 +229,123 @@ export function DashboardLayout({ children }) {
 
       {/* Sidebar - Below Header on Desktop, Full Height on Mobile */}
       <div
-        className={`fixed z-50 border-r border-gray-200 shadow-sm transition-all duration-300 flex flex-col ${
+        className={`fixed z-50 flex flex-col ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
-        } lg:translate-x-0 ${collapsed ? "lg:w-16" : "lg:w-60"} ${
+        } lg:translate-x-0 ${collapsed ? "lg:w-16" : ""} ${
           // Mobile: full height and width
-          "top-0 left-0 h-screen w-60 lg:top-16 lg:h-[calc(100vh-4rem)]"
+          "top-0 h-screen"
         }`}
-        style={{ backgroundColor: '#E9F1FF' }}
+        style={{
+          display: 'flex',
+          backgroundColor: '#FFFFFF',
+          width: isDesktop ? (collapsed ? '64px' : '240px') : '240px',
+          borderRadius: '12px',
+          padding: collapsed ? '12px' : '16px',
+          flexDirection: 'column',
+          alignItems: 'flex-start',
+          gap: '8px',
+          boxShadow: '0 4px 8px -2px rgba(0, 19, 88, 0.10)',
+          overflow: 'hidden',
+          left: isDesktop ? '16px' : '0',
+          top: isDesktop ? '16px' : '0',
+          height: isDesktop ? 'calc(100vh - 32px)' : '100vh'
+        }}
       >
-        {/* Mobile Header with Logo - Only visible on mobile when sidebar is open */}
-        <div className="px-4 py-4 border-b border-gray-200 lg:hidden">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
+        {/* Logo Section */}
+        {!collapsed && (
+          <div style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <Image src="/guidix.ai logo.svg" alt="Guidix Logo" width={120} height={40} className="h-8 w-auto" />
             </div>
             <button
               onClick={() => setSidebarOpen(false)}
-              className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors"
+              className="lg:hidden"
+              style={{
+                padding: '6px',
+                borderRadius: '8px',
+                color: '#6477B4',
+                backgroundColor: 'transparent'
+              }}
             >
-              <svg
-                className="w-5 h-5 text-gray-500"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
           </div>
-        </div>
+        )}
 
         {/* Navigation */}
-        <nav className="px-4 sm:px-6 pt-4 overflow-y-auto flex-1">
-          <ul className="space-y-1">
+        <nav style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '8px', flex: '1 1 auto', minHeight: 0, overflowY: 'auto' }}>
+
+          <ul style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
             {sidebarItems.map((item) => (
               <li key={item.href}>
                 <Link
                   href={item.href}
                   onClick={() => setSidebarOpen(false)}
-                  className={`flex items-center px-2 py-2 rounded-lg transition-all duration-200 ${
-                    isActive(item.href)
-                      ? "text-white"
-                      : "text-gray-700 hover:bg-white hover:text-gray-900"
-                  }`}
-                  style={isActive(item.href) ? { background: 'linear-gradient(180deg, #679CFF 0%, #2370FF 100%)' } : {}}
+                  className="flex items-center rounded-lg"
+                  style={isActive(item.href) ? {
+                    background: 'transparent',
+                    padding: '8px 12px',
+                    color: '#0F2678',
+                    borderRadius: '8px',
+                    border: '1px solid #2370FF'
+                  } : {
+                    padding: '8px 12px',
+                    color: '#6477B4',
+                    backgroundColor: 'transparent',
+                    borderRadius: '8px',
+                    border: '1px solid transparent'
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!isActive(item.href)) {
+                      e.currentTarget.style.backgroundColor = '#F0F4FA';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isActive(item.href)) {
+                      e.currentTarget.style.backgroundColor = 'transparent';
+                    }
+                  }}
                   title={collapsed ? item.title : undefined}
                 >
-                  <div className={`flex items-center w-full ${
-                    collapsed ? "justify-center" : "justify-between"
-                  }`}>
-                    <div className={`flex items-center ${
-                      collapsed ? "" : "space-x-3"
-                    }`}>
+                  {!collapsed && (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', width: '100%' }}>
                       <span
-                        className={`flex-shrink-0 ${
-                          isActive(item.href) ? "text-white" : "text-black"
-                        }`}
+                        className="flex-shrink-0"
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center'
+                        }}
                       >
                         {item.icon}
                       </span>
-                      {!collapsed && (
-                        <span
-                          className={`font-medium text-xs ml-3 ${
-                            isActive(item.href) ? "text-white" : ""
-                          }`}
-                        >
-                          {item.title}
-                        </span>
-                      )}
-                    </div>
-                    {!collapsed && (
-                      <svg
-                        className={`w-4 h-4 flex-shrink-0 ${
-                          isActive(item.href) ? "text-white" : "text-gray-400"
-                        }`}
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
+                      <span
+                        style={{
+                          fontFamily: 'Inter, sans-serif',
+                          fontSize: '12px',
+                          fontWeight: 400,
+                          lineHeight: '125%',
+                          letterSpacing: '-0.24px',
+                          color: isActive(item.href) ? '#0F2678' : '#6477B4'
+                        }}
                       >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M9 5l7 7-7 7"
-                        />
-                      </svg>
-                    )}
-                  </div>
+                        {item.title}
+                      </span>
+                    </div>
+                  )}
+                  {collapsed && (
+                    <span
+                      className="flex-shrink-0"
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center'
+                      }}
+                    >
+                      {item.icon}
+                    </span>
+                  )}
                 </Link>
               </li>
             ))}
@@ -401,67 +353,103 @@ export function DashboardLayout({ children }) {
         </nav>
 
         {/* Footer Items */}
-        <div className="mt-auto px-4 sm:px-6 pt-4 border-t border-gray-200">
-          <ul className="space-y-1 mb-3">
-            {footerItems.map((item) => (
-              <li key={item.href}>
-                <Link
-                  href={item.href}
-                  className="flex items-center px-2 py-1.5 rounded-lg text-gray-700 hover:bg-white hover:text-gray-900 transition-all duration-200"
-                  title={collapsed ? item.title : undefined}
-                >
-                  <div className={`flex items-center w-full ${
-                    collapsed ? "justify-center" : "justify-between"
-                  }`}>
-                    <div className={`flex items-center ${
-                      collapsed ? "" : "space-x-3"
-                    }`}>
-                      <span className={`text-gray-600 flex-shrink-0 ${
-                        collapsed ? "" : ""
-                      }`}>{item.icon}</span>
-                      {!collapsed && (
-                        <span className="font-medium text-xs ml-3">
+        <div className="mt-auto" style={{ paddingTop: '8px', gap: '8px', display: 'flex', flexDirection: 'column', width: '100%' }}>
+          {footerItems.length > 0 && (
+            <ul style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+              {footerItems.map((item) => (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    className="flex items-center rounded-lg"
+                    style={{
+                      padding: '8px 12px',
+                      color: '#6477B4',
+                      backgroundColor: 'transparent',
+                      borderRadius: '8px',
+                      border: '1px solid transparent'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = '#F0F4FA';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = 'transparent';
+                    }}
+                    title={collapsed ? item.title : undefined}
+                  >
+                    {!collapsed && (
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', width: '100%' }}>
+                        <span
+                          className="flex-shrink-0"
+                          style={{
+                            color: '#2370FF',
+                            display: 'flex',
+                            alignItems: 'center',
+                            fontSize: '14px'
+                          }}
+                        >
+                          {item.icon}
+                        </span>
+                        <span
+                          style={{
+                            fontFamily: 'Inter, sans-serif',
+                            fontSize: '12px',
+                            fontWeight: 400,
+                            lineHeight: '125%',
+                            letterSpacing: '-0.24px',
+                            color: '#6477B4'
+                          }}
+                        >
                           {item.title}
                         </span>
-                      )}
-                    </div>
-                    {!collapsed && (
-                      <svg
-                        className="w-4 h-4 text-gray-400 flex-shrink-0"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M9 5l7 7-7 7"
-                        />
-                      </svg>
+                      </div>
                     )}
-                  </div>
-                </Link>
-              </li>
-            ))}
-          </ul>
+                    {collapsed && (
+                      <span
+                        className="flex-shrink-0"
+                        style={{
+                          color: '#2370FF',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center'
+                        }}
+                      >
+                        {item.icon}
+                      </span>
+                    )}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
 
           {/* Logout Button */}
           <button
             onClick={handleLogout}
-            className="flex items-center px-2 py-2 rounded-lg text-gray-700 hover:bg-white hover:text-red-600 transition-all duration-200 w-full mb-3"
+            className="flex items-center rounded-lg w-full"
+            style={{
+              padding: '8px 12px',
+              color: '#6477B4',
+              backgroundColor: 'transparent',
+              borderRadius: '8px',
+              border: '1px solid transparent'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = '#F0F4FA';
+              e.currentTarget.style.color = '#EF4444';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = 'transparent';
+              e.currentTarget.style.color = '#6477B4';
+            }}
           >
-            <div className={`flex items-center w-full ${
-              collapsed ? "justify-center" : "justify-between"
-            }`}>
-              <div className={`flex items-center ${
-                collapsed ? "" : "space-x-3"
-              }`}>
+            {!collapsed && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', width: '100%' }}>
                 <svg
-                  className="w-4 h-4 flex-shrink-0 text-gray-600"
+                  className="w-4 h-4 flex-shrink-0"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
+                  style={{ color: 'inherit', fontSize: '14px' }}
                 >
                   <path
                     strokeLinecap="round"
@@ -470,38 +458,104 @@ export function DashboardLayout({ children }) {
                     d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
                   />
                 </svg>
-                {!collapsed && (
-                  <span className="font-medium text-xs ml-3">Logout</span>
-                )}
+                <span
+                  style={{
+                    fontFamily: 'Inter, sans-serif',
+                    fontSize: '12px',
+                    fontWeight: 400,
+                    lineHeight: '125%',
+                    letterSpacing: '-0.24px',
+                    color: 'inherit'
+                  }}
+                >
+                  Logout
+                </span>
               </div>
-            </div>
-          </button>
-
-          {/* Collapse Button */}
-          {!collapsed ? (
-            <button
-              onClick={() => setCollapsed(true)}
-              className="hidden lg:flex items-center space-x-3 w-full px-2 py-2.5 text-gray-700 hover:bg-white rounded-lg transition-colors mb-4"
-            >
+            )}
+            {collapsed && (
               <svg
                 className="w-4 h-4 flex-shrink-0"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
+                style={{ color: 'inherit' }}
               >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   strokeWidth={2}
-                  d="M11 19l-7-7 7-7m8 14l-7-7 7-7"
+                  d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
                 />
               </svg>
-              <span className="text-xs font-medium">Collapse</span>
+            )}
+          </button>
+
+          {/* Collapse Button */}
+          {!collapsed && (
+            <button
+              onClick={() => setCollapsed(true)}
+              className="hidden lg:flex items-center w-full rounded-lg"
+              style={{
+                padding: '8px 12px',
+                color: '#6477B4',
+                backgroundColor: 'transparent',
+                borderRadius: '8px',
+                border: '1px solid transparent'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = '#F0F4FA';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'transparent';
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', width: '100%' }}>
+                <svg
+                  className="w-4 h-4 flex-shrink-0"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  style={{ color: 'inherit', fontSize: '14px' }}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M11 19l-7-7 7-7m8 14l-7-7 7-7"
+                  />
+                </svg>
+                <span
+                  style={{
+                    fontFamily: 'Inter, sans-serif',
+                    fontSize: '12px',
+                    fontWeight: 400,
+                    lineHeight: '125%',
+                    letterSpacing: '-0.24px',
+                    color: 'inherit'
+                  }}
+                >
+                  Collapse
+                </span>
+              </div>
             </button>
-          ) : (
+          )}
+          {collapsed && (
             <button
               onClick={() => setCollapsed(false)}
-              className="hidden lg:flex items-center justify-center w-full px-2 py-2.5 text-gray-700 hover:bg-white rounded-lg transition-colors mb-4"
+              className="hidden lg:flex items-center justify-center w-full rounded-lg"
+              style={{
+                padding: '8px 12px',
+                color: '#6477B4',
+                backgroundColor: 'transparent',
+                borderRadius: '8px',
+                border: '1px solid transparent'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = '#F0F4FA';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'transparent';
+              }}
               title="Expand sidebar"
             >
               <svg
@@ -509,6 +563,7 @@ export function DashboardLayout({ children }) {
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
+                style={{ color: 'inherit' }}
               >
                 <path
                   strokeLinecap="round"
@@ -524,12 +579,38 @@ export function DashboardLayout({ children }) {
 
       {/* Main Content */}
       <div
-        className={`transition-all duration-300 lg:pt-0 ${
-          collapsed ? "lg:ml-16" : "lg:ml-60"
-        }`}
+        style={{
+          paddingTop: '16px',
+          paddingRight: '16px',
+          paddingBottom: '16px'
+        }}
       >
+        <style dangerouslySetInnerHTML={{__html: `
+          @media (min-width: 1024px) {
+            .main-content-wrapper {
+              margin-left: ${collapsed ? '96px' : '272px'} !important;
+            }
+          }
+        `}} />
+        <div className="main-content-wrapper">
         {/* Page Content */}
-        <main className="p-4 sm:p-6 min-h-[calc(100vh-4rem)] lg:min-h-screen">{children}</main>
+        <main
+          style={{
+            display: 'flex',
+            padding: '24px',
+            flexDirection: 'column',
+            alignItems: 'stretch',
+            gap: '24px',
+            borderRadius: '12px',
+            background: '#FFF',
+            boxShadow: '0 4px 8px -2px rgba(0, 19, 88, 0.10)',
+            minHeight: 'calc(100vh - 8rem)',
+            width: '100%'
+          }}
+        >
+          {children}
+        </main>
+        </div>
       </div>
     </div>
   );

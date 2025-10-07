@@ -49,6 +49,33 @@ import { getResume, saveResumeAssets } from "@/services/resumeService";
 import { handleApiError, logError } from "@/utils/errorHandler";
 import html2canvas from 'html2canvas';
 
+const colorTokens = {
+  title: "#002A79",
+  paragraph: "#6477B4",
+  bgLight: "#F8F9FF",
+  secondary600: "#2370FF",
+  secondary700: "#1B54CA",
+};
+
+const shadowBoxStyle = `
+  0 0 6px 0 rgba(0, 0, 0, 0.12),
+  0 2px 3px 0 rgba(0, 0, 0, 0.04),
+  0 2px 6px 0 rgba(0, 0, 0, 0.04),
+  inset 0 -2px 3px 0 rgba(0, 0, 0, 0.08)
+`;
+
+const buttonTextStyles = {
+  color: '#FFFFFF',
+  textAlign: 'center',
+  textShadow: '0 0.5px 1.5px rgba(0, 19, 88, 0.30), 0 2px 5px rgba(0, 19, 88, 0.10)',
+  fontFamily: 'Inter, sans-serif',
+  fontSize: '14px',
+  fontStyle: 'normal',
+  fontWeight: 500,
+  lineHeight: '125%',
+  letterSpacing: '-2%'
+};
+
 // Dynamically import PDFPreview to avoid SSR issues
 const PDFPreview = dynamic(() => import('@/components/PDFPreview'), {
   ssr: false,
@@ -88,6 +115,28 @@ function EnhancedResumeContent() {
 
   // Get template metadata
   const currentTemplate = getTemplateById(selectedTemplate);
+
+  useEffect(() => {
+    // Load Inter font
+    const googleFontsLink = document.createElement('link');
+    googleFontsLink.href = 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap';
+    googleFontsLink.rel = 'stylesheet';
+    document.head.appendChild(googleFontsLink);
+
+    const style = document.createElement('style');
+    style.innerHTML = `
+      * {
+        font-family: 'Inter', sans-serif !important;
+      }
+      body {
+        font-family: 'Inter', sans-serif !important;
+      }
+      button, input, select, textarea {
+        font-family: 'Inter', sans-serif !important;
+      }
+    `;
+    document.head.appendChild(style);
+  }, []);
 
   useEffect(() => {
     // Check if mobile
@@ -2991,7 +3040,7 @@ function EnhancedResumeContent() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen" style={{ backgroundColor: colorTokens.bgLight }}>
       <TextSelectionMenu onEnhance={handleEnhanceText} />
 
       {/* Full-screen Loading Overlay */}
@@ -3035,66 +3084,115 @@ function EnhancedResumeContent() {
       <style dangerouslySetInnerHTML={{ __html: customStyles }} />
 
       {/* Top Navigation Bar */}
-      <div className="bg-white border-b border-gray-200 sticky top-0 z-50">
+      <div className="bg-white sticky top-0 z-50" style={{ borderBottom: '1px solid #E1E4ED' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-14 lg:h-16">
             <div className="flex items-center gap-2 lg:gap-4">
-              <Button
-                variant="ghost"
+              <button
                 onClick={handlePrev}
-                className="text-gray-600 hover:text-gray-900 gap-1 lg:gap-2 text-sm lg:text-base"
-                size="sm"
+                className="flex items-center gap-1 lg:gap-2 px-3 py-2 rounded-lg transition-all hover:opacity-90"
+                style={{
+                  border: '1px solid #E9F1FF',
+                  background: 'linear-gradient(180deg, #F4F8FF 0%, #E9F1FF 100%)',
+                  color: '#474FA3',
+                  fontFamily: 'Inter, sans-serif',
+                  fontSize: '14px',
+                  fontWeight: 500
+                }}
               >
                 <ArrowLeft className="h-4 w-4" />
                 <span className="hidden sm:inline">Back</span>
-              </Button>
-              <div className="h-6 w-px bg-gray-300 hidden sm:block"></div>
-              <h1 className="text-base lg:text-lg font-semibold text-gray-900">
+              </button>
+              <div className="h-6 w-px hidden sm:block" style={{ backgroundColor: '#E1E4ED' }}></div>
+              <h1 className="text-base lg:text-lg" style={{ color: colorTokens.title, fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
                 Resume Builder
               </h1>
             </div>
 
             <div className="flex items-center gap-2 lg:gap-3">
               {isFromUpload && (
-                <Badge className="bg-green-50 text-green-700 border-green-200 hidden sm:flex text-xs">
-                  <CheckCircle className="h-3 w-3 mr-1" />
+                <span className="px-3 py-1.5 rounded-lg text-xs font-medium hidden sm:flex items-center gap-1" style={{
+                  backgroundColor: '#E9F1FF',
+                  color: colorTokens.title,
+                  border: '1px solid #D5E4FF',
+                  fontFamily: 'Inter, sans-serif'
+                }}>
+                  <CheckCircle className="h-3 w-3" />
                   {enhancedChanges.length} AI Enhancements
-                </Badge>
+                </span>
               )}
-              <Button
-                variant="outline"
-                className="gap-1 lg:gap-2 text-xs lg:text-sm"
-                size="sm"
+              <button
                 onClick={() => setShowPreview(true)}
+                className="flex items-center gap-1 lg:gap-2 px-3 py-2 rounded-lg transition-all hover:opacity-90"
+                style={{
+                  border: '1px solid #E9F1FF',
+                  background: 'linear-gradient(180deg, #F4F8FF 0%, #E9F1FF 100%)',
+                  color: '#474FA3',
+                  fontFamily: 'Inter, sans-serif',
+                  fontSize: '14px',
+                  fontWeight: 500
+                }}
               >
                 <Eye className="h-3 w-3 lg:h-4 lg:w-4" />
                 <span className="hidden sm:inline">Preview</span>
-              </Button>
-              <Button
+              </button>
+              <button
                 onClick={handleDownload}
-                className="bg-blue-600 hover:bg-blue-700 text-white gap-1 lg:gap-2 text-xs lg:text-sm"
-                size="sm"
+                className="flex items-center gap-1 lg:gap-2 px-3 py-2 transition-all hover:opacity-90"
+                style={{
+                  borderRadius: '8px',
+                  border: '1px solid rgba(35, 112, 255, 0.30)',
+                  background: 'linear-gradient(180deg, #679CFF 0%, #2370FF 100%)',
+                  boxShadow: '0 2px 4px 0 rgba(77, 145, 225, 0.10), 0 1px 0.3px 0 rgba(255, 255, 255, 0.25) inset, 0 -1px 0.3px 0 rgba(0, 19, 88, 0.25) inset',
+                  ...buttonTextStyles
+                }}
               >
                 <Download className="h-3 w-3 lg:h-4 lg:w-4" />
                 <span className="hidden sm:inline">Download</span>
-              </Button>
-              <Button
+              </button>
+              <button
                 onClick={handleGenerate}
                 disabled={isGenerating}
-                className="bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white gap-1 lg:gap-2 text-xs lg:text-sm"
-                size="sm"
+                className="flex items-center gap-1 lg:gap-2 px-3 py-2 transition-all hover:opacity-90"
+                style={{
+                  borderRadius: '8px',
+                  border: '1px solid rgba(35, 112, 255, 0.30)',
+                  background: isGenerating ? '#9CA3AF' : 'linear-gradient(180deg, #679CFF 0%, #2370FF 100%)',
+                  boxShadow: '0 2px 4px 0 rgba(77, 145, 225, 0.10), 0 1px 0.3px 0 rgba(255, 255, 255, 0.25) inset, 0 -1px 0.3px 0 rgba(0, 19, 88, 0.25) inset',
+                  ...buttonTextStyles,
+                  cursor: isGenerating ? 'not-allowed' : 'pointer',
+                  opacity: isGenerating ? 0.5 : 1
+                }}
               >
-        
                 <span className="hidden sm:inline">
                   {isGenerating ? "Finishing..." : "Finish"}
                 </span>
-              </Button>
+              </button>
             </div>
           </div>
         </div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 lg:py-6">
+        {/* Banner */}
+        <div className="relative py-6 px-8 overflow-hidden flex items-center mb-6" style={{
+          backgroundImage: 'url(/banner.svg)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          minHeight: '100px',
+          boxShadow: '0 4px 20px 0 #2370FF66',
+          borderRadius: '16px'
+        }}>
+          <div className="relative z-10">
+            <h1 className="text-white font-bold" style={{ textShadow: '0 2px 10px rgba(0, 0, 0, 0.3)', fontSize: '32px', lineHeight: '1.2', fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
+              Customize Your Resume
+            </h1>
+            <p className="text-white mt-2" style={{ textShadow: '0 1px 5px rgba(0, 0, 0, 0.3)', fontSize: '16px', fontFamily: 'Inter, sans-serif', fontWeight: 400 }}>
+              Edit and perfect your professional resume
+            </p>
+          </div>
+        </div>
         <div
           className={`grid grid-cols-1 ${
             sidebarCollapsed
@@ -3113,26 +3211,43 @@ function EnhancedResumeContent() {
             } order-2 md:order-1 lg:order-1 transition-all duration-300`}
           >
             {sidebarCollapsed ? (
-              <div className="bg-white shadow-sm border border-gray-200 rounded-lg p-2">
+              <div className="bg-white p-2" style={{
+                backgroundColor: '#FFFFFF',
+                border: '1px solid #F1F3F7',
+                boxShadow: shadowBoxStyle,
+                borderRadius: '16px'
+              }}>
                 <button
                   onClick={() => setSidebarCollapsed(false)}
-                  className="w-full p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded transition-colors"
+                  className="w-full p-2 hover:bg-gray-50 rounded transition-colors"
+                  style={{ color: colorTokens.paragraph }}
                   title="Expand sidebar"
                 >
                   <ChevronRight className="h-5 w-5 mx-auto" />
                 </button>
               </div>
             ) : (
-              <Card className="bg-white shadow-sm border border-gray-200">
+              <Card className="bg-white" style={{
+                backgroundColor: '#FFFFFF',
+                border: '1px solid #F1F3F7',
+                boxShadow: shadowBoxStyle,
+                borderRadius: '16px'
+              }}>
                 <CardHeader className="pb-3 lg:pb-4">
                   <div className="flex items-center justify-between">
-                    <CardTitle className="text-sm lg:text-base font-semibold text-gray-900 flex items-center gap-2">
-                      <FileText className="h-4 w-4 text-blue-600" />
+                    <CardTitle className="flex items-center gap-2" style={{
+                      color: colorTokens.title,
+                      fontFamily: 'Inter, sans-serif',
+                      fontSize: '16px',
+                      fontWeight: 500
+                    }}>
+                      <FileText className="h-4 w-4" style={{ color: colorTokens.secondary600 }} />
                       Resume Sections
                     </CardTitle>
                     <button
                       onClick={() => setSidebarCollapsed(true)}
-                      className="p-1 text-gray-400 hover:text-gray-600 hover:bg-gray-50 rounded transition-colors lg:block hidden"
+                      className="p-1 hover:bg-gray-50 rounded transition-colors lg:block hidden"
+                      style={{ color: colorTokens.paragraph }}
                       title="Collapse sidebar"
                     >
                       <ChevronLeft className="h-4 w-4" />
@@ -3235,10 +3350,20 @@ function EnhancedResumeContent() {
                 : "col-span-1 md:col-span-2 lg:col-span-2"
             } order-1 md:order-2 lg:order-2 transition-all duration-300`}
           >
-            <Card className="bg-white shadow-sm border border-gray-200">
+            <Card className="bg-white" style={{
+              backgroundColor: '#FFFFFF',
+              border: '1px solid #F1F3F7',
+              boxShadow: shadowBoxStyle,
+              borderRadius: '16px'
+            }}>
               <CardHeader className="pb-3 lg:pb-4">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                  <CardTitle className="text-sm lg:text-base font-semibold text-gray-900">
+                  <CardTitle style={{
+                    color: colorTokens.title,
+                    fontFamily: 'Inter, sans-serif',
+                    fontSize: '16px',
+                    fontWeight: 500
+                  }}>
                     Resume Preview
                   </CardTitle>
                   <div className="flex items-center gap-2">

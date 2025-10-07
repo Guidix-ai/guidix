@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 const colorTokens = {
   title: "#002A79",
-  paragraph: "#6D7586",
+  paragraph: "#6477B4",
   bgLight: "#F8F9FF",
   secondary600: "#2370FF",
   secondary700: "#1B54CA",
@@ -26,6 +26,59 @@ const ContactInfo = ({ title, details }) => (
       <div style={{ fontWeight: 600, fontSize: 20, color: "#cbd5ef" }}>{title}</div>
       <div style={{ fontWeight: 500, fontSize: 18, color: "#dbe2ff" }}>{details}</div>
     </div>
+  </div>
+);
+
+const FormField = ({
+  name,
+  label,
+  placeholder,
+  value,
+  onChange,
+  type = "text",
+  styleProps,
+}) => (
+  <div style={{ display: "flex", flexDirection: "column", gap: 8, ...styleProps }}>
+    <label
+      htmlFor={name}
+      style={{
+        color: colorTokens.title,
+        fontSize: 16,
+        fontWeight: 500,
+        fontFamily: "Inter, sans-serif",
+        lineHeight: "20px",
+      }}
+    >
+      {label}
+    </label>
+    <input
+      id={name}
+      name={name}
+      type={type}
+      value={value}
+      onChange={onChange}
+      placeholder={placeholder}
+      style={{
+        width: "100%",
+        height: 56,
+        minHeight: 56,
+        paddingLeft: 16,
+        paddingRight: 6,
+        paddingTop: 6,
+        paddingBottom: 6,
+        backgroundColor: colorTokens.bgLight,
+        borderRadius: 16,
+        boxShadow:
+          "0px 0px 2px 0px rgba(0,19,88,0.15), 0px 4px 4px 0px rgba(0,19,88,0.04), 0px 4px 16px 0px rgba(0,19,88,0.04), inset 0px -4px 4px 0px rgba(0,19,88,0.10)",
+        outline: "1px solid #C7D6ED",
+        fontSize: 16,
+        color: colorTokens.paragraph,
+        fontFamily: "Inter, sans-serif",
+        fontWeight: 400,
+        lineHeight: "125%",
+        letterSpacing: "-0.32px",
+      }}
+    />
   </div>
 );
 
@@ -54,18 +107,53 @@ const SignupPage = () => {
   };
 
   return (
-    <div
-      style={{
-        width: "100%",
-        minHeight: "100vh",
-        backgroundColor: "#fff",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        padding: "24px",
-        boxSizing: "border-box",
-      }}
-    >
+    <>
+      <style jsx>{`
+        input::placeholder {
+          color: #6477B4;
+          font-family: Inter, sans-serif;
+          font-size: 16px;
+          font-weight: 400;
+          line-height: 125%;
+          letter-spacing: -0.32px;
+        }
+        input::-webkit-input-placeholder {
+          color: #6477B4;
+          font-family: Inter, sans-serif;
+          font-size: 16px;
+          font-weight: 400;
+          line-height: 125%;
+          letter-spacing: -0.32px;
+        }
+        input::-moz-placeholder {
+          color: #6477B4;
+          font-family: Inter, sans-serif;
+          font-size: 16px;
+          font-weight: 400;
+          line-height: 125%;
+          letter-spacing: -0.32px;
+        }
+        input:-ms-input-placeholder {
+          color: #6477B4;
+          font-family: Inter, sans-serif;
+          font-size: 16px;
+          font-weight: 400;
+          line-height: 125%;
+          letter-spacing: -0.32px;
+        }
+      `}</style>
+      <div
+        style={{
+          width: "100%",
+          minHeight: "100vh",
+          backgroundColor: "#fff",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          padding: "24px",
+          boxSizing: "border-box",
+        }}
+      >
       <div
         style={{
           display: "flex",
@@ -334,57 +422,8 @@ const SignupPage = () => {
       </div>
       </div>
     </div>
+    </>
   );
 };
-
-const FormField = ({
-  name,
-  label,
-  placeholder,
-  value,
-  onChange,
-  type = "text",
-  styleProps,
-}) => (
-  <div style={{ display: "flex", flexDirection: "column", gap: 8, ...styleProps }}>
-    <label
-      htmlFor={name}
-      style={{
-        color: colorTokens.title,
-        fontSize: 16,
-        fontWeight: 500,
-        fontFamily: "Inter, sans-serif",
-        lineHeight: "20px",
-      }}
-    >
-      {label}
-    </label>
-    <input
-      id={name}
-      name={name}
-      type={type}
-      value={value}
-      onChange={onChange}
-      placeholder={placeholder}
-      style={{
-        width: "100%",
-        height: 56,
-        minHeight: 56,
-        paddingLeft: 16,
-        paddingRight: 6,
-        paddingTop: 6,
-        paddingBottom: 6,
-        backgroundColor: colorTokens.bgLight,
-        borderRadius: 16,
-        boxShadow:
-          "0px 0px 2px 0px rgba(0,19,88,0.15), 0px 4px 4px 0px rgba(0,19,88,0.04), 0px 4px 16px 0px rgba(0,19,88,0.04), inset 0px -4px 4px 0px rgba(0,19,88,0.10)",
-        outline: "1px solid #C7D6ED",
-        fontSize: 16,
-        color: colorTokens.paragraph,
-        fontFamily: "Inter, sans-serif",
-      }}
-    />
-  </div>
-);
 
 export default SignupPage;

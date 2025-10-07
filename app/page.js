@@ -4,12 +4,6 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { DashboardLayout } from "@/components/layout/dashboard-layout";
 import Image from "next/image";
-import searchIcon from "@/app/assets/search.svg";
-import trendingUpIcon from "@/app/assets/trending-up.svg";
-import usersIcon from "@/app/assets/users.svg";
-import activityIcon from "@/app/assets/activity.svg";
-import projectorIcon from "@/app/assets/projector.svg";
-import clipboardIcon from "@/app/assets/clipboard.svg";
 
 const shadowBoxStyle = `
   0 0 6px 0 rgba(0, 0, 0, 0.12),
@@ -62,7 +56,7 @@ export default function Home() {
     {
       title: "AI Resume Builder",
       description: "Create professional resumes with intelligent AI assistance",
-      iconSrc: projectorIcon,
+      iconSrc: "/resumebuilding.svg",
       route: "/resume-builder",
       color: "#667eea",
       size: "large"
@@ -70,7 +64,7 @@ export default function Home() {
     {
       title: "AI Job Search",
       description: "Discover personalized job opportunities",
-      iconSrc: searchIcon,
+      iconSrc: "/jobsearching.svg",
       route: "/job-search",
       color: "#f093fb",
       size: "large"
@@ -78,7 +72,7 @@ export default function Home() {
     {
       title: "AI Job Apply",
       description: "Automate job applications",
-      iconSrc: clipboardIcon,
+      iconSrc: "/jobapplying.svg",
       route: "/apply-job",
       color: "#4facfe",
       size: "normal"
@@ -86,7 +80,7 @@ export default function Home() {
     {
       title: "AI Job Tracker",
       description: "Track your applications",
-      iconSrc: activityIcon,
+      iconSrc: "/jobtracking.svg",
       route: "/job-tracker",
       color: "#43e97b",
       size: "normal"
@@ -94,7 +88,7 @@ export default function Home() {
     {
       title: "AI Mock Interview",
       description: "Practice with AI feedback",
-      iconSrc: usersIcon,
+      iconSrc: "/mockinterviewing.svg",
       route: "/mock-interview",
       color: "#fa709a",
       size: "normal"
@@ -102,7 +96,7 @@ export default function Home() {
     {
       title: "LinkedIn Optimizer",
       description: "Optimize your profile",
-      iconSrc: trendingUpIcon,
+      iconSrc: "/linkedinoptimising.svg",
       route: "/linkedin-optimizer",
       color: "#30cfd0",
       size: "normal"
@@ -118,7 +112,7 @@ export default function Home() {
 
   return (
     <DashboardLayout>
-      <div style={{ minHeight: '100vh', backgroundColor: '#F8F9FF' }}>
+      <div style={{ minHeight: '100vh', backgroundColor: '#F8F9FF', width: '100%' }}>
         <div className="relative py-6 px-8 overflow-hidden flex items-center" style={{
           backgroundImage: 'url(/banner.svg)',
           backgroundSize: 'cover',
@@ -128,7 +122,7 @@ export default function Home() {
           boxShadow: '0 4px 20px 0 #2370FF66',
           borderRadius: '16px'
         }}>
-          <div className="max-w-6xl mx-auto relative z-10">
+          <div className="relative z-10">
             <h1 className="text-white font-bold mb-2" style={{ textShadow: '0 2px 10px rgba(0, 0, 0, 0.3)', fontSize: '32px', lineHeight: '1.2', maxWidth: '800px' }}>
               {typewriterText}
               {showCursor && <span className="animate-pulse">|</span>}
@@ -136,7 +130,7 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="max-w-6xl mx-auto px-8 py-6" style={{ backgroundColor: 'transparent' }}>
+        <div className="px-8 py-6" style={{ backgroundColor: 'transparent' }}>
           <div style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(4, 1fr)',

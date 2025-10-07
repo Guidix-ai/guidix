@@ -1,34 +1,30 @@
 "use client";
-import styles from "@/app/styles/pages/template-selection.module.css";
 
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
   ArrowRight,
   ArrowLeft,
-  Crown,
   Star,
   User,
-  Users,
-  Palette,
-  FileText,
   Briefcase,
-  GraduationCap,
 } from "lucide-react";
 import { DashboardLayout } from "@/components/layout/dashboard-layout";
-import { allTemplates, templateCategories } from "@/components/pdf-templates";
+import { allTemplates } from "@/components/pdf-templates";
 import dynamic from 'next/dynamic';
 import { enhanceResume, createResumeFromPrompt } from "@/services/resumeService";
 import { handleApiError, logError } from "@/utils/errorHandler";
+import Image from "next/image";
+
+const colorTokens = {
+  title: "#002A79",
+  paragraph: "#6477B4",
+  bgLight: "#F8F9FF",
+  secondary600: "#2370FF",
+  secondary700: "#1B54CA",
+};
 
 // Dynamically import PDFPreview to avoid SSR issues
 const PDFPreview = dynamic(() => import('@/components/PDFPreview'), {
@@ -192,51 +188,51 @@ function TemplateSelectionContent() {
       <div
         className="min-h-screen"
         style={{
-          background:
-            "linear-gradient(135deg, var(--brand-secondary-lightest) 0%, var(--brand-secondary-light) 100%)",
+          backgroundColor: colorTokens.bgLight,
         }}
       >
-        <div className="max-w-7xl mx-auto px-4 py-8">
-          {/* Header */}
-          <div className="text-center mb-8">
-            <div
-              className="inline-flex items-center justify-center w-16 h-16 rounded-3xl shadow-lg mb-4"
-              style={{
-                background:
-                  "linear-gradient(135deg, var(--brand-primary), var(--brand-accent-bright))",
-              }}
-            >
-              <Palette className="h-8 w-8 text-white" />
+        <div className="max-w-7xl mx-auto px-8 py-6">
+          {/* Banner */}
+          <div className="relative py-6 px-8 overflow-hidden flex items-center mb-6" style={{
+            backgroundImage: 'url(/banner.svg)',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+            minHeight: '100px',
+            boxShadow: '0 4px 20px 0 #2370FF66',
+            borderRadius: '16px'
+          }}>
+            <div className="relative z-10">
+              <h1 className="text-white font-bold" style={{ textShadow: '0 2px 10px rgba(0, 0, 0, 0.3)', fontSize: '32px', lineHeight: '1.2' }}>
+                Choose Your Perfect Template
+              </h1>
+              <p className="text-white mt-2" style={{ textShadow: '0 1px 5px rgba(0, 0, 0, 0.3)', fontSize: '16px' }}>
+                Select a template that best showcases your professional journey
+              </p>
             </div>
-            <h1
-              className="text-3xl md:text-5xl font-bold mb-4"
-              style={{ color: "var(--brand-primary)" }}
-            >
-              Choose Your Perfect Template
-            </h1>
-            <p className="text-lg text-gray-600 font-medium max-w-2xl mx-auto">
-              Select a template that best showcases your professional journey
-            </p>
           </div>
 
           <div className="flex flex-col lg:flex-row gap-6">
             {/* Filters Sidebar */}
             <div className="w-full lg:w-64 flex-shrink-0">
               <div
-                className="bg-white rounded-2xl p-6 shadow-sm border-2 sticky top-8"
-                style={{ borderColor: "var(--brand-secondary)" }}
+                className="bg-white rounded-2xl p-6 sticky top-8"
+                style={{
+                  border: '1px solid #F1F3F7',
+                  boxShadow: '0 0 6px 0 rgba(0, 0, 0, 0.12), 0 2px 3px 0 rgba(0, 0, 0, 0.04), 0 2px 6px 0 rgba(0, 0, 0, 0.04), inset 0 -2px 3px 0 rgba(0, 0, 0, 0.08)'
+                }}
               >
                 <div className="flex items-center justify-between mb-6">
                   <h2
                     className="text-lg font-semibold"
-                    style={{ color: "var(--brand-primary)" }}
+                    style={{ color: colorTokens.title }}
                   >
                     Filters
                   </h2>
                   <button
                     onClick={clearFilters}
                     className="text-sm hover:underline"
-                    style={{ color: "var(--brand-primary)" }}
+                    style={{ color: colorTokens.secondary600 }}
                   >
                     Clear
                   </button>
@@ -247,7 +243,7 @@ function TemplateSelectionContent() {
                   <div>
                     <h3
                       className="font-semibold mb-3 flex items-center gap-2"
-                      style={{ color: "var(--brand-primary)" }}
+                      style={{ color: colorTokens.title }}
                     >
                       <Briefcase className="h-4 w-4" />
                       Category
@@ -265,7 +261,7 @@ function TemplateSelectionContent() {
                           }
                           className="mr-2"
                         />
-                        <span className="text-sm text-gray-700">Internship</span>
+                        <span className="text-sm" style={{ color: colorTokens.paragraph }}>Internship</span>
                       </label>
                       <label className="flex items-center">
                         <input
@@ -279,7 +275,7 @@ function TemplateSelectionContent() {
                           }
                           className="mr-2"
                         />
-                        <span className="text-sm text-gray-700">Professional</span>
+                        <span className="text-sm" style={{ color: colorTokens.paragraph }}>Professional</span>
                       </label>
                     </div>
                   </div>
@@ -288,7 +284,7 @@ function TemplateSelectionContent() {
                   <div>
                     <h3
                       className="font-semibold mb-3 flex items-center gap-2"
-                      style={{ color: "var(--brand-primary)" }}
+                      style={{ color: colorTokens.title }}
                     >
                       <User className="h-4 w-4" />
                       Photo
@@ -306,7 +302,7 @@ function TemplateSelectionContent() {
                           }
                           className="mr-2"
                         />
-                        <span className="text-sm text-gray-700">With photo</span>
+                        <span className="text-sm" style={{ color: colorTokens.paragraph }}>With photo</span>
                       </label>
                       <label className="flex items-center">
                         <input
@@ -320,7 +316,7 @@ function TemplateSelectionContent() {
                           }
                           className="mr-2"
                         />
-                        <span className="text-sm text-gray-700">Without photo</span>
+                        <span className="text-sm" style={{ color: colorTokens.paragraph }}>Without photo</span>
                       </label>
                     </div>
                   </div>
@@ -333,48 +329,52 @@ function TemplateSelectionContent() {
               {/* Selected Template Preview - Center */}
               <div className="flex-1">
                 <div
-                  className="bg-white rounded-2xl shadow-xl border-4 p-6 sticky top-8"
-                  style={{ borderColor: "var(--brand-primary)" }}
+                  className="bg-white rounded-2xl p-6 sticky top-8"
+                  style={{
+                    border: '1px solid #F1F3F7',
+                    boxShadow: '0 0 6px 0 rgba(0, 0, 0, 0.12), 0 2px 3px 0 rgba(0, 0, 0, 0.04), 0 2px 6px 0 rgba(0, 0, 0, 0.04), inset 0 -2px 3px 0 rgba(0, 0, 0, 0.08)'
+                  }}
                 >
                   <div className="mb-4">
                     <h3
                       className="text-2xl font-bold mb-2"
-                      style={{ color: "var(--brand-primary)" }}
+                      style={{ color: colorTokens.title }}
                     >
                       {selectedTemplateData?.name || "Selected Template"}
                     </h3>
-                    <p className="text-gray-600 text-sm">
+                    <p className="text-sm" style={{ color: colorTokens.paragraph }}>
                       {selectedTemplateData?.description}
                     </p>
                     <div className="flex gap-2 mt-3">
-                      <Badge
-                        variant={selectedTemplateData?.hasPhoto ? "default" : "secondary"}
-                        className="text-xs"
-                      >
+                      <span className="px-3 py-1.5 rounded-lg text-xs font-medium" style={{
+                        backgroundColor: selectedTemplateData?.hasPhoto ? '#E9F1FF' : '#F1F3F7',
+                        color: colorTokens.title
+                      }}>
                         {selectedTemplateData?.hasPhoto ? "With Photo" : "No Photo"}
-                      </Badge>
-                      <Badge variant="outline" className="text-xs">
+                      </span>
+                      <span className="px-3 py-1.5 rounded-lg text-xs font-medium" style={{
+                        backgroundColor: '#F1F3F7',
+                        color: colorTokens.title
+                      }}>
                         {selectedTemplateData?.category === 'internship' ? 'Internship' : 'Professional'}
-                      </Badge>
+                      </span>
                       {selectedTemplateData?.isRecommended && (
-                        <Badge
-                          className="text-xs"
-                          style={{
-                            background: "linear-gradient(135deg, var(--brand-primary), var(--brand-accent-bright))",
-                            color: "white"
-                          }}
-                        >
-                          <Star className="h-3 w-3 inline mr-1" />
+                        <span className="px-3 py-1.5 rounded-lg text-xs font-medium flex items-center gap-1" style={{
+                          backgroundColor: colorTokens.secondary600,
+                          color: 'white'
+                        }}>
+                          <Star className="h-3 w-3" />
                           Recommended
-                        </Badge>
+                        </span>
                       )}
                     </div>
                   </div>
                   <div
-                    className="bg-gray-50 rounded-xl overflow-hidden border-2"
+                    className="rounded-xl overflow-hidden"
                     style={{
                       height: '600px',
-                      borderColor: "var(--brand-secondary-light)"
+                      backgroundColor: colorTokens.bgLight,
+                      border: '1px solid #E1E4ED'
                     }}
                   >
                     <PDFPreview
@@ -401,23 +401,28 @@ function TemplateSelectionContent() {
                       key={template.id}
                       id={`template-${template.id}`}
                       onClick={() => handleTemplateSelect(template.id)}
-                      className={`bg-white rounded-xl shadow-sm border-2 cursor-pointer transition-all duration-200 ${
+                      className={`bg-white rounded-xl cursor-pointer transition-all duration-200 ${
                         selectedTemplate === template.id
-                          ? "shadow-lg scale-105"
+                          ? "scale-105"
                           : "hover:shadow-md"
                       }`}
                       style={{
-                        borderColor:
-                          selectedTemplate === template.id
-                            ? "var(--brand-primary)"
-                            : "#e5e7eb",
+                        border: selectedTemplate === template.id
+                          ? `2px solid ${colorTokens.secondary600}`
+                          : '1px solid #F1F3F7',
+                        boxShadow: selectedTemplate === template.id
+                          ? '0 4px 12px 0 rgba(35, 112, 255, 0.25)'
+                          : '0 0 6px 0 rgba(0, 0, 0, 0.12), 0 2px 3px 0 rgba(0, 0, 0, 0.04)'
                       }}
                     >
                       <div className="flex items-center gap-3 p-3">
                         {/* Thumbnail */}
                         <div
-                          className="w-16 h-24 bg-gray-50 rounded overflow-hidden flex-shrink-0 border"
-                          style={{ borderColor: "#e5e7eb" }}
+                          className="w-16 h-24 rounded overflow-hidden flex-shrink-0"
+                          style={{
+                            backgroundColor: colorTokens.bgLight,
+                            border: '1px solid #E1E4ED'
+                          }}
                         >
                           <PDFPreview
                             templateId={template.id}
@@ -429,38 +434,33 @@ function TemplateSelectionContent() {
                         {/* Template Info */}
                         <div className="flex-1 min-w-0">
                           <h4
-                            className={`font-bold text-sm mb-1 truncate ${
-                              selectedTemplate === template.id ? '' : ''
-                            }`}
+                            className="font-bold text-sm mb-1 truncate"
                             style={{
                               color: selectedTemplate === template.id
-                                ? "var(--brand-primary)"
-                                : "#374151"
+                                ? colorTokens.secondary600
+                                : colorTokens.title
                             }}
                           >
                             {template.name}
                           </h4>
-                          <p className="text-xs text-gray-500 line-clamp-2 mb-2">
+                          <p className="text-xs line-clamp-2 mb-2" style={{ color: colorTokens.paragraph }}>
                             {template.description}
                           </p>
                           <div className="flex flex-wrap items-center gap-1">
-                            <Badge
-                              variant={template.hasPhoto ? "default" : "secondary"}
-                              className="text-[10px] px-1.5 py-0.5"
-                            >
+                            <span className="text-[10px] px-1.5 py-0.5 rounded" style={{
+                              backgroundColor: template.hasPhoto ? '#E9F1FF' : '#F1F3F7',
+                              color: colorTokens.title
+                            }}>
                               {template.hasPhoto ? "Photo" : "No Photo"}
-                            </Badge>
+                            </span>
                             {template.isRecommended && (
-                              <Badge
-                                className="text-[10px] px-1.5 py-0.5"
-                                style={{
-                                  background: "linear-gradient(135deg, var(--brand-primary), var(--brand-accent-bright))",
-                                  color: "white"
-                                }}
-                              >
-                                <Star className="h-2 w-2 inline mr-0.5" />
+                              <span className="text-[10px] px-1.5 py-0.5 rounded flex items-center gap-0.5" style={{
+                                backgroundColor: colorTokens.secondary600,
+                                color: 'white'
+                              }}>
+                                <Star className="h-2 w-2" />
                                 Top
-                              </Badge>
+                              </span>
                             )}
                           </div>
                         </div>
@@ -471,7 +471,7 @@ function TemplateSelectionContent() {
                             <div
                               className="w-6 h-6 rounded-full flex items-center justify-center"
                               style={{
-                                background: "linear-gradient(135deg, var(--brand-primary), var(--brand-accent-bright))",
+                                backgroundColor: colorTokens.secondary600,
                               }}
                             >
                               <span className="text-white text-xs font-bold">✓</span>
@@ -494,42 +494,52 @@ function TemplateSelectionContent() {
           )}
 
           {/* Navigation Buttons */}
-          <div className="flex justify-between items-center gap-4 mt-8">
-            <Button
-              variant="outline"
+          <div className="flex justify-between items-center gap-4 mt-8 bg-white rounded-lg p-6" style={{
+            border: '1px solid #F1F3F7',
+            boxShadow: '0 0 6px 0 rgba(0, 0, 0, 0.12), 0 2px 3px 0 rgba(0, 0, 0, 0.04), 0 2px 6px 0 rgba(0, 0, 0, 0.04), inset 0 -2px 3px 0 rgba(0, 0, 0, 0.08)'
+          }}>
+            <button
               onClick={handlePrev}
               disabled={loading}
-              className="bg-white px-8 py-4 rounded-xl font-bold border-2 transition-all duration-300 flex items-center gap-3"
+              className="px-6 py-3 rounded-lg font-medium text-sm flex items-center gap-2 transition-all hover:opacity-90"
               style={{
-                borderColor: "var(--brand-secondary)",
-                color: "var(--brand-primary)",
+                border: '1px solid #E9F1FF',
+                background: 'linear-gradient(180deg, #F4F8FF 0%, #E9F1FF 100%)',
+                color: '#474FA3',
+                opacity: loading ? 0.5 : 1,
+                cursor: loading ? 'not-allowed' : 'pointer'
               }}
             >
-              <ArrowLeft className="h-5 w-5" />
-              Previous
-            </Button>
-            <Button
+              <ArrowLeft className="h-4 w-4" />
+              Back
+            </button>
+            <button
               onClick={handleContinue}
               disabled={!selectedTemplate || loading}
-              className="px-8 py-4 rounded-xl font-bold text-white border-2 border-transparent transition-all duration-300 flex items-center gap-3 shadow-md disabled:opacity-50"
+              className="px-8 py-3 rounded-lg font-medium text-sm flex items-center gap-2 transition-all hover:opacity-90"
               style={{
-                background: selectedTemplate && !loading
-                  ? "linear-gradient(135deg, var(--brand-primary), var(--brand-accent-bright))"
-                  : "#9ca3af",
+                border: '1px solid rgba(35, 112, 255, 0.30)',
+                background: !selectedTemplate || loading
+                  ? '#9CA3AF'
+                  : 'linear-gradient(180deg, #679CFF 0%, #2370FF 100%)',
+                boxShadow: '0 2px 4px 0 rgba(77, 145, 225, 0.10), 0 1px 0.3px 0 rgba(255, 255, 255, 0.25) inset, 0 -1px 0.3px 0 rgba(0, 19, 88, 0.25) inset',
+                color: '#FFFFFF',
+                textShadow: '0 0.5px 1.5px rgba(0, 19, 88, 0.30), 0 2px 5px rgba(0, 19, 88, 0.10)',
+                cursor: !selectedTemplate || loading ? 'not-allowed' : 'pointer'
               }}
             >
               {loading ? (
                 <>
-                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                   Processing...
                 </>
               ) : (
                 <>
                   Continue
-                  <ArrowRight className="h-5 w-5" />
+                  <ArrowRight className="h-4 w-4" />
                 </>
               )}
-            </Button>
+            </button>
           </div>
         </div>
       </div>

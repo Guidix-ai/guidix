@@ -84,7 +84,8 @@ const ComingSoon = ({ title = "Coming Soon" }) => {
       }}>
         {/* Background Card */}
         <div style={{
-          width: 'min(1392px, calc(100vw - 48px))',
+          width: 'calc(100% - 48px)',
+          maxWidth: '1392px',
           position: 'absolute',
           left: '50%',
           transform: 'translateX(-50%)',
@@ -195,7 +196,7 @@ const ComingSoon = ({ title = "Coming Soon" }) => {
               lineHeight: '28.8px',
               margin: 0
             }}>
-              Get ready for an amazing experience with {title}. We're building something special just for you.
+              Get ready for an amazing experience with {title}. We&apos;re building something special just for you.
             </p>
           </div>
         </div>

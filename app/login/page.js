@@ -7,7 +7,7 @@ import { setAuthTokens } from '@/lib/cookies'
 
 const colorTokens = {
   title: "#002A79",
-  paragraph: "#6D7586",
+  paragraph: "#6477B4",
   bgLight: "#F8F9FF",
   secondary600: "#2370FF",
   secondary700: "#1B54CA",
@@ -83,6 +83,9 @@ const FormField = ({
         fontSize: 16,
         color: colorTokens.paragraph,
         fontFamily: "Inter, sans-serif",
+        fontWeight: 400,
+        lineHeight: "125%",
+        letterSpacing: "-0.32px",
       }}
     />
   </div>
@@ -160,18 +163,53 @@ const LoginForm = () => {
   }
 
   return (
-    <div
-      style={{
-        width: "100%",
-        minHeight: "100vh",
-        backgroundColor: "#fff",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        padding: "24px",
-        boxSizing: "border-box",
-      }}
-    >
+    <>
+      <style jsx>{`
+        input::placeholder {
+          color: #6477B4;
+          font-family: Inter, sans-serif;
+          font-size: 16px;
+          font-weight: 400;
+          line-height: 125%;
+          letter-spacing: -0.32px;
+        }
+        input::-webkit-input-placeholder {
+          color: #6477B4;
+          font-family: Inter, sans-serif;
+          font-size: 16px;
+          font-weight: 400;
+          line-height: 125%;
+          letter-spacing: -0.32px;
+        }
+        input::-moz-placeholder {
+          color: #6477B4;
+          font-family: Inter, sans-serif;
+          font-size: 16px;
+          font-weight: 400;
+          line-height: 125%;
+          letter-spacing: -0.32px;
+        }
+        input:-ms-input-placeholder {
+          color: #6477B4;
+          font-family: Inter, sans-serif;
+          font-size: 16px;
+          font-weight: 400;
+          line-height: 125%;
+          letter-spacing: -0.32px;
+        }
+      `}</style>
+      <div
+        style={{
+          width: "100%",
+          minHeight: "100vh",
+          backgroundColor: "#fff",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          padding: "24px",
+          boxSizing: "border-box",
+        }}
+      >
       <div
         style={{
           display: "flex",
@@ -198,15 +236,15 @@ const LoginForm = () => {
         }}
       >
         <img
-          src="/authbanner.svg"
+          src="/Card.svg"
           alt="Welcome Back"
           style={{
             width: "120%",
             height: "120%",
             objectFit: "cover",
-            objectPosition: "left center",
+            objectPosition: "-30px center",
             position: "absolute",
-            top: "50%",
+            top: "55%",
             left: "50%",
             transform: "translate(-50%, -50%)",
           }}
@@ -438,7 +476,7 @@ const LoginForm = () => {
                 margin: 0,
               }}
             >
-              Don't have an account?{" "}
+              Don&apos;t have an account?{" "}
               <span
                 onClick={() => router.push("/signup")}
                 style={{
@@ -455,6 +493,7 @@ const LoginForm = () => {
       </div>
       </div>
     </div>
+    </>
   )
 }
 

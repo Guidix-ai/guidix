@@ -2,10 +2,10 @@
 "use client";
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { DashboardLayout } from "@/components/layout/dashboard-layout";
 import { EditResumeDialog } from "@/components/EditResumeDialog";
 import styles from "@/app/styles/pages/resume-builder.module.css";
-import { Trophy } from "lucide-react";
 import { getAllResumes } from "@/services/resumeService";
 import { handleApiError, logError } from "@/utils/errorHandler";
 
@@ -70,7 +70,7 @@ function ResumeCard({ resume, onEdit, onDelete, onDuplicate }) {
                   "linear-gradient(135deg, var(--brand-primary), var(--brand-primary-dark))",
               }}
             >
-              <span className="text-lg lg:text-xl text-white">📄</span>
+              <Image src="/resumebuilding.svg" alt="Resume" width={24} height={24} />
             </div>
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-2 flex-wrap mb-1">
@@ -319,7 +319,9 @@ function EmptyState() {
         borderColor: "#D5E4FF",
       }}
     >
-      <div className="text-4xl lg:text-6xl mb-4">📄</div>
+      <div className="mb-4 flex justify-center">
+        <Image src="/resumebuilding.svg" alt="Resume" width={64} height={64} />
+      </div>
       <h3
         className="text-lg lg:text-xl font-semibold mb-2"
         style={{ color: "var(--neutral-darkest)" }}
@@ -362,6 +364,10 @@ export default function ResumeBuilderPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const fileInputRef = useRef(null);
+  const [typewriterText, setTypewriterText] = useState('');
+  const [showCursor, setShowCursor] = useState(true);
+
+  const fullText = 'Flex Your AI Resume';
 
   // Fetch resumes from API
   useEffect(() => {
@@ -398,6 +404,39 @@ export default function ResumeBuilderPage() {
 
     fetchResumes();
   }, []);
+
+  // Typewriter effect
+  useEffect(() => {
+    let index = 0;
+    const typingSpeed = 100;
+
+    const typeWriter = () => {
+      if (index < fullText.length) {
+        setTypewriterText(fullText.slice(0, index + 1));
+        index++;
+        setTimeout(typeWriter, typingSpeed);
+      } else {
+        setShowCursor(false);
+      }
+    };
+
+    typeWriter();
+
+    return () => {
+      index = fullText.length;
+    };
+  }, []);
+
+  // Cursor blink effect
+  useEffect(() => {
+    if (!showCursor) return;
+
+    const blinkInterval = setInterval(() => {
+      setShowCursor(prev => !prev);
+    }, 500);
+
+    return () => clearInterval(blinkInterval);
+  }, [showCursor]);
 
   // Helper function to get relative time
   const getRelativeTime = (dateString) => {
@@ -478,7 +517,7 @@ export default function ResumeBuilderPage() {
 
   return (
     <DashboardLayout>
-      <div className="max-w-7xl mx-auto space-y-6">
+      <div className="space-y-6" style={{ width: '100%' }}>
         {/* Header Section */}
         <div className="relative py-6 px-8 overflow-hidden" style={{
           backgroundImage: 'url(/banner.svg)',
@@ -494,13 +533,12 @@ export default function ResumeBuilderPage() {
         }}>
           <div style={{ position: 'relative', zIndex: 1 }}>
             <h1 className="text-white font-bold" style={{ textShadow: '0 2px 10px rgba(0, 0, 0, 0.3)', fontSize: '32px', lineHeight: '1.2' }}>
-              AI Resume Builder
+              {typewriterText}
+              {showCursor && <span className="animate-pulse">|</span>}
             </h1>
-            <p className="text-white text-sm" style={{ textShadow: '0 2px 10px rgba(0, 0, 0, 0.3)', marginTop: '8px', opacity: 0.9 }}>
-              Automate your job applications with intelligent targeting — our resume builder crafts personalized resumes
-            </p>
+
           </div>
-          <div className="text-4xl" style={{ position: 'relative', zIndex: 1 }}>📄</div>
+         
         </div>
         {/* Main Tabs */}
         <div className="w-full">
@@ -511,31 +549,30 @@ export default function ResumeBuilderPage() {
             <div className="grid w-full grid-cols-3 gap-1">
               <button
                 onClick={() => setActiveTab("ai-prompt")}
-                className="py-3 px-3 lg:px-4 rounded-lg text-xs lg:text-sm font-medium transition-all duration-200"
+                className="py-3 px-3 lg:px-4 rounded-lg text-xs lg:text-sm font-medium"
                 style={{
-                  backgroundColor:
-                    activeTab === "ai-prompt" ? "#D1DDFF" : "transparent",
-                  color:
-                    activeTab === "ai-prompt"
-                      ? "#003CF0"
-                      : "var(--neutral-medium-dark)",
+                  background:
+                    activeTab === "ai-prompt" ? "transparent" : "transparent",
+                  color: activeTab === "ai-prompt" ? "#0F2678" : "#6477B4",
+                  borderRadius: "8px",
                   border:
-                    activeTab === "ai-prompt" ? "1px solid #003CF0" : "none",
-                  boxShadow:
                     activeTab === "ai-prompt"
-                      ? "0 1px 3px rgba(35, 112, 255, 0.1)"
-                      : "none",
+                      ? "1px solid #2370FF"
+                      : "1px solid transparent",
+                  fontFamily: 'Inter, sans-serif',
+                  fontSize: '12px',
+                  fontWeight: 400,
+                  lineHeight: '125%',
+                  letterSpacing: '-0.24px'
                 }}
                 onMouseEnter={(e) => {
                   if (activeTab !== "ai-prompt") {
-                    e.target.style.backgroundColor = "var(--neutral-lightest)";
-                    e.target.style.color = "var(--neutral-darker)";
+                    e.target.style.backgroundColor = "#F0F4FA";
                   }
                 }}
                 onMouseLeave={(e) => {
                   if (activeTab !== "ai-prompt") {
                     e.target.style.backgroundColor = "transparent";
-                    e.target.style.color = "var(--neutral-medium-dark)";
                   }
                 }}
               >
@@ -544,30 +581,29 @@ export default function ResumeBuilderPage() {
               </button>
               <button
                 onClick={() => setActiveTab("all")}
-                className="py-3 px-3 lg:px-4 rounded-lg text-xs lg:text-sm font-medium transition-all duration-200"
+                className="py-3 px-3 lg:px-4 rounded-lg text-xs lg:text-sm font-medium"
                 style={{
-                  backgroundColor:
-                    activeTab === "all" ? "#D1DDFF" : "transparent",
-                  color:
+                  background: activeTab === "all" ? "transparent" : "transparent",
+                  color: activeTab === "all" ? "#0F2678" : "#6477B4",
+                  borderRadius: "8px",
+                  border:
                     activeTab === "all"
-                      ? "#003CF0"
-                      : "var(--neutral-medium-dark)",
-                  border: activeTab === "all" ? "1px solid #003CF0" : "none",
-                  boxShadow:
-                    activeTab === "all"
-                      ? "0 1px 3px rgba(35, 112, 255, 0.1)"
-                      : "none",
+                      ? "1px solid #2370FF"
+                      : "1px solid transparent",
+                  fontFamily: 'Inter, sans-serif',
+                  fontSize: '12px',
+                  fontWeight: 400,
+                  lineHeight: '125%',
+                  letterSpacing: '-0.24px'
                 }}
                 onMouseEnter={(e) => {
                   if (activeTab !== "all") {
-                    e.target.style.backgroundColor = "var(--neutral-lightest)";
-                    e.target.style.color = "var(--neutral-darker)";
+                    e.target.style.backgroundColor = "#F0F4FA";
                   }
                 }}
                 onMouseLeave={(e) => {
                   if (activeTab !== "all") {
                     e.target.style.backgroundColor = "transparent";
-                    e.target.style.color = "var(--neutral-medium-dark)";
                   }
                 }}
               >
@@ -576,31 +612,30 @@ export default function ResumeBuilderPage() {
               </button>
               <button
                 onClick={() => setActiveTab("linkedin")}
-                className="py-3 px-3 lg:px-4 rounded-lg text-xs lg:text-sm font-medium transition-all duration-200"
+                className="py-3 px-3 lg:px-4 rounded-lg text-xs lg:text-sm font-medium"
                 style={{
-                  backgroundColor:
-                    activeTab === "linkedin" ? "#D1DDFF" : "transparent",
-                  color:
-                    activeTab === "linkedin"
-                      ? "#003CF0"
-                      : "var(--neutral-medium-dark)",
+                  background:
+                    activeTab === "linkedin" ? "transparent" : "transparent",
+                  color: activeTab === "linkedin" ? "#0F2678" : "#6477B4",
+                  borderRadius: "8px",
                   border:
-                    activeTab === "linkedin" ? "1px solid #003CF0" : "none",
-                  boxShadow:
                     activeTab === "linkedin"
-                      ? "0 1px 3px rgba(35, 112, 255, 0.1)"
-                      : "none",
+                      ? "1px solid #2370FF"
+                      : "1px solid transparent",
+                  fontFamily: 'Inter, sans-serif',
+                  fontSize: '12px',
+                  fontWeight: 400,
+                  lineHeight: '125%',
+                  letterSpacing: '-0.24px'
                 }}
                 onMouseEnter={(e) => {
                   if (activeTab !== "linkedin") {
-                    e.target.style.backgroundColor = "var(--neutral-lightest)";
-                    e.target.style.color = "var(--neutral-darker)";
+                    e.target.style.backgroundColor = "#F0F4FA";
                   }
                 }}
                 onMouseLeave={(e) => {
                   if (activeTab !== "linkedin") {
                     e.target.style.backgroundColor = "transparent";
-                    e.target.style.color = "var(--neutral-medium-dark)";
                   }
                 }}
               >
@@ -745,7 +780,9 @@ export default function ResumeBuilderPage() {
                     className="bg-white rounded-xl border shadow-sm p-8 lg:p-12 text-center"
                     style={{ borderColor: "var(--neutral-medium-light)" }}
                   >
-                    <div className="text-4xl lg:text-6xl mb-4">🔍</div>
+                    <div className="mb-4 flex justify-center">
+                      <Image src="/jobsearching.svg" alt="Search" width={64} height={64} />
+                    </div>
                     <h3
                       className="text-lg lg:text-xl font-semibold mb-2"
                       style={{ color: "var(--neutral-darkest)" }}
@@ -789,94 +826,107 @@ export default function ResumeBuilderPage() {
               >
                 <div className="max-w-4xl mx-auto w-full relative z-10">
                   {/* Header */}
-                  <div className="text-center mb-8">
-                    <div className="flex items-center justify-center mb-6">
-                      <div
-                        className="w-20 h-20 rounded-2xl flex items-center justify-center shadow-lg"
-                        style={{
-                          background:
-                            "linear-gradient(135deg, var(--brand-primary), #79C7FF)",
-                        }}
-                      >
-                        <span className="text-3xl">✨</span>
-                      </div>
-                    </div>
-                    <h1
-                      className="text-4xl lg:text-5xl font-bold mb-4"
-                      style={{ color: "var(--brand-primary)" }}
-                    >
-                      Choose your creation path
-                    </h1>
-                    <p className="text-xl text-gray-600 font-medium max-w-2xl mx-auto leading-relaxed">
-                      Pick your preferred method to create your perfect resume
-                    </p>
-                  </div>
+
 
                   {/* Options Grid */}
                   <div className="grid md:grid-cols-2 gap-8 mb-8">
                     {/* Start from Scratch Option */}
                     <Link href="/resume-confirmation?path=ai">
                       <div
-                        className="cursor-pointer transition-all duration-300 hover:shadow-xl hover:scale-105 border-2 rounded-2xl bg-white p-6"
+                        className="rounded-lg shadow-sm relative transition-all hover:shadow-md cursor-pointer"
                         style={{
-                          borderColor: "#D5E4FF",
+                          backgroundColor: '#FFFFFF',
+                          border: '1px solid #F1F3F7',
+                          boxShadow: '0 0 6px 0 rgba(0, 0, 0, 0.12), 0 2px 3px 0 rgba(0, 0, 0, 0.04), 0 2px 6px 0 rgba(0, 0, 0, 0.04), inset 0 -2px 3px 0 rgba(0, 0, 0, 0.08)',
                         }}
                       >
-                        <div className="text-center pb-4">
-                          <h3
-                            className="text-2xl font-bold mb-2"
-                            style={{ color: "var(--brand-primary)" }}
+                        <div className="p-6">
+                          <div className="text-center pb-4">
+                            <h3
+                              className="text-2xl font-bold mb-2"
+                              style={{ color: '#002A79' }}
+                            >
+                              Start with AI
+                            </h3>
+                            <p style={{ color: '#6477B4', fontSize: '14px' }}>
+                              Let AI create your resume from scratch using
+                              intelligent prompts
+                            </p>
+                          </div>
+                          <button
+                            className="w-full transition-all hover:opacity-90"
+                            style={{
+                              display: 'inline-flex',
+                              width: '100%',
+                              padding: '12px 16px',
+                              justifyContent: 'center',
+                              alignItems: 'center',
+                              borderRadius: '8px',
+                              border: '1px solid rgba(35, 112, 255, 0.30)',
+                              background: 'linear-gradient(180deg, #679CFF 0%, #2370FF 100%)',
+                              boxShadow: '0 2px 4px 0 rgba(77, 145, 225, 0.10), 0 1px 0.3px 0 rgba(255, 255, 255, 0.25) inset, 0 -1px 0.3px 0 rgba(0, 19, 88, 0.25) inset',
+                              color: '#FFFFFF',
+                              textAlign: 'center',
+                              textShadow: '0 0.5px 1.5px rgba(0, 19, 88, 0.30), 0 2px 5px rgba(0, 19, 88, 0.10)',
+                              fontFamily: 'Inter, sans-serif',
+                              fontSize: '14px',
+                              fontWeight: 500,
+                              lineHeight: '125%'
+                            }}
                           >
-                            Start with AI
-                          </h3>
-                          <p className="text-gray-600 font-medium">
-                            Let AI create your resume from scratch using
-                            intelligent prompts
-                          </p>
+                            AI Create
+                          </button>
                         </div>
-                        <button
-                          className="w-full text-white font-bold py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
-                          style={{
-                            background:
-                              "linear-gradient(135deg, var(--brand-primary), var(--brand-primary-dark))",
-                          }}
-                        >
-                          <span className="mr-2">🪄</span>
-                          AI Create
-                        </button>
                       </div>
                     </Link>
 
                     {/* Upload Resume Option */}
                     <Link href="/resume-confirmation?path=upload">
                       <div
-                        className="cursor-pointer transition-all duration-300 hover:shadow-xl hover:scale-105 border-2 rounded-2xl bg-white p-6"
+                        className="rounded-lg shadow-sm relative transition-all hover:shadow-md cursor-pointer"
                         style={{
-                          borderColor: "#D5E4FF",
+                          backgroundColor: '#FFFFFF',
+                          border: '1px solid #F1F3F7',
+                          boxShadow: '0 0 6px 0 rgba(0, 0, 0, 0.12), 0 2px 3px 0 rgba(0, 0, 0, 0.04), 0 2px 6px 0 rgba(0, 0, 0, 0.04), inset 0 -2px 3px 0 rgba(0, 0, 0, 0.08)',
                         }}
                       >
-                        <div className="text-center pb-4">
-                          <h3
-                            className="text-2xl font-bold mb-2"
-                            style={{ color: "var(--brand-primary)" }}
+                        <div className="p-6">
+                          <div className="text-center pb-4">
+                            <h3
+                              className="text-2xl font-bold mb-2"
+                              style={{ color: '#002A79' }}
+                            >
+                              Upload & Enhance
+                            </h3>
+                            <p style={{ color: '#6477B4', fontSize: '14px' }}>
+                              Upload your existing resume and let AI enhance it
+                              for better results
+                            </p>
+                          </div>
+                          <button
+                            className="w-full transition-all hover:opacity-90"
+                            style={{
+                              display: 'inline-flex',
+                              width: '100%',
+                              padding: '12px 16px',
+                              justifyContent: 'center',
+                              alignItems: 'center',
+                              borderRadius: '8px',
+                              border: '1px solid rgba(35, 112, 255, 0.30)',
+                              background: 'linear-gradient(180deg, #679CFF 0%, #2370FF 100%)',
+                              boxShadow: '0 2px 4px 0 rgba(77, 145, 225, 0.10), 0 1px 0.3px 0 rgba(255, 255, 255, 0.25) inset, 0 -1px 0.3px 0 rgba(0, 19, 88, 0.25) inset',
+                              color: '#FFFFFF',
+                              textAlign: 'center',
+                              textShadow: '0 0.5px 1.5px rgba(0, 19, 88, 0.30), 0 2px 5px rgba(0, 19, 88, 0.10)',
+                              fontFamily: 'Inter, sans-serif',
+                              fontSize: '14px',
+                              fontWeight: 500,
+                              lineHeight: '125%'
+                            }}
                           >
-                            Upload & Enhance
-                          </h3>
-                          <p className="text-gray-600 font-medium">
-                            Upload your existing resume and let AI enhance it
-                            for better results
-                          </p>
+                            Upload Resume
+                          </button>
                         </div>
-                        <button
-                          className="w-full text-white font-bold py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
-                          style={{
-                            background:
-                              "linear-gradient(135deg, var(--brand-primary), var(--brand-primary-dark))",
-                          }}
-                        >
-                          <span className="mr-2">📤</span>
-                          Upload Resume
-                        </button>
                       </div>
                     </Link>
                   </div>
@@ -891,7 +941,7 @@ export default function ResumeBuilderPage() {
                         className="flex items-center justify-center gap-2 mb-2"
                         style={{ color: "var(--brand-primary)" }}
                       >
-                        <span className="text-xl">✅</span>
+                        <Image src="/jobsearching.svg" alt="Success" width={20} height={20} />
                         <span className="text-2xl font-bold">95%</span>
                       </div>
                       <div className="text-sm font-semibold text-gray-600 tracking-wide">
@@ -906,7 +956,7 @@ export default function ResumeBuilderPage() {
                         className="flex items-center justify-center gap-2 mb-2"
                         style={{ color: "var(--brand-primary)" }}
                       >
-                        <span className="text-xl">⚡</span>
+                        <Image src="/jobtracking.svg" alt="Time" width={20} height={20} />
                         <span className="text-2xl font-bold">2 min</span>
                       </div>
                       <div className="text-sm font-semibold text-gray-600 tracking-wide">
@@ -921,7 +971,7 @@ export default function ResumeBuilderPage() {
                         className="flex items-center justify-center gap-2 mb-2"
                         style={{ color: "var(--brand-primary)" }}
                       >
-                        <span className="text-xl">📄</span>
+                        <Image src="/resumebuilding.svg" alt="ATS" width={20} height={20} />
                         <span className="text-2xl font-bold">ATS</span>
                       </div>
                       <div className="text-sm font-semibold text-gray-600 tracking-wide">
@@ -948,7 +998,7 @@ export default function ResumeBuilderPage() {
                       background: "linear-gradient(135deg, #0355BE, #002A79)",
                     }}
                   >
-                    <span className="text-2xl text-white">💼</span>
+                    <Image src="/linkedinoptimising.svg" alt="LinkedIn" width={28} height={28} />
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex flex-col lg:flex-row lg:items-center gap-3">
@@ -984,7 +1034,9 @@ export default function ResumeBuilderPage() {
                       borderColor: "#D5E4FF",
                     }}
                   >
-                    <div className="text-4xl mb-4">🔗</div>
+                    <div className="mb-4 flex justify-center">
+                      <Image src="/linkedinoptimising.svg" alt="LinkedIn" width={48} height={48} />
+                    </div>
                     <h3
                       className="text-lg font-semibold mb-2"
                       style={{ color: "var(--neutral-darkest)" }}

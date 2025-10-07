@@ -4,6 +4,7 @@ import { DashboardLayout } from '@/components/layout/dashboard-layout'
 import { useRouter } from 'next/navigation'
 import { getJobsWithResumeUpload, addToWishlist, removeFromWishlist, markNotInterested, setJobStatus, JobStatusEnum, getJobDetails } from '@/services/jobService'
 import { handleApiError, logError } from '@/utils/errorHandler'
+import Image from 'next/image'
 
 // Button styles based on Figma config
 const buttonStyles = {
@@ -176,6 +177,11 @@ const shadowBoxStyle = `
 const EnhancedJobCard = ({ job, onApply, onSave, onBlock, isApplied, isSaved, router }) => {
   const [isHoveringMatchScore, setIsHoveringMatchScore] = useState(false)
   const [showCompanyDetails, setShowCompanyDetails] = useState(false)
+  const [animated, setAnimated] = useState(false)
+
+  useEffect(() => {
+    setTimeout(() => setAnimated(true), 100)
+  }, [])
 
   const handleCardClick = (e) => {
     const target = e.target;
@@ -210,6 +216,8 @@ const EnhancedJobCard = ({ job, onApply, onSave, onBlock, isApplied, isSaved, ro
     return applyButtonStyles
   }
 
+  const totalBlocks = 5
+
   return (
    
     <div
@@ -227,8 +235,19 @@ const EnhancedJobCard = ({ job, onApply, onSave, onBlock, isApplied, isSaved, ro
           <>
             <div className="flex justify-between items-start mb-3">
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-lg flex items-center justify-center text-white font-bold text-sm" style={{ backgroundColor: '#0F2678' }}>
-                  {job.company.charAt(0)}
+                <div className="w-10 h-10 rounded-lg flex items-center justify-center bg-white" style={{ border: '1px solid #E1E4ED' }}>
+                  <img
+                    src={`https://logo.clearbit.com/${job.company.toLowerCase().replace(/\s+/g, '')}.com`}
+                    alt={job.company}
+                    className="w-full h-full object-contain rounded-lg"
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                      e.target.nextElementSibling.style.display = 'flex';
+                    }}
+                  />
+                  <div className="w-full h-full rounded-lg flex items-center justify-center text-white font-bold text-sm" style={{ backgroundColor: '#0F2678', display: 'none' }}>
+                    {job.company.charAt(0)}
+                  </div>
                 </div>
                 <div>
                   <div className="text-sm font-semibold" style={{ color: '#002A79' }}>{job.company}</div>
@@ -238,25 +257,43 @@ const EnhancedJobCard = ({ job, onApply, onSave, onBlock, isApplied, isSaved, ro
 
               <div className="flex gap-2">
                 <div
-                  className="text-white rounded-lg px-2 py-1 cursor-pointer transition-all hover:opacity-90"
-                  style={{ backgroundColor: '#0F2678' }}
+                  className="cursor-pointer transition-all hover:opacity-90"
+                  style={{
+                    display: 'inline-flex',
+                    padding: '8px 12px',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    borderRadius: '12px',
+                    background: 'linear-gradient(180deg, #474FA3 0%, #2A338B 100%)',
+                    boxShadow: '0 1.5px 1px 0 rgba(255, 255, 255, 0.24) inset, 0 -1.5px 1px 0 rgba(6, 51, 165, 0.37) inset',
+                    minWidth: '70px',
+                  }}
                   onMouseEnter={() => setIsHoveringMatchScore(true)}
                   data-match-score="true"
                 >
                   <div className="text-center">
-                    <div className="text-xs mb-0.5">Match</div>
-                    <div className="text-sm font-bold">{job.matchScore}%</div>
+                    <div className="text-xs mb-0.5" style={{ color: '#FFFFFF', textShadow: '0 0.5px 1.5px rgba(0, 19, 88, 0.30)' }}>Match</div>
+                    <div className="text-sm font-bold" style={{ color: '#FFFFFF', textShadow: '0 0.5px 1.5px rgba(0, 19, 88, 0.30)' }}>{job.matchScore}%</div>
                   </div>
                 </div>
                 <div
-                  className="text-white rounded-lg px-2 py-1 cursor-pointer transition-all hover:opacity-90"
-                  style={{ backgroundColor: '#003598' }}
+                  className="cursor-pointer transition-all hover:opacity-90"
+                  style={{
+                    display: 'inline-flex',
+                    padding: '8px 12px',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    borderRadius: '12px',
+                    background: 'linear-gradient(180deg, #474FA3 0%, #2A338B 100%)',
+                    boxShadow: '0 1.5px 1px 0 rgba(255, 255, 255, 0.24) inset, 0 -1.5px 1px 0 rgba(6, 51, 165, 0.37) inset',
+                    minWidth: '70px',
+                  }}
                   onMouseEnter={() => setIsHoveringMatchScore(true)}
                   data-match-score="true"
                 >
                   <div className="text-center">
-                    <div className="text-xs mb-0.5">Success</div>
-                    <div className="text-sm font-bold">{job.predictabilityScore}%</div>
+                    <div className="text-xs mb-0.5" style={{ color: '#FFFFFF', textShadow: '0 0.5px 1.5px rgba(0, 19, 88, 0.30)' }}>Success</div>
+                    <div className="text-sm font-bold" style={{ color: '#FFFFFF', textShadow: '0 0.5px 1.5px rgba(0, 19, 88, 0.30)' }}>{job.predictabilityScore}%</div>
                   </div>
                 </div>
               </div>
@@ -266,21 +303,15 @@ const EnhancedJobCard = ({ job, onApply, onSave, onBlock, isApplied, isSaved, ro
 
             <div className="flex items-center gap-4 text-xs mb-2 flex-wrap">
               <div className="flex items-center gap-1">
-                <svg width="12" height="12" fill="none" viewBox="0 0 16 16" style={{ color: '#2370FF' }}>
-                  <path d="M2 6H14L12 2H4L2 6ZM2 8V14H14V8H2Z" fill="currentColor"/>
-                </svg>
-                <span style={{ color: '#2370FF', fontWeight: '600' }}>{job.salary}</span>
+                <Image src="/salary.svg" alt="Salary" width={16} height={16} />
+                <span style={{ fontWeight: '500', color: '#353E5C' }}>{job.salary}</span>
               </div>
               <div className="flex items-center gap-1">
-                <svg width="12" height="12" fill="none" viewBox="0 0 16 16" style={{ color: '#679CFF' }}>
-                  <path d="M8 2L12 6V14H4V6L8 2Z" fill="currentColor"/>
-                </svg>
+                <Image src="/jobtype.svg" alt="Job Type" width={16} height={16} />
                 <span style={{ fontWeight: '500', color: '#353E5C' }}>{job.type}</span>
               </div>
               <div className="flex items-center gap-1">
-                <svg width="12" height="12" fill="none" viewBox="0 0 16 16" style={{ color: '#B2ASFF' }}>
-                  <path d="M8 2C6.1 2 4 3.8 4 6.5C4 9.3 8 14 8 14S12 9.3 12 6.5C12 3.8 9.9 2 8 2ZM8 8C7.2 8 6.5 7.3 6.5 6.5S7.2 5 8 5S9.5 5.7 9.5 6.5S8.8 8 8 8Z" fill="currentColor"/>
-                </svg>
+                <Image src="/location.svg" alt="Location" width={16} height={16} />
                 <span style={{ fontWeight: '500', color: '#353E5C' }}>{job.location}</span>
               </div>
             </div>
@@ -302,15 +333,11 @@ const EnhancedJobCard = ({ job, onApply, onSave, onBlock, isApplied, isSaved, ro
                 Company Details
               </div>
               <div className="flex items-center gap-2">
-                <button onClick={(e) => { e.stopPropagation(); onBlock(job.id); }} style={{...buttonStyles, padding: '6px', background: '#F8F9FF'}} className="hover:opacity-70 transition-all" title="Dismiss">
-                  <svg width="12" height="12" fill="none" viewBox="0 0 16 16">
-                    <path d="M4 4L12 12M4 12L12 4" stroke="#6D7586" strokeWidth="2" strokeLinecap="round"/>
-                  </svg>
+                <button onClick={(e) => { e.stopPropagation(); onBlock(job.id); }} style={{...buttonStyles, padding: '4px', background: 'transparent', boxShadow: 'none'}} className="hover:opacity-70 transition-all" title="Dismiss">
+                  <Image src="/dismiss.svg" alt="Dismiss" width={20} height={20} />
                 </button>
-                <button onClick={(e) => { e.stopPropagation(); onSave(job.id); }} style={{...buttonStyles, background: isSaved ? '#EBF1FF' : '#F8F9FF', padding: '6px'}} className="transition-all hover:opacity-70" title="Save Job">
-                  <svg width="12" height="12" fill="none" viewBox="0 0 16 16">
-                    <path d="M4 2V14L8 11L12 14V2H4Z" stroke={isSaved ? "#2370FF" : "#6D7586"} strokeWidth="2" fill={isSaved ? "#2370FF" : "none"}/>
-                  </svg>
+                <button onClick={(e) => { e.stopPropagation(); onSave(job.id); }} style={{...buttonStyles, background: 'transparent', padding: '4px', boxShadow: 'none'}} className="transition-all hover:opacity-70" title="Save Job">
+                  <Image src="/wishlist.svg" alt="Save" width={20} height={20} style={{ opacity: isSaved ? 1 : 0.6 }} />
                 </button>
                 <button
                   onClick={(e) => { e.stopPropagation(); onApply(job.id); }}
@@ -328,27 +355,15 @@ const EnhancedJobCard = ({ job, onApply, onSave, onBlock, isApplied, isSaved, ro
                 <h4 className="font-bold mb-2 text-xs" style={{ color: '#002A79' }}>Company Links</h4>
                 <div className="space-y-1">
                   <a href={job.companyWebsite} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 p-1.5 rounded-lg transition-all text-xs hover:opacity-80" style={{ backgroundColor: '#FFFFFF' }}>
-                    <div className="w-6 h-6 rounded-full flex items-center justify-center" style={{ backgroundColor: '#EBF1FF' }}>
-                      <svg width="10" height="10" fill="none" viewBox="0 0 16 16">
-                        <path d="M8 0L10.5 5.5L16 8L10.5 10.5L8 16L5.5 10.5L0 8L5.5 5.5L8 0Z" fill="#2370FF"/>
-                      </svg>
-                    </div>
+                    <Image src="/companywebsite.svg" alt="Website" width={20} height={20} />
                     <span style={{ fontWeight: '600', color: '#353E5C' }}>Company Website</span>
                   </a>
                   <a href={job.linkedinUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 p-1.5 rounded-lg transition-all text-xs hover:opacity-80" style={{ backgroundColor: '#FFFFFF' }}>
-                    <div className="w-6 h-6 rounded-full flex items-center justify-center" style={{ backgroundColor: '#EBF1FF' }}>
-                      <svg width="10" height="10" fill="none" viewBox="0 0 16 16">
-                        <path d="M4 2H12C13.1 2 14 2.9 14 4V12C14 13.1 13.1 14 12 14H4C2.9 14 2 13.1 2 12V4C2 2.9 2.9 2 4 2Z" fill="#2370FF"/>
-                      </svg>
-                    </div>
+                    <Image src="/companylinkedin.svg" alt="Company LinkedIn" width={20} height={20} />
                     <span style={{ fontWeight: '600', color: '#353E5C' }}>Company LinkedIn</span>
                   </a>
                   <a href={job.hrLinkedinUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 p-1.5 rounded-lg transition-all text-xs hover:opacity-80" style={{ backgroundColor: '#FFFFFF' }}>
-                    <div className="w-6 h-6 rounded-full flex items-center justify-center" style={{ backgroundColor: '#EBF1FF' }}>
-                      <svg width="10" height="10" fill="none" viewBox="0 0 16 16">
-                        <path d="M8 8C9.1 8 10 7.1 10 6C10 4.9 9.1 4 8 4C6.9 4 6 4.9 6 6C6 7.1 6.9 8 8 8ZM8 9C6.3 9 3 9.8 3 11.5V13H13V11.5C13 9.8 9.7 9 8 9Z" fill="#2370FF"/>
-                      </svg>
-                    </div>
+                    <Image src="/hrlinkedin.svg" alt="HR LinkedIn" width={20} height={20} />
                     <span style={{ fontWeight: '600', color: '#353E5C' }}>HR LinkedIn</span>
                   </a>
                 </div>
@@ -373,8 +388,8 @@ const EnhancedJobCard = ({ job, onApply, onSave, onBlock, isApplied, isSaved, ro
             )}
           </>
         ) : (
-          <div className="space-y-2">
-            <div className="flex justify-between items-start mb-3">
+          <div className="space-y-2" style={{ maxHeight: '400px', overflowY: 'auto' }}>
+            <div className="flex justify-between items-start mb-2">
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 rounded-lg flex items-center justify-center text-white font-bold text-sm" style={{ backgroundColor: '#0F2678' }}>
                   {job.company.charAt(0)}
@@ -399,73 +414,94 @@ const EnhancedJobCard = ({ job, onApply, onSave, onBlock, isApplied, isSaved, ro
                 </div>
               </div>
             </div>
-            <h3 className="text-lg font-bold mb-2" style={{ color: '#002A79' }}>{job.title}</h3>
-            <p className="text-xs mb-3 leading-relaxed" style={{ color: '#6D7586' }}>{job.companyDescription}</p>
-            <div className="grid grid-cols-1 gap-2 mb-3">
+            <h3 className="text-base font-bold mb-1.5" style={{ color: '#002A79' }}>{job.title}</h3>
+            <p className="text-xs mb-2.5 leading-relaxed line-clamp-2" style={{ color: '#6D7586' }}>{job.companyDescription}</p>
+            <div className="grid grid-cols-1 gap-2.5 mb-2">
               <div className="rounded-lg p-3" style={{ backgroundColor: '#EBF1FF', border: '1px solid #B2CDFF' }}>
-                <h4 className="text-xs font-bold mb-2" style={{ color: '#003598' }}>Match Breakdown</h4>
-                <div className="grid grid-cols-2 gap-2">
-                  <div>
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="text-xs font-semibold" style={{ color: '#353E5C' }}>Skills</span>
-                      <span className="text-xs font-bold" style={{ color: '#2370FF' }}>{job.skillsMatch}%</span>
-                    </div>
-                    <div className="w-full rounded-full h-1.5" style={{ backgroundColor: '#F8F9FF' }}>
-                      <div className="h-1.5 rounded-full" style={{ width: `${job.skillsMatch}%`, backgroundColor: '#2370FF' }}/>
-                    </div>
-                  </div>
-                  <div>
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="text-xs font-semibold" style={{ color: '#353E5C' }}>Experience</span>
-                      <span className="text-xs font-bold" style={{ color: '#679CFF' }}>{job.experienceMatch}%</span>
-                    </div>
-                    <div className="w-full rounded-full h-1.5" style={{ backgroundColor: '#F8F9FF' }}>
-                      <div className="h-1.5 rounded-full" style={{ width: `${job.experienceMatch}%`, backgroundColor: '#679CFF' }}/>
-                    </div>
-                  </div>
+                <h4 className="text-xs font-bold mb-2.5" style={{ color: '#003598' }}>Match Breakdown</h4>
+                <div className="space-y-3">
+                  {[
+                    { label: 'Skills', value: job.skillsMatch, color: '#2370FF' },
+                    { label: 'Experience', value: job.experienceMatch, color: '#679CFF' }
+                  ].map((stat, index) => {
+                    const filledBlocks = Math.round((stat.value / 100) * totalBlocks)
+
+                    return (
+                      <div key={stat.label} className="flex items-center gap-2.5">
+                        <span className="text-xs font-semibold w-20 flex-shrink-0" style={{ color: '#353E5C' }}>
+                          {stat.label}
+                        </span>
+
+                        <div className="flex gap-1 flex-1">
+                          {[...Array(totalBlocks)].map((_, blockIndex) => (
+                            <div
+                              key={blockIndex}
+                              className="h-2.5 flex-1 rounded"
+                              style={{
+                                backgroundColor: blockIndex < filledBlocks && animated
+                                  ? stat.color
+                                  : '#E5E7EB',
+                                opacity: animated ? 1 : 0.3,
+                                transition: 'all 300ms',
+                                transitionDelay: animated ? `${300 + index * 60 + blockIndex * 40}ms` : '0ms',
+                                transform: animated ? 'scale(1)' : 'scale(0.85)'
+                              }}
+                            />
+                          ))}
+                        </div>
+
+                        <span
+                          className="text-xs font-bold w-10 text-right"
+                          style={{
+                            color: stat.color,
+                            opacity: animated ? 1 : 0,
+                            transition: 'opacity 300ms',
+                            transitionDelay: `${300 + index * 60 + 250}ms`
+                          }}
+                        >
+                          {animated ? `${stat.value}%` : '0%'}
+                        </span>
+                      </div>
+                    )
+                  })}
                 </div>
               </div>
               <div className="rounded-lg p-3" style={{ backgroundColor: '#F8F9FF', border: '1px solid #E1E4ED' }}>
-                <h4 className="text-xs font-bold mb-2" style={{ color: '#003598' }}>Success Rate</h4>
-                <div className="space-y-1">
+                <h4 className="text-xs font-bold mb-2.5" style={{ color: '#003598' }}>Success Rate</h4>
+                <div className="space-y-2">
                   <div className="text-xs" style={{ color: '#6D7586' }}>
                     <span className="font-semibold">Based on similar profiles</span>
                   </div>
-                  <div className="w-full rounded-full h-1.5" style={{ backgroundColor: '#EBF1FF' }}>
-                    <div className="h-1.5 rounded-full" style={{ width: `${job.predictabilityScore}%`, backgroundColor: '#82A5FF' }}/>
+                  <div className="flex gap-1">
+                    {[...Array(totalBlocks)].map((_, blockIndex) => {
+                      const successFilledBlocks = Math.round((job.predictabilityScore / 100) * totalBlocks)
+                      return (
+                        <div
+                          key={blockIndex}
+                          className="h-2.5 flex-1 rounded"
+                          style={{
+                            backgroundColor: blockIndex < successFilledBlocks && animated
+                              ? '#82A5FF'
+                              : '#E5E7EB',
+                            opacity: animated ? 1 : 0.3,
+                            transition: 'all 300ms',
+                            transitionDelay: animated ? `${600 + blockIndex * 40}ms` : '0ms',
+                            transform: animated ? 'scale(1)' : 'scale(0.85)'
+                          }}
+                        />
+                      )
+                    })}
                   </div>
                 </div>
               </div>
             </div>
-            <div className="flex items-center justify-between pt-2" style={{ borderTop: '1px solid #F1F3F7' }}>
-              <button onClick={handleShowLess} style={{
-                display: 'inline-flex',
-                padding: '6px 12px',
-                justifyContent: 'center',
-                alignItems: 'center',
-                borderRadius: '8px',
-                background: 'linear-gradient(180deg, #474FA3 0%, #2A338B 100%)',
-                boxShadow: '0 1px 0.5px 0 rgba(255, 255, 255, 0.24) inset, 0 -1px 0.5px 0 rgba(6, 51, 165, 0.37) inset',
-                color: '#FFFFFF',
-                textShadow: '0 0.5px 1.5px rgba(0, 19, 88, 0.30), 0 2px 5px rgba(0, 19, 88, 0.10)',
-                fontFamily: 'Inter, sans-serif',
-                fontSize: '12px',
-                fontWeight: 500,
-                lineHeight: '125%',
-                letterSpacing: '-0.24px'
-              }} className="transition-all hover:opacity-80">
-                Show Less
-              </button>
+            <div className="flex items-center justify-end pt-1.5" style={{ borderTop: '1px solid #F1F3F7' }}>
               <div className="flex items-center gap-2">
-                <button onClick={(e) => { e.stopPropagation(); onBlock(job.id); }} style={{...buttonStyles, padding: '6px', background: '#F8F9FF'}} className="hover:opacity-70 transition-all" title="Dismiss">
-                  <svg width="12" height="12" fill="none" viewBox="0 0 16 16">
-                    <path d="M4 4L12 12M4 12L12 4" stroke="#6D7586" strokeWidth="2" strokeLinecap="round"/>
-                  </svg>
+                <button onClick={(e) => { e.stopPropagation(); onBlock(job.id); }} style={{...buttonStyles, padding: '4px', background: 'transparent', boxShadow: 'none'}} className="hover:opacity-70 transition-all" title="Dismiss">
+                  <Image src="/dismiss.svg" alt="Dismiss" width={20} height={20} />
                 </button>
-                <button onClick={(e) => { e.stopPropagation(); onSave(job.id); }} style={{...buttonStyles, background: isSaved ? '#EBF1FF' : '#F8F9FF', padding: '6px'}} className="transition-all hover:opacity-70" title="Save Job">
-                  <svg width="12" height="12" fill="none" viewBox="0 0 16 16">
-                    <path d="M4 2V14L8 11L12 14V2H4Z" stroke={isSaved ? "#2370FF" : "#6D7586"} strokeWidth="2" fill={isSaved ? "#2370FF" : "none"}/>
-                  </svg>
+                <button onClick={(e) => { e.stopPropagation(); onSave(job.id); }} style={{...buttonStyles, background: 'transparent', padding: '4px', boxShadow: 'none'}} className="transition-all hover:opacity-70" title="Save Job">
+                  <Image src="/wishlist.svg" alt="Save" width={20} height={20} style={{ opacity: isSaved ? 1 : 0.6 }} />
                 </button>
                 <button
                   onClick={(e) => { e.stopPropagation(); onApply(job.id); }}
@@ -495,7 +531,7 @@ const JobSearchPage = () => {
   const [showSortDropdown, setShowSortDropdown] = useState(false)
   const [typewriterText, setTypewriterText] = useState("")
   const [showCursor, setShowCursor] = useState(true)
-  const fullText = "Hey Advika! We've curated the perfect matches. Secure the bag!"
+  const fullText = "Hey Advika, Secure the bag!"
   const [jobs, setJobs] = useState(allJobs) // Start with mock data
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
@@ -707,7 +743,7 @@ const JobSearchPage = () => {
 
   return (
     <DashboardLayout>
-    <div style={{ minHeight: '100vh', backgroundColor: '#F8F9FF' }}>
+    <div style={{ minHeight: '100vh', backgroundColor: '#F8F9FF', width: '100%' }}>
       <div className="relative py-6 px-8 overflow-hidden flex items-center" style={{
         backgroundImage: 'url(/banner.svg)',
         backgroundSize: 'cover',
@@ -717,7 +753,7 @@ const JobSearchPage = () => {
         boxShadow: '0 4px 20px 0 #2370FF66',
         borderRadius: '16px'
       }}>
-        <div className="max-w-6xl mx-auto relative z-10">
+        <div className="relative z-10">
           <h1 className="text-white font-bold mb-2" style={{ textShadow: '0 2px 10px rgba(0, 0, 0, 0.3)', fontSize: '32px', lineHeight: '1.2', maxWidth: '800px' }}>
             {typewriterText}
             {showCursor && <span className="animate-pulse">|</span>}
@@ -726,7 +762,7 @@ const JobSearchPage = () => {
       </div>
 
       <div className="bg-white px-8 py-5 border-b" style={{ borderColor: '#E1E4ED', backgroundColor: '#FFFFFF' }}>
-        <div className="max-w-6xl mx-auto flex flex-wrap justify-between items-center gap-4">
+        <div className="flex flex-wrap justify-between items-center gap-4">
           <div className="flex gap-3 flex-wrap">
             {[
               { key: "all", label: "All Jobs" },
@@ -738,33 +774,31 @@ const JobSearchPage = () => {
               <button
                 key={filter.key}
                 onClick={() => setFilterBy(filter.key)}
-                style={filterBy === filter.key 
-                  ? { 
+                style={filterBy === filter.key
+                  ? {
                       display: 'inline-flex',
-                      padding: '10px 20px',
+                      padding: '8px 12px',
                       justifyContent: 'center',
                       alignItems: 'center',
-                      borderRadius: '12px',
+                      borderRadius: '8px',
                       background: 'linear-gradient(180deg, #474FA3 0%, #2A338B 100%)',
                       boxShadow: '0 1.5px 1px 0 rgba(255, 255, 255, 0.24) inset, 0 -1.5px 1px 0 rgba(6, 51, 165, 0.37) inset',
                       color: '#FFFFFF',
                       textShadow: '0 0.5px 1.5px rgba(0, 19, 88, 0.30), 0 2px 5px rgba(0, 19, 88, 0.10)',
                       fontFamily: 'Inter, sans-serif',
-                      fontSize: '18px',
+                      fontSize: '14px',
                       fontWeight: 500,
                       lineHeight: '125%',
-                      letterSpacing: '-0.36px'
+                      letterSpacing: '-0.36px',
+                      whiteSpace: 'nowrap'
                     }
-                  : { 
+                  : {
                       display: 'inline-flex',
-                      width: '92px',
-                      height: '47px',
-                      minHeight: '44px',
-                      padding: '8px 16px',
+                      padding: '8px 12px',
                       gap: '8px',
                       justifyContent: 'center',
                       alignItems: 'center',
-                      borderRadius: '12px',
+                      borderRadius: '8px',
                       borderWidth: '1px',
                       borderStyle: 'solid',
                       borderColor: '#D5E4FF',
@@ -774,10 +808,11 @@ const JobSearchPage = () => {
                       opacity: 1,
                       color: '#474FA3',
                       fontFamily: 'Inter, sans-serif',
-                      fontSize: '16px',
+                      fontSize: '14px',
                       fontWeight: 500,
                       lineHeight: '125%',
-                      letterSpacing: '-0.32px'
+                      letterSpacing: '-0.32px',
+                      whiteSpace: 'nowrap'
                     }
                 }
                 className="transition-all hover:opacity-90"
@@ -788,22 +823,20 @@ const JobSearchPage = () => {
           </div>
           <div className="flex items-center gap-3">
             <label className="text-sm font-semibold text-gray-700">Sort by:</label>
-            <div style={{position: 'relative', minWidth: '200px'}} data-dropdown-container>
+            <div style={{position: 'relative', minWidth: '160px'}} data-dropdown-container>
               <div
                 onClick={() => setShowSortDropdown(!showSortDropdown)}
                 className="w-full text-sm font-medium text-gray-700 cursor-pointer focus:outline-none flex items-center justify-between"
                 style={{
-                  height: '54px',
-                  minHeight: '54px',
-                  padding: '16px',
-                  borderRadius: '12px',
+                  padding: '8px 12px',
+                  borderRadius: '8px',
                   border: '1px solid #F0F4FA',
                   background: '#FFF',
                   boxShadow: '0 -4px 4px 0 rgba(0, 19, 88, 0.10) inset, 0 4px 16px 0 rgba(0, 19, 88, 0.04), 0 4px 4px 0 rgba(0, 19, 88, 0.04), 0 0 2px 0 rgba(0, 19, 88, 0.15)'
                 }}
               >
                 <span>{sortOptions.find(opt => opt.value === sortBy)?.label}</span>
-                <svg width="20" height="20" fill="none" viewBox="0 0 20 20" style={{
+                <svg width="16" height="16" fill="none" viewBox="0 0 20 20" style={{
                   transform: showSortDropdown ? 'rotate(180deg)' : 'rotate(0deg)',
                   transition: 'transform 0.2s ease'
                 }}>
@@ -815,7 +848,7 @@ const JobSearchPage = () => {
                 <div
                   style={{
                     display: 'flex',
-                    width: '272px',
+                    minWidth: '200px',
                     padding: '16px',
                     flexDirection: 'column',
                     alignItems: 'flex-start',
@@ -826,7 +859,7 @@ const JobSearchPage = () => {
                     boxShadow: '0 -4px 2px 0 rgba(17, 35, 89, 0.08) inset, 0 1.5px 1.5px 0 rgba(17, 35, 89, 0.17), 0 2px 5px 0 rgba(17, 35, 89, 0.03), 0 12px 45px 0 rgba(13, 57, 170, 0.15)',
                     position: 'absolute',
                     top: '60px',
-                    left: '0',
+                    right: '0',
                     zIndex: 50
                   }}
                 >
@@ -850,7 +883,7 @@ const JobSearchPage = () => {
         </div>
       </div>
 
-      <div className="max-w-6xl mx-auto px-8 py-6" style={{ backgroundColor: 'transparent' }}>
+      <div className="px-8 py-6" style={{ backgroundColor: 'transparent' }}>
         {filteredJobs.length === 0 ? (
           <div className="text-center py-16 rounded-xl shadow-sm" style={{ backgroundColor: '#FFFFFF', border: '1px solid #F1F3F7' }}>
             <div className="text-6xl mb-6">😞</div>

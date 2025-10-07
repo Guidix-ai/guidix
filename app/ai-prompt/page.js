@@ -1,30 +1,20 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Textarea } from "@/components/ui/textarea";
 import { useState, useEffect, Suspense } from "react";
+import Image from "next/image";
 import {
   ArrowRight,
   ArrowLeft,
-  Bot,
-  Sparkles,
-  Zap,
-  Users,
-  Heart,
-  Copy,
-  GraduationCap,
-  Monitor,
 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import styles from "@/app/styles/pages/ai-prompt.module.css";
 import { DashboardLayout } from "@/components/layout/dashboard-layout";
+
+const colorTokens = {
+  title: "#002A79",
+  paragraph: "#6477B4",
+  bgLight: "#F8F9FF",
+  secondary600: "#2370FF",
+};
 
 function AIPromptInputContent() {
   const [prompt, setPrompt] = useState("");
@@ -33,6 +23,9 @@ function AIPromptInputContent() {
   const [userFields, setUserFields] = useState([]);
   const [userEducation, setUserEducation] = useState("");
   const [userCareer, setUserCareer] = useState("");
+  const [typewriterText, setTypewriterText] = useState('');
+  const [showCursor, setShowCursor] = useState(true);
+  const fullText = 'Tell us about yourself';
 
   const MAX_WORDS = 50;
 
@@ -59,6 +52,23 @@ function AIPromptInputContent() {
     if (education) setUserEducation(education);
     if (career) setUserCareer(career);
   }, [searchParams]);
+
+  // Typewriter effect
+  useEffect(() => {
+    let index = 0;
+    const typingSpeed = 80;
+    const typeWriter = () => {
+      if (index < fullText.length) {
+        setTypewriterText(fullText.slice(0, index + 1));
+        index++;
+        setTimeout(typeWriter, typingSpeed);
+      } else {
+        setShowCursor(false);
+      }
+    };
+    typeWriter();
+    return () => { index = fullText.length; };
+  }, []);
 
   const getFieldData = (fieldId) => {
     const fieldMap = {
@@ -326,318 +336,259 @@ function AIPromptInputContent() {
   };
 
   return (
-    <DashboardLayout>
-      <div
-        className="min-h-screen flex items-center justify-center py-8"
-        style={{
-          background:
-            "linear-gradient(135deg, var(--brand-secondary-lightest) 0%, var(--brand-secondary-light) 100%)",
-        }}
-      >
-        <div className="max-w-4xl mx-auto px-4 w-full">
-          {/* Header */}
-          <div className="text-center mb-8">
-            <div
-              className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg"
-              style={{
-                background:
-                  "linear-gradient(135deg, var(--brand-primary), var(--brand-accent-bright))",
-              }}
-            >
-              <Sparkles className="h-8 w-8 text-white" />
-            </div>
-            <h1
-              className="text-4xl font-bold mb-4"
-              style={{ color: "var(--brand-primary)" }}
-            >
-              Tell us about yourself
+    <>
+      <style jsx>{`
+        textarea::placeholder {
+          color: #6477B4;
+          font-family: Inter, sans-serif;
+          font-size: 16px;
+          font-weight: 400;
+          line-height: 125%;
+          letter-spacing: -0.32px;
+        }
+        textarea::-webkit-input-placeholder {
+          color: #6477B4;
+          font-family: Inter, sans-serif;
+          font-size: 16px;
+          font-weight: 400;
+          line-height: 125%;
+          letter-spacing: -0.32px;
+        }
+        textarea::-moz-placeholder {
+          color: #6477B4;
+          font-family: Inter, sans-serif;
+          font-size: 16px;
+          font-weight: 400;
+          line-height: 125%;
+          letter-spacing: -0.32px;
+        }
+        textarea:-ms-input-placeholder {
+          color: #6477B4;
+          font-family: Inter, sans-serif;
+          font-size: 16px;
+          font-weight: 400;
+          line-height: 125%;
+          letter-spacing: -0.32px;
+        }
+      `}</style>
+      <DashboardLayout>
+        <div style={{ minHeight: '100vh', backgroundColor: '#F8F9FF', width: '100%' }}>
+        {/* Banner */}
+        <div className="relative py-6 px-8 overflow-hidden flex items-center" style={{
+          backgroundImage: 'url(/banner.svg)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          minHeight: '100px',
+          boxShadow: '0 4px 20px 0 #2370FF66',
+          borderRadius: '16px'
+        }}>
+          <div className="relative z-10">
+            <h1 className="text-white font-bold" style={{ textShadow: '0 2px 10px rgba(0, 0, 0, 0.3)', fontSize: '32px', lineHeight: '1.2' }}>
+              {typewriterText}
+              {showCursor && <span className="animate-pulse">|</span>}
             </h1>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
-              Share your story and let AI create your perfect resume
-            </p>
-            {userFields.length > 0 && userEducation && (
-              <div className="mt-6 flex items-center justify-center gap-3 flex-wrap">
-                <span
-                  className="px-4 py-2 rounded-full text-sm font-medium flex items-center gap-2"
-                  style={{
-                    backgroundColor: "var(--brand-secondary-light)",
-                    color: "var(--brand-primary)",
-                  }}
-                >
-                  <GraduationCap className="h-4 w-4" />
-                  {userEducation === "first"
-                    ? "1st Year"
-                    : userEducation === "second"
-                    ? "2nd Year"
-                    : userEducation === "third"
-                    ? "3rd Year"
-                    : "4th Year"}
+          </div>
+        </div>
+
+        {/* Info Section */}
+        {userFields.length > 0 && userEducation && (
+          <div className="bg-white px-8 py-4 border-b" style={{ borderColor: '#E1E4ED', backgroundColor: '#FFFFFF' }}>
+            <div className="flex items-center justify-center gap-3 flex-wrap">
+              <span className="px-3 py-1.5 rounded-lg text-sm font-medium flex items-center gap-2" style={{
+                backgroundColor: '#E9F1FF',
+                color: colorTokens.title
+              }}>
+                <Image src="/resumebuilder.svg" alt="Education" width={14} height={14} />
+                {userEducation === "first" ? "1st Year" : userEducation === "second" ? "2nd Year" : userEducation === "third" ? "3rd Year" : "4th Year"}
+              </span>
+              {userFields.map((fieldId) => (
+                <span key={fieldId} className="px-3 py-1.5 rounded-lg text-sm font-medium flex items-center gap-2" style={{
+                  backgroundColor: '#E9F1FF',
+                  color: colorTokens.title
+                }}>
+                  <Image src="/dashboard.svg" alt="Field" width={14} height={14} />
+                  {getFieldData(fieldId).name}
                 </span>
-                {userFields.map((fieldId, index) => (
-                  <span
-                    key={fieldId}
-                    className="px-4 py-2 rounded-full text-sm font-medium flex items-center gap-2"
-                    style={{
-                      backgroundColor: "var(--brand-secondary-light)",
-                      color: "var(--brand-primary)",
-                    }}
-                  >
-                    <Monitor className="h-4 w-4" />
-                    {getFieldData(fieldId).name}
-                  </span>
-                ))}
-                {userCareer && (
-                  <span
-                    className="px-4 py-2 rounded-full text-sm font-medium"
-                    style={{
-                      backgroundColor: "var(--brand-accent-light)",
-                      color: "var(--brand-primary)",
-                    }}
-                  >
-                    {userCareer === "internship"
-                      ? "Seeking Internship"
-                      : "Seeking Full-time"}
-                  </span>
-                )}
+              ))}
+              {userCareer && (
+                <span className="px-3 py-1.5 rounded-lg text-sm font-medium" style={{
+                  backgroundColor: '#E9F1FF',
+                  color: colorTokens.title
+                }}>
+                  {userCareer === "internship" ? "Seeking Internship" : "Seeking Full-time"}
+                </span>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Main Content */}
+        <div className="px-8 py-6 max-w-4xl mx-auto"  style={{ backgroundColor: '#F8F9FF' }}>
+          {/* Text Input Section */}
+          <div className="mb-6 bg-white rounded-lg p-6" style={{
+            border: '1px solid #F1F3F7',
+            boxShadow: '0 0 6px 0 rgba(0, 0, 0, 0.12), 0 2px 3px 0 rgba(0, 0, 0, 0.04), 0 2px 6px 0 rgba(0, 0, 0, 0.04), inset 0 -2px 3px 0 rgba(0, 0, 0, 0.08)'
+          }}>
+            <div className="flex items-center gap-2 mb-4">
+              <Image src="/resumebuilder.svg" alt="Info" width={16} height={16} />
+              <h2 className="font-semibold" style={{ color: colorTokens.title, fontSize: '16px' }}>
+                Your Information
+              </h2>
+            </div>
+            <p className="text-sm mb-4" style={{ color: colorTokens.paragraph }}>
+              Write a brief description about yourself
+            </p>
+
+            <div className="relative">
+              <textarea
+                placeholder="Example: I'm John Doe, a 3rd year Computer Science student from Mumbai. I'm skilled in React, Node.js, and Python. I've built web applications and am looking for internship opportunities."
+                value={prompt}
+                onChange={(e) => setPrompt(e.target.value)}
+                rows={6}
+                className="resize-none"
+                style={{
+                  width: "100%",
+                  minHeight: 160,
+                  paddingLeft: 16,
+                  paddingRight: 16,
+                  paddingTop: 12,
+                  paddingBottom: 12,
+                  backgroundColor: colorTokens.bgLight,
+                  borderRadius: 16,
+                  boxShadow: wordCount > MAX_WORDS
+                    ? "0px 0px 2px 0px rgba(239,68,68,0.5), 0px 4px 4px 0px rgba(239,68,68,0.04), 0px 4px 16px 0px rgba(239,68,68,0.04), inset 0px -4px 4px 0px rgba(239,68,68,0.10)"
+                    : "0px 0px 2px 0px rgba(0,19,88,0.15), 0px 4px 4px 0px rgba(0,19,88,0.04), 0px 4px 16px 0px rgba(0,19,88,0.04), inset 0px -4px 4px 0px rgba(0,19,88,0.10)",
+                  outline: wordCount > MAX_WORDS ? "1px solid #EF4444" : "1px solid #C7D6ED",
+                  fontSize: 16,
+                  color: colorTokens.paragraph,
+                  fontFamily: "Inter, sans-serif",
+                  fontWeight: 400,
+                  lineHeight: "125%",
+                  letterSpacing: "-0.32px",
+                }}
+              />
+              <div className="absolute bottom-3 right-3">
+                <span className={`text-xs px-3 py-1 rounded-full font-medium ${
+                  wordCount > MAX_WORDS ? "bg-red-100 text-red-600" : "text-white"
+                }`} style={
+                  wordCount <= MAX_WORDS ? { backgroundColor: "#2370FF" } : {}
+                }>
+                  {wordCount}/{MAX_WORDS} words
+                </span>
               </div>
+            </div>
+
+            {wordCount > MAX_WORDS && (
+              <p className="text-red-600 text-sm mt-2 flex items-center gap-2">
+                <span>⚠️</span>
+                Please keep it under {MAX_WORDS} words
+              </p>
             )}
           </div>
 
-          {/* Main Content */}
-          <div
-            className="bg-white rounded-xl shadow-sm border p-8 mb-8"
-            style={{ borderColor: "var(--neutral-medium-light)" }}
-          >
-            {/* Text Input Section */}
-            <div className="mb-8">
-              <div className="flex items-center gap-3 mb-4">
-                <div
-                  className="w-10 h-10 rounded-lg flex items-center justify-center"
-                  style={{ backgroundColor: "var(--brand-secondary-lightest)" }}
-                >
-                  <Bot
-                    className="h-5 w-5"
-                    style={{ color: "var(--brand-primary)" }}
-                  />
-                </div>
-                <div>
-                  <h2
-                    className="text-lg font-semibold"
-                    style={{ color: "var(--neutral-darkest)" }}
-                  >
-                    Your Information
-                  </h2>
-                  <p
-                    className="text-sm"
-                    style={{ color: "var(--neutral-medium-dark)" }}
-                  >
-                    Write a brief description about yourself
-                  </p>
-                </div>
-              </div>
-
-              <div className="relative">
-                <Textarea
-                  placeholder="Example: I'm John Doe, a 3rd year Computer Science student from Mumbai. I'm skilled in React, Node.js, and Python. I've built web applications and am looking for internship opportunities."
-                  value={prompt}
-                  onChange={(e) => setPrompt(e.target.value)}
-                  rows={6}
-                  className="w-full border rounded-lg p-4 text-sm resize-none transition-all duration-200"
-                  style={{
-                    borderColor:
-                      wordCount > MAX_WORDS
-                        ? "#EF4444"
-                        : "var(--neutral-medium-light)",
-                    backgroundColor: "#F6F7FA",
-                    color: "var(--neutral-darkest)",
-                  }}
-                  onFocus={(e) => {
-                    if (wordCount <= MAX_WORDS) {
-                      e.target.style.borderColor = "var(--brand-primary)";
-                      e.target.style.boxShadow =
-                        "0 0 0 3px rgba(35, 112, 255, 0.1)";
-                    }
-                  }}
-                  onBlur={(e) => {
-                    e.target.style.borderColor =
-                      wordCount > MAX_WORDS
-                        ? "#EF4444"
-                        : "var(--neutral-medium-light)";
-                    e.target.style.boxShadow = "none";
-                  }}
-                />
-                <div className="absolute bottom-3 right-3">
-                  <span
-                    className={`text-xs px-3 py-1 rounded-full font-medium ${
-                      wordCount > MAX_WORDS
-                        ? "bg-red-100 text-red-600"
-                        : "text-white"
-                    }`}
-                    style={
-                      wordCount <= MAX_WORDS
-                        ? { backgroundColor: "var(--brand-primary)" }
-                        : {}
-                    }
-                  >
-                    {wordCount}/{MAX_WORDS} words
-                  </span>
-                </div>
-              </div>
-
-              {wordCount > MAX_WORDS && (
-                <p className="text-red-600 text-sm mt-2 flex items-center gap-2">
-                  <span>⚠️</span>
-                  Please keep it under {MAX_WORDS} words
-                </p>
-              )}
+          {/* Examples Section */}
+          <div className="mb-6 bg-white rounded-lg p-6" style={{
+            border: '1px solid #F1F3F7',
+            boxShadow: '0 0 6px 0 rgba(0, 0, 0, 0.12), 0 2px 3px 0 rgba(0, 0, 0, 0.04), 0 2px 6px 0 rgba(0, 0, 0, 0.04), inset 0 -2px 3px 0 rgba(0, 0, 0, 0.08)'
+          }}>
+            <div className="flex items-center gap-2 mb-4">
+              <Image src="/dashboard.svg" alt="Examples" width={16} height={16} />
+              <h3 className="font-semibold" style={{ color: colorTokens.title, fontSize: '16px' }}>
+                Quick Examples
+              </h3>
             </div>
+            <p className="text-sm mb-4" style={{ color: colorTokens.paragraph }}>
+              Click any example to use it as a starting point
+            </p>
 
-            {/* Examples Section */}
-            <div
-              className="border-t pt-8"
-              style={{ borderColor: "var(--neutral-medium-light)" }}
-            >
-              <div className="flex items-center gap-3 mb-6">
+            <div className="grid gap-3">
+              {dynamicPrompts.map((example, index) => (
                 <div
-                  className="w-10 h-10 rounded-lg flex items-center justify-center"
-                  style={{ backgroundColor: "var(--brand-secondary-lightest)" }}
+                  key={index}
+                  onClick={() => handleSamplePrompt(example.prompt)}
+                  className="p-4 cursor-pointer transition-all"
+                  style={{
+                    border: '1px solid #D5E4FF',
+                    borderRadius: 16,
+                    backgroundColor: colorTokens.bgLight,
+                    boxShadow: '0px 0px 2px 0px rgba(0,19,88,0.10), 0px 2px 2px 0px rgba(0,19,88,0.02)'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.borderColor = colorTokens.secondary600;
+                    e.currentTarget.style.backgroundColor = "#E9F1FF";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.borderColor = "#D5E4FF";
+                    e.currentTarget.style.backgroundColor = colorTokens.bgLight;
+                  }}
                 >
-                  <Zap
-                    className="h-5 w-5"
-                    style={{ color: "var(--brand-primary)" }}
-                  />
-                </div>
-                <div>
-                  <h3
-                    className="text-lg font-semibold"
-                    style={{ color: "var(--neutral-darkest)" }}
-                  >
-                    Quick Examples
-                  </h3>
-                  <p
-                    className="text-sm"
-                    style={{ color: "var(--neutral-medium-dark)" }}
-                  >
-                    Click any example to use it as a starting point
-                  </p>
-                </div>
-              </div>
-
-              <div className="grid gap-4">
-                {dynamicPrompts.map((example, index) => (
-                  <div
-                    key={index}
-                    onClick={() => handleSamplePrompt(example.prompt)}
-                    className="p-4 border rounded-lg cursor-pointer transition-all duration-200 hover:shadow-md"
-                    style={{ borderColor: "var(--neutral-medium-light)" }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.borderColor =
-                        "var(--brand-primary)";
-                      e.currentTarget.style.backgroundColor =
-                        "var(--brand-secondary-lightest)";
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.borderColor =
-                        "var(--neutral-medium-light)";
-                      e.currentTarget.style.backgroundColor = "white";
-                    }}
-                  >
-                    <div className="flex items-start gap-4">
-                      <div
-                        className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 shadow-sm"
-                        style={{
-                          background:
-                            "linear-gradient(135deg, var(--brand-primary), var(--brand-primary-dark))",
-                        }}
-                      >
-                        <span className="text-white text-sm font-bold">
-                          {index + 1}
-                        </span>
+                  <div className="flex items-start gap-3">
+                    <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0" style={{
+                      background: colorTokens.secondary600
+                    }}>
+                      <span className="text-white text-xs font-bold">{index + 1}</span>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="font-medium text-sm mb-1" style={{ color: colorTokens.title }}>
+                        {example.title}
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <div
-                          className="font-semibold text-sm mb-2 hover:text-blue-700"
-                          style={{ color: "var(--neutral-darkest)" }}
-                        >
-                          {example.title}
-                        </div>
-                        <div
-                          className="text-xs leading-relaxed"
-                          style={{ color: "var(--neutral-medium-dark)" }}
-                        >
-                          {example.type === "fillable"
-                            ? "Template with placeholders for your personal details"
-                            : clampToWords(example.prompt, 25) + "..."}
-                        </div>
+                      <div className="text-xs" style={{ color: colorTokens.paragraph }}>
+                        {example.type === "fillable"
+                          ? "Template with placeholders for your personal details"
+                          : clampToWords(example.prompt, 25) + "..."}
                       </div>
                     </div>
                   </div>
-                ))}
-              </div>
+                </div>
+              ))}
             </div>
           </div>
 
           {/* Navigation */}
-          <div className="flex justify-between items-center">
-            <Button
-              variant="outline"
+          <div className="flex justify-between items-center bg-white rounded-lg p-6" style={{
+            border: '1px solid #F1F3F7',
+            boxShadow: '0 0 6px 0 rgba(0, 0, 0, 0.12), 0 2px 3px 0 rgba(0, 0, 0, 0.04), 0 2px 6px 0 rgba(0, 0, 0, 0.04), inset 0 -2px 3px 0 rgba(0, 0, 0, 0.08)'
+          }}>
+            <button
               onClick={handlePrev}
-              className="bg-white border-2 px-6 py-3 rounded-lg font-medium text-sm flex items-center gap-2 transition-all duration-200"
+              className="px-6 py-3 rounded-lg font-medium text-sm flex items-center gap-2 transition-all hover:opacity-90"
               style={{
-                borderColor: "var(--neutral-medium-light)",
-                color: "#23355C",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = "var(--brand-primary)";
-                e.currentTarget.style.backgroundColor =
-                  "var(--brand-secondary-lightest)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.borderColor =
-                  "var(--neutral-medium-light)";
-                e.currentTarget.style.backgroundColor = "white";
+                border: '1px solid #E9F1FF',
+                background: 'linear-gradient(180deg, #F4F8FF 0%, #E9F1FF 100%)',
+                color: '#474FA3'
               }}
             >
               <ArrowLeft className="h-4 w-4" />
               Back
-            </Button>
+            </button>
 
-            <Button
+            <button
               onClick={handleNext}
               disabled={!prompt.trim() || wordCount > MAX_WORDS}
-              className={`px-8 py-3 rounded-lg font-medium text-sm flex items-center gap-2 transition-all duration-200 ${
+              className={`px-8 py-3 rounded-lg font-medium text-sm flex items-center gap-2 transition-all ${
                 !prompt.trim() || wordCount > MAX_WORDS
-                  ? "opacity-50 cursor-not-allowed bg-gray-400 text-white"
-                  : "text-white shadow-sm hover:shadow-md"
+                  ? "opacity-50 cursor-not-allowed"
+                  : "hover:opacity-90"
               }`}
-              style={
-                !prompt.trim() || wordCount > MAX_WORDS
-                  ? {}
-                  : {
-                      background:
-                        "linear-gradient(135deg, var(--brand-primary), var(--brand-primary-dark))",
-                    }
-              }
-              onMouseEnter={(e) => {
-                if (prompt.trim() && wordCount <= MAX_WORDS) {
-                  e.currentTarget.style.transform = "translateY(-1px)";
-                  e.currentTarget.style.boxShadow =
-                    "0 4px 12px rgba(35, 112, 255, 0.3)";
-                }
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = "translateY(0)";
-                e.currentTarget.style.boxShadow =
-                  "0 1px 3px rgba(0, 0, 0, 0.1)";
+              style={{
+                border: '1px solid rgba(35, 112, 255, 0.30)',
+                background: !prompt.trim() || wordCount > MAX_WORDS
+                  ? '#9CA3AF'
+                  : 'linear-gradient(180deg, #679CFF 0%, #2370FF 100%)',
+                boxShadow: '0 2px 4px 0 rgba(77, 145, 225, 0.10), 0 1px 0.3px 0 rgba(255, 255, 255, 0.25) inset, 0 -1px 0.3px 0 rgba(0, 19, 88, 0.25) inset',
+                color: '#FFFFFF',
+                textShadow: '0 0.5px 1.5px rgba(0, 19, 88, 0.30), 0 2px 5px rgba(0, 19, 88, 0.10)'
               }}
             >
               Generate Resume
               <ArrowRight className="h-4 w-4" />
-            </Button>
+            </button>
           </div>
         </div>
       </div>
     </DashboardLayout>
+    </>
   );
 }
 
