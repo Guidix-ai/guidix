@@ -37,7 +37,7 @@ const PDFPreview = dynamic(() => import('@/components/PDFPreview'), {
 });
 
 function TemplateSelectionContent() {
-  const [selectedTemplate, setSelectedTemplate] = useState("internship-1-with-photo");
+  const [selectedTemplate, setSelectedTemplate] = useState("ats-template-without-photo");
   const router = useRouter();
   const searchParams = useSearchParams();
   const [userName, setUserName] = useState("there");

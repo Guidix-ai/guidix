@@ -424,124 +424,129 @@ function AIPromptInputContent() {
         )}
 
         {/* Main Content */}
-        <div className="px-8 py-6 max-w-4xl mx-auto"  style={{ backgroundColor: '#F8F9FF' }}>
-          {/* Text Input Section */}
-          <div className="mb-6 bg-white rounded-lg p-6" style={{
-            border: '1px solid #F1F3F7',
-            boxShadow: '0 0 6px 0 rgba(0, 0, 0, 0.12), 0 2px 3px 0 rgba(0, 0, 0, 0.04), 0 2px 6px 0 rgba(0, 0, 0, 0.04), inset 0 -2px 3px 0 rgba(0, 0, 0, 0.08)'
-          }}>
-            <div className="flex items-center gap-2 mb-4">
-              <Image src="/resumebuilder.svg" alt="Info" width={16} height={16} />
-              <h2 className="font-semibold" style={{ color: colorTokens.title, fontSize: '16px' }}>
-                Your Information
-              </h2>
-            </div>
-            <p className="text-sm mb-4" style={{ color: colorTokens.paragraph }}>
-              Write a brief description about yourself
-            </p>
-
-            <div className="relative">
-              <textarea
-                placeholder="Example: I'm John Doe, a 3rd year Computer Science student from Mumbai. I'm skilled in React, Node.js, and Python. I've built web applications and am looking for internship opportunities."
-                value={prompt}
-                onChange={(e) => setPrompt(e.target.value)}
-                rows={6}
-                className="resize-none"
-                style={{
-                  width: "100%",
-                  minHeight: 160,
-                  paddingLeft: 16,
-                  paddingRight: 16,
-                  paddingTop: 12,
-                  paddingBottom: 12,
-                  backgroundColor: colorTokens.bgLight,
-                  borderRadius: 16,
-                  boxShadow: wordCount > MAX_WORDS
-                    ? "0px 0px 2px 0px rgba(239,68,68,0.5), 0px 4px 4px 0px rgba(239,68,68,0.04), 0px 4px 16px 0px rgba(239,68,68,0.04), inset 0px -4px 4px 0px rgba(239,68,68,0.10)"
-                    : "0px 0px 2px 0px rgba(0,19,88,0.15), 0px 4px 4px 0px rgba(0,19,88,0.04), 0px 4px 16px 0px rgba(0,19,88,0.04), inset 0px -4px 4px 0px rgba(0,19,88,0.10)",
-                  outline: wordCount > MAX_WORDS ? "1px solid #EF4444" : "1px solid #C7D6ED",
-                  fontSize: 16,
-                  color: colorTokens.paragraph,
-                  fontFamily: "Inter, sans-serif",
-                  fontWeight: 400,
-                  lineHeight: "125%",
-                  letterSpacing: "-0.32px",
-                }}
-              />
-              <div className="absolute bottom-3 right-3">
-                <span className={`text-xs px-3 py-1 rounded-full font-medium ${
-                  wordCount > MAX_WORDS ? "bg-red-100 text-red-600" : "text-white"
-                }`} style={
-                  wordCount <= MAX_WORDS ? { backgroundColor: "#2370FF" } : {}
-                }>
-                  {wordCount}/{MAX_WORDS} words
-                </span>
+        <div className="px-8 py-6"  style={{ backgroundColor: '#F8F9FF' }}>
+          {/* Row Layout: Examples on Left, Prompt on Right */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+            {/* Examples Section - Left */}
+            <div className="bg-white rounded-lg p-6" style={{
+              border: '1px solid #F1F3F7',
+              boxShadow: '0 0 6px 0 rgba(0, 0, 0, 0.12), 0 2px 3px 0 rgba(0, 0, 0, 0.04), 0 2px 6px 0 rgba(0, 0, 0, 0.04), inset 0 -2px 3px 0 rgba(0, 0, 0, 0.08)'
+            }}>
+              <div className="flex items-center gap-2 mb-4">
+                <Image src="/dashboard.svg" alt="Examples" width={16} height={16} />
+                <h3 className="font-semibold" style={{ color: colorTokens.title, fontSize: '16px' }}>
+                  Quick Examples
+                </h3>
               </div>
-            </div>
-
-            {wordCount > MAX_WORDS && (
-              <p className="text-red-600 text-sm mt-2 flex items-center gap-2">
-                <span>⚠️</span>
-                Please keep it under {MAX_WORDS} words
+              <p className="text-sm mb-4" style={{ color: colorTokens.paragraph }}>
+                Click any example to use it as a starting point
               </p>
-            )}
-          </div>
 
-          {/* Examples Section */}
-          <div className="mb-6 bg-white rounded-lg p-6" style={{
-            border: '1px solid #F1F3F7',
-            boxShadow: '0 0 6px 0 rgba(0, 0, 0, 0.12), 0 2px 3px 0 rgba(0, 0, 0, 0.04), 0 2px 6px 0 rgba(0, 0, 0, 0.04), inset 0 -2px 3px 0 rgba(0, 0, 0, 0.08)'
-          }}>
-            <div className="flex items-center gap-2 mb-4">
-              <Image src="/dashboard.svg" alt="Examples" width={16} height={16} />
-              <h3 className="font-semibold" style={{ color: colorTokens.title, fontSize: '16px' }}>
-                Quick Examples
-              </h3>
-            </div>
-            <p className="text-sm mb-4" style={{ color: colorTokens.paragraph }}>
-              Click any example to use it as a starting point
-            </p>
-
-            <div className="grid gap-3">
-              {dynamicPrompts.map((example, index) => (
-                <div
-                  key={index}
-                  onClick={() => handleSamplePrompt(example.prompt)}
-                  className="p-4 cursor-pointer transition-all"
-                  style={{
-                    border: '1px solid #D5E4FF',
-                    borderRadius: 16,
-                    backgroundColor: colorTokens.bgLight,
-                    boxShadow: '0px 0px 2px 0px rgba(0,19,88,0.10), 0px 2px 2px 0px rgba(0,19,88,0.02)'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.borderColor = colorTokens.secondary600;
-                    e.currentTarget.style.backgroundColor = "#E9F1FF";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.borderColor = "#D5E4FF";
-                    e.currentTarget.style.backgroundColor = colorTokens.bgLight;
-                  }}
-                >
-                  <div className="flex items-start gap-3">
-                    <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0" style={{
-                      background: colorTokens.secondary600
-                    }}>
-                      <span className="text-white text-xs font-bold">{index + 1}</span>
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="font-medium text-sm mb-1" style={{ color: colorTokens.title }}>
-                        {example.title}
+              <div className="grid gap-3">
+                {dynamicPrompts.map((example, index) => (
+                  <div
+                    key={index}
+                    onClick={() => handleSamplePrompt(example.prompt)}
+                    className="p-4 cursor-pointer transition-all"
+                    style={{
+                      border: '1px solid #D5E4FF',
+                      borderRadius: 16,
+                      backgroundColor: colorTokens.bgLight,
+                      boxShadow: '0px 0px 2px 0px rgba(0,19,88,0.10), 0px 2px 2px 0px rgba(0,19,88,0.02)'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.borderColor = colorTokens.secondary600;
+                      e.currentTarget.style.backgroundColor = "#E9F1FF";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.borderColor = "#D5E4FF";
+                      e.currentTarget.style.backgroundColor = colorTokens.bgLight;
+                    }}
+                  >
+                    <div className="flex items-start gap-3">
+                      <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0" style={{
+                        background: colorTokens.secondary600
+                      }}>
+                        <span className="text-white text-xs font-bold">{index + 1}</span>
                       </div>
-                      <div className="text-xs" style={{ color: colorTokens.paragraph }}>
-                        {example.type === "fillable"
-                          ? "Template with placeholders for your personal details"
-                          : clampToWords(example.prompt, 25) + "..."}
+                      <div className="flex-1 min-w-0">
+                        <div className="font-medium text-sm mb-1" style={{ color: colorTokens.title }}>
+                          {example.title}
+                        </div>
+                        <div className="text-xs" style={{ color: colorTokens.paragraph }}>
+                          {example.type === "fillable"
+                            ? "Template with placeholders for your personal details"
+                            : clampToWords(example.prompt, 25) + "..."}
+                        </div>
                       </div>
                     </div>
                   </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Text Input Section - Right */}
+            <div className="bg-white rounded-lg p-6" style={{
+              border: '1px solid #F1F3F7',
+              boxShadow: '0 0 6px 0 rgba(0, 0, 0, 0.12), 0 2px 3px 0 rgba(0, 0, 0, 0.04), 0 2px 6px 0 rgba(0, 0, 0, 0.04), inset 0 -2px 3px 0 rgba(0, 0, 0, 0.08)'
+            }}>
+              <div className="flex items-center gap-2 mb-4">
+                <Image src="/resumebuilder.svg" alt="Info" width={16} height={16} />
+                <h2 className="font-semibold" style={{ color: colorTokens.title, fontSize: '16px' }}>
+                  Your Information
+                </h2>
+              </div>
+              <p className="text-sm mb-4" style={{ color: colorTokens.paragraph }}>
+                Write a brief description about yourself
+              </p>
+
+              <div className="relative">
+                <textarea
+                  placeholder="Example: I'm John Doe, a 3rd year Computer Science student from Mumbai. I'm skilled in React, Node.js, and Python. I've built web applications and am looking for internship opportunities."
+                  value={prompt}
+                  onChange={(e) => setPrompt(e.target.value)}
+                  rows={12}
+                  className="resize-none"
+                  style={{
+                    width: "100%",
+                    minHeight: 320,
+                    paddingLeft: 16,
+                    paddingRight: 16,
+                    paddingTop: 12,
+                    paddingBottom: 12,
+                    backgroundColor: '#FFFFFF',
+                    borderRadius: 12,
+                    border: wordCount > MAX_WORDS ? "1px solid #EF4444" : "1px solid #E1E4ED",
+                    boxShadow: "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
+                    fontSize: 16,
+                    color: colorTokens.title,
+                    fontFamily: "Inter, sans-serif",
+                    fontWeight: 400,
+                    lineHeight: "150%",
+                    letterSpacing: "-0.01em",
+                  }}
+                />
+                <div className="absolute bottom-4 right-4">
+                  <span className={`text-xs px-2.5 py-1 rounded-md font-medium ${
+                    wordCount > MAX_WORDS
+                      ? "bg-red-50 text-red-600 border border-red-200"
+                      : "bg-blue-50 text-blue-600 border border-blue-200"
+                  }`}>
+                    {wordCount}/{MAX_WORDS}
+                  </span>
                 </div>
-              ))}
+              </div>
+
+              {wordCount > MAX_WORDS && (
+                <p className="text-red-600 text-sm mt-3 flex items-center gap-2 px-3 py-2 bg-red-50 rounded-lg border border-red-200">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+                    <line x1="12" y1="9" x2="12" y2="13"/>
+                    <line x1="12" y1="17" x2="12.01" y2="17"/>
+                  </svg>
+                  Please keep it under {MAX_WORDS} words
+                </p>
+              )}
             </div>
           </div>
 

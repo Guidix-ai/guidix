@@ -102,8 +102,46 @@ const SignupPage = () => {
   const handleSignup = async (e) => {
     e.preventDefault();
     setLoading(true);
-    // Signup logic here
-    setLoading(false);
+    setError("");
+
+    if (formData.password !== formData.confirmPassword) {
+      setError("Passwords do not match");
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const res = await fetch("https://api.guidix.ai/api/v1/auth/signin", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          fullName: formData.fullName,
+          email: formData.email,
+          phoneNumber: formData.phoneNumber,
+          universityDomain: formData.universityDomain,
+          password: formData.password,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message || "Signup failed");
+      }
+
+      // Store token if API returns it
+      if (data.token) {
+        localStorage.setItem("token", data.token);
+      }
+
+      router.push("/dashboard");
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

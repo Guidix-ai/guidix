@@ -1,179 +1,231 @@
-import React from "react";
+"use client";
+
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { DashboardLayout } from "@/components/layout/dashboard-layout";
-import ComingSoon from "@/components/ComingSoon";
-import styles from "@/app/styles/pages/dashboard.module.css";
+import Image from "next/image";
+
+const shadowBoxStyle = `
+  0 0 6px 0 rgba(0, 0, 0, 0.12),
+  0 2px 3px 0 rgba(0, 0, 0, 0.04),
+  0 2px 6px 0 rgba(0, 0, 0, 0.04),
+  inset 0 -2px 3px 0 rgba(0, 0, 0, 0.08)
+`;
 
 export default function DashboardPage() {
-  const quickStats = [
-    { label: "Active Applications", value: "12", change: "+3", trend: "up" },
-    { label: "Profile Views", value: "156", change: "+24", trend: "up" },
-    { label: "Interview Requests", value: "3", change: "+1", trend: "up" },
-    { label: "Response Rate", value: "68%", change: "+5%", trend: "up" },
+  const router = useRouter();
+  const [typewriterText, setTypewriterText] = useState("");
+  const [showCursor, setShowCursor] = useState(true);
+  const fullText = "Welcome to Guidix";
+
+  useEffect(() => {
+    const googleFontsLink = document.createElement('link');
+    googleFontsLink.href = 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap';
+    googleFontsLink.rel = 'stylesheet';
+    document.head.appendChild(googleFontsLink);
+
+    const style = document.createElement('style');
+    style.innerHTML = `
+      * {
+        font-family: 'Inter', sans-serif !important;
+      }
+      body {
+        font-family: 'Inter', sans-serif !important;
+      }
+      button, input, select, textarea {
+        font-family: 'Inter', sans-serif !important;
+      }
+    `;
+    document.head.appendChild(style);
+  }, []);
+
+  useEffect(() => {
+    let currentIndex = 0;
+    const interval = setInterval(() => {
+      setTypewriterText(fullText.slice(0, currentIndex));
+      currentIndex++;
+      if (currentIndex > fullText.length) {
+        clearInterval(interval);
+        setShowCursor(false);
+      }
+    }, 80);
+    return () => clearInterval(interval);
+  }, []);
+
+  const features = [
+    {
+      title: "AI Resume Builder",
+      description: "Create professional resumes with intelligent AI assistance",
+      iconSrc: "/resumebuilding.svg",
+      route: "/resume-builder",
+      color: "#667eea",
+      size: "large"
+    },
+    {
+      title: "AI Job Search",
+      description: "Discover personalized job opportunities",
+      iconSrc: "/jobsearching.svg",
+      route: "/job-search",
+      color: "#f093fb",
+      size: "large"
+    },
+    {
+      title: "AI Job Apply",
+      description: "Automate job applications",
+      iconSrc: "/jobapplying.svg",
+      route: "/apply-job",
+      color: "#4facfe",
+      size: "normal"
+    },
+    {
+      title: "AI Job Tracker",
+      description: "Track your applications",
+      iconSrc: "/jobtracking.svg",
+      route: "/job-tracker",
+      color: "#43e97b",
+      size: "normal"
+    },
+    {
+      title: "AI Mock Interview",
+      description: "Practice with AI feedback",
+      iconSrc: "/mockinterviewing.svg",
+      route: "/mock-interview",
+      color: "#fa709a",
+      size: "normal"
+    },
+    {
+      title: "LinkedIn Optimizer",
+      description: "Optimize your profile",
+      iconSrc: "/linkedinoptimising.svg",
+      route: "/linkedin-optimizer",
+      color: "#30cfd0",
+      size: "normal"
+    }
   ];
 
-  const recentActivity = [
-    {
-      action: "Applied to Software Engineer at TechCorp",
-      time: "2 hours ago",
-      type: "application",
-    },
-    {
-      action: "Completed mock interview session",
-      time: "1 day ago",
-      type: "interview",
-    },
-    {
-      action: "Updated resume with new skills",
-      time: "3 days ago",
-      type: "resume",
-    },
-    {
-      action: "LinkedIn profile optimized",
-      time: "1 week ago",
-      type: "linkedin",
-    },
-  ];
+  const insights = {
+    recommendedJobs: 12,
+    applicationsThisWeek: 5,
+    upcomingInterviews: 2,
+    profileViews: 34
+  };
 
   return (
     <DashboardLayout>
-      <ComingSoon title="Dashboard" />
-      
-      {/* TEMPORARILY HIDDEN - Uncomment when ready */}
-      {false && (
-        <div className={styles.dashboardContainer}>
-          <div className={styles.dashboardHeader}>
-            <div className={styles.dashboardHeaderContent}>
-              <div>
-                <h1 className={styles.dashboardTitle}>
-                  Welcome back!
-                </h1>
-                <p className={styles.dashboardSubtitle}>
-                  Here&apos;s what&apos;s happening with your job search today
-                </p>
-              </div>
-              <div className={styles.dashboardIcon}>📊</div>
-            </div>
+      <div style={{ minHeight: '100vh', backgroundColor: '#F8F9FF', width: '100%' }}>
+        <div className="relative py-6 px-8 overflow-hidden flex items-center" style={{
+          backgroundImage: 'url(/banner.svg)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          minHeight: '100px',
+          boxShadow: '0 4px 20px 0 #2370FF66',
+          borderRadius: '16px'
+        }}>
+          <div className="relative z-10">
+            <h1 className="text-white font-bold mb-2" style={{ textShadow: '0 2px 10px rgba(0, 0, 0, 0.3)', fontSize: '32px', lineHeight: '1.2', maxWidth: '800px' }}>
+              {typewriterText}
+              {showCursor && <span className="animate-pulse">|</span>}
+            </h1>
           </div>
+        </div>
 
-          {/* Quick Stats */}
-          <div className={styles.quickStatsGrid}>
-            {quickStats.map((stat, index) => (
+        <div className="px-8 py-6" style={{ backgroundColor: 'transparent' }}>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(4, 1fr)',
+            gap: '0.75rem',
+            marginBottom: '1.5rem'
+          }}>
+            {features.map((feature, index) => (
               <div
                 key={index}
-                className={styles.statCard}
+                onClick={() => router.push(feature.route)}
+                className="rounded-lg shadow-sm relative transition-all hover:shadow-md cursor-pointer"
+                style={{
+                  backgroundColor: '#FFFFFF',
+                  border: '1px solid #F1F3F7',
+                  boxShadow: shadowBoxStyle,
+                  gridColumn: feature.size === 'large' ? 'span 2' : 'span 1',
+                  minHeight: feature.size === 'large' ? '85px' : '70px'
+                }}
               >
-                <div className={styles.statHeader}>
-                  <div className={styles.statValue}>
-                    {stat.value}
+                <div className="p-3 h-full flex flex-col justify-between">
+                  <div>
+                    <div className="w-8 h-8 rounded-lg flex items-center justify-center mb-2">
+                      {feature.iconSrc ? (
+                        <Image src={feature.iconSrc} alt={feature.title} width={16} height={16} />
+                      ) : (
+                        feature.icon
+                      )}
+                    </div>
+                    <h3 className="text-sm font-bold mb-1" style={{
+                      fontFamily: 'Inter',
+                      fontWeight: 500,
+                      lineHeight: '1.2',
+                      letterSpacing: '-0.36px',
+                      verticalAlign: 'middle',
+                      color: '#002A79'
+                    }}>{feature.title}</h3>
+                    <p className="text-xs" style={{
+                      fontFamily: 'Inter',
+                      fontWeight: 400,
+                      fontSize: '11.44px',
+                      lineHeight: '150%',
+                      color: '#6477B4'
+                    }}>{feature.description}</p>
                   </div>
-                  <div
-                    className={`${styles.statChange} ${
-                      stat.trend === "up"
-                        ? styles.statChangeUp
-                        : styles.statChangeDown
-                    }`}
-                  >
-                    {stat.change}
+                  <div className="flex items-center justify-end pt-2">
+                    <svg width="16" height="16" fill="none" viewBox="0 0 24 24" style={{ color: '#2370FF' }}>
+                      <path d="M9 5l7 7-7 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
                   </div>
-                </div>
-                <div className={styles.statLabel}>
-                  {stat.label}
                 </div>
               </div>
             ))}
           </div>
 
-          {/* Main Content Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Recent Activity */}
-            <div className="lg:col-span-2 bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-              <h2 className="text-lg lg:text-xl font-semibold text-gray-900 mb-4">
-                Recent Activity
-              </h2>
-              <div className="space-y-4">
-                {recentActivity.map((activity, index) => (
-                  <div
-                    key={index}
-                    className="flex items-start space-x-3 p-3 bg-gray-50 rounded-lg"
-                  >
-                    <div className="flex-shrink-0 w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                      {activity.type === "application" && "📤"}
-                      {activity.type === "interview" && "👥"}
-                      {activity.type === "resume" && "📄"}
-                      {activity.type === "linkedin" && "💼"}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-gray-900">
-                        {activity.action}
-                      </p>
-                      <p className="text-xs text-gray-500">{activity.time}</p>
-                    </div>
-                  </div>
-                ))}
+          <div
+            className="rounded-lg shadow-sm transition-all hover:shadow-md"
+            style={{
+              backgroundColor: '#FFFFFF',
+              border: '1px solid #F1F3F7',
+              boxShadow: shadowBoxStyle,
+              background: 'linear-gradient(180deg, #F4F8FF 0%, #D5E4FF 100%)',
+              color: '#002A79',
+              padding: '1.5rem'
+            }}
+          >
+            <div className="flex items-center gap-2 mb-4">
+              <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: 'rgba(255, 255, 255, 0.2)' }}>
+                <svg width="16" height="16" fill="none" viewBox="0 0 24 24" style={{ color: 'white' }}>
+                  <path d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
               </div>
+              <h3 className="text-lg font-bold">Your Insights</h3>
             </div>
 
-            {/* Quick Actions */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-              <h2 className="text-lg lg:text-xl font-semibold text-gray-900 mb-4">
-                Quick Actions
-              </h2>
-              <div className="space-y-3">
-                <a
-                  href="/resume-builder"
-                  className="block w-full p-3 text-left bg-blue-50 hover:bg-blue-100 rounded-lg border border-blue-200 transition-colors"
-                >
-                  <div className="flex items-center space-x-3">
-                    <span className="text-lg">📄</span>
-                    <span className="text-sm font-medium">Create Resume</span>
-                  </div>
-                </a>
-                <a
-                  href="/job-search"
-                  className="block w-full p-3 text-left bg-green-50 hover:bg-green-100 rounded-lg border border-green-200 transition-colors"
-                >
-                  <div className="flex items-center space-x-3">
-                    <span className="text-lg">🔍</span>
-                    <span className="text-sm font-medium">Search Jobs</span>
-                  </div>
-                </a>
-                <a
-                  href="/mock-interview"
-                  className="block w-full p-3 text-left bg-purple-50 hover:bg-purple-100 rounded-lg border border-purple-200 transition-colors"
-                >
-                  <div className="flex items-center space-x-3">
-                    <span className="text-lg">👥</span>
-                    <span className="text-sm font-medium">
-                      Practice Interview
-                    </span>
-                  </div>
-                </a>
-                <a
-                  href="/linkedin-optimizer"
-                  className="block w-full p-3 text-left bg-indigo-50 hover:bg-indigo-100 rounded-lg border border-indigo-200 transition-colors"
-                >
-                  <div className="flex items-center space-x-3">
-                    <span className="text-lg">💼</span>
-                    <span className="text-sm font-medium">Optimize LinkedIn</span>
-                  </div>
-                </a>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem' }}>
+              <div className="p-3 rounded-lg" style={{ backgroundColor: 'rgba(255, 255, 255, 0.1)' }}>
+                <div className="text-2xl font-bold mb-1">{insights.recommendedJobs}</div>
+                <div className="text-xs opacity-90">Recommended Jobs</div>
               </div>
-            </div>
-          </div>
-
-          {/* Progress Chart Placeholder */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <h2 className="text-lg lg:text-xl font-semibold text-gray-900 mb-4">
-              Weekly Progress
-            </h2>
-            <div className="h-32 lg:h-48 bg-gray-50 rounded-lg flex items-center justify-center">
-              <p className="text-gray-500 text-sm lg:text-base">
-                Progress chart will be displayed here
-              </p>
+              <div className="p-3 rounded-lg" style={{ backgroundColor: 'rgba(255, 255, 255, 0.1)' }}>
+                <div className="text-2xl font-bold mb-1">{insights.applicationsThisWeek}</div>
+                <div className="text-xs opacity-90">Applications This Week</div>
+              </div>
+              <div className="p-3 rounded-lg" style={{ backgroundColor: 'rgba(255, 255, 255, 0.1)' }}>
+                <div className="text-2xl font-bold mb-1">{insights.upcomingInterviews}</div>
+                <div className="text-xs opacity-90">Upcoming Interviews</div>
+              </div>
+              <div className="p-3 rounded-lg" style={{ backgroundColor: 'rgba(255, 255, 255, 0.1)' }}>
+                <div className="text-2xl font-bold mb-1">{insights.profileViews}</div>
+                <div className="text-xs opacity-90">Profile Views</div>
+              </div>
             </div>
           </div>
         </div>
-      )}
+      </div>
     </DashboardLayout>
   );
 }

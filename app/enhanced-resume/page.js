@@ -579,10 +579,7 @@ function EnhancedResumeContent() {
   const handleGenerate = async () => {
     setIsGenerating(true);
 
-    // Simulate loading time (you can adjust this or remove it if not needed)
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-
-    // Navigate to resume complete page
+    // Navigate to resume complete page immediately
     router.push("/resume-complete");
   };
 
@@ -3044,42 +3041,6 @@ function EnhancedResumeContent() {
       <TextSelectionMenu onEnhance={handleEnhanceText} />
 
       {/* Full-screen Loading Overlay */}
-      {isGenerating && (
-        <div className="fixed inset-0 bg-gradient-to-br from-blue-50 to-indigo-100 z-50 flex items-center justify-center">
-          <div className="bg-white rounded-lg p-12 shadow-2xl text-center max-w-lg mx-4 border border-blue-200">
-            <div className="mb-6">
-              <div className="w-20 h-20 bg-green-100 rounded-full mx-auto mb-4 flex items-center justify-center">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="40"
-                  height="40"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="text-green-600"
-                >
-                  <path d="M9 12l2 2 4-4" />
-                  <path d="M21 12c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1" />
-                  <path d="M3 12c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1" />
-                  <path d="M12 21c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1" />
-                  <path d="M12 3c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1" />
-                </svg>
-              </div>
-            </div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-3">
-              Your resume looks great!
-            </h2>
-            <p className="text-xl text-blue-600 font-semibold mb-6">
-              Now let&apos;s secure the bag! 💰
-            </p>
-            <Loader2 className="h-8 w-8 animate-spin text-blue-600 mx-auto" />
-          </div>
-        </div>
-      )}
-
       {/* Custom styles */}
       <style dangerouslySetInnerHTML={{ __html: customStyles }} />
 

@@ -2,34 +2,27 @@
 export { default as JobTemplate1WithPhoto } from './JobTemplate1WithPhoto';
 export { default as JobTemplate1WithoutPhoto } from './JobTemplate1WithoutPhoto';
 export { default as JobTemplate3WithoutPhoto } from './JobTemplate3WithoutPhoto';
+export { default as ATSTemplateWithPhoto } from './ATSTemplateWithPhoto';
+export { default as ATSTemplateWithoutPhoto } from './ATSTemplateWithoutPhoto';
 
 // Template configurations for job applications - ONLY single-column ATS-friendly templates
 export const jobTemplates = [
   {
-    id: 'job-1-with-photo',
-    name: 'Professional Executive (With Photo)',
-    component: 'JobTemplate1WithPhoto',
+    id: 'ats-template-without-photo',
+    name: 'ATS Professional (No Photo)',
+    component: 'ATSTemplateWithoutPhoto',
+    hasPhoto: false,
+    category: 'job',
+    description: 'Industry-standard ATS-compliant format with optimal keyword parsing. Single column, standard fonts, proper spacing.',
+    preview: '/api/placeholder/300/400',
+  },
+  {
+    id: 'ats-template-with-photo',
+    name: 'ATS Professional (With Photo)',
+    component: 'ATSTemplateWithPhoto',
     hasPhoto: true,
     category: 'job',
-    description: 'ATS-optimized single-column design for professionals',
-    preview: '/api/placeholder/300/400',
-  },
-  {
-    id: 'job-1-without-photo',
-    name: 'Professional Executive',
-    component: 'JobTemplate1WithoutPhoto',
-    hasPhoto: false,
-    category: 'job',
-    description: 'Clean ATS-friendly format for experienced professionals',
-    preview: '/api/placeholder/300/400',
-  },
-  {
-    id: 'job-3-without-photo',
-    name: 'Modern Professional',
-    component: 'JobTemplate3WithoutPhoto',
-    hasPhoto: false,
-    category: 'job',
-    description: 'Single-column ATS-optimized template for all roles',
+    description: 'ATS-compliant format with professional photo. Maintains single-column layout for optimal ATS readability.',
     preview: '/api/placeholder/300/400',
   },
 ];

@@ -177,6 +177,8 @@ const PDFPreview = ({ templateId, resumeData = sampleResumeData, width = 300, he
 
         // Map template ID to component name
         const componentMap = {
+          'ats-template-with-photo': 'ATSTemplateWithPhoto',
+          'ats-template-without-photo': 'ATSTemplateWithoutPhoto',
           'internship-1-with-photo': 'InternshipTemplate1WithPhoto',
           'internship-2-with-photo': 'InternshipTemplate2WithPhoto',
           'internship-3-with-photo': 'InternshipTemplate3WithPhoto',

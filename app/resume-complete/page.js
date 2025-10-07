@@ -1,43 +1,155 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { DashboardLayout } from "@/components/layout/dashboard-layout";
 import { ArrowRight } from "lucide-react";
+import confetti from "canvas-confetti";
+import Image from "next/image";
+
+const colorTokens = {
+  title: "#002A79",
+  paragraph: "#6477B4",
+  bgLight: "#F8F9FF",
+  secondary600: "#2370FF",
+  secondary700: "#1B54CA",
+};
 
 export default function ResumeCompletePage() {
   const router = useRouter();
+
+  useEffect(() => {
+    const googleFontsLink = document.createElement('link');
+    googleFontsLink.href = 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap';
+    googleFontsLink.rel = 'stylesheet';
+    document.head.appendChild(googleFontsLink);
+
+    const style = document.createElement('style');
+    style.innerHTML = `
+      * {
+        font-family: 'Inter', sans-serif !important;
+      }
+    `;
+    document.head.appendChild(style);
+
+    // Trigger confetti on page load
+    const duration = 3000;
+    const animationEnd = Date.now() + duration;
+    const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+
+    function randomInRange(min, max) {
+      return Math.random() * (max - min) + min;
+    }
+
+    const interval = setInterval(function() {
+      const timeLeft = animationEnd - Date.now();
+
+      if (timeLeft <= 0) {
+        return clearInterval(interval);
+      }
+
+      const particleCount = 50 * (timeLeft / duration);
+
+      // Fire confetti from two sides
+      confetti({
+        ...defaults,
+        particleCount,
+        origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 }
+      });
+      confetti({
+        ...defaults,
+        particleCount,
+        origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 }
+      });
+    }, 250);
+
+    return () => clearInterval(interval);
+  }, []);
 
   const handleNext = () => {
     router.push("/job-search");
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 flex items-center justify-center px-6 py-12">
-      <div className="text-center max-w-4xl mx-auto">
-        {/* Main Heading with Gradient Effect */}
-        <h1 className="text-6xl md:text-7xl lg:text-8xl font-black mb-8 leading-tight">
-          <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-800 bg-clip-text text-transparent">
+    <DashboardLayout>
+      <div
+        className="min-h-screen flex items-center justify-center px-8"
+        style={{ backgroundColor: colorTokens.bgLight }}
+      >
+        <div className="text-center max-w-4xl mx-auto">
+          {/* Success Icon/Illustration */}
+          <div className="mb-8 flex justify-center">
+            <Image
+              src="/resume_complete_icon.svg"
+              alt="Resume Complete"
+              width={96}
+              height={96}
+            />
+          </div>
+
+          {/* Main Heading */}
+          <h1
+            className="font-bold mb-4"
+            style={{
+              color: colorTokens.title,
+              fontSize: '48px',
+              lineHeight: '1.2',
+              letterSpacing: '-0.02em',
+              fontFamily: 'Inter',
+              fontWeight: 700
+            }}
+          >
             Your resume looks great!
-          </span>
-        </h1>
+          </h1>
 
-        {/* Decorative Line */}
-        <div className="w-32 h-1 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full mx-auto mb-8"></div>
+          {/* Decorative Line */}
+          <div
+            className="mx-auto mb-6"
+            style={{
+              width: '80px',
+              height: '4px',
+              background: `linear-gradient(90deg, ${colorTokens.secondary600} 0%, ${colorTokens.secondary700} 100%)`,
+              borderRadius: '2px'
+            }}
+          ></div>
 
-        {/* Subtitle */}
-        <p className="text-xl md:text-2xl text-gray-600 mb-16 font-medium">
-          Now let&apos;s find some jobs for you
-        </p>
+          {/* Subtitle */}
+          <p
+            className="mb-12"
+            style={{
+              color: colorTokens.paragraph,
+              fontSize: '18px',
+              lineHeight: '150%',
+              fontFamily: 'Inter',
+              fontWeight: 400
+            }}
+          >
+            Now let&apos;s find some jobs for you
+          </p>
 
-        {/* Next Button */}
-        <button
-          onClick={handleNext}
-          className="inline-flex items-center gap-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-4 rounded-2xl text-lg font-semibold shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 active:scale-95"
-        >
-          <span>Next</span>
-          <ArrowRight className="w-5 h-5 transition-transform duration-200" />
-        </button>
+          {/* Next Button */}
+          <button
+            onClick={handleNext}
+            className="inline-flex items-center gap-2 transition-all hover:opacity-90"
+            style={{
+              padding: '12px 32px',
+              borderRadius: '8px',
+              border: '1px solid rgba(35, 112, 255, 0.30)',
+              background: 'linear-gradient(180deg, #679CFF 0%, #2370FF 100%)',
+              boxShadow: '0 2px 4px 0 rgba(77, 145, 225, 0.10), 0 1px 0.3px 0 rgba(255, 255, 255, 0.25) inset, 0 -1px 0.3px 0 rgba(0, 19, 88, 0.25) inset',
+              color: '#FFFFFF',
+              fontSize: '16px',
+              fontWeight: 500,
+              fontFamily: 'Inter',
+              textShadow: '0 0.5px 1.5px rgba(0, 19, 88, 0.30), 0 2px 5px rgba(0, 19, 88, 0.10)',
+              cursor: 'pointer'
+            }}
+          >
+            <span>Next</span>
+            <ArrowRight className="w-5 h-5" />
+          </button>
+        </div>
       </div>
-    </div>
+    </DashboardLayout>
   );
 }

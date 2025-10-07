@@ -11,16 +11,25 @@ const sidebarItems = [
   {
     title: "Home",
     icon: <Image src="/home.svg" alt="Home" width={16} height={16} />,
-    href: "/",
+    href: "/dashboard",
   },
   {
     title: "AI Resume Builder",
-    icon: <Image src="/resumebuilder.svg" alt="Resume Builder" width={16} height={16} />,
+    icon: (
+      <Image
+        src="/resumebuilder.svg"
+        alt="Resume Builder"
+        width={16}
+        height={16}
+      />
+    ),
     href: "/resume-builder",
   },
   {
     title: "AI Job Search",
-    icon: <Image src="/jobsearch.svg" alt="Job Search" width={16} height={16} />,
+    icon: (
+      <Image src="/jobsearch.svg" alt="Job Search" width={16} height={16} />
+    ),
     href: "/job-search",
   },
   {
@@ -30,17 +39,33 @@ const sidebarItems = [
   },
   {
     title: "AI Job Tracker",
-    icon: <Image src="/jobtracker.svg" alt="Job Tracker" width={16} height={16} />,
+    icon: (
+      <Image src="/jobtracker.svg" alt="Job Tracker" width={16} height={16} />
+    ),
     href: "/job-tracker",
   },
   {
     title: "AI Mock Interview",
-    icon: <Image src="/mockinterview.svg" alt="Mock Interview" width={16} height={16} />,
+    icon: (
+      <Image
+        src="/mockinterview.svg"
+        alt="Mock Interview"
+        width={16}
+        height={16}
+      />
+    ),
     href: "/mock-interview",
   },
   {
     title: "LinkedIn Optimiser",
-    icon: <Image src="/linkedinoptimiser.svg" alt="LinkedIn Optimiser" width={16} height={16} />,
+    icon: (
+      <Image
+        src="/linkedinoptimiser.svg"
+        alt="LinkedIn Optimiser"
+        width={16}
+        height={16}
+      />
+    ),
     href: "/linkedin-optimizer",
   },
 ];
@@ -93,7 +118,7 @@ export function DashboardLayout({ children }) {
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
-  const [userEmail, setUserEmail] = useState('');
+  const [userEmail, setUserEmail] = useState("");
   const [isDesktop, setIsDesktop] = useState(false);
 
   useEffect(() => {
@@ -109,7 +134,7 @@ export function DashboardLayout({ children }) {
     // }
 
     // For development - set default user
-    setUserEmail(localStorage.getItem('userEmail') || 'Developer');
+    setUserEmail(localStorage.getItem("userEmail") || "Developer");
   }, [router]);
 
   useEffect(() => {
@@ -120,8 +145,8 @@ export function DashboardLayout({ children }) {
     // Set initial value
     handleResize();
 
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   const handleLogout = async () => {
@@ -136,17 +161,23 @@ export function DashboardLayout({ children }) {
   };
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#E9F1FF' }}>
+    <div className="min-h-screen" style={{ backgroundColor: "#E9F1FF" }}>
       {/* Header - Full Width */}
-      <header className="px-4 sm:px-6 py-4 sticky top-0 z-30 h-16 w-full relative" style={{
-        backgroundColor: 'rgba(233, 241, 255, 0.8)',
-        backdropFilter: 'blur(10px)',
-        WebkitBackdropFilter: 'blur(10px)'
-      }}>
-        <div className="absolute bottom-0 left-0 right-0 h-px" style={{
-          backgroundColor: '#E1E4ED',
-          marginLeft: isDesktop ? '272px' : '0'
-        }}></div>
+      <header
+        className="px-4 sm:px-6 py-4 sticky top-0 z-30 h-16 w-full relative"
+        style={{
+          backgroundColor: "rgba(233, 241, 255, 0.8)",
+          backdropFilter: "blur(10px)",
+          WebkitBackdropFilter: "blur(10px)",
+        }}
+      >
+        <div
+          className="absolute bottom-0 left-0 right-0 h-px"
+          style={{
+            backgroundColor: "#E1E4ED",
+            marginLeft: isDesktop ? "272px" : "0",
+          }}
+        ></div>
         <div className="flex items-center justify-between w-full h-full">
           {/* Left: Logo */}
           <div className="flex items-center space-x-2 sm:space-x-3">
@@ -171,30 +202,39 @@ export function DashboardLayout({ children }) {
 
             {/* Logo - Hidden on desktop, shown on mobile */}
             <div className="lg:hidden flex items-center space-x-2">
-              <Image src="/guidix.ai logo.svg" alt="Guidix Logo" width={120} height={40} className="h-8 w-auto" />
+              <Image
+                src="/guidix.ai logo.svg"
+                alt="Guidix Logo"
+                width={120}
+                height={40}
+                className="h-8 w-auto"
+              />
             </div>
           </div>
 
           {/* Right: Upgrade Button and User */}
           <div className="flex items-center space-x-2 sm:space-x-4">
             {/* Upgrade Button - Responsive text */}
-            <button style={{
-              display: 'inline-flex',
-              padding: '8px 12px',
-              alignItems: 'center',
-              borderRadius: '8px',
-              border: '1px solid rgba(35, 112, 255, 0.30)',
-              background: 'linear-gradient(180deg, #679CFF 0%, #2370FF 100%)',
-              boxShadow: '0 2px 4px 0 rgba(77, 145, 225, 0.10), 0 1px 0.3px 0 rgba(255, 255, 255, 0.25) inset, 0 -1px 0.3px 0 rgba(0, 19, 88, 0.25) inset',
-              color: '#FFFFFF',
-              textAlign: 'center',
-              textShadow: '0 0.5px 1.5px rgba(0, 19, 88, 0.30), 0 2px 5px rgba(0, 19, 88, 0.10)',
-              fontFamily: 'Inter, sans-serif',
-              fontSize: '14px',
-              fontWeight: 500,
-              lineHeight: '125%'
-            }}>
-             
+            <button
+              style={{
+                display: "inline-flex",
+                padding: "8px 12px",
+                alignItems: "center",
+                borderRadius: "8px",
+                border: "1px solid rgba(35, 112, 255, 0.30)",
+                background: "linear-gradient(180deg, #679CFF 0%, #2370FF 100%)",
+                boxShadow:
+                  "0 2px 4px 0 rgba(77, 145, 225, 0.10), 0 1px 0.3px 0 rgba(255, 255, 255, 0.25) inset, 0 -1px 0.3px 0 rgba(0, 19, 88, 0.25) inset",
+                color: "#FFFFFF",
+                textAlign: "center",
+                textShadow:
+                  "0 0.5px 1.5px rgba(0, 19, 88, 0.30), 0 2px 5px rgba(0, 19, 88, 0.10)",
+                fontFamily: "Inter, sans-serif",
+                fontSize: "14px",
+                fontWeight: 500,
+                lineHeight: "125%",
+              }}
+            >
               <span className="hidden sm:inline text-xs">Upgrade Now</span>
               <span className="sm:hidden">Upgrade</span>
             </button>
@@ -211,7 +251,9 @@ export function DashboardLayout({ children }) {
                 </svg>
               </div>
               <div className="hidden lg:block">
-                <p className="text-sm font-medium text-gray-900">{userEmail.split('@')[0] || 'User'}</p>
+                <p className="text-sm font-medium text-gray-900">
+                  {userEmail.split("@")[0] || "User"}
+                </p>
                 <p className="text-xs text-gray-500">Premium Member</p>
               </div>
             </div>
@@ -236,98 +278,163 @@ export function DashboardLayout({ children }) {
           "top-0 h-screen"
         }`}
         style={{
-          display: 'flex',
-          backgroundColor: '#FFFFFF',
-          width: isDesktop ? (collapsed ? '64px' : '240px') : '240px',
-          borderRadius: '12px',
-          padding: collapsed ? '12px' : '16px',
-          flexDirection: 'column',
-          alignItems: 'flex-start',
-          gap: '8px',
-          boxShadow: '0 4px 8px -2px rgba(0, 19, 88, 0.10)',
-          overflow: 'hidden',
-          left: isDesktop ? '16px' : '0',
-          top: isDesktop ? '16px' : '0',
-          height: isDesktop ? 'calc(100vh - 32px)' : '100vh'
+          display: "flex",
+          backgroundColor: "#FFFFFF",
+          width: isDesktop ? (collapsed ? "64px" : "240px") : "240px",
+          borderRadius: "12px",
+          padding: collapsed ? "12px" : "16px",
+          flexDirection: "column",
+          alignItems: "flex-start",
+          gap: "8px",
+          boxShadow: "0 4px 8px -2px rgba(0, 19, 88, 0.10)",
+          overflow: "hidden",
+          left: isDesktop ? "16px" : "0",
+          top: isDesktop ? "16px" : "0",
+          height: isDesktop ? "calc(100vh - 32px)" : "100vh",
         }}
       >
         {/* Logo Section */}
         {!collapsed && (
-          <div style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <Image src="/guidix.ai logo.svg" alt="Guidix Logo" width={120} height={40} className="h-8 w-auto" />
+          <div
+            style={{
+              width: "100%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              marginBottom: "16px",
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+              <Image
+                src="/guidix.ai logo.svg"
+                alt="Guidix Logo"
+                width={120}
+                height={40}
+                className="h-8 w-auto"
+              />
             </div>
             <button
               onClick={() => setSidebarOpen(false)}
               className="lg:hidden"
               style={{
-                padding: '6px',
-                borderRadius: '8px',
-                color: '#6477B4',
-                backgroundColor: 'transparent'
+                padding: "6px",
+                borderRadius: "8px",
+                color: "#6477B4",
+                backgroundColor: "transparent",
               }}
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
               </svg>
             </button>
           </div>
         )}
 
-        {/* Navigation */}
-        <nav style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '8px', flex: '1 1 auto', minHeight: 0, overflowY: 'auto' }}>
+        {/* Logo Section - Collapsed */}
+        {collapsed && (
+          <div
+            style={{
+              width: "100%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              marginBottom: "16px",
+            }}
+          >
+            <Image
+              src="/sidebar_collapse_icon.svg"
+              alt="Guidix Logo"
+              width={20}
+              height={20}
+              className="h-8 w-8"
+            />
+          </div>
+        )}
 
-          <ul style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+        {/* Navigation */}
+        <nav
+          style={{
+            width: "100%",
+            display: "flex",
+            flexDirection: "column",
+            gap: "8px",
+            flex: "1 1 auto",
+            minHeight: 0,
+            overflowY: "auto",
+          }}
+        >
+          <ul style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
             {sidebarItems.map((item) => (
               <li key={item.href}>
                 <Link
                   href={item.href}
                   onClick={() => setSidebarOpen(false)}
                   className="flex items-center rounded-lg"
-                  style={isActive(item.href) ? {
-                    background: 'transparent',
-                    padding: '8px 12px',
-                    color: '#0F2678',
-                    borderRadius: '8px',
-                    border: '1px solid #2370FF'
-                  } : {
-                    padding: '8px 12px',
-                    color: '#6477B4',
-                    backgroundColor: 'transparent',
-                    borderRadius: '8px',
-                    border: '1px solid transparent'
-                  }}
+                  style={
+                    isActive(item.href)
+                      ? {
+                          background: "transparent",
+                          padding: "8px 12px",
+                          color: "#0F2678",
+                          borderRadius: "8px",
+                          border: "1px solid #2370FF",
+                        }
+                      : {
+                          padding: "8px 12px",
+                          color: "#6477B4",
+                          backgroundColor: "transparent",
+                          borderRadius: "8px",
+                          border: "1px solid transparent",
+                        }
+                  }
                   onMouseEnter={(e) => {
                     if (!isActive(item.href)) {
-                      e.currentTarget.style.backgroundColor = '#F0F4FA';
+                      e.currentTarget.style.backgroundColor = "#F0F4FA";
                     }
                   }}
                   onMouseLeave={(e) => {
                     if (!isActive(item.href)) {
-                      e.currentTarget.style.backgroundColor = 'transparent';
+                      e.currentTarget.style.backgroundColor = "transparent";
                     }
                   }}
                   title={collapsed ? item.title : undefined}
                 >
                   {!collapsed && (
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', width: '100%' }}>
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "10px",
+                        width: "100%",
+                      }}
+                    >
                       <span
                         className="flex-shrink-0"
                         style={{
-                          display: 'flex',
-                          alignItems: 'center'
+                          display: "flex",
+                          alignItems: "center",
                         }}
                       >
                         {item.icon}
                       </span>
                       <span
                         style={{
-                          fontFamily: 'Inter, sans-serif',
-                          fontSize: '12px',
+                          fontFamily: "Inter, sans-serif",
+                          fontSize: "12px",
                           fontWeight: 400,
-                          lineHeight: '125%',
-                          letterSpacing: '-0.24px',
-                          color: isActive(item.href) ? '#0F2678' : '#6477B4'
+                          lineHeight: "125%",
+                          letterSpacing: "-0.24px",
+                          color: isActive(item.href) ? "#0F2678" : "#6477B4",
                         }}
                       >
                         {item.title}
@@ -338,9 +445,9 @@ export function DashboardLayout({ children }) {
                     <span
                       className="flex-shrink-0"
                       style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center'
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
                       }}
                     >
                       {item.icon}
@@ -353,50 +460,68 @@ export function DashboardLayout({ children }) {
         </nav>
 
         {/* Footer Items */}
-        <div className="mt-auto" style={{ paddingTop: '8px', gap: '8px', display: 'flex', flexDirection: 'column', width: '100%' }}>
+        <div
+          className="mt-auto"
+          style={{
+            paddingTop: "8px",
+            gap: "8px",
+            display: "flex",
+            flexDirection: "column",
+            width: "100%",
+          }}
+        >
           {footerItems.length > 0 && (
-            <ul style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+            <ul
+              style={{ display: "flex", flexDirection: "column", gap: "4px" }}
+            >
               {footerItems.map((item) => (
                 <li key={item.href}>
                   <Link
                     href={item.href}
                     className="flex items-center rounded-lg"
                     style={{
-                      padding: '8px 12px',
-                      color: '#6477B4',
-                      backgroundColor: 'transparent',
-                      borderRadius: '8px',
-                      border: '1px solid transparent'
+                      padding: "8px 12px",
+                      color: "#6477B4",
+                      backgroundColor: "transparent",
+                      borderRadius: "8px",
+                      border: "1px solid transparent",
                     }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.backgroundColor = '#F0F4FA';
+                      e.currentTarget.style.backgroundColor = "#F0F4FA";
                     }}
                     onMouseLeave={(e) => {
-                      e.currentTarget.style.backgroundColor = 'transparent';
+                      e.currentTarget.style.backgroundColor = "transparent";
                     }}
                     title={collapsed ? item.title : undefined}
                   >
                     {!collapsed && (
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', width: '100%' }}>
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "10px",
+                          width: "100%",
+                        }}
+                      >
                         <span
                           className="flex-shrink-0"
                           style={{
-                            color: '#2370FF',
-                            display: 'flex',
-                            alignItems: 'center',
-                            fontSize: '14px'
+                            color: "#2370FF",
+                            display: "flex",
+                            alignItems: "center",
+                            fontSize: "14px",
                           }}
                         >
                           {item.icon}
                         </span>
                         <span
                           style={{
-                            fontFamily: 'Inter, sans-serif',
-                            fontSize: '12px',
+                            fontFamily: "Inter, sans-serif",
+                            fontSize: "12px",
                             fontWeight: 400,
-                            lineHeight: '125%',
-                            letterSpacing: '-0.24px',
-                            color: '#6477B4'
+                            lineHeight: "125%",
+                            letterSpacing: "-0.24px",
+                            color: "#6477B4",
                           }}
                         >
                           {item.title}
@@ -407,10 +532,10 @@ export function DashboardLayout({ children }) {
                       <span
                         className="flex-shrink-0"
                         style={{
-                          color: '#2370FF',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center'
+                          color: "#2370FF",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
                         }}
                       >
                         {item.icon}
@@ -427,29 +552,36 @@ export function DashboardLayout({ children }) {
             onClick={handleLogout}
             className="flex items-center rounded-lg w-full"
             style={{
-              padding: '8px 12px',
-              color: '#6477B4',
-              backgroundColor: 'transparent',
-              borderRadius: '8px',
-              border: '1px solid transparent'
+              padding: "8px 12px",
+              color: "#6477B4",
+              backgroundColor: "transparent",
+              borderRadius: "8px",
+              border: "1px solid transparent",
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = '#F0F4FA';
-              e.currentTarget.style.color = '#EF4444';
+              e.currentTarget.style.backgroundColor = "#F0F4FA";
+              e.currentTarget.style.color = "#EF4444";
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = 'transparent';
-              e.currentTarget.style.color = '#6477B4';
+              e.currentTarget.style.backgroundColor = "transparent";
+              e.currentTarget.style.color = "#6477B4";
             }}
           >
             {!collapsed && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', width: '100%' }}>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "10px",
+                  width: "100%",
+                }}
+              >
                 <svg
                   className="w-4 h-4 flex-shrink-0"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
-                  style={{ color: 'inherit', fontSize: '14px' }}
+                  style={{ color: "inherit", fontSize: "14px" }}
                 >
                   <path
                     strokeLinecap="round"
@@ -460,12 +592,12 @@ export function DashboardLayout({ children }) {
                 </svg>
                 <span
                   style={{
-                    fontFamily: 'Inter, sans-serif',
-                    fontSize: '12px',
+                    fontFamily: "Inter, sans-serif",
+                    fontSize: "12px",
                     fontWeight: 400,
-                    lineHeight: '125%',
-                    letterSpacing: '-0.24px',
-                    color: 'inherit'
+                    lineHeight: "125%",
+                    letterSpacing: "-0.24px",
+                    color: "inherit",
                   }}
                 >
                   Logout
@@ -478,7 +610,7 @@ export function DashboardLayout({ children }) {
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
-                style={{ color: 'inherit' }}
+                style={{ color: "inherit" }}
               >
                 <path
                   strokeLinecap="round"
@@ -496,26 +628,33 @@ export function DashboardLayout({ children }) {
               onClick={() => setCollapsed(true)}
               className="hidden lg:flex items-center w-full rounded-lg"
               style={{
-                padding: '8px 12px',
-                color: '#6477B4',
-                backgroundColor: 'transparent',
-                borderRadius: '8px',
-                border: '1px solid transparent'
+                padding: "8px 12px",
+                color: "#6477B4",
+                backgroundColor: "transparent",
+                borderRadius: "8px",
+                border: "1px solid transparent",
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = '#F0F4FA';
+                e.currentTarget.style.backgroundColor = "#F0F4FA";
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = 'transparent';
+                e.currentTarget.style.backgroundColor = "transparent";
               }}
             >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', width: '100%' }}>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "10px",
+                  width: "100%",
+                }}
+              >
                 <svg
                   className="w-4 h-4 flex-shrink-0"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
-                  style={{ color: 'inherit', fontSize: '14px' }}
+                  style={{ color: "inherit", fontSize: "14px" }}
                 >
                   <path
                     strokeLinecap="round"
@@ -526,12 +665,12 @@ export function DashboardLayout({ children }) {
                 </svg>
                 <span
                   style={{
-                    fontFamily: 'Inter, sans-serif',
-                    fontSize: '12px',
+                    fontFamily: "Inter, sans-serif",
+                    fontSize: "12px",
                     fontWeight: 400,
-                    lineHeight: '125%',
-                    letterSpacing: '-0.24px',
-                    color: 'inherit'
+                    lineHeight: "125%",
+                    letterSpacing: "-0.24px",
+                    color: "inherit",
                   }}
                 >
                   Collapse
@@ -544,17 +683,17 @@ export function DashboardLayout({ children }) {
               onClick={() => setCollapsed(false)}
               className="hidden lg:flex items-center justify-center w-full rounded-lg"
               style={{
-                padding: '8px 12px',
-                color: '#6477B4',
-                backgroundColor: 'transparent',
-                borderRadius: '8px',
-                border: '1px solid transparent'
+                padding: "8px 12px",
+                color: "#6477B4",
+                backgroundColor: "transparent",
+                borderRadius: "8px",
+                border: "1px solid transparent",
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = '#F0F4FA';
+                e.currentTarget.style.backgroundColor = "#F0F4FA";
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = 'transparent';
+                e.currentTarget.style.backgroundColor = "transparent";
               }}
               title="Expand sidebar"
             >
@@ -563,7 +702,7 @@ export function DashboardLayout({ children }) {
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
-                style={{ color: 'inherit' }}
+                style={{ color: "inherit" }}
               >
                 <path
                   strokeLinecap="round"
@@ -580,36 +719,40 @@ export function DashboardLayout({ children }) {
       {/* Main Content */}
       <div
         style={{
-          paddingTop: '16px',
-          paddingRight: '16px',
-          paddingBottom: '16px'
+          paddingTop: "16px",
+          paddingRight: "16px",
+          paddingBottom: "16px",
         }}
       >
-        <style dangerouslySetInnerHTML={{__html: `
+        <style
+          dangerouslySetInnerHTML={{
+            __html: `
           @media (min-width: 1024px) {
             .main-content-wrapper {
-              margin-left: ${collapsed ? '96px' : '272px'} !important;
+              margin-left: ${collapsed ? "96px" : "272px"} !important;
             }
           }
-        `}} />
-        <div className="main-content-wrapper">
-        {/* Page Content */}
-        <main
-          style={{
-            display: 'flex',
-            padding: '24px',
-            flexDirection: 'column',
-            alignItems: 'stretch',
-            gap: '24px',
-            borderRadius: '12px',
-            background: '#FFF',
-            boxShadow: '0 4px 8px -2px rgba(0, 19, 88, 0.10)',
-            minHeight: 'calc(100vh - 8rem)',
-            width: '100%'
+        `,
           }}
-        >
-          {children}
-        </main>
+        />
+        <div className="main-content-wrapper">
+          {/* Page Content */}
+          <main
+            style={{
+              display: "flex",
+              padding: "24px",
+              flexDirection: "column",
+              alignItems: "stretch",
+              gap: "24px",
+              borderRadius: "12px",
+              background: "#FFF",
+              boxShadow: "0 4px 8px -2px rgba(0, 19, 88, 0.10)",
+              minHeight: "calc(100vh - 8rem)",
+              width: "100%",
+            }}
+          >
+            {children}
+          </main>
         </div>
       </div>
     </div>
