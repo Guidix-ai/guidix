@@ -3137,7 +3137,7 @@ function EnhancedResumeContent() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 lg:py-6">
         {/* Banner */}
         <div className="relative py-6 px-8 overflow-hidden flex items-center mb-6" style={{
-          backgroundImage: 'url(/banner.svg)',
+          backgroundImage: 'url(/header-banner.svg)',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',

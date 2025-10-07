@@ -1,6 +1,5 @@
 "use client";
 import React, { useState, useEffect, Suspense } from "react";
-import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { DashboardLayout } from "@/components/layout/dashboard-layout";
 import {
@@ -10,299 +9,461 @@ import {
   Building,
   Zap,
   FlaskConical,
-  Plane,
-  Dna,
   Brain,
   Shield,
   BarChart3,
-  Heart,
-  ArrowLeft,
-  Check,
-  Target
+  ArrowRight
 } from "lucide-react";
 
-// Simple categories for filtering
-const categories = [
-  { id: "all", name: "All Fields" },
-  { id: "core", name: "Core Engineering" },
-  { id: "technology", name: "Technology" },
-  { id: "interdisciplinary", name: "Interdisciplinary" }
-];
-
-// Engineering fields with simple categorization
-const engineeringFields = [
+// Top engineering branches
+const engineeringBranches = [
   {
     id: "cse",
     name: "Computer Science & Engineering",
     icon: Monitor,
-    description: "Software development, algorithms, programming",
-    category: "core"
   },
   {
     id: "ece",
     name: "Electronics & Communication",
     icon: Radio,
-    description: "Electronics, telecommunications, circuits",
-    category: "core"
   },
   {
     id: "mechanical",
     name: "Mechanical Engineering",
     icon: Settings,
-    description: "Machines, manufacturing, design",
-    category: "core"
   },
   {
     id: "civil",
     name: "Civil Engineering",
     icon: Building,
-    description: "Construction, infrastructure, planning",
-    category: "core"
   },
   {
     id: "electrical",
     name: "Electrical Engineering",
     icon: Zap,
-    description: "Power systems, electrical circuits",
-    category: "core"
   },
   {
     id: "chemical",
     name: "Chemical Engineering",
     icon: FlaskConical,
-    description: "Chemical processes, production",
-    category: "core"
-  },
-  {
-    id: "aerospace",
-    name: "Aerospace Engineering",
-    icon: Plane,
-    description: "Aircraft, spacecraft design",
-    category: "core"
-  },
-  {
-    id: "biomedical",
-    name: "Biomedical Engineering",
-    icon: Heart,
-    description: "Medical devices, healthcare technology",
-    category: "core"
   },
   {
     id: "ai-ml",
     name: "AI & Machine Learning",
     icon: Brain,
-    description: "Artificial intelligence, machine learning",
-    category: "technology"
   },
   {
     id: "cybersecurity",
     name: "Cybersecurity",
     icon: Shield,
-    description: "Network security, ethical hacking",
-    category: "technology"
   },
   {
     id: "data-science",
     name: "Data Science",
     icon: BarChart3,
-    description: "Big data, analytics, statistics",
-    category: "technology"
-  },
-  {
-    id: "biotechnology",
-    name: "Biotechnology",
-    icon: Dna,
-    description: "Bio-tech, pharmaceuticals",
-    category: "technology"
-  },
-  {
-    id: "ai-data-science",
-    name: "AI & Data Science",
-    icon: Brain,
-    description: "Combined AI/ML with data analytics",
-    category: "interdisciplinary"
-  },
-  {
-    id: "electronics-cs",
-    name: "Electronics & Computer Science",
-    icon: Monitor,
-    description: "Hardware-software integration",
-    category: "interdisciplinary"
-  },
-  {
-    id: "robotics",
-    name: "Robotics Engineering",
-    icon: Settings,
-    description: "Autonomous systems, mechatronics",
-    category: "interdisciplinary"
-  },
-  {
-    id: "renewable-energy",
-    name: "Renewable Energy Engineering",
-    icon: Zap,
-    description: "Solar, wind, sustainable energy systems",
-    category: "interdisciplinary"
   }
 ];
+
+// Button styles from job-search page
+const buttonStyles = {
+  selected: {
+    display: 'inline-flex',
+    padding: '16px 24px',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: '10px',
+    background: 'linear-gradient(180deg, #679CFF 0%, #2370FF 100%)',
+    border: '1px solid rgba(35, 112, 255, 0.30)',
+    boxShadow: '0 2px 4px 0 rgba(77, 145, 225, 0.10), 0 1px 0.3px 0 rgba(255, 255, 255, 0.25) inset, 0 -1px 0.3px 0 rgba(0, 19, 88, 0.25) inset',
+    color: '#FFFFFF',
+    textShadow: '0 0.5px 1.5px rgba(0, 19, 88, 0.30), 0 2px 5px rgba(0, 19, 88, 0.10)',
+    fontFamily: 'Inter, sans-serif',
+    fontSize: '16px',
+    fontWeight: 600,
+    lineHeight: '125%',
+    letterSpacing: '-0.36px',
+    cursor: 'pointer',
+    transition: 'all 0.3s ease',
+    width: '100%',
+    minHeight: '56px'
+  },
+  unselected: {
+    display: 'inline-flex',
+    padding: '16px 24px',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: '10px',
+    borderWidth: '1px',
+    borderStyle: 'solid',
+    borderColor: '#D5E4FF',
+    background: 'linear-gradient(180deg, #F4F8FF 0%, #E9F1FF 100%)',
+    boxShadow: '0 4px 8px -2px rgba(0, 19, 88, 0.10)',
+    color: '#474FA3',
+    fontFamily: 'Inter, sans-serif',
+    fontSize: '16px',
+    fontWeight: 600,
+    lineHeight: '125%',
+    letterSpacing: '-0.32px',
+    cursor: 'pointer',
+    transition: 'all 0.3s ease',
+    width: '100%',
+    minHeight: '56px'
+  }
+};
+
+const shadowBoxStyle = `
+  0 0 6px 0 rgba(0, 0, 0, 0.12),
+  0 2px 3px 0 rgba(0, 0, 0, 0.04),
+  0 2px 6px 0 rgba(0, 0, 0, 0.04),
+  inset 0 -2px 3px 0 rgba(0, 0, 0, 0.08)
+`;
 
 function FieldSelectionPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [selectedField, setSelectedField] = useState("cse");
-  const [educationLevel, setEducationLevel] = useState("");
+  const [currentStep, setCurrentStep] = useState(1);
+  const [academicYear, setAcademicYear] = useState("");
+  const [branch, setBranch] = useState("");
+  const [jobType, setJobType] = useState("");
   const [path, setPath] = useState("");
   const [career, setCareer] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [animateIn, setAnimateIn] = useState(true);
 
   useEffect(() => {
-    const education = searchParams.get("education");
     const pathParam = searchParams.get("path");
     const careerParam = searchParams.get("career");
-    if (education) {
-      setEducationLevel(education);
-    }
-    if (pathParam) {
-      setPath(pathParam);
-    }
-    if (careerParam) {
-      setCareer(careerParam);
-    }
+    if (pathParam) setPath(pathParam);
+    if (careerParam) setCareer(careerParam);
   }, [searchParams]);
 
-  // Filter fields based on selected category
-  const filteredFields = engineeringFields.filter(field => {
-    if (selectedCategory === "all") return true;
-    return field.category === selectedCategory;
-  });
+  useEffect(() => {
+    // Google Fonts Inter
+    const googleFontsLink = document.createElement('link');
+    googleFontsLink.href = 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap';
+    googleFontsLink.rel = 'stylesheet';
+    document.head.appendChild(googleFontsLink);
 
-  const handleContinue = () => {
-    if (path === "ai") {
-      router.push(`/ai-prompt?fields=${selectedField}&education=${educationLevel}&career=${career}`);
-    } else if (path === "upload") {
-      router.push(`/upload-resume?fields=${selectedField}&education=${educationLevel}&career=${career}`);
-    } else {
-      // Default to AI path if no path is specified for backward compatibility
-      router.push(`/ai-prompt?fields=${selectedField}&education=${educationLevel}&career=${career}`);
-    }
+    const style = document.createElement('style');
+    style.innerHTML = `
+      * {
+        font-family: 'Inter', sans-serif !important;
+      }
+    `;
+    document.head.appendChild(style);
+  }, []);
+
+  const handleAcademicYearSelect = (year) => {
+    setAcademicYear(year);
+    setAnimateIn(false);
+    setTimeout(() => {
+      setCurrentStep(2);
+      setAnimateIn(true);
+    }, 300);
   };
 
+  const handleBranchSelect = (branchId) => {
+    setBranch(branchId);
+    setAnimateIn(false);
+    setTimeout(() => {
+      setCurrentStep(3);
+      setAnimateIn(true);
+    }, 300);
+  };
+
+  const handleJobTypeSelect = (type) => {
+    setJobType(type);
+    // Navigate to next page
+    setTimeout(() => {
+      if (path === "ai") {
+        router.push(`/ai-prompt?fields=${branch}&education=${academicYear}&career=${type}`);
+      } else if (path === "upload") {
+        router.push(`/upload-resume?fields=${branch}&education=${academicYear}&career=${type}`);
+      } else {
+        router.push(`/ai-prompt?fields=${branch}&education=${academicYear}&career=${type}`);
+      }
+    }, 300);
+  };
+
+  const handleBack = () => {
+    setAnimateIn(false);
+    setTimeout(() => {
+      if (currentStep > 1) {
+        setCurrentStep(currentStep - 1);
+        setAnimateIn(true);
+      } else {
+        router.push("/resume-builder/ai-generator/education");
+      }
+    }, 300);
+  };
 
   return (
     <DashboardLayout>
-      {/* Main Container */}
-      <div className="min-h-screen flex items-center justify-center py-8 bg-gray-50">
-        <div className="max-w-4xl mx-auto px-4 w-full">
-
-          {/* Engineering Field Selection */}
-          <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-6">
-
-            <div className="text-center space-y-4 mb-8">
-              <div className="w-12 h-12 rounded-full mx-auto brand-gradient text-white flex items-center justify-center">
-                <Target size={20} />
-              </div>
-
-              <div className="space-y-2">
-                <h1 className="text-2xl font-semibold text-gray-900">
-                  Select Your Engineering Branch
-                </h1>
-                <p className="text-sm text-gray-600">
-                  Choose your field of specialization
-                </p>
-              </div>
-
-              {educationLevel && (
-                <div className="inline-flex items-center px-3 py-1 rounded-full bg-blue-50 brand-text text-sm font-medium">
-                  {educationLevel === "first" ? "1st Year" : educationLevel === "second" ? "2nd Year" : educationLevel === "third" ? "3rd Year" : "4th Year"}
-                </div>
-              )}
+      <div style={{ minHeight: '100vh', backgroundColor: '#F8F9FF', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem 1rem' }}>
+        <div style={{
+          maxWidth: '700px',
+          width: '100%',
+          opacity: animateIn ? 1 : 0,
+          transform: animateIn ? 'translateY(0)' : 'translateY(20px)',
+          transition: 'all 0.3s ease'
+        }}>
+          {/* Progress Bar */}
+          <div style={{ marginBottom: '2rem' }}>
+            <div style={{
+              height: '4px',
+              backgroundColor: '#E1E4ED',
+              borderRadius: '4px',
+              overflow: 'hidden'
+            }}>
+              <div style={{
+                height: '100%',
+                width: `${(currentStep / 3) * 100}%`,
+                background: 'linear-gradient(180deg, #474FA3 0%, #2A338B 100%)',
+                transition: 'width 0.3s ease'
+              }} />
             </div>
-
-            {/* Simple Category Filter */}
-            <div className="flex justify-center mb-6">
-              <div className="bg-gray-50 p-1 rounded-lg inline-flex">
-                {categories.map((category) => (
-                  <button
-                    key={category.id}
-                    onClick={() => setSelectedCategory(category.id)}
-                    className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
-                      selectedCategory === category.id
-                        ? 'brand-gradient text-white shadow-sm'
-                        : 'text-gray-600 hover:text-gray-900'
-                    }`}
-                  >
-                    {category.name}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Engineering Fields Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
-              {filteredFields.map((field) => {
-                const IconComponent = field.icon;
-                return (
-                  <div
-                    key={field.id}
-                    onClick={() => setSelectedField(field.id)}
-                    className={`border rounded-lg p-4 cursor-pointer transition-all hover:shadow-md ${
-                      selectedField === field.id
-                        ? 'brand-border bg-blue-50 shadow-md'
-                        : 'border-gray-200 hover:border-gray-300'
-                    }`}
-                  >
-                    {/* Selection Indicator */}
-                    {selectedField === field.id && (
-                      <div className="flex justify-end mb-3">
-                        <div className="w-5 h-5 rounded-full brand-gradient text-white flex items-center justify-center">
-                          <Check size={12} />
-                        </div>
-                      </div>
-                    )}
-
-                    <div className="flex flex-col items-center text-center space-y-3">
-                      <div className={`w-12 h-12 rounded-lg flex items-center justify-center transition-colors ${
-                        selectedField === field.id
-                          ? 'brand-gradient text-white'
-                          : 'bg-gray-100 text-gray-600'
-                      }`}>
-                        <IconComponent size={20} />
-                      </div>
-
-                      <div className="space-y-1">
-                        <h3 className={`font-medium text-sm leading-tight ${
-                          selectedField === field.id ? 'text-blue-900' : 'text-gray-900'
-                        }`}>
-                          {field.name}
-                        </h3>
-                        <p className="text-xs text-gray-600 leading-relaxed">
-                          {field.description}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-
-
-            {/* Navigation Buttons */}
-            <div className="flex justify-center space-x-3">
-              <Link
-                href="/resume-builder/ai-generator/education"
-                className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 flex items-center gap-2 transition-colors"
-              >
-                <ArrowLeft size={16} />
-                <span>Back</span>
-              </Link>
-
-              <button
-                onClick={handleContinue}
-                className="px-6 py-2 brand-gradient text-white rounded-lg hover:bg-blue-700 transition-colors"
-              >
-                Continue
-              </button>
+            <div style={{
+              marginTop: '0.5rem',
+              textAlign: 'center',
+              color: '#6D7586',
+              fontSize: '14px',
+              fontWeight: 500
+            }}>
+              Step {currentStep} of 3
             </div>
           </div>
+
+          {/* Question Card */}
+          <div style={{
+            backgroundColor: '#FFFFFF',
+            border: '1px solid #F1F3F7',
+            boxShadow: shadowBoxStyle,
+            borderRadius: '16px',
+            padding: '3rem 2.5rem'
+          }}>
+            {/* Step 1: Academic Year */}
+            {currentStep === 1 && (
+              <div>
+                <h1 style={{
+                  fontSize: '28px',
+                  fontWeight: 700,
+                  color: '#002A79',
+                  marginBottom: '1rem',
+                  textAlign: 'center',
+                  lineHeight: '1.3'
+                }}>
+                  What year are you currently in?
+                </h1>
+                <p style={{
+                  fontSize: '15px',
+                  color: '#6D7586',
+                  textAlign: 'center',
+                  marginBottom: '2.5rem'
+                }}>
+                  Select your current academic year
+                </p>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                  {[
+                    { value: 'first', label: '1st Year' },
+                    { value: 'second', label: '2nd Year' },
+                    { value: 'third', label: '3rd Year' },
+                    { value: 'fourth', label: '4th Year' }
+                  ].map((year) => (
+                    <button
+                      key={year.value}
+                      onClick={() => handleAcademicYearSelect(year.value)}
+                      style={academicYear === year.value ? buttonStyles.selected : buttonStyles.unselected}
+                      onMouseEnter={(e) => {
+                        if (academicYear !== year.value) {
+                          e.currentTarget.style.opacity = '0.9';
+                          e.currentTarget.style.transform = 'translateY(-2px)';
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.opacity = '1';
+                        e.currentTarget.style.transform = 'translateY(0)';
+                      }}
+                    >
+                      {year.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Step 2: Engineering Branch */}
+            {currentStep === 2 && (
+              <div>
+                <h1 style={{
+                  fontSize: '28px',
+                  fontWeight: 700,
+                  color: '#002A79',
+                  marginBottom: '1rem',
+                  textAlign: 'center',
+                  lineHeight: '1.3'
+                }}>
+                  What's your engineering branch?
+                </h1>
+                <p style={{
+                  fontSize: '15px',
+                  color: '#6D7586',
+                  textAlign: 'center',
+                  marginBottom: '2.5rem'
+                }}>
+                  Choose your field of specialization
+                </p>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                  {engineeringBranches.map((branchItem) => {
+                    const IconComponent = branchItem.icon;
+                    return (
+                      <button
+                        key={branchItem.id}
+                        onClick={() => handleBranchSelect(branchItem.id)}
+                        style={{
+                          ...(branch === branchItem.id ? buttonStyles.selected : buttonStyles.unselected),
+                          flexDirection: 'column',
+                          gap: '8px',
+                          padding: '20px 16px'
+                        }}
+                        onMouseEnter={(e) => {
+                          if (branch !== branchItem.id) {
+                            e.currentTarget.style.opacity = '0.9';
+                            e.currentTarget.style.transform = 'translateY(-2px)';
+                          }
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.opacity = '1';
+                          e.currentTarget.style.transform = 'translateY(0)';
+                        }}
+                      >
+                        <IconComponent size={24} />
+                        <span style={{ fontSize: '14px', textAlign: 'center', lineHeight: '1.3' }}>
+                          {branchItem.name}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* Step 3: Job Type */}
+            {currentStep === 3 && (
+              <div>
+                <h1 style={{
+                  fontSize: '28px',
+                  fontWeight: 700,
+                  color: '#002A79',
+                  marginBottom: '1rem',
+                  textAlign: 'center',
+                  lineHeight: '1.3'
+                }}>
+                  What are you looking for?
+                </h1>
+                <p style={{
+                  fontSize: '15px',
+                  color: '#6D7586',
+                  textAlign: 'center',
+                  marginBottom: '2.5rem'
+                }}>
+                  Select your preferred opportunity type
+                </p>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                  {[
+                    { value: 'internship', label: 'Internship', icon: '🎓' },
+                    { value: 'fulltime', label: 'Full-time Job', icon: '💼' }
+                  ].map((type) => (
+                    <button
+                      key={type.value}
+                      onClick={() => handleJobTypeSelect(type.value)}
+                      style={{
+                        ...(jobType === type.value ? buttonStyles.selected : buttonStyles.unselected),
+                        gap: '12px'
+                      }}
+                      onMouseEnter={(e) => {
+                        if (jobType !== type.value) {
+                          e.currentTarget.style.opacity = '0.9';
+                          e.currentTarget.style.transform = 'translateY(-2px)';
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.opacity = '1';
+                        e.currentTarget.style.transform = 'translateY(0)';
+                      }}
+                    >
+                      <span style={{ fontSize: '24px' }}>{type.icon}</span>
+                      <span>{type.label}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Back Button */}
+            {currentStep > 0 && (
+              <div style={{ marginTop: '2rem', textAlign: 'center' }}>
+                <button
+                  onClick={handleBack}
+                  style={{
+                    background: 'transparent',
+                    border: 'none',
+                    color: '#474FA3',
+                    fontSize: '14px',
+                    fontWeight: 500,
+                    cursor: 'pointer',
+                    padding: '8px 16px',
+                    transition: 'opacity 0.2s ease'
+                  }}
+                  onMouseEnter={(e) => e.currentTarget.style.opacity = '0.7'}
+                  onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}
+                >
+                  ← Back
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* Selected Summary */}
+          {(academicYear || branch) && (
+            <div style={{
+              marginTop: '1.5rem',
+              padding: '1rem',
+              backgroundColor: 'rgba(71, 79, 163, 0.05)',
+              borderRadius: '12px',
+              border: '1px solid rgba(71, 79, 163, 0.1)',
+              display: 'flex',
+              flexWrap: 'wrap',
+              gap: '8px',
+              justifyContent: 'center'
+            }}>
+              {academicYear && (
+                <span style={{
+                  padding: '6px 12px',
+                  backgroundColor: '#FFFFFF',
+                  borderRadius: '8px',
+                  fontSize: '13px',
+                  fontWeight: 500,
+                  color: '#474FA3'
+                }}>
+                  {academicYear === 'first' ? '1st Year' : academicYear === 'second' ? '2nd Year' : academicYear === 'third' ? '3rd Year' : '4th Year'}
+                </span>
+              )}
+              {branch && (
+                <span style={{
+                  padding: '6px 12px',
+                  backgroundColor: '#FFFFFF',
+                  borderRadius: '8px',
+                  fontSize: '13px',
+                  fontWeight: 500,
+                  color: '#474FA3'
+                }}>
+                  {engineeringBranches.find(b => b.id === branch)?.name}
+                </span>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </DashboardLayout>
