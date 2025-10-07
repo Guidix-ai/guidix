@@ -114,7 +114,7 @@ export default function Home() {
     <DashboardLayout>
       <div style={{ minHeight: '100vh', backgroundColor: '#F8F9FF', width: '100%' }}>
         <div className="relative py-6 px-8 overflow-hidden flex items-center" style={{
-          backgroundImage: 'url(/banner.svg)',
+          backgroundImage: 'url(/header-banner.svg)',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',

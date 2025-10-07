@@ -2,9 +2,9 @@
 
 import React, { useState, useRef, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, Upload, FileText, CheckCircle, X, Zap, Sparkles } from "lucide-react";
 import { DashboardLayout } from "@/components/layout/dashboard-layout";
 import { uploadAndProcessResume } from "@/services/resumeService";
 import { handleApiError, logError } from "@/utils/errorHandler";
@@ -123,68 +123,78 @@ function UploadResumePageContent() {
 
   return (
     <DashboardLayout>
-      <div className="min-h-screen brand-bg-light flex items-center justify-center p-4">
-      {/* Background Elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-10 w-32 h-32 bg-purple-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse"></div>
-        <div className="absolute top-40 right-10 w-32 h-32 bg-blue-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse animation-delay-2000"></div>
-        <div className="absolute -bottom-8 left-20 w-32 h-32 bg-indigo-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse animation-delay-4000"></div>
-      </div>
-
-      <div className="max-w-2xl mx-auto w-full relative z-10">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <div className="flex items-center justify-center mb-4">
-            <div className="w-16 h-16 brand-gradient rounded-2xl flex items-center justify-center shadow-lg">
-              <Upload className="h-8 w-8 text-white" />
-            </div>
+      <div style={{ minHeight: '100vh', backgroundColor: '#F8F9FF', width: '100%' }}>
+        {/* Blue Banner */}
+        <div className="relative py-6 px-8 overflow-hidden flex items-center" style={{
+          backgroundImage: 'url(/header-banner.svg)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          minHeight: '100px',
+          boxShadow: '0 4px 20px 0 #2370FF66',
+          borderRadius: '16px'
+        }}>
+          <div className="relative z-10">
+            <h1 className="text-white font-bold" style={{ textShadow: '0 2px 10px rgba(0, 0, 0, 0.3)', fontSize: '32px', lineHeight: '1.2' }}>
+              Drop Your Resume Here
+            </h1>
           </div>
-          <h1 className="text-4xl font-bold brand-text mb-2">
-            Drop Your Resume Here! 📄
-          </h1>
-          <p className="text-lg text-gray-600">
-            Let&apos;s give your resume the glow-up it deserves ✨
-          </p>
         </div>
 
+      <div className="max-w-2xl mx-auto w-full relative z-10 mt-8 px-4">
+
         {/* Upload Card */}
-        <Card className="shadow-2xl border-2 border-dashed brand-hover transition-all duration-300" style={{borderColor: "var(--neutral-medium-light)"}}>
+        <Card className="shadow-2xl  brand-hover transition-all duration-300" style={{borderColor: "var(--neutral-medium-light)"}}>
           <CardContent className="p-8">
             {!selectedFile ? (
               <div
-                className={`relative border-2 border-dashed rounded-xl p-8 text-center transition-all duration-300 ${
-                  dragActive
-                    ? 'brand-border'
-                    : 'border-gray-300 brand-hover'
-                }`}
+                className="relative bg-gradient-to-b from-sky-50 to-blue-100 rounded-3xl overflow-hidden transition-all duration-300"
+                style={{
+                  boxShadow: '0px 4px 8px -2px rgba(35,112,255,0.15)',
+                  outline: '1px solid #EEF5FF',
+                  outlineOffset: '-1px'
+                }}
                 onDragEnter={handleDrag}
                 onDragLeave={handleDrag}
                 onDragOver={handleDrag}
                 onDrop={handleDrop}
               >
-                <div className="flex flex-col items-center space-y-4">
-                  <div className="w-20 h-20 brand-gradient rounded-full flex items-center justify-center shadow-lg animate-bounce">
-                    <Upload className="h-10 w-10 text-white" />
+                <div className="flex flex-col items-center py-12 px-8">
+                  {/* Icon */}
+                  <div className="w-16 h-16 mb-8">
+                    <Image src="/upload-icon.svg" alt="Upload" width={64} height={64} className="w-16 h-16" />
                   </div>
 
-                  <div className="space-y-2">
-                    <h3 className="text-xl font-bold text-gray-900">
-                      Drag & drop your resume here
-                    </h3>
-                    <p className="text-gray-600">
-                      or click to browse your files
-                    </p>
+                  {/* Main Text */}
+                  <div className="mb-2">
+                    <div className="text-center text-blue-900 text-lg font-medium font-['Inter'] leading-snug">
+                      Select a file to upload
+                    </div>
                   </div>
 
-                  <Button
+                  {/* Secondary Text */}
+                  <div className="mb-10">
+                    <div className="text-center text-slate-500 text-lg font-normal font-['Inter'] leading-relaxed">
+                      Or drag and drop it here
+                    </div>
+                  </div>
+
+                  {/* Upload Button */}
+                  <button
                     onClick={() => fileInputRef.current?.click()}
-                    className="brand-gradient text-white font-semibold px-8 py-3 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
+                    className="px-4 pt-2.5 pb-3 bg-gradient-to-b from-blue-400 to-blue-600 rounded-xl inline-flex flex-col justify-start items-center transition-all duration-300 hover:opacity-90"
+                    style={{
+                      boxShadow: '0px 4px 8px 0px rgba(77,145,225,0.10), inset 0px -1.5px 0.6px 0px rgba(0,19,88,0.25), inset 0px 1.5px 0.6px 0px rgba(255,255,255,0.25)',
+                      outline: '2px solid rgba(35,112,255,0.30)'
+                    }}
                   >
-                    <FileText className="h-4 w-4 mr-2" />
-                    Choose File
-                  </Button>
+                    <div className="text-center text-white text-lg font-medium font-['Inter'] leading-snug" style={{ textShadow: '0px 2px 5px rgba(0, 19, 88, 0.10)' }}>
+                      Upload file
+                    </div>
+                  </button>
 
-                  <div className="text-sm text-gray-500 space-y-1">
+                  {/* File Info */}
+                  <div className="text-sm text-slate-500 space-y-1 mt-6 text-center">
                     <p>Supported formats: PDF, DOC, DOCX, TXT</p>
                     <p>Maximum file size: 10MB</p>
                   </div>
@@ -200,38 +210,55 @@ function UploadResumePageContent() {
               </div>
             ) : (
               <div className="space-y-6">
-                {/* Selected File Display */}
-                <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-6 border border-green-200">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-4">
-                      <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
-                        <FileText className="h-6 w-6 text-green-600" />
-                      </div>
-                      <div>
-                        <h4 className="font-semibold text-green-800">{selectedFile.name}</h4>
-                        <p className="text-sm text-green-600">{formatFileSize(selectedFile.size)}</p>
-                      </div>
+                {/* Success Card */}
+                <div
+                  className="bg-white rounded-2xl p-12"
+                  style={{
+                    borderTop: '1px solid #74D184',
+                    boxShadow: `
+                      0 0 4px 0 rgba(0, 19, 88, 0.15),
+                      0 2px 3px 0 rgba(0, 19, 88, 0.04),
+                      0 2px 6px 0 rgba(0, 19, 88, 0.04),
+                      inset 0 -2px 3px 0 rgba(0, 19, 88, 0.10)
+                    `
+                  }}
+                >
+                  <div className="flex flex-col items-center text-center space-y-6">
+                    {/* Icon */}
+                    <div className="w-20 h-20">
+                      <Image
+                        src="/completedresume.svg"
+                        alt="Resume Uploaded"
+                        width={80}
+                        height={80}
+                        className="w-20 h-20"
+                      />
                     </div>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={removeFile}
-                      className="text-gray-500 hover:text-red-500 transition-colors"
-                    >
-                      <X className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
 
-                {/* Success Message */}
-                <div className="text-center space-y-4">
-                  <div className="flex items-center justify-center space-x-2 text-green-600">
-                    <CheckCircle className="h-5 w-5" />
-                    <span className="font-medium">File uploaded successfully! 🎉</span>
+                    {/* Main Text */}
+                    <h3
+                      className="text-2xl font-semibold"
+                      style={{
+                        color: '#0F172A',
+                        fontFamily: 'Inter, sans-serif',
+                        lineHeight: '1.4'
+                      }}
+                    >
+                      Resume uploaded successfully!
+                    </h3>
+
+                    {/* Secondary Text */}
+                    <p
+                      className="text-base max-w-md"
+                      style={{
+                        color: '#64748B',
+                        fontFamily: 'Inter, sans-serif',
+                        lineHeight: '1.6'
+                      }}
+                    >
+                      Let’s level up your resume and boost that ATS score
+                    </p>
                   </div>
-                  <p className="text-gray-600">
-                    Ready to analyze your resume and make it absolutely fire! 🔥
-                  </p>
                 </div>
 
                 {/* Error Message */}
@@ -254,10 +281,7 @@ function UploadResumePageContent() {
                         <span>Uploading...</span>
                       </div>
                     ) : (
-                      <div className="flex items-center space-x-2">
-                        <Zap className="h-4 w-4" />
-                        <span>Analyze My Resume!</span>
-                      </div>
+                      <span>Analyze My Resume</span>
                     )}
                   </Button>
                 </div>
@@ -266,46 +290,35 @@ function UploadResumePageContent() {
           </CardContent>
         </Card>
 
-        {/* Fun Tips */}
-        <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-200 text-center">
-            <div className="text-2xl mb-2">⚡</div>
-            <div className="text-sm font-medium text-gray-800">Lightning Fast</div>
-            <div className="text-xs text-gray-600">Analysis in seconds</div>
-          </div>
-          <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-200 text-center">
-            <div className="text-2xl mb-2">🎯</div>
-            <div className="text-sm font-medium text-gray-800">ATS Optimized</div>
-            <div className="text-xs text-gray-600">Beat the bots</div>
-          </div>
-          <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-200 text-center">
-            <div className="text-2xl mb-2">✨</div>
-            <div className="text-sm font-medium text-gray-800">AI Enhanced</div>
-            <div className="text-xs text-gray-600">Smart improvements</div>
-          </div>
-        </div>
-
         {/* Back Button */}
         <div className="flex justify-center mt-8">
-          <Button
-            variant="outline"
+          <button
             onClick={handleBack}
-            className="bg-white border-gray-300 brand-hover transition-all duration-300 gap-2 px-6 py-2 font-semibold rounded-lg shadow-sm"
+            style={{
+              display: 'inline-flex',
+              padding: '8px 12px',
+              alignItems: 'center',
+              borderRadius: '8px',
+              border: '1px solid rgba(35, 112, 255, 0.30)',
+              background: 'linear-gradient(180deg, #679CFF 0%, #2370FF 100%)',
+              boxShadow: '0 2px 4px 0 rgba(77, 145, 225, 0.10), 0 1px 0.3px 0 rgba(255, 255, 255, 0.25) inset, 0 -1px 0.3px 0 rgba(0, 19, 88, 0.25) inset',
+              color: '#FFFFFF',
+              textAlign: 'center',
+              textShadow: '0 0.5px 1.5px rgba(0, 19, 88, 0.30), 0 2px 5px rgba(0, 19, 88, 0.10)',
+              fontFamily: 'Inter, sans-serif',
+              fontSize: '14px',
+              fontWeight: 500,
+              lineHeight: '125%',
+              cursor: 'pointer',
+              transition: 'opacity 0.2s ease'
+            }}
+            onMouseEnter={(e) => e.currentTarget.style.opacity = '0.9'}
+            onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}
           >
-            <ArrowLeft className="h-4 w-4" />
             Back to Options
-          </Button>
+          </button>
         </div>
       </div>
-
-      <style jsx>{`
-        .animation-delay-2000 {
-          animation-delay: 2s;
-        }
-        .animation-delay-4000 {
-          animation-delay: 4s;
-        }
-      `}</style>
       </div>
     </DashboardLayout>
   );

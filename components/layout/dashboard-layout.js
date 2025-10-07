@@ -285,11 +285,13 @@ export function DashboardLayout({ children }) {
                   onClick={() => setSidebarOpen(false)}
                   className="flex items-center rounded-lg"
                   style={isActive(item.href) ? {
-                    background: 'transparent',
+                    background: 'linear-gradient(180deg, #679CFF 0%, #2370FF 100%)',
                     padding: '8px 12px',
-                    color: '#0F2678',
+                    color: '#FFFFFF',
                     borderRadius: '8px',
-                    border: '1px solid #2370FF'
+                    border: '1px solid rgba(35, 112, 255, 0.30)',
+                    boxShadow: '0 2px 4px 0 rgba(77, 145, 225, 0.10), 0 1px 0.3px 0 rgba(255, 255, 255, 0.25) inset, 0 -1px 0.3px 0 rgba(0, 19, 88, 0.25) inset',
+                    textShadow: '0 0.5px 1.5px rgba(0, 19, 88, 0.30), 0 2px 5px rgba(0, 19, 88, 0.10)'
                   } : {
                     padding: '8px 12px',
                     color: '#6477B4',
@@ -327,7 +329,7 @@ export function DashboardLayout({ children }) {
                           fontWeight: 400,
                           lineHeight: '125%',
                           letterSpacing: '-0.24px',
-                          color: isActive(item.href) ? '#0F2678' : '#6477B4'
+                          color: isActive(item.href) ? '#FFFFFF' : '#6477B4'
                         }}
                       >
                         {item.title}

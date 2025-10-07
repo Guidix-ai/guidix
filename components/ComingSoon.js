@@ -90,7 +90,7 @@ const ComingSoon = ({ title = "Coming Soon" }) => {
           left: '50%',
           transform: 'translateX(-50%)',
           top: 0,
-          backgroundImage: 'url(/banner.svg)',
+          backgroundImage: 'url(/header-banner.svg)',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',

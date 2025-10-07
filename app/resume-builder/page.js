@@ -520,7 +520,7 @@ export default function ResumeBuilderPage() {
       <div className="space-y-6" style={{ width: '100%' }}>
         {/* Header Section */}
         <div className="relative py-6 px-8 overflow-hidden" style={{
-          backgroundImage: 'url(/banner.svg)',
+          backgroundImage: 'url(/header-banner.svg)',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',
@@ -543,36 +543,38 @@ export default function ResumeBuilderPage() {
         {/* Main Tabs */}
         <div className="w-full">
           <div
-            className="bg-white rounded-xl shadow-sm border p-1"
-            style={{ borderColor: "var(--neutral-medium-light)" }}
+            className="rounded-xl shadow-sm border p-1"
+            style={{
+              borderColor: "#E9F1FF",
+              backgroundColor: "#E9F1FF"
+            }}
           >
             <div className="grid w-full grid-cols-3 gap-1">
               <button
                 onClick={() => setActiveTab("ai-prompt")}
-                className="py-3 px-3 lg:px-4 rounded-lg text-xs lg:text-sm font-medium"
+                className="py-3 px-3 lg:px-4 rounded-lg text-xs lg:text-sm font-medium transition-all"
                 style={{
-                  background:
-                    activeTab === "ai-prompt" ? "transparent" : "transparent",
-                  color: activeTab === "ai-prompt" ? "#0F2678" : "#6477B4",
+                  background: activeTab === "ai-prompt" ? "#FFFFFF" : "transparent",
+                  color: activeTab === "ai-prompt" ? "#002A79" : "#6D7586",
                   borderRadius: "8px",
-                  border:
-                    activeTab === "ai-prompt"
-                      ? "1px solid #2370FF"
-                      : "1px solid transparent",
+                  border: activeTab === "ai-prompt" ? "1px solid #FFF" : "1px solid transparent",
+                  boxShadow: activeTab === "ai-prompt"
+                    ? "2px 2px 8px -2px rgba(0, 19, 88, 0.08)"
+                    : "none",
                   fontFamily: 'Inter, sans-serif',
-                  fontSize: '12px',
-                  fontWeight: 400,
+                  fontSize: '14px',
+                  fontWeight: activeTab === "ai-prompt" ? 600 : 500,
                   lineHeight: '125%',
-                  letterSpacing: '-0.24px'
+                  letterSpacing: '-0.32px'
                 }}
                 onMouseEnter={(e) => {
                   if (activeTab !== "ai-prompt") {
-                    e.target.style.backgroundColor = "#F0F4FA";
+                    e.target.style.opacity = "0.8";
                   }
                 }}
                 onMouseLeave={(e) => {
                   if (activeTab !== "ai-prompt") {
-                    e.target.style.backgroundColor = "transparent";
+                    e.target.style.opacity = "1";
                   }
                 }}
               >
@@ -581,29 +583,29 @@ export default function ResumeBuilderPage() {
               </button>
               <button
                 onClick={() => setActiveTab("all")}
-                className="py-3 px-3 lg:px-4 rounded-lg text-xs lg:text-sm font-medium"
+                className="py-3 px-3 lg:px-4 rounded-lg text-xs lg:text-sm font-medium transition-all"
                 style={{
-                  background: activeTab === "all" ? "transparent" : "transparent",
-                  color: activeTab === "all" ? "#0F2678" : "#6477B4",
+                  background: activeTab === "all" ? "#FFFFFF" : "transparent",
+                  color: activeTab === "all" ? "#002A79" : "#6D7586",
                   borderRadius: "8px",
-                  border:
-                    activeTab === "all"
-                      ? "1px solid #2370FF"
-                      : "1px solid transparent",
+                  border: activeTab === "all" ? "1px solid #FFF" : "1px solid transparent",
+                  boxShadow: activeTab === "all"
+                    ? "2px 2px 8px -2px rgba(0, 19, 88, 0.08)"
+                    : "none",
                   fontFamily: 'Inter, sans-serif',
-                  fontSize: '12px',
-                  fontWeight: 400,
+                  fontSize: '14px',
+                  fontWeight: activeTab === "all" ? 600 : 500,
                   lineHeight: '125%',
-                  letterSpacing: '-0.24px'
+                  letterSpacing: '-0.32px'
                 }}
                 onMouseEnter={(e) => {
                   if (activeTab !== "all") {
-                    e.target.style.backgroundColor = "#F0F4FA";
+                    e.target.style.opacity = "0.8";
                   }
                 }}
                 onMouseLeave={(e) => {
                   if (activeTab !== "all") {
-                    e.target.style.backgroundColor = "transparent";
+                    e.target.style.opacity = "1";
                   }
                 }}
               >
@@ -612,30 +614,29 @@ export default function ResumeBuilderPage() {
               </button>
               <button
                 onClick={() => setActiveTab("linkedin")}
-                className="py-3 px-3 lg:px-4 rounded-lg text-xs lg:text-sm font-medium"
+                className="py-3 px-3 lg:px-4 rounded-lg text-xs lg:text-sm font-medium transition-all"
                 style={{
-                  background:
-                    activeTab === "linkedin" ? "transparent" : "transparent",
-                  color: activeTab === "linkedin" ? "#0F2678" : "#6477B4",
+                  background: activeTab === "linkedin" ? "#FFFFFF" : "transparent",
+                  color: activeTab === "linkedin" ? "#002A79" : "#6D7586",
                   borderRadius: "8px",
-                  border:
-                    activeTab === "linkedin"
-                      ? "1px solid #2370FF"
-                      : "1px solid transparent",
+                  border: activeTab === "linkedin" ? "1px solid #FFF" : "1px solid transparent",
+                  boxShadow: activeTab === "linkedin"
+                    ? "2px 2px 8px -2px rgba(0, 19, 88, 0.08)"
+                    : "none",
                   fontFamily: 'Inter, sans-serif',
-                  fontSize: '12px',
-                  fontWeight: 400,
+                  fontSize: '14px',
+                  fontWeight: activeTab === "linkedin" ? 600 : 500,
                   lineHeight: '125%',
-                  letterSpacing: '-0.24px'
+                  letterSpacing: '-0.32px'
                 }}
                 onMouseEnter={(e) => {
                   if (activeTab !== "linkedin") {
-                    e.target.style.backgroundColor = "#F0F4FA";
+                    e.target.style.opacity = "0.8";
                   }
                 }}
                 onMouseLeave={(e) => {
                   if (activeTab !== "linkedin") {
-                    e.target.style.backgroundColor = "transparent";
+                    e.target.style.opacity = "1";
                   }
                 }}
               >

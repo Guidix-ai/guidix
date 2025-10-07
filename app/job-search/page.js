@@ -33,15 +33,20 @@ const buttonTextStyles = {
 // Apply button specific styles from Figma
 const applyButtonStyles = {
   display: 'inline-flex',
-  maxWidth: '180px',
-  padding: '8px 12px',
-  flexDirection: 'column',
-  alignItems: 'flex-start',
-  borderRadius: '8px',
-  border: '1px solid rgba(35, 112, 255, 0.30)',
-  background: 'linear-gradient(180deg, #679CFF 0%, #2370FF 100%)',
-  boxShadow: '0 2px 4px 0 rgba(77, 145, 225, 0.10), 0 1px 0.3px 0 rgba(255, 255, 255, 0.25) inset, 0 -1px 0.3px 0 rgba(0, 19, 88, 0.25) inset',
-  ...buttonTextStyles
+  padding: '8px 16px',
+  alignItems: 'center',
+  justifyContent: 'center',
+  borderRadius: '12px',
+  border: 'none',
+  background: '#2370FF',
+  color: '#FFFFFF',
+  textAlign: 'center',
+  fontFamily: 'Inter, sans-serif',
+  fontSize: '14px',
+  fontWeight: 500,
+  lineHeight: '125%',
+  cursor: 'pointer',
+  transition: 'all 0.2s ease'
 }
 
 const allJobs = [
@@ -184,13 +189,7 @@ const EnhancedJobCard = ({ job, onApply, onSave, onBlock, isApplied, isSaved, ro
   }, [])
 
   const handleCardClick = (e) => {
-    const target = e.target;
-    const isButtonClick = target.closest('button') || target.closest('[data-match-score]') || target.closest('[data-company-details]')
-    if (!isButtonClick) {
-      // Open job details page in a new tab
-      const jobDataString = encodeURIComponent(JSON.stringify(job))
-      window.open(`/job-details/${job.id}?data=${jobDataString}`, '_blank')
-    }
+    // Card click disabled - no routing
   }
 
   const handleCompanyDetailsClick = (e) => {
@@ -203,32 +202,19 @@ const EnhancedJobCard = ({ job, onApply, onSave, onBlock, isApplied, isSaved, ro
     setIsHoveringMatchScore(false)
   }
 
-  // Apply button specific styles
-  const getApplyButtonStyles = (isApplied) => {
-    if (isApplied) {
-      return {
-        ...applyButtonStyles,
-        background: '#22c55e',
-        border: '1px solid rgba(34, 197, 94, 0.30)',
-        cursor: 'not-allowed'
-      }
-    }
-    return applyButtonStyles
-  }
 
   const totalBlocks = 5
 
   return (
    
     <div
-      className="rounded-lg shadow-sm relative transition-all hover:shadow-md cursor-pointer mb-3"
-      style={{ 
+      className="rounded-lg shadow-sm relative mb-3"
+      style={{
         backgroundColor: '#FFFFFF',
         border: '1px solid #F1F3F7',
         boxShadow: shadowBoxStyle,
       }}
       onMouseLeave={() => setIsHoveringMatchScore(false)}
-      onClick={handleCardClick}
     >
       <div className="p-4">
         {!isHoveringMatchScore ? (
@@ -255,46 +241,46 @@ const EnhancedJobCard = ({ job, onApply, onSave, onBlock, isApplied, isSaved, ro
                 </div>
               </div>
 
-              <div className="flex gap-2">
+              <div className="flex gap-2 flex-shrink-0">
                 <div
-                  className="cursor-pointer transition-all hover:opacity-90"
+                  className="cursor-pointer"
                   style={{
                     display: 'inline-flex',
-                    padding: '8px 12px',
-                    justifyContent: 'center',
+                    padding: '6px 12px',
                     alignItems: 'center',
-                    borderRadius: '12px',
-                    background: 'linear-gradient(180deg, #474FA3 0%, #2A338B 100%)',
-                    boxShadow: '0 1.5px 1px 0 rgba(255, 255, 255, 0.24) inset, 0 -1.5px 1px 0 rgba(6, 51, 165, 0.37) inset',
-                    minWidth: '70px',
+                    gap: '4px',
+                    borderRadius: '200px',
+                    background: 'linear-gradient(180deg, #679CFF 0%, #2370FF 100%)',
+                    boxShadow: '0 -1.5px 1px 0 rgba(0, 19, 88, 0.30) inset, 0 1.5px 1px 0 rgba(255, 255, 255, 0.25) inset',
+                    fontFamily: 'Inter, sans-serif',
+                    fontSize: '14px',
+                    fontWeight: 600,
+                    color: '#FFFFFF',
                   }}
                   onMouseEnter={() => setIsHoveringMatchScore(true)}
                   data-match-score="true"
                 >
-                  <div className="text-center">
-                    <div className="text-xs mb-0.5" style={{ color: '#FFFFFF', textShadow: '0 0.5px 1.5px rgba(0, 19, 88, 0.30)' }}>Match</div>
-                    <div className="text-sm font-bold" style={{ color: '#FFFFFF', textShadow: '0 0.5px 1.5px rgba(0, 19, 88, 0.30)' }}>{job.matchScore}%</div>
-                  </div>
+                  Match {job.matchScore}%
                 </div>
                 <div
-                  className="cursor-pointer transition-all hover:opacity-90"
+                  className="cursor-pointer"
                   style={{
                     display: 'inline-flex',
-                    padding: '8px 12px',
-                    justifyContent: 'center',
+                    padding: '6px 12px',
                     alignItems: 'center',
-                    borderRadius: '12px',
-                    background: 'linear-gradient(180deg, #474FA3 0%, #2A338B 100%)',
-                    boxShadow: '0 1.5px 1px 0 rgba(255, 255, 255, 0.24) inset, 0 -1.5px 1px 0 rgba(6, 51, 165, 0.37) inset',
-                    minWidth: '70px',
+                    gap: '4px',
+                    borderRadius: '200px',
+                    background: '#74D184',
+                    boxShadow: '0 -1.5px 1px 0 rgba(0, 19, 88, 0.30) inset, 0 1.5px 1px 0 rgba(255, 255, 255, 0.25) inset',
+                    fontFamily: 'Inter, sans-serif',
+                    fontSize: '14px',
+                    fontWeight: 600,
+                    color: '#FFFFFF',
                   }}
                   onMouseEnter={() => setIsHoveringMatchScore(true)}
                   data-match-score="true"
                 >
-                  <div className="text-center">
-                    <div className="text-xs mb-0.5" style={{ color: '#FFFFFF', textShadow: '0 0.5px 1.5px rgba(0, 19, 88, 0.30)' }}>Success</div>
-                    <div className="text-sm font-bold" style={{ color: '#FFFFFF', textShadow: '0 0.5px 1.5px rgba(0, 19, 88, 0.30)' }}>{job.predictabilityScore}%</div>
-                  </div>
+                  Success {job.predictabilityScore}%
                 </div>
               </div>
             </div>
@@ -342,7 +328,11 @@ const EnhancedJobCard = ({ job, onApply, onSave, onBlock, isApplied, isSaved, ro
                 <button
                   onClick={(e) => { e.stopPropagation(); onApply(job.id); }}
                   disabled={isApplied}
-                  style={getApplyButtonStyles(isApplied)}
+                  style={{
+                    ...applyButtonStyles,
+                    background: isApplied ? '#22c55e' : '#2370FF',
+                    cursor: isApplied ? 'not-allowed' : 'pointer'
+                  }}
                   className="transition-all hover:opacity-90"
                 >
                   {isApplied ? "Applied" : "Apply Now"}
@@ -416,10 +406,10 @@ const EnhancedJobCard = ({ job, onApply, onSave, onBlock, isApplied, isSaved, ro
             </div>
             <h3 className="text-base font-bold mb-1.5" style={{ color: '#002A79' }}>{job.title}</h3>
             <p className="text-xs mb-2.5 leading-relaxed line-clamp-2" style={{ color: '#6D7586' }}>{job.companyDescription}</p>
-            <div className="grid grid-cols-1 gap-2.5 mb-2">
-              <div className="rounded-lg p-3" style={{ backgroundColor: '#EBF1FF', border: '1px solid #B2CDFF' }}>
-                <h4 className="text-xs font-bold mb-2.5" style={{ color: '#003598' }}>Match Breakdown</h4>
-                <div className="space-y-3">
+            <div className="grid grid-cols-1 gap-1 mb-1">
+              <div className="rounded-lg p-1.5" style={{ backgroundColor: '#EBF1FF', border: '1px solid #B2CDFF' }}>
+                <h4 className="text-xs font-bold mb-1" style={{ color: '#003598' }}>Match Breakdown</h4>
+                <div className="space-y-1">
                   {[
                     { label: 'Skills', value: job.skillsMatch, color: '#2370FF' },
                     { label: 'Experience', value: job.experienceMatch, color: '#679CFF' }
@@ -427,17 +417,18 @@ const EnhancedJobCard = ({ job, onApply, onSave, onBlock, isApplied, isSaved, ro
                     const filledBlocks = Math.round((stat.value / 100) * totalBlocks)
 
                     return (
-                      <div key={stat.label} className="flex items-center gap-2.5">
-                        <span className="text-xs font-semibold w-20 flex-shrink-0" style={{ color: '#353E5C' }}>
+                      <div key={stat.label} className="flex items-center gap-1.5">
+                        <span className="text-xs font-semibold w-16 flex-shrink-0" style={{ color: '#353E5C' }}>
                           {stat.label}
                         </span>
 
-                        <div className="flex gap-1 flex-1">
+                        <div className="flex gap-0.5" style={{ width: '50%' }}>
                           {[...Array(totalBlocks)].map((_, blockIndex) => (
                             <div
                               key={blockIndex}
-                              className="h-2.5 flex-1 rounded"
+                              className="flex-1 rounded"
                               style={{
+                                height: '3px',
                                 backgroundColor: blockIndex < filledBlocks && animated
                                   ? stat.color
                                   : '#E5E7EB',
@@ -451,7 +442,7 @@ const EnhancedJobCard = ({ job, onApply, onSave, onBlock, isApplied, isSaved, ro
                         </div>
 
                         <span
-                          className="text-xs font-bold w-10 text-right"
+                          className="text-xs font-bold w-8 text-right"
                           style={{
                             color: stat.color,
                             opacity: animated ? 1 : 0,
@@ -466,20 +457,21 @@ const EnhancedJobCard = ({ job, onApply, onSave, onBlock, isApplied, isSaved, ro
                   })}
                 </div>
               </div>
-              <div className="rounded-lg p-3" style={{ backgroundColor: '#F8F9FF', border: '1px solid #E1E4ED' }}>
-                <h4 className="text-xs font-bold mb-2.5" style={{ color: '#003598' }}>Success Rate</h4>
-                <div className="space-y-2">
+              <div className="rounded-lg p-1.5" style={{ backgroundColor: '#F8F9FF', border: '1px solid #E1E4ED' }}>
+                <h4 className="text-xs font-bold mb-1" style={{ color: '#003598' }}>Success Rate</h4>
+                <div className="space-y-1">
                   <div className="text-xs" style={{ color: '#6D7586' }}>
                     <span className="font-semibold">Based on similar profiles</span>
                   </div>
-                  <div className="flex gap-1">
+                  <div className="flex gap-0.5" style={{ width: '50%' }}>
                     {[...Array(totalBlocks)].map((_, blockIndex) => {
                       const successFilledBlocks = Math.round((job.predictabilityScore / 100) * totalBlocks)
                       return (
                         <div
                           key={blockIndex}
-                          className="h-2.5 flex-1 rounded"
+                          className="flex-1 rounded"
                           style={{
+                            height: '3px',
                             backgroundColor: blockIndex < successFilledBlocks && animated
                               ? '#82A5FF'
                               : '#E5E7EB',
@@ -506,7 +498,11 @@ const EnhancedJobCard = ({ job, onApply, onSave, onBlock, isApplied, isSaved, ro
                 <button
                   onClick={(e) => { e.stopPropagation(); onApply(job.id); }}
                   disabled={isApplied}
-                  style={getApplyButtonStyles(isApplied)}
+                  style={{
+                    ...applyButtonStyles,
+                    background: isApplied ? '#22c55e' : '#2370FF',
+                    cursor: isApplied ? 'not-allowed' : 'pointer'
+                  }}
                   className="transition-all hover:opacity-90"
                 >
                   {isApplied ? "Applied" : "Apply Now"}
@@ -531,7 +527,7 @@ const JobSearchPage = () => {
   const [showSortDropdown, setShowSortDropdown] = useState(false)
   const [typewriterText, setTypewriterText] = useState("")
   const [showCursor, setShowCursor] = useState(true)
-  const fullText = "Hey Advika, Secure the bag!"
+  const fullText = " Hey Advika, 85+ matches across 25 job portals!"
   const [jobs, setJobs] = useState(allJobs) // Start with mock data
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
@@ -745,7 +741,7 @@ const JobSearchPage = () => {
     <DashboardLayout>
     <div style={{ minHeight: '100vh', backgroundColor: '#F8F9FF', width: '100%' }}>
       <div className="relative py-6 px-8 overflow-hidden flex items-center" style={{
-        backgroundImage: 'url(/banner.svg)',
+        backgroundImage: 'url(/header-banner.svg)',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
@@ -780,9 +776,9 @@ const JobSearchPage = () => {
                       padding: '8px 12px',
                       justifyContent: 'center',
                       alignItems: 'center',
-                      borderRadius: '8px',
+                      borderRadius: '10px',
                       background: 'linear-gradient(180deg, #474FA3 0%, #2A338B 100%)',
-                      boxShadow: '0 1.5px 1px 0 rgba(255, 255, 255, 0.24) inset, 0 -1.5px 1px 0 rgba(6, 51, 165, 0.37) inset',
+                      boxShadow: '0 -1.5px 1px 0 rgba(6, 51, 165, 0.37) inset, 0 1.5px 1px 0 rgba(255, 255, 255, 0.24) inset',
                       color: '#FFFFFF',
                       textShadow: '0 0.5px 1.5px rgba(0, 19, 88, 0.30), 0 2px 5px rgba(0, 19, 88, 0.10)',
                       fontFamily: 'Inter, sans-serif',
@@ -798,7 +794,7 @@ const JobSearchPage = () => {
                       gap: '8px',
                       justifyContent: 'center',
                       alignItems: 'center',
-                      borderRadius: '8px',
+                      borderRadius: '10px',
                       borderWidth: '1px',
                       borderStyle: 'solid',
                       borderColor: '#D5E4FF',
