@@ -222,10 +222,12 @@ const EnhancedJobCard = ({ job, onApply, onSave, onBlock, isApplied, isSaved, ro
             <div className="flex justify-between items-start mb-3">
               <div className="flex items-center gap-2">
                 <div className="w-10 h-10 rounded-lg flex items-center justify-center bg-white" style={{ border: '1px solid #E1E4ED' }}>
-                  <img
+                  <Image
                     src={`https://logo.clearbit.com/${job.company.toLowerCase().replace(/\s+/g, '')}.com`}
                     alt={job.company}
                     className="w-full h-full object-contain rounded-lg"
+                    width={40}
+                    height={40}
                     onError={(e) => {
                       e.target.style.display = 'none';
                       e.target.nextElementSibling.style.display = 'flex';

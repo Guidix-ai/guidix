@@ -1,6 +1,7 @@
 'use client'
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 const colorTokens = {
   title: "#002A79",
   paragraph: "#6477B4",
@@ -217,18 +218,13 @@ const SignupPage = () => {
           justifyContent: "center",
         }}
       >
-        <img
+        <Image
           src="/Card.svg"
           alt="Join Guidix Today"
+          fill
           style={{
-            width: "120%",
-            height: "120%",
             objectFit: "cover",
             objectPosition: "-30px center",
-            position: "absolute",
-            top: "55%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
           }}
         />
         <div style={{
@@ -237,9 +233,11 @@ const SignupPage = () => {
           left: "40px",
           zIndex: 1,
         }}>
-          <img
+          <Image
             src="/white guidix.ai logo .svg"
             alt="Guidix.ai"
+            width={120}
+            height={40}
             style={{
               height: "40px",
               width: "auto",

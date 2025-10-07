@@ -2,6 +2,7 @@
 import React, { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
+import Image from 'next/image'
 import { getApiUrl } from '@/lib/api-config'
 import { setAuthTokens } from '@/lib/cookies'
 
@@ -235,18 +236,13 @@ const LoginForm = () => {
           justifyContent: "center",
         }}
       >
-        <img
+        <Image
           src="/Card.svg"
           alt="Welcome Back"
+          fill
           style={{
-            width: "120%",
-            height: "120%",
             objectFit: "cover",
             objectPosition: "-30px center",
-            position: "absolute",
-            top: "55%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
           }}
         />
         <div style={{
@@ -255,9 +251,11 @@ const LoginForm = () => {
           left: "40px",
           zIndex: 1,
         }}>
-          <img
+          <Image
             src="/white guidix.ai logo .svg"
             alt="Guidix.ai"
+            width={120}
+            height={40}
             style={{
               height: "40px",
               width: "auto",

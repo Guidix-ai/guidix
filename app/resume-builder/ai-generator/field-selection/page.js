@@ -302,7 +302,7 @@ function FieldSelectionPageContent() {
                   textAlign: 'center',
                   lineHeight: '1.3'
                 }}>
-                  What's your engineering branch?
+                  What&apos;s your engineering branch?
                 </h1>
                 <p style={{
                   fontSize: '15px',
