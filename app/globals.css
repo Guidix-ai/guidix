@@ -33,6 +33,25 @@
   --neutral-dark: #7D85BF;
   --neutral-darker: #23355C;
   --neutral-darkest: #192150;
+
+  /* Shadow positioning */
+  --ShadowPositioningNone: 0;
+  --ShadowPositioningMedium: 2px;
+  --ShadowPositioningNegativeMedium: -2px;
+
+  /* Shadow blur */
+  --ShadowBlurNone: 0;
+  --ShadowBlur2XSmall: 2px;
+  --ShadowBlurExtraSmall: 3px;
+  --ShadowBlurMedium: 6px;
+
+  /* Shadow spread */
+  --ShadowSpreadNone: 0;
+
+  /* Overlay colors */
+  --ColorsOverlayColorsDark4: rgba(0, 0, 0, 0.04);
+  --ColorsOverlayColorsDark10: rgba(0, 0, 0, 0.10);
+  --ColorsOverlayColorsDark15: rgba(0, 0, 0, 0.15);
 }
 
 @theme {

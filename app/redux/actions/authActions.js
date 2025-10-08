@@ -1,6 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-import Cookies from 'js-cookie';
 
 /**
  * =============================================================================
@@ -52,7 +51,7 @@ axiosInstance.interceptors.request.use(
   (config) => {
     // Only add token for authenticated endpoints
     if (requiresAuth(config.url)) {
-      const accessToken = Cookies.get('access_token');
+      const accessToken = typeof window !== 'undefined' ? localStorage.getItem('access_token') : null;
 
       if (accessToken) {
         config.headers.Authorization = `Bearer ${accessToken}`;
@@ -120,25 +119,34 @@ axiosInstance.interceptors.response.use(
     originalRequest._retry = true;
     isRefreshing = true;
 
-    // Try to refresh the token using Next.js API route
+    // Try to refresh the token using localStorage
     try {
-      const refreshToken = Cookies.get('refresh_token');
+      const refreshToken = typeof window !== 'undefined' ? localStorage.getItem('refresh_token') : null;
 
       if (!refreshToken) {
         throw new Error('No refresh token available');
       }
 
-      // Call Next.js API route which handles the backend refresh
+      // Call backend refresh endpoint directly
       const response = await axios.post(
-        '/api/v1/auth/refresh',
-        { refreshToken },
-        { withCredentials: true }
+        `${API_BASE_URL}/api/v1/auth/refresh`,
+        { refresh_token: refreshToken }
       );
 
       if (response.data && response.data.data?.tokens) {
-        const { access_token } = response.data.data.tokens;
+        const { access_token, refresh_token, token_expiry } = response.data.data.tokens;
 
-        // Tokens are already set in cookies by the API route
+        // Store new tokens in localStorage
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('access_token', access_token);
+          if (refresh_token) {
+            localStorage.setItem('refresh_token', refresh_token);
+          }
+          if (token_expiry) {
+            localStorage.setItem('token_expiry', token_expiry.toString());
+          }
+        }
+
         // Update authorization header
         axiosInstance.defaults.headers.common.Authorization = `Bearer ${access_token}`;
         originalRequest.headers.Authorization = `Bearer ${access_token}`;
@@ -153,12 +161,11 @@ axiosInstance.interceptors.response.use(
       // Refresh failed - clear tokens and redirect to login
       processQueue(refreshError, null);
 
-      Cookies.remove('access_token');
-      Cookies.remove('refresh_token');
-      Cookies.remove('token_expiry');
-
       // Clear localStorage
       if (typeof window !== 'undefined') {
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
+        localStorage.removeItem('token_expiry');
         localStorage.removeItem('user');
         localStorage.removeItem('isAuthenticated');
       }
@@ -190,17 +197,19 @@ export const loginUser = createAsyncThunk(
   'auth/login',
   async (credentials, { rejectWithValue }) => {
     try {
-      // Call Next.js API route which handles backend signin
-      const response = await axios.post('/api/v1/auth/signin', credentials, {
-        withCredentials: true,
-      });
+      // Call backend signin endpoint directly
+      const response = await axios.post(`${API_BASE_URL}/api/v1/auth/signin`, credentials);
 
       if (response.data && response.data.data) {
         const { user, tokens } = response.data.data;
 
-        // Tokens are already set in httpOnly cookies by the API route
-        // Store user in localStorage for persistence
+        // Store tokens and user in localStorage
         if (typeof window !== 'undefined') {
+          localStorage.setItem('access_token', tokens.access_token);
+          localStorage.setItem('refresh_token', tokens.refresh_token);
+          if (tokens.token_expiry) {
+            localStorage.setItem('token_expiry', tokens.token_expiry.toString());
+          }
           localStorage.setItem('user', JSON.stringify(user));
           localStorage.setItem('isAuthenticated', 'true');
         }

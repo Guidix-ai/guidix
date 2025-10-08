@@ -130,9 +130,9 @@ function ResumeConfirmationPageContent() {
     document.head.appendChild(style);
   }, []);
 
-  // Typewriter effect for banner
+  // Typewriter effect for banner   
   useEffect(() => {
-    let fullText = "Let's build your perfect resume!";
+    let fullText = "Let's Build Your Perfect Resume!";
 
     if (academicYear && branch && jobType) {
       const yearText = academicYear === 'first' ? '1st Year' : academicYear === 'second' ? '2nd Year' : academicYear === 'third' ? '3rd Year' : '4th Year';
@@ -242,20 +242,19 @@ function ResumeConfirmationPageContent() {
     <DashboardLayout>
       <div style={{ minHeight: '100vh', backgroundColor: '#F8F9FF', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
         {/* Blue Banner */}
-        <div className="relative py-4 px-8 overflow-hidden flex items-center" style={{
+        <div className="relative py-6 px-8 overflow-hidden flex items-center" style={{
           backgroundImage: 'url(/header-banner.svg)',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',
-          minHeight: '80px',
+          minHeight: '100px',
           boxShadow: '0 4px 20px 0 #2370FF66',
-          borderRadius: '16px',
-          margin: '1rem 1rem 0.5rem 1rem'
+          borderRadius: '16px'
         }}>
           <div className="relative z-10">
             <h1 className="text-white font-bold" style={{
               textShadow: '0 2px 10px rgba(0, 0, 0, 0.3)',
-              fontSize: '26px',
+              fontSize: '32px',
               lineHeight: '1.2'
             }}>
               {typewriterText}
@@ -268,9 +267,9 @@ function ResumeConfirmationPageContent() {
         <div style={{
           flex: 1,
           display: 'flex',
-          alignItems: 'center',
+          alignItems: 'flex-start',
           justifyContent: 'center',
-          padding: '0.5rem 1rem 1rem 1rem',
+          padding: '2rem 1rem 1rem 1rem',
           overflow: 'hidden'
         }}>
           <div style={{
@@ -312,11 +311,14 @@ function ResumeConfirmationPageContent() {
               border: '1px solid #F1F3F7',
               boxShadow: shadowBoxStyle,
               borderRadius: '16px',
-              padding: '2rem 2rem'
+              padding: '2rem 2rem',
+              minHeight: currentStep === 2 ? '480px' : '360px',
+              display: 'flex',
+              flexDirection: 'column'
             }}>
               {/* Step 1: Academic Year */}
               {currentStep === 1 && (
-                <div>
+                <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
                   <h1 style={{
                     fontSize: '24px',
                     fontWeight: 700,
@@ -367,7 +369,7 @@ function ResumeConfirmationPageContent() {
 
               {/* Step 2: Engineering Branch */}
               {currentStep === 2 && (
-                <div>
+                <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
                   <h1 style={{
                     fontSize: '24px',
                     fontWeight: 700,
@@ -399,7 +401,8 @@ function ResumeConfirmationPageContent() {
                             flexDirection: 'column',
                             gap: '6px',
                             padding: '14px 10px',
-                            minHeight: '80px'
+                            minHeight: '80px',
+                            color: branch === branchItem.id ? '#FFFFFF' : '#6477B4'
                           }}
                           onMouseEnter={(e) => {
                             if (branch !== branchItem.id) {
@@ -412,8 +415,8 @@ function ResumeConfirmationPageContent() {
                             e.currentTarget.style.transform = 'translateY(0)';
                           }}
                         >
-                          <IconComponent size={20} />
-                          <span style={{ fontSize: '12px', textAlign: 'center', lineHeight: '1.2' }}>
+                          <IconComponent size={20} style={{ color: '#2370FF' }} />
+                          <span style={{ fontSize: '12px', textAlign: 'center', lineHeight: '1.2', color: '#6477B4' }}>
                             {branchItem.name}
                           </span>
                         </button>
@@ -425,7 +428,7 @@ function ResumeConfirmationPageContent() {
 
               {/* Step 3: Job Type */}
               {currentStep === 3 && (
-                <div>
+                <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
                   <h1 style={{
                     fontSize: '24px',
                     fontWeight: 700,
@@ -476,7 +479,7 @@ function ResumeConfirmationPageContent() {
 
               {/* Back Button */}
               {currentStep > 1 && (
-                <div style={{ marginTop: '1.5rem', textAlign: 'center' }}>
+                <div style={{ marginTop: 'auto', paddingTop: '1.5rem', textAlign: 'center' }}>
                   <button
                     onClick={handleBack}
                     style={{

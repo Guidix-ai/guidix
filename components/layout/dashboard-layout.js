@@ -57,11 +57,11 @@ const sidebarItems = [
     href: "/mock-interview",
   },
   {
-    title: "LinkedIn Optimiser",
+    title: "LinkedIn Optimizer",
     icon: (
       <Image
         src="/linkedinoptimiser.svg"
-        alt="LinkedIn Optimiser"
+        alt="LinkedIn Optimizer"
         width={16}
         height={16}
       />
@@ -379,7 +379,7 @@ export function DashboardLayout({ children }) {
                 <Link
                   href={item.href}
                   onClick={() => setSidebarOpen(false)}
-                  className="flex items-center rounded-lg"
+                  className="flex items-center rounded-lg transition-none"
                   style={isActive(item.href) ? {
                     background: 'linear-gradient(180deg, #679CFF 0%, #2370FF 100%)',
                     padding: '8px 12px',
@@ -387,13 +387,15 @@ export function DashboardLayout({ children }) {
                     borderRadius: '8px',
                     border: '1px solid rgba(35, 112, 255, 0.30)',
                     boxShadow: '0 2px 4px 0 rgba(77, 145, 225, 0.10), 0 1px 0.3px 0 rgba(255, 255, 255, 0.25) inset, 0 -1px 0.3px 0 rgba(0, 19, 88, 0.25) inset',
-                    textShadow: '0 0.5px 1.5px rgba(0, 19, 88, 0.30), 0 2px 5px rgba(0, 19, 88, 0.10)'
+                    textShadow: '0 0.5px 1.5px rgba(0, 19, 88, 0.30), 0 2px 5px rgba(0, 19, 88, 0.10)',
+                    transition: 'none'
                   } : {
                     padding: '8px 12px',
                     color: '#6477B4',
                     backgroundColor: 'transparent',
                     borderRadius: '8px',
-                    border: '1px solid transparent'
+                    border: '1px solid transparent',
+                    transition: 'none'
                   }}
                   onMouseEnter={(e) => {
                     if (!isActive(item.href)) {
@@ -421,6 +423,10 @@ export function DashboardLayout({ children }) {
                         style={{
                           display: "flex",
                           alignItems: "center",
+                          filter: "none",
+                          opacity: 1,
+                          backgroundColor: "transparent",
+                          mixBlendMode: "normal"
                         }}
                       >
                         {item.icon}
@@ -446,6 +452,10 @@ export function DashboardLayout({ children }) {
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
+                        filter: "none",
+                        opacity: 1,
+                        backgroundColor: "transparent",
+                        mixBlendMode: "normal"
                       }}
                     >
                       {item.icon}

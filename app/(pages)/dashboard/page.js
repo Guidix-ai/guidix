@@ -114,7 +114,7 @@ export default function DashboardPage() {
     <DashboardLayout>
       <div style={{ minHeight: '100vh', backgroundColor: '#F8F9FF', width: '100%' }}>
         <div className="relative py-6 px-8 overflow-hidden flex items-center" style={{
-          backgroundImage: 'url(/banner.svg)',
+          backgroundImage: 'url(/header-banner.svg)',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',
@@ -152,9 +152,9 @@ export default function DashboardPage() {
               >
                 <div className="p-3 h-full flex flex-col justify-between">
                   <div>
-                    <div className="w-8 h-8 rounded-lg flex items-center justify-center mb-2">
+                    <div className="w-12 h-12 rounded-lg flex items-center justify-center mb-2">
                       {feature.iconSrc ? (
-                        <Image src={feature.iconSrc} alt={feature.title} width={16} height={16} />
+                        <Image src={feature.iconSrc} alt={feature.title} width={32} height={32} />
                       ) : (
                         feature.icon
                       )}
@@ -206,19 +206,31 @@ export default function DashboardPage() {
             </div>
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem' }}>
-              <div className="p-3 rounded-lg" style={{ backgroundColor: 'rgba(255, 255, 255, 0.1)' }}>
+              <div className="p-3 rounded-lg" style={{
+                backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                boxShadow: 'var(--ShadowPositioningNone) var(--ShadowPositioningNone) var(--ShadowBlur2XSmall) var(--ShadowSpreadNone) var(--ColorsOverlayColorsDark15), var(--ShadowPositioningNone) var(--ShadowPositioningMedium) var(--ShadowBlurExtraSmall) var(--ShadowSpreadNone) var(--ColorsOverlayColorsDark4), var(--ShadowPositioningNone) var(--ShadowPositioningMedium) var(--ShadowBlurMedium) var(--ShadowSpreadNone) var(--ColorsOverlayColorsDark4), var(--ShadowPositioningNone) var(--ShadowPositioningNegativeMedium) var(--ShadowBlurExtraSmall) var(--ShadowBlurNone) var(--ColorsOverlayColorsDark10) inset'
+              }}>
                 <div className="text-2xl font-bold mb-1">{insights.recommendedJobs}</div>
                 <div className="text-xs opacity-90">Recommended Jobs</div>
               </div>
-              <div className="p-3 rounded-lg" style={{ backgroundColor: 'rgba(255, 255, 255, 0.1)' }}>
+              <div className="p-3 rounded-lg" style={{
+                backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                boxShadow: 'var(--ShadowPositioningNone) var(--ShadowPositioningNone) var(--ShadowBlur2XSmall) var(--ShadowSpreadNone) var(--ColorsOverlayColorsDark15), var(--ShadowPositioningNone) var(--ShadowPositioningMedium) var(--ShadowBlurExtraSmall) var(--ShadowSpreadNone) var(--ColorsOverlayColorsDark4), var(--ShadowPositioningNone) var(--ShadowPositioningMedium) var(--ShadowBlurMedium) var(--ShadowSpreadNone) var(--ColorsOverlayColorsDark4), var(--ShadowPositioningNone) var(--ShadowPositioningNegativeMedium) var(--ShadowBlurExtraSmall) var(--ShadowBlurNone) var(--ColorsOverlayColorsDark10) inset'
+              }}>
                 <div className="text-2xl font-bold mb-1">{insights.applicationsThisWeek}</div>
                 <div className="text-xs opacity-90">Applications This Week</div>
               </div>
-              <div className="p-3 rounded-lg" style={{ backgroundColor: 'rgba(255, 255, 255, 0.1)' }}>
+              <div className="p-3 rounded-lg" style={{
+                backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                boxShadow: 'var(--ShadowPositioningNone) var(--ShadowPositioningNone) var(--ShadowBlur2XSmall) var(--ShadowSpreadNone) var(--ColorsOverlayColorsDark15), var(--ShadowPositioningNone) var(--ShadowPositioningMedium) var(--ShadowBlurExtraSmall) var(--ShadowSpreadNone) var(--ColorsOverlayColorsDark4), var(--ShadowPositioningNone) var(--ShadowPositioningMedium) var(--ShadowBlurMedium) var(--ShadowSpreadNone) var(--ColorsOverlayColorsDark4), var(--ShadowPositioningNone) var(--ShadowPositioningNegativeMedium) var(--ShadowBlurExtraSmall) var(--ShadowBlurNone) var(--ColorsOverlayColorsDark10) inset'
+              }}>
                 <div className="text-2xl font-bold mb-1">{insights.upcomingInterviews}</div>
                 <div className="text-xs opacity-90">Upcoming Interviews</div>
               </div>
-              <div className="p-3 rounded-lg" style={{ backgroundColor: 'rgba(255, 255, 255, 0.1)' }}>
+              <div className="p-3 rounded-lg" style={{
+                backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                boxShadow: 'var(--ShadowPositioningNone) var(--ShadowPositioningNone) var(--ShadowBlur2XSmall) var(--ShadowSpreadNone) var(--ColorsOverlayColorsDark15), var(--ShadowPositioningNone) var(--ShadowPositioningMedium) var(--ShadowBlurExtraSmall) var(--ShadowSpreadNone) var(--ColorsOverlayColorsDark4), var(--ShadowPositioningNone) var(--ShadowPositioningMedium) var(--ShadowBlurMedium) var(--ShadowSpreadNone) var(--ColorsOverlayColorsDark4), var(--ShadowPositioningNone) var(--ShadowPositioningNegativeMedium) var(--ShadowBlurExtraSmall) var(--ShadowBlurNone) var(--ColorsOverlayColorsDark10) inset'
+              }}>
                 <div className="text-2xl font-bold mb-1">{insights.profileViews}</div>
                 <div className="text-xs opacity-90">Profile Views</div>
               </div>

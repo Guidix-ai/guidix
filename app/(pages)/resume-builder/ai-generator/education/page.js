@@ -83,7 +83,7 @@ function EducationLevelPageContent() {
                   className="text-2xl lg:text-3xl font-black"
                   style={{ color: "var(--brand-primary)" }}
                 >
-                  What year u reppin?
+                  What year are you currently in?
                 </h1>
                 <p
                   className="text-base lg:text-lg font-semibold leading-relaxed max-w-2xl mx-auto"
@@ -91,7 +91,7 @@ function EducationLevelPageContent() {
                 >
                   Tell us where you&apos;re at so we can craft a resume that{" "}
                   <span style={{ color: "var(--brand-primary)" }} className="font-black bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                    hits different
+                    stands out
                   </span>
                   <span className="inline-block ml-2">
                     <Sparkles className="w-4 h-4 text-yellow-400 inline animate-bounce" />

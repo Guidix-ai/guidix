@@ -25,10 +25,13 @@ export const uploadAndProcessResume = async (file, resumeName) => {
 /**
  * Enhance an existing resume using AI
  * @param {string} resumeId - The resume ID to enhance
+ * @param {string} templateId - Template ID to use for enhancement
  * @returns {Promise} Enhanced resume data
  */
-export const enhanceResume = async (resumeId) => {
-  const response = await resumeApiClient.post(`/api/v1/resumes/${resumeId}/enhance`);
+export const enhanceResume = async (resumeId, templateId = "aa97e710-4457-46fb-ac6f-1765ad3a6d43") => {
+  const response = await resumeApiClient.post(`/api/v1/resumes/${resumeId}/enhance`, {
+    template_id: templateId
+  });
   return response.data;
 };
 
@@ -39,7 +42,7 @@ export const enhanceResume = async (resumeId) => {
  * @param {string} templateId - Optional template ID
  * @returns {Promise} Created resume data
  */
-export const createResumeFromPrompt = async (prompt, resumeName, templateId) => {
+export const createResumeFromPrompt = async (prompt, resumeName, templateId = "41aab622-839d-454e-bf99-9d5a2ce027ec") => {
   const response = await resumeApiClient.post('/api/v1/resumes/resume-creation', {
     user_prompt: prompt,
     resume_name: resumeName,

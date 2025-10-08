@@ -7,7 +7,7 @@ const colorTokens = {
   paragraph: "#6D7586",
   bgLight: "#F8F9FF",
   secondary100: "#E6F0FF",
-  secondary200: "#679CFF",
+  secondary200: "rgba(103,156,255,0.1)",
   secondary300: "#4F87FF",
   secondary400: "#2370FF",
   secondary600: "#2370FF",

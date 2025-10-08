@@ -13,6 +13,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import React, { useState, useEffect, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
+import { DashboardLayout } from "@/components/layout/dashboard-layout";
 import {
   Download,
   Edit3,
@@ -76,6 +77,54 @@ const buttonTextStyles = {
   letterSpacing: '-2%'
 };
 
+const inputStyles = {
+  width: "100%",
+  height: 56,
+  minHeight: 56,
+  paddingLeft: 16,
+  paddingRight: 16,
+  paddingTop: 6,
+  paddingBottom: 6,
+  backgroundColor: colorTokens.bgLight,
+  borderRadius: 16,
+  border: 'none',
+  boxShadow: "0px 0px 2px 0px rgba(0,19,88,0.15), 0px 4px 4px 0px rgba(0,19,88,0.04), 0px 4px 16px 0px rgba(0,19,88,0.04), inset 0px -4px 4px 0px rgba(0,19,88,0.10)",
+  outline: "1px solid #C7D6ED",
+  fontSize: 16,
+  color: colorTokens.paragraph,
+  fontFamily: "Inter, sans-serif",
+  fontWeight: 400,
+  lineHeight: "125%",
+  letterSpacing: "-0.32px",
+};
+
+const textareaStyles = {
+  width: "100%",
+  minHeight: 120,
+  padding: 16,
+  backgroundColor: colorTokens.bgLight,
+  borderRadius: 16,
+  border: 'none',
+  boxShadow: "0px 0px 2px 0px rgba(0,19,88,0.15), 0px 4px 4px 0px rgba(0,19,88,0.04), 0px 4px 16px 0px rgba(0,19,88,0.04), inset 0px -4px 4px 0px rgba(0,19,88,0.10)",
+  outline: "1px solid #C7D6ED",
+  fontSize: 16,
+  color: colorTokens.paragraph,
+  fontFamily: "Inter, sans-serif",
+  fontWeight: 400,
+  lineHeight: "125%",
+  letterSpacing: "-0.32px",
+  resize: 'vertical'
+};
+
+const labelStyles = {
+  color: colorTokens.title,
+  fontSize: 16,
+  fontWeight: 500,
+  fontFamily: "Inter, sans-serif",
+  lineHeight: "20px",
+  marginBottom: 8
+};
+
 // Dynamically import PDFPreview to avoid SSR issues
 const PDFPreview = dynamic(() => import('@/components/PDFPreview'), {
   ssr: false,
@@ -107,6 +156,8 @@ function EnhancedResumeContent() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [activeTab, setActiveTab] = useState("preview");
+  const [tempFormData, setTempFormData] = useState(null);
 
   const isFromUpload = searchParams.get("from") === "upload";
   const isFromAI = searchParams.get("from") === "ai";
@@ -738,6 +789,43 @@ function EnhancedResumeContent() {
   const handleCancelEdit = () => {
     setEditingField(null);
     setEditingValue("");
+  };
+
+  // Tab system handlers
+  const tabs = [
+    { id: "preview", label: "Preview", icon: Eye },
+    { id: "personalInfo", label: "Personal Info", icon: User },
+    { id: "summary", label: "Professional Summary", icon: Star },
+    { id: "education", label: "Education", icon: FileText },
+    { id: "experience", label: "Work Experience", icon: Zap },
+    { id: "projects", label: "Projects", icon: FileText },
+    { id: "skills", label: "Skills", icon: Target },
+    { id: "certifications", label: "Certifications", icon: Star },
+    { id: "languages", label: "Languages", icon: Target },
+  ];
+
+  const handleTabClick = (tabId) => {
+    if (tabId === "preview") {
+      setActiveTab("preview");
+      setTempFormData(null);
+    } else {
+      // Save current resume data as temp data for editing
+      setTempFormData(JSON.parse(JSON.stringify(resumeData)));
+      setActiveTab(tabId);
+    }
+  };
+
+  const handleSaveForm = () => {
+    if (tempFormData) {
+      setResumeData(tempFormData);
+    }
+    setActiveTab("preview");
+    setTempFormData(null);
+  };
+
+  const handleCancelForm = () => {
+    setActiveTab("preview");
+    setTempFormData(null);
   };
 
   const handlePhotoClick = () => {
@@ -3037,131 +3125,815 @@ function EnhancedResumeContent() {
   };
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: colorTokens.bgLight }}>
+    <DashboardLayout>
       <TextSelectionMenu onEnhance={handleEnhanceText} />
 
-      {/* Full-screen Loading Overlay */}
       {/* Custom styles */}
       <style dangerouslySetInnerHTML={{ __html: customStyles }} />
+      <style jsx>{`
+        input::placeholder,
+        textarea::placeholder {
+          color: #6477B4;
+          font-family: Inter, sans-serif;
+          font-size: 16px;
+          font-weight: 400;
+          line-height: 125%;
+          letter-spacing: -0.32px;
+        }
+        input::-webkit-input-placeholder,
+        textarea::-webkit-input-placeholder {
+          color: #6477B4;
+          font-family: Inter, sans-serif;
+          font-size: 16px;
+          font-weight: 400;
+          line-height: 125%;
+          letter-spacing: -0.32px;
+        }
+        input::-moz-placeholder,
+        textarea::-moz-placeholder {
+          color: #6477B4;
+          font-family: Inter, sans-serif;
+          font-size: 16px;
+          font-weight: 400;
+          line-height: 125%;
+          letter-spacing: -0.32px;
+        }
+        input:-ms-input-placeholder,
+        textarea:-ms-input-placeholder {
+          color: #6477B4;
+          font-family: Inter, sans-serif;
+          font-size: 16px;
+          font-weight: 400;
+          line-height: 125%;
+          letter-spacing: -0.32px;
+        }
+      `}</style>
 
-      {/* Top Navigation Bar */}
-      <div className="bg-white sticky top-0 z-50" style={{ borderBottom: '1px solid #E1E4ED' }}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-14 lg:h-16">
-            <div className="flex items-center gap-2 lg:gap-4">
-              <button
-                onClick={handlePrev}
-                className="flex items-center gap-1 lg:gap-2 px-3 py-2 rounded-lg transition-all hover:opacity-90"
-                style={{
-                  border: '1px solid #E9F1FF',
-                  background: 'linear-gradient(180deg, #F4F8FF 0%, #E9F1FF 100%)',
-                  color: '#474FA3',
-                  fontFamily: 'Inter, sans-serif',
-                  fontSize: '14px',
-                  fontWeight: 500
-                }}
-              >
-                <ArrowLeft className="h-4 w-4" />
-                <span className="hidden sm:inline">Back</span>
-              </button>
-              <div className="h-6 w-px hidden sm:block" style={{ backgroundColor: '#E1E4ED' }}></div>
-              <h1 className="text-base lg:text-lg" style={{ color: colorTokens.title, fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
-                Resume Builder
-              </h1>
-            </div>
-
-            <div className="flex items-center gap-2 lg:gap-3">
-              {isFromUpload && (
-                <span className="px-3 py-1.5 rounded-lg text-xs font-medium hidden sm:flex items-center gap-1" style={{
-                  backgroundColor: '#E9F1FF',
-                  color: colorTokens.title,
-                  border: '1px solid #D5E4FF',
-                  fontFamily: 'Inter, sans-serif'
-                }}>
-                  <CheckCircle className="h-3 w-3" />
-                  {enhancedChanges.length} AI Enhancements
-                </span>
-              )}
-              <button
-                onClick={() => setShowPreview(true)}
-                className="flex items-center gap-1 lg:gap-2 px-3 py-2 rounded-lg transition-all hover:opacity-90"
-                style={{
-                  border: '1px solid #E9F1FF',
-                  background: 'linear-gradient(180deg, #F4F8FF 0%, #E9F1FF 100%)',
-                  color: '#474FA3',
-                  fontFamily: 'Inter, sans-serif',
-                  fontSize: '14px',
-                  fontWeight: 500
-                }}
-              >
-                <Eye className="h-3 w-3 lg:h-4 lg:w-4" />
-                <span className="hidden sm:inline">Preview</span>
-              </button>
-              <button
-                onClick={handleDownload}
-                className="flex items-center gap-1 lg:gap-2 px-3 py-2 transition-all hover:opacity-90"
-                style={{
-                  borderRadius: '8px',
-                  border: '1px solid rgba(35, 112, 255, 0.30)',
-                  background: 'linear-gradient(180deg, #679CFF 0%, #2370FF 100%)',
-                  boxShadow: '0 2px 4px 0 rgba(77, 145, 225, 0.10), 0 1px 0.3px 0 rgba(255, 255, 255, 0.25) inset, 0 -1px 0.3px 0 rgba(0, 19, 88, 0.25) inset',
-                  ...buttonTextStyles
-                }}
-              >
-                <Download className="h-3 w-3 lg:h-4 lg:w-4" />
-                <span className="hidden sm:inline">Download</span>
-              </button>
-              <button
-                onClick={handleGenerate}
-                disabled={isGenerating}
-                className="flex items-center gap-1 lg:gap-2 px-3 py-2 transition-all hover:opacity-90"
-                style={{
-                  borderRadius: '8px',
-                  border: '1px solid rgba(35, 112, 255, 0.30)',
-                  background: isGenerating ? '#9CA3AF' : 'linear-gradient(180deg, #679CFF 0%, #2370FF 100%)',
-                  boxShadow: '0 2px 4px 0 rgba(77, 145, 225, 0.10), 0 1px 0.3px 0 rgba(255, 255, 255, 0.25) inset, 0 -1px 0.3px 0 rgba(0, 19, 88, 0.25) inset',
-                  ...buttonTextStyles,
-                  cursor: isGenerating ? 'not-allowed' : 'pointer',
-                  opacity: isGenerating ? 0.5 : 1
-                }}
-              >
-                <span className="hidden sm:inline">
-                  {isGenerating ? "Finishing..." : "Finish"}
-                </span>
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 lg:py-6">
-        {/* Banner */}
-        <div className="relative py-6 px-8 overflow-hidden flex items-center mb-6" style={{
-          backgroundImage: 'url(/header-banner.svg)',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat',
-          minHeight: '100px',
-          boxShadow: '0 4px 20px 0 #2370FF66',
-          borderRadius: '16px'
+      <div className="w-full py-6">
+        {/* Tab Navigation */}
+        <div className="mb-6 overflow-x-auto" style={{
+          backgroundColor: '#FFFFFF',
+          border: '1px solid #F1F3F7',
+          boxShadow: shadowBoxStyle,
+          borderRadius: '16px',
+          padding: '16px'
         }}>
-          <div className="relative z-10">
-            <h1 className="text-white font-bold" style={{ textShadow: '0 2px 10px rgba(0, 0, 0, 0.3)', fontSize: '32px', lineHeight: '1.2', fontFamily: 'Inter, sans-serif', fontWeight: 500 }}>
-              Customize Your Resume
-            </h1>
-            <p className="text-white mt-2" style={{ textShadow: '0 1px 5px rgba(0, 0, 0, 0.3)', fontSize: '16px', fontFamily: 'Inter, sans-serif', fontWeight: 400 }}>
-              Edit and perfect your professional resume
-            </p>
+          <div className="flex gap-2 min-w-max">
+            {tabs.map((tab) => {
+              const Icon = tab.icon;
+              const isActive = activeTab === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => handleTabClick(tab.id)}
+                  className="flex items-center gap-2 px-4 py-2 rounded-lg transition-all whitespace-nowrap"
+                  style={{
+                    background: isActive ? 'linear-gradient(180deg, #679CFF 0%, #2370FF 100%)' : '#FFFFFF',
+                    border: `1px solid ${isActive ? 'rgba(35, 112, 255, 0.30)' : '#E1E4EB'}`,
+                    boxShadow: isActive ? '0 2px 4px 0 rgba(77, 145, 225, 0.10), 0 1px 0.3px 0 rgba(255, 255, 255, 0.25) inset, 0 -1px 0.3px 0 rgba(0, 19, 88, 0.25) inset' : 'none',
+                    color: isActive ? '#FFFFFF' : '#6477B4',
+                    fontFamily: 'Inter, sans-serif',
+                    fontSize: '14px',
+                    fontWeight: 500,
+                    cursor: 'pointer'
+                  }}
+                >
+                  <Icon className="h-4 w-4" />
+                  <span className="hidden sm:inline">{tab.label}</span>
+                </button>
+              );
+            })}
           </div>
         </div>
+
+        {/* Content Area */}
+        {activeTab === "preview" ? (
+          /* Preview Tab - Show Resume Preview */
+          <div className="w-full">
+            <Card className="bg-white" style={{
+              backgroundColor: '#FFFFFF',
+              border: '1px solid #F1F3F7',
+              boxShadow: shadowBoxStyle,
+              borderRadius: '16px'
+            }}>
+              <CardHeader className="pb-3 lg:pb-4">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                  <CardTitle style={{
+                    color: colorTokens.title,
+                    fontFamily: 'Inter, sans-serif',
+                    fontSize: '16px',
+                    fontWeight: 500
+                  }}>
+                    Resume Preview
+                  </CardTitle>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={handleDownload}
+                      disabled={isGenerating}
+                      className="flex items-center gap-1 px-3 py-2 transition-all hover:opacity-90"
+                      style={{
+                        borderRadius: '8px',
+                        border: '1px solid rgba(35, 112, 255, 0.30)',
+                        background: isGenerating ? '#9CA3AF' : 'linear-gradient(180deg, #679CFF 0%, #2370FF 100%)',
+                        boxShadow: '0 2px 4px 0 rgba(77, 145, 225, 0.10), 0 1px 0.3px 0 rgba(255, 255, 255, 0.25) inset, 0 -1px 0.3px 0 rgba(0, 19, 88, 0.25) inset',
+                        ...buttonTextStyles,
+                        cursor: isGenerating ? 'not-allowed' : 'pointer',
+                        opacity: isGenerating ? 0.5 : 1,
+                        fontSize: '12px'
+                      }}
+                    >
+                      {isGenerating ? (
+                        <>
+                          <Loader2 className="h-3 w-3 animate-spin" />
+                          <span>Generating...</span>
+                        </>
+                      ) : (
+                        <>
+                          <Download className="h-3 w-3" />
+                          <span>Download PDF</span>
+                        </>
+                      )}
+                    </button>
+                    <button
+                      onClick={handleGenerate}
+                      disabled={isGenerating}
+                      className="flex items-center gap-1 px-3 py-2 transition-all hover:opacity-90"
+                      style={{
+                        borderRadius: '8px',
+                        border: '1px solid rgba(35, 112, 255, 0.30)',
+                        background: isGenerating ? '#9CA3AF' : 'linear-gradient(180deg, #679CFF 0%, #2370FF 100%)',
+                        boxShadow: '0 2px 4px 0 rgba(77, 145, 225, 0.10), 0 1px 0.3px 0 rgba(255, 255, 255, 0.25) inset, 0 -1px 0.3px 0 rgba(0, 19, 88, 0.25) inset',
+                        ...buttonTextStyles,
+                        cursor: isGenerating ? 'not-allowed' : 'pointer',
+                        opacity: isGenerating ? 0.5 : 1,
+                        fontSize: '12px'
+                      }}
+                    >
+                      <span className="hidden sm:inline">
+                        {isGenerating ? "Finishing..." : "Finish"}
+                      </span>
+                    </button>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="p-4">
+                <div className="w-full overflow-auto flex justify-center" style={{
+                  maxHeight: 'calc(100vh - 250px)'
+                }}>
+                  <div className="bg-white border border-gray-200 shadow-lg" style={{
+                    width: '210mm',
+                    minHeight: '297mm',
+                    transform: 'scale(0.7)',
+                    transformOrigin: 'top center',
+                    marginBottom: '2rem'
+                  }}>
+                    <PDFPreview
+                      templateId={selectedTemplate}
+                      resumeData={resumeData}
+                    />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        ) : (
+          /* Form Tabs - Show Section Form */
+          <div className="w-full">
+            <Card className="bg-white" style={{
+              backgroundColor: '#FFFFFF',
+              border: '1px solid #F1F3F7',
+              boxShadow: shadowBoxStyle,
+              borderRadius: '16px'
+            }}>
+              <CardHeader className="pb-3 lg:pb-4 border-b" style={{ borderColor: '#F1F3F7' }}>
+                <CardTitle style={{
+                  color: colorTokens.title,
+                  fontFamily: 'Inter, sans-serif',
+                  fontSize: '18px',
+                  fontWeight: 600
+                }}>
+                  Edit {tabs.find(t => t.id === activeTab)?.label}
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-4 md:p-6">
+                <div className="w-full max-w-4xl mx-auto">
+                  {/* Form content based on active tab */}
+                  {activeTab === "personalInfo" && tempFormData && (
+                    <div className="space-y-4">
+                      <div>
+                        <label style={labelStyles}>Full Name</label>
+                        <input
+                          type="text"
+                          value={tempFormData.personalInfo.name}
+                          onChange={(e) => setTempFormData(prev => ({
+                            ...prev,
+                            personalInfo: { ...prev.personalInfo, name: e.target.value }
+                          }))}
+                          placeholder="Your Name"
+                          style={inputStyles}
+                        />
+                      </div>
+                      <div>
+                        <label style={labelStyles}>Title/Position</label>
+                        <input
+                          type="text"
+                          value={tempFormData.personalInfo.title}
+                          onChange={(e) => setTempFormData(prev => ({
+                            ...prev,
+                            personalInfo: { ...prev.personalInfo, title: e.target.value }
+                          }))}
+                          placeholder="Software Engineer"
+                          style={inputStyles}
+                        />
+                      </div>
+                      <div>
+                        <label style={labelStyles}>Email</label>
+                        <input
+                          type="email"
+                          value={tempFormData.personalInfo.email}
+                          onChange={(e) => setTempFormData(prev => ({
+                            ...prev,
+                            personalInfo: { ...prev.personalInfo, email: e.target.value }
+                          }))}
+                          placeholder="your.email@example.com"
+                          style={inputStyles}
+                        />
+                      </div>
+                      <div>
+                        <label style={labelStyles}>Phone</label>
+                        <input
+                          type="tel"
+                          value={tempFormData.personalInfo.phone}
+                          onChange={(e) => setTempFormData(prev => ({
+                            ...prev,
+                            personalInfo: { ...prev.personalInfo, phone: e.target.value }
+                          }))}
+                          placeholder="+1 (555) 123-4567"
+                          style={inputStyles}
+                        />
+                      </div>
+                      <div>
+                        <label style={labelStyles}>Location</label>
+                        <input
+                          type="text"
+                          value={tempFormData.personalInfo.location}
+                          onChange={(e) => setTempFormData(prev => ({
+                            ...prev,
+                            personalInfo: { ...prev.personalInfo, location: e.target.value }
+                          }))}
+                          placeholder="City, Country"
+                          style={inputStyles}
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {activeTab === "summary" && tempFormData && (
+                    <div className="space-y-4">
+                      <div>
+                        <label style={labelStyles}>Professional Summary</label>
+                        <textarea
+                          value={tempFormData.personalInfo.summary}
+                          onChange={(e) => setTempFormData(prev => ({
+                            ...prev,
+                            personalInfo: { ...prev.personalInfo, summary: e.target.value }
+                          }))}
+                          placeholder="Write a brief professional summary..."
+                          rows={8}
+                          style={textareaStyles}
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {activeTab === "education" && tempFormData && (
+                    <div className="space-y-4">
+                      {tempFormData.education.map((edu, index) => (
+                        <div key={edu.id || index} className="p-4 rounded-lg space-y-3" style={{ border: '1px solid #E1E4EB', background: '#F8F9FF' }}>
+                          <div className="flex justify-between items-center">
+                            <h4 className="font-medium" style={{ color: colorTokens.title }}>Education {index + 1}</h4>
+                            <button
+                              onClick={() => {
+                                const newEducation = tempFormData.education.filter((_, i) => i !== index);
+                                setTempFormData(prev => ({ ...prev, education: newEducation }));
+                              }}
+                              className="text-red-600 hover:text-red-800"
+                            >
+                              <X className="h-4 w-4" />
+                            </button>
+                          </div>
+                          <div>
+                            <label style={labelStyles}>Degree</label>
+                            <input
+                              type="text"
+                              value={edu.degree}
+                              onChange={(e) => {
+                                const newEducation = [...tempFormData.education];
+                                newEducation[index].degree = e.target.value;
+                                setTempFormData(prev => ({ ...prev, education: newEducation }));
+                              }}
+                              placeholder="Bachelor of Science in Computer Science"
+                              style={inputStyles}
+                            />
+                          </div>
+                          <div>
+                            <label style={labelStyles}>School/University</label>
+                            <input
+                              type="text"
+                              value={edu.school}
+                              onChange={(e) => {
+                                const newEducation = [...tempFormData.education];
+                                newEducation[index].school = e.target.value;
+                                setTempFormData(prev => ({ ...prev, education: newEducation }));
+                              }}
+                              placeholder="University Name"
+                              style={inputStyles}
+                            />
+                          </div>
+                          <div>
+                            <label style={labelStyles}>Year</label>
+                            <input
+                              type="text"
+                              value={edu.year}
+                              onChange={(e) => {
+                                const newEducation = [...tempFormData.education];
+                                newEducation[index].year = e.target.value;
+                                setTempFormData(prev => ({ ...prev, education: newEducation }));
+                              }}
+                              placeholder="2020"
+                              style={inputStyles}
+                            />
+                          </div>
+                        </div>
+                      ))}
+                      <button
+                        onClick={() => {
+                          setTempFormData(prev => ({
+                            ...prev,
+                            education: [...prev.education, { id: Date.now(), degree: '', school: '', year: '' }]
+                          }));
+                        }}
+                        className="w-full px-4 py-2 rounded-lg transition-all hover:opacity-90 flex items-center justify-center gap-2"
+                        style={{
+                          border: '1px solid #E1E4EB',
+                          background: '#F8F9FF',
+                          color: '#6477B4',
+                          fontFamily: 'Inter, sans-serif',
+                          fontSize: '14px',
+                          fontWeight: 500
+                        }}
+                      >
+                        <Plus className="h-4 w-4" />
+                        Add Education
+                      </button>
+                    </div>
+                  )}
+
+                  {activeTab === "experience" && tempFormData && (
+                    <div className="space-y-4">
+                      {tempFormData.experience.map((exp, index) => (
+                        <div key={exp.id || index} className="p-4 rounded-lg space-y-3" style={{ border: '1px solid #E1E4EB', background: '#F8F9FF' }}>
+                          <div className="flex justify-between items-center">
+                            <h4 className="font-medium" style={{ color: colorTokens.title }}>Experience {index + 1}</h4>
+                            <button
+                              onClick={() => {
+                                const newExperience = tempFormData.experience.filter((_, i) => i !== index);
+                                setTempFormData(prev => ({ ...prev, experience: newExperience }));
+                              }}
+                              className="text-red-600 hover:text-red-800"
+                            >
+                              <X className="h-4 w-4" />
+                            </button>
+                          </div>
+                          <div>
+                            <label style={labelStyles}>Position</label>
+                            <input
+                              type="text"
+                              value={exp.position}
+                              onChange={(e) => {
+                                const newExperience = [...tempFormData.experience];
+                                newExperience[index].position = e.target.value;
+                                setTempFormData(prev => ({ ...prev, experience: newExperience }));
+                              }}
+                              placeholder="Senior Software Engineer"
+                              style={inputStyles}
+                            />
+                          </div>
+                          <div>
+                            <label style={labelStyles}>Company</label>
+                            <input
+                              type="text"
+                              value={exp.company}
+                              onChange={(e) => {
+                                const newExperience = [...tempFormData.experience];
+                                newExperience[index].company = e.target.value;
+                                setTempFormData(prev => ({ ...prev, experience: newExperience }));
+                              }}
+                              placeholder="Company Name"
+                              style={inputStyles}
+                            />
+                          </div>
+                          <div>
+                            <label style={labelStyles}>Duration</label>
+                            <input
+                              type="text"
+                              value={exp.duration}
+                              onChange={(e) => {
+                                const newExperience = [...tempFormData.experience];
+                                newExperience[index].duration = e.target.value;
+                                setTempFormData(prev => ({ ...prev, experience: newExperience }));
+                              }}
+                              placeholder="2022 - Present"
+                              style={inputStyles}
+                            />
+                          </div>
+                          <div>
+                            <label style={labelStyles}>Achievements</label>
+                            {exp.achievements.map((achievement, achIndex) => (
+                              <div key={achIndex} className="flex gap-2 mb-2">
+                                <textarea
+                                  value={achievement}
+                                  onChange={(e) => {
+                                    const newExperience = [...tempFormData.experience];
+                                    newExperience[index].achievements[achIndex] = e.target.value;
+                                    setTempFormData(prev => ({ ...prev, experience: newExperience }));
+                                  }}
+                                  placeholder="Achievement description"
+                                  rows={2}
+                                  style={textareaStyles}
+                                />
+                                <button
+                                  onClick={() => {
+                                    const newExperience = [...tempFormData.experience];
+                                    newExperience[index].achievements = newExperience[index].achievements.filter((_, i) => i !== achIndex);
+                                    setTempFormData(prev => ({ ...prev, experience: newExperience }));
+                                  }}
+                                  className="text-red-600 hover:text-red-800"
+                                >
+                                  <X className="h-4 w-4" />
+                                </button>
+                              </div>
+                            ))}
+                            <button
+                              onClick={() => {
+                                const newExperience = [...tempFormData.experience];
+                                newExperience[index].achievements.push('');
+                                setTempFormData(prev => ({ ...prev, experience: newExperience }));
+                              }}
+                              className="text-sm px-3 py-1 rounded transition-all hover:opacity-90"
+                              style={{ color: '#6477B4' }}
+                            >
+                              + Add Achievement
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                      <button
+                        onClick={() => {
+                          setTempFormData(prev => ({
+                            ...prev,
+                            experience: [...prev.experience, { id: Date.now(), position: '', company: '', duration: '', achievements: [''] }]
+                          }));
+                        }}
+                        className="w-full px-4 py-2 rounded-lg transition-all hover:opacity-90 flex items-center justify-center gap-2"
+                        style={{
+                          border: '1px solid #E1E4EB',
+                          background: '#F8F9FF',
+                          color: '#6477B4',
+                          fontFamily: 'Inter, sans-serif',
+                          fontSize: '14px',
+                          fontWeight: 500
+                        }}
+                      >
+                        <Plus className="h-4 w-4" />
+                        Add Experience
+                      </button>
+                    </div>
+                  )}
+
+                  {activeTab === "projects" && tempFormData && (
+                    <div className="space-y-4">
+                      {tempFormData.projects.map((project, index) => (
+                        <div key={project.id || index} className="p-4 rounded-lg space-y-3" style={{ border: '1px solid #E1E4EB', background: '#F8F9FF' }}>
+                          <div className="flex justify-between items-center">
+                            <h4 className="font-medium" style={{ color: colorTokens.title }}>Project {index + 1}</h4>
+                            <button
+                              onClick={() => {
+                                const newProjects = tempFormData.projects.filter((_, i) => i !== index);
+                                setTempFormData(prev => ({ ...prev, projects: newProjects }));
+                              }}
+                              className="text-red-600 hover:text-red-800"
+                            >
+                              <X className="h-4 w-4" />
+                            </button>
+                          </div>
+                          <div>
+                            <label style={labelStyles}>Project Name</label>
+                            <input
+                              type="text"
+                              value={project.name}
+                              onChange={(e) => {
+                                const newProjects = [...tempFormData.projects];
+                                newProjects[index].name = e.target.value;
+                                setTempFormData(prev => ({ ...prev, projects: newProjects }));
+                              }}
+                              placeholder="E-Commerce Platform"
+                              style={inputStyles}
+                            />
+                          </div>
+                          <div>
+                            <label style={labelStyles}>Description</label>
+                            <textarea
+                              value={project.description}
+                              onChange={(e) => {
+                                const newProjects = [...tempFormData.projects];
+                                newProjects[index].description = e.target.value;
+                                setTempFormData(prev => ({ ...prev, projects: newProjects }));
+                              }}
+                              placeholder="Brief description of the project"
+                              rows={3}
+                              style={textareaStyles}
+                            />
+                          </div>
+                          <div>
+                            <label style={labelStyles}>Technologies (comma separated)</label>
+                            <input
+                              type="text"
+                              value={project.technologies?.join(', ') || ''}
+                              onChange={(e) => {
+                                const newProjects = [...tempFormData.projects];
+                                newProjects[index].technologies = e.target.value.split(',').map(t => t.trim());
+                                setTempFormData(prev => ({ ...prev, projects: newProjects }));
+                              }}
+                              placeholder="React, Node.js, MongoDB"
+                              style={inputStyles}
+                            />
+                          </div>
+                        </div>
+                      ))}
+                      <button
+                        onClick={() => {
+                          setTempFormData(prev => ({
+                            ...prev,
+                            projects: [...prev.projects, { id: Date.now(), name: '', description: '', technologies: [] }]
+                          }));
+                        }}
+                        className="w-full px-4 py-2 rounded-lg transition-all hover:opacity-90 flex items-center justify-center gap-2"
+                        style={{
+                          border: '1px solid #E1E4EB',
+                          background: '#F8F9FF',
+                          color: '#6477B4',
+                          fontFamily: 'Inter, sans-serif',
+                          fontSize: '14px',
+                          fontWeight: 500
+                        }}
+                      >
+                        <Plus className="h-4 w-4" />
+                        Add Project
+                      </button>
+                    </div>
+                  )}
+
+                  {activeTab === "skills" && tempFormData && (
+                    <div className="space-y-4">
+                      <label className="block text-sm font-medium mb-2" style={{ color: colorTokens.title }}>Skills</label>
+                      {tempFormData.skills.map((skill, index) => (
+                        <div key={index} className="flex gap-2">
+                          <input
+                            type="text"
+                            value={skill}
+                            onChange={(e) => {
+                              const newSkills = [...tempFormData.skills];
+                              newSkills[index] = e.target.value;
+                              setTempFormData(prev => ({ ...prev, skills: newSkills }));
+                            }}
+                            placeholder="Skill name"
+                            style={inputStyles}
+                          />
+                          <button
+                            onClick={() => {
+                              const newSkills = tempFormData.skills.filter((_, i) => i !== index);
+                              setTempFormData(prev => ({ ...prev, skills: newSkills }));
+                            }}
+                            className="px-3 py-2 rounded-lg transition-all hover:bg-red-100"
+                            style={{ color: '#EF4444' }}
+                          >
+                            <X className="h-4 w-4" />
+                          </button>
+                        </div>
+                      ))}
+                      <button
+                        onClick={() => {
+                          setTempFormData(prev => ({ ...prev, skills: [...prev.skills, ''] }));
+                        }}
+                        className="w-full px-4 py-2 rounded-lg transition-all hover:opacity-90 flex items-center justify-center gap-2"
+                        style={{
+                          border: '1px solid #E1E4EB',
+                          background: '#F8F9FF',
+                          color: '#6477B4',
+                          fontFamily: 'Inter, sans-serif',
+                          fontSize: '14px',
+                          fontWeight: 500
+                        }}
+                      >
+                        <Plus className="h-4 w-4" />
+                        Add Skill
+                      </button>
+                    </div>
+                  )}
+
+                  {activeTab === "certifications" && tempFormData && (
+                    <div className="space-y-4">
+                      {tempFormData.certifications.map((cert, index) => (
+                        <div key={cert.id || index} className="p-4 rounded-lg space-y-3" style={{ border: '1px solid #E1E4EB', background: '#F8F9FF' }}>
+                          <div className="flex justify-between items-center">
+                            <h4 className="font-medium" style={{ color: colorTokens.title }}>Certification {index + 1}</h4>
+                            <button
+                              onClick={() => {
+                                const newCerts = tempFormData.certifications.filter((_, i) => i !== index);
+                                setTempFormData(prev => ({ ...prev, certifications: newCerts }));
+                              }}
+                              className="text-red-600 hover:text-red-800"
+                            >
+                              <X className="h-4 w-4" />
+                            </button>
+                          </div>
+                          <div>
+                            <label style={labelStyles}>Certification Name</label>
+                            <input
+                              type="text"
+                              value={cert.name}
+                              onChange={(e) => {
+                                const newCerts = [...tempFormData.certifications];
+                                newCerts[index].name = e.target.value;
+                                setTempFormData(prev => ({ ...prev, certifications: newCerts }));
+                              }}
+                              placeholder="AWS Certified Developer"
+                              style={inputStyles}
+                            />
+                          </div>
+                          <div>
+                            <label style={labelStyles}>Issuer</label>
+                            <input
+                              type="text"
+                              value={cert.issuer}
+                              onChange={(e) => {
+                                const newCerts = [...tempFormData.certifications];
+                                newCerts[index].issuer = e.target.value;
+                                setTempFormData(prev => ({ ...prev, certifications: newCerts }));
+                              }}
+                              placeholder="Amazon Web Services"
+                              style={inputStyles}
+                            />
+                          </div>
+                          <div>
+                            <label style={labelStyles}>Year</label>
+                            <input
+                              type="text"
+                              value={cert.year}
+                              onChange={(e) => {
+                                const newCerts = [...tempFormData.certifications];
+                                newCerts[index].year = e.target.value;
+                                setTempFormData(prev => ({ ...prev, certifications: newCerts }));
+                              }}
+                              placeholder="2023"
+                              style={inputStyles}
+                            />
+                          </div>
+                        </div>
+                      ))}
+                      <button
+                        onClick={() => {
+                          setTempFormData(prev => ({
+                            ...prev,
+                            certifications: [...prev.certifications, { id: Date.now(), name: '', issuer: '', year: '' }]
+                          }));
+                        }}
+                        className="w-full px-4 py-2 rounded-lg transition-all hover:opacity-90 flex items-center justify-center gap-2"
+                        style={{
+                          border: '1px solid #E1E4EB',
+                          background: '#F8F9FF',
+                          color: '#6477B4',
+                          fontFamily: 'Inter, sans-serif',
+                          fontSize: '14px',
+                          fontWeight: 500
+                        }}
+                      >
+                        <Plus className="h-4 w-4" />
+                        Add Certification
+                      </button>
+                    </div>
+                  )}
+
+                  {activeTab === "languages" && tempFormData && (
+                    <div className="space-y-4">
+                      {tempFormData.languages.map((lang, index) => (
+                        <div key={lang.id || index} className="p-4 rounded-lg space-y-3" style={{ border: '1px solid #E1E4EB', background: '#F8F9FF' }}>
+                          <div className="flex justify-between items-center">
+                            <h4 className="font-medium" style={{ color: colorTokens.title }}>Language {index + 1}</h4>
+                            <button
+                              onClick={() => {
+                                const newLangs = tempFormData.languages.filter((_, i) => i !== index);
+                                setTempFormData(prev => ({ ...prev, languages: newLangs }));
+                              }}
+                              className="text-red-600 hover:text-red-800"
+                            >
+                              <X className="h-4 w-4" />
+                            </button>
+                          </div>
+                          <div>
+                            <label style={labelStyles}>Language</label>
+                            <input
+                              type="text"
+                              value={lang.name}
+                              onChange={(e) => {
+                                const newLangs = [...tempFormData.languages];
+                                newLangs[index].name = e.target.value;
+                                setTempFormData(prev => ({ ...prev, languages: newLangs }));
+                              }}
+                              placeholder="English"
+                              style={inputStyles}
+                            />
+                          </div>
+                          <div>
+                            <label style={labelStyles}>Proficiency Level</label>
+                            <input
+                              type="text"
+                              value={lang.level}
+                              onChange={(e) => {
+                                const newLangs = [...tempFormData.languages];
+                                newLangs[index].level = e.target.value;
+                                setTempFormData(prev => ({ ...prev, languages: newLangs }));
+                              }}
+                              placeholder="Fluent"
+                              style={inputStyles}
+                            />
+                          </div>
+                        </div>
+                      ))}
+                      <button
+                        onClick={() => {
+                          setTempFormData(prev => ({
+                            ...prev,
+                            languages: [...prev.languages, { id: Date.now(), name: '', level: '' }]
+                          }));
+                        }}
+                        className="w-full px-4 py-2 rounded-lg transition-all hover:opacity-90 flex items-center justify-center gap-2"
+                        style={{
+                          border: '1px solid #E1E4EB',
+                          background: '#F8F9FF',
+                          color: '#6477B4',
+                          fontFamily: 'Inter, sans-serif',
+                          fontSize: '14px',
+                          fontWeight: 500
+                        }}
+                      >
+                        <Plus className="h-4 w-4" />
+                        Add Language
+                      </button>
+                    </div>
+                  )}
+
+                  {/* Save and Cancel Buttons */}
+                  <div className="flex gap-3 mt-6 pt-6 border-t" style={{ borderColor: '#F1F3F7' }}>
+                    <button
+                      onClick={handleCancelForm}
+                      className="flex-1 px-4 py-2 rounded-lg transition-all hover:opacity-90"
+                      style={{
+                        border: '1px solid #E1E4EB',
+                        background: '#F8F9FF',
+                        color: '#6477B4',
+                        fontFamily: 'Inter, sans-serif',
+                        fontSize: '14px',
+                        fontWeight: 500
+                      }}
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={handleSaveForm}
+                      className="flex-1 px-4 py-2 rounded-lg transition-all hover:opacity-90"
+                      style={{
+                        borderRadius: '8px',
+                        border: '1px solid rgba(35, 112, 255, 0.30)',
+                        background: 'linear-gradient(180deg, #679CFF 0%, #2370FF 100%)',
+                        boxShadow: '0 2px 4px 0 rgba(77, 145, 225, 0.10), 0 1px 0.3px 0 rgba(255, 255, 255, 0.25) inset, 0 -1px 0.3px 0 rgba(0, 19, 88, 0.25) inset',
+                        ...buttonTextStyles
+                      }}
+                    >
+                      Save Changes
+                    </button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+
+        {/* OLD LAYOUT - HIDDEN FOR NOW */}
+        <div style={{ display: 'none' }}>
         <div
-          className={`grid grid-cols-1 ${
-            sidebarCollapsed
-              ? "lg:grid-cols-1"
-              : isEditing
-              ? "md:grid-cols-3 lg:grid-cols-3"
-              : "md:grid-cols-3 lg:grid-cols-3"
-          } gap-4 lg:gap-6 transition-all duration-300`}
+          className="grid grid-cols-1 gap-4 lg:gap-6 transition-all duration-300"
         >
           {/* Left Sidebar - Resume Sections */}
           <div
@@ -3328,42 +4100,62 @@ function EnhancedResumeContent() {
                     Resume Preview
                   </CardTitle>
                   <div className="flex items-center gap-2">
-                    <Button
-                      variant="default"
-                      size="sm"
-                      className="gap-1 text-xs bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white"
+                    <button
                       onClick={handleDownload}
                       disabled={isGenerating}
+                      className="flex items-center gap-1 px-3 py-2 transition-all hover:opacity-90"
+                      style={{
+                        borderRadius: '8px',
+                        border: '1px solid rgba(35, 112, 255, 0.30)',
+                        background: isGenerating ? '#9CA3AF' : 'linear-gradient(180deg, #679CFF 0%, #2370FF 100%)',
+                        boxShadow: '0 2px 4px 0 rgba(77, 145, 225, 0.10), 0 1px 0.3px 0 rgba(255, 255, 255, 0.25) inset, 0 -1px 0.3px 0 rgba(0, 19, 88, 0.25) inset',
+                        ...buttonTextStyles,
+                        cursor: isGenerating ? 'not-allowed' : 'pointer',
+                        opacity: isGenerating ? 0.5 : 1,
+                        fontSize: '12px'
+                      }}
                     >
                       {isGenerating ? (
                         <>
                           <Loader2 className="h-3 w-3 animate-spin" />
-                          Generating...
+                          <span>Generating...</span>
                         </>
                       ) : (
                         <>
                           <Download className="h-3 w-3" />
-                          Download PDF
+                          <span>Download PDF</span>
                         </>
                       )}
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="gap-1 text-xs"
+                    </button>
+                    <button
+                      className="flex items-center gap-1 px-3 py-2 transition-all hover:opacity-90"
+                      style={{
+                        borderRadius: '8px',
+                        border: '1px solid rgba(35, 112, 255, 0.30)',
+                        background: 'linear-gradient(180deg, #679CFF 0%, #2370FF 100%)',
+                        boxShadow: '0 2px 4px 0 rgba(77, 145, 225, 0.10), 0 1px 0.3px 0 rgba(255, 255, 255, 0.25) inset, 0 -1px 0.3px 0 rgba(0, 19, 88, 0.25) inset',
+                        ...buttonTextStyles,
+                        fontSize: '12px'
+                      }}
                     >
                       <Wand2 className="h-3 w-3" />
-                      AI Enhance
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="gap-1 text-xs"
+                      <span>AI Enhance</span>
+                    </button>
+                    <button
                       onClick={handlePrev}
+                      className="flex items-center gap-1 px-3 py-2 transition-all hover:opacity-90"
+                      style={{
+                        borderRadius: '8px',
+                        border: '1px solid rgba(35, 112, 255, 0.30)',
+                        background: 'linear-gradient(180deg, #679CFF 0%, #2370FF 100%)',
+                        boxShadow: '0 2px 4px 0 rgba(77, 145, 225, 0.10), 0 1px 0.3px 0 rgba(255, 255, 255, 0.25) inset, 0 -1px 0.3px 0 rgba(0, 19, 88, 0.25) inset',
+                        ...buttonTextStyles,
+                        fontSize: '12px'
+                      }}
                     >
                       <Settings className="h-3 w-3" />
-                      Templates
-                    </Button>
+                      <span>Templates</span>
+                    </button>
                   </div>
                   {currentTemplate && (
                     <div className="text-sm text-gray-600 mt-2">
@@ -3846,6 +4638,8 @@ function EnhancedResumeContent() {
           )}
         </div>
 
+        </div> {/* END OLD LAYOUT - HIDDEN */}
+
         {/* AI Improvements Panel - Only show for upload flow */}
         {isFromUpload && (
           <div className="mt-6">
@@ -3959,8 +4753,27 @@ function EnhancedResumeContent() {
             </div>
           </div>
         )}
+
+        {/* Back Button at Bottom */}
+        <div className="mt-6 mb-6 flex justify-center">
+          <button
+            onClick={handlePrev}
+            className="flex items-center gap-2 px-6 py-3 rounded-lg transition-all hover:opacity-90"
+            style={{
+              border: '1px solid #E1E4EB',
+              background: '#F8F9FF',
+              color: '#6477B4',
+              fontFamily: 'Inter, sans-serif',
+              fontSize: '14px',
+              fontWeight: 500
+            }}
+          >
+            <ArrowLeft className="h-4 w-4" />
+            <span>Back to Templates</span>
+          </button>
+        </div>
       </div>
-    </div>
+    </DashboardLayout>
   );
 }
 

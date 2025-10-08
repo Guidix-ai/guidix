@@ -110,7 +110,7 @@ function UploadResumePageContent() {
   };
 
   const handleBack = () => {
-    router.push(`/resume-choice?field=${field}&education=${education}`);
+    router.push("/resume-confirmation");
   };
 
   const formatFileSize = (bytes) => {

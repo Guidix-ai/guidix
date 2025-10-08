@@ -30,17 +30,18 @@ const buttonTextStyles = {
   letterSpacing: '-2%'
 }
 
-// Apply button specific styles from Figma
+// Apply button specific styles - matching Upgrade Now button
 const applyButtonStyles = {
   display: 'inline-flex',
-  padding: '8px 16px',
+  padding: '8px 12px',
   alignItems: 'center',
-  justifyContent: 'center',
-  borderRadius: '12px',
-  border: 'none',
-  background: '#2370FF',
+  borderRadius: '8px',
+  border: '1px solid rgba(35, 112, 255, 0.30)',
+  background: 'linear-gradient(180deg, #679CFF 0%, #2370FF 100%)',
+  boxShadow: '0 2px 4px 0 rgba(77, 145, 225, 0.10), 0 1px 0.3px 0 rgba(255, 255, 255, 0.25) inset, 0 -1px 0.3px 0 rgba(0, 19, 88, 0.25) inset',
   color: '#FFFFFF',
   textAlign: 'center',
+  textShadow: '0 0.5px 1.5px rgba(0, 19, 88, 0.30), 0 2px 5px rgba(0, 19, 88, 0.10)',
   fontFamily: 'Inter, sans-serif',
   fontSize: '14px',
   fontWeight: 500,
@@ -332,7 +333,7 @@ const EnhancedJobCard = ({ job, onApply, onSave, onBlock, isApplied, isSaved, ro
                   disabled={isApplied}
                   style={{
                     ...applyButtonStyles,
-                    background: isApplied ? '#22c55e' : '#2370FF',
+                    background: isApplied ? 'linear-gradient(180deg, #4ade80 0%, #22c55e 100%)' : 'linear-gradient(180deg, #679CFF 0%, #2370FF 100%)',
                     cursor: isApplied ? 'not-allowed' : 'pointer'
                   }}
                   className="transition-all hover:opacity-90"
@@ -502,7 +503,7 @@ const EnhancedJobCard = ({ job, onApply, onSave, onBlock, isApplied, isSaved, ro
                   disabled={isApplied}
                   style={{
                     ...applyButtonStyles,
-                    background: isApplied ? '#22c55e' : '#2370FF',
+                    background: isApplied ? 'linear-gradient(180deg, #4ade80 0%, #22c55e 100%)' : 'linear-gradient(180deg, #679CFF 0%, #2370FF 100%)',
                     cursor: isApplied ? 'not-allowed' : 'pointer'
                   }}
                   className="transition-all hover:opacity-90"
@@ -529,7 +530,7 @@ const JobSearchPage = () => {
   const [showSortDropdown, setShowSortDropdown] = useState(false)
   const [typewriterText, setTypewriterText] = useState("")
   const [showCursor, setShowCursor] = useState(true)
-  const fullText = " Hey Advika, 85+ matches across 25 job portals!"
+  const fullText = " Hey Advika, 85+ Matches Across 25 Job Portals!"
   const [jobs, setJobs] = useState(allJobs) // Start with mock data
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
@@ -779,7 +780,7 @@ const JobSearchPage = () => {
                       justifyContent: 'center',
                       alignItems: 'center',
                       borderRadius: '10px',
-                      background: 'linear-gradient(180deg, #474FA3 0%, #2A338B 100%)',
+                      background: '#073DA3',
                       boxShadow: '0 -1.5px 1px 0 rgba(6, 51, 165, 0.37) inset, 0 1.5px 1px 0 rgba(255, 255, 255, 0.24) inset',
                       color: '#FFFFFF',
                       textShadow: '0 0.5px 1.5px rgba(0, 19, 88, 0.30), 0 2px 5px rgba(0, 19, 88, 0.10)',

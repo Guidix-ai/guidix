@@ -299,7 +299,7 @@ function ResumeCard({ resume, onEdit, onDelete, onDuplicate }) {
               }}
             >
               <span>📋</span>
-              <span>Clone</span>
+              <span>Duplicate</span>
             </button>
           </div>
         </div>
@@ -830,7 +830,7 @@ export default function ResumeBuilderPage() {
 
 
                   {/* Options Grid */}
-                  <div className="grid md:grid-cols-2 gap-8 mb-8">
+                  <div className="grid md:grid-cols-2 gap-8 mb-8 max-w-5xl mx-auto">
                     {/* Start from Scratch Option */}
                     <Link href="/resume-confirmation?path=ai">
                       <div
@@ -841,10 +841,10 @@ export default function ResumeBuilderPage() {
                           boxShadow: '0 0 6px 0 rgba(0, 0, 0, 0.12), 0 2px 3px 0 rgba(0, 0, 0, 0.04), 0 2px 6px 0 rgba(0, 0, 0, 0.04), inset 0 -2px 3px 0 rgba(0, 0, 0, 0.08)',
                         }}
                       >
-                        <div className="p-6">
+                        <div className="p-8">
                           <div className="text-center pb-4">
                             <h3
-                              className="text-2xl font-bold mb-2"
+                              className="text-2xl font-semibold mb-2"
                               style={{ color: '#002A79' }}
                             >
                               Start with AI
@@ -891,10 +891,10 @@ export default function ResumeBuilderPage() {
                           boxShadow: '0 0 6px 0 rgba(0, 0, 0, 0.12), 0 2px 3px 0 rgba(0, 0, 0, 0.04), 0 2px 6px 0 rgba(0, 0, 0, 0.04), inset 0 -2px 3px 0 rgba(0, 0, 0, 0.08)',
                         }}
                       >
-                        <div className="p-6">
+                        <div className="p-8">
                           <div className="text-center pb-4">
                             <h3
-                              className="text-2xl font-bold mb-2"
+                              className="text-2xl font-semibold mb-2"
                               style={{ color: '#002A79' }}
                             >
                               Upload & Enhance
@@ -933,7 +933,7 @@ export default function ResumeBuilderPage() {
                   </div>
 
                   {/* Quick Stats */}
-                  <div className="grid lg:grid-cols-3 gap-6 mb-8">
+                  {/* <div className="grid lg:grid-cols-3 gap-6 mb-8">
                     <div
                       className="bg-white rounded-xl p-6 text-center shadow-sm border-2 transition-all duration-300 hover:shadow-md"
                       style={{ borderColor: "#D5E4FF" }}
@@ -979,7 +979,7 @@ export default function ResumeBuilderPage() {
                         Optimized
                       </div>
                     </div>
-                  </div>
+                  </div> */}
                 </div>
               </div>
             </div>

@@ -172,12 +172,22 @@ function TemplateSelectionContent() {
     }
   };
 
+  // const handleContinue = () => {
+  //   if (!selectedTemplate) return;
+  //   const isFromUpload = searchParams.get("from") === "upload";
+  //   if (isFromUpload) {
+  //     router.push("/enhanced-resume");
+  //   } else {
+  //     router.push("/loading-screen");
+  //   }
+  // };
+
   const handlePrev = () => {
     const isFromUpload = searchParams.get("from") === "upload";
     if (isFromUpload) {
-      router.push("/resume-feedback?" + searchParams.toString());
+      router.push("/resume-review");
     } else {
-      router.push("/ai-prompt?" + searchParams.toString());
+      router.push("/ai-prompt");
     }
   };
 
@@ -206,9 +216,9 @@ function TemplateSelectionContent() {
               <h1 className="text-white font-bold" style={{ textShadow: '0 2px 10px rgba(0, 0, 0, 0.3)', fontSize: '32px', lineHeight: '1.2' }}>
                 Choose Your Perfect Template
               </h1>
-              <p className="text-white mt-2" style={{ textShadow: '0 1px 5px rgba(0, 0, 0, 0.3)', fontSize: '16px' }}>
+              {/* <p className="text-white mt-2" style={{ textShadow: '0 1px 5px rgba(0, 0, 0, 0.3)', fontSize: '16px' }}>
                 Select a template that best showcases your professional journey
-              </p>
+              </p> */}
             </div>
           </div>
 

@@ -25,7 +25,7 @@ function AIPromptInputContent() {
   const [userCareer, setUserCareer] = useState("");
   const [typewriterText, setTypewriterText] = useState('');
   const [showCursor, setShowCursor] = useState(true);
-  const fullText = 'Tell us about yourself';
+  const fullText = 'Tell Us About Yourself';
 
   const MAX_WORDS = 50;
 
@@ -265,43 +265,41 @@ function AIPromptInputContent() {
       {
         title: `Quick Fill Template`,
         type: "fillable",
-        prompt: `I'm [YOUR NAME], a ${yearText} ${
-          primaryField.name
-        } student from [YOUR CITY]. Contact me at [YOUR EMAIL] or [YOUR PHONE]. I'm skilled in ${allSkills
-          .slice(0, 3)
-          .join(", ")}. I've worked on [NUMBER] projects including ${
-          primaryField.projects
-        } that [YOUR ACHIEVEMENT]. Currently studying at [YOUR COLLEGE] with [YOUR CGPA] CGPA. Looking for ${
-          isInternship ? "internship" : "full-time"
-        } opportunities.`,
+        prompt: `Hey, I need a resume for a fresher role (like [SDE Intern, Business Analyst, etc.]). Here's the info:
+
+Me: [Your Name], [Email], [Phone], [LinkedIn URL]
+
+School: Graduating with a [Degree] from [University] in [Month, 2025] (Course dates: [2021-2025])
+
+Top Skills: [Python, Java, Excel] (list 3-5)
+
+Proof: My best project was [Project Name, Year: 2024] and I interned at [Company/Role] during [Dates, e.g., Summer 2025].`,
       },
       {
         title: `Ready-to-Go Example`,
         type: "complete",
-        prompt: `I'm Rahul Singh, a ${yearText} ${
-          primaryField.name
-        } student from ${
-          primaryField.location
-        }. Contact me at rahul.singh@email.com or +91-9876543210. I'm skilled in ${allSkills
-          .slice(0, 3)
-          .join(", ")}. I've worked on 5+ projects including ${
-          primaryField.projects
-        } that improved efficiency by 30%. Currently studying at NIT Warangal with 8.5 CGPA. Looking for ${
-          isInternship ? "internship" : "full-time"
-        } opportunities.`,
+        prompt: `Can you whip up a 2025 fresher resume for me? I'm aiming for a role as a [Target Role, e.g., Data Analyst].
+
+My Info: [Name], [Email], [Phone], [LinkedIn].
+
+Education: I'm finishing my [Degree] at [University]. My course ran from [2021] to [Graduation Month, 2025].
+
+The Good Stuff: My strongest skills are [Skill 1, Skill 2, Skill 3]. I proved them with my main project, [Project Name] in [2024], and an internship [Role/Company] that I did during [Dates].`,
       },
       {
         title: `Achievement Focused`,
         type: "complete",
-        prompt: `I'm Sneha Patel, a ${yearText} ${
-          primaryField.name
-        } student from Mumbai. Contact me at sneha.patel@email.com or +91-8765432109. I'm proficient in ${allSkills
-          .slice(1, 4)
-          .join(", ")}. Led a team of 4 to build ${
-          primaryField.projects
-        } that won college hackathon and got 50K+ downloads. Studying at VJTI Mumbai with 9.1 CGPA. Ready to bring innovation to ${
-          isInternship ? "internship" : "full-time"
-        } roles.`,
+        prompt: `Help me build my resume for 2025! I'm a recent graduate.
+
+What's the goal? A [Target Role] position.
+
+Who am I? [Name, Email, Phone, LinkedIn].
+
+When did I graduate? [Degree] from [University], Class of [Month, 2025]. (Timeline: [2021-2025])
+
+My best skills? [Skill 1, Skill 2, Skill 3]
+
+My experience? [Key Project] from [Year], and an internship [Role/Company] with dates [Start Date - End Date].`,
       },
     ];
   };
@@ -326,9 +324,7 @@ function AIPromptInputContent() {
   };
 
   const handlePrev = () => {
-    router.push(
-      `/resume-builder/ai-generator/field-selection?education=${userEducation}&career=${userCareer}`
-    );
+    router.push("/resume-confirmation");
   };
 
   const handleSamplePrompt = (samplePrompt) => {
@@ -502,7 +498,7 @@ function AIPromptInputContent() {
 
               <div className="relative">
                 <textarea
-                  placeholder="Example: I'm John Doe, a 3rd year Computer Science student from Mumbai. I'm skilled in React, Node.js, and Python. I've built web applications and am looking for internship opportunities."
+                  placeholder="Example: I'm Advika, a 3rd year Computer Science student from Mumbai. I'm skilled in React, Node.js, and Python. I've built web applications and am looking for internship opportunities."
                   value={prompt}
                   onChange={(e) => setPrompt(e.target.value)}
                   rows={12}
