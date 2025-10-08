@@ -1,10 +1,10 @@
 'use client'
-import React, { useState, useEffect, Suspense } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
-import Link from 'next/link'
-import Image from 'next/image'
-import { getApiUrl } from '@/lib/api-config'
-import { setAuthTokens } from '@/lib/cookies'
+import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useDispatch, useSelector } from "react-redux";
+import Image from "next/image";
+import { registerUser } from "@/app/redux/actions/authActions";
+import { clearError, clearSuccessMessage } from "@/app/redux/reducers/authSlice";
 
 const colorTokens = {
   title: "#002A79",
@@ -15,29 +15,24 @@ const colorTokens = {
   accent30: "rgba(35,112,255,0.3)",
 };
 
-// Message configurations
-const MESSAGES = {
-  auth_required: {
-    type: 'info',
-    text: 'Authentication Required',
-    description: 'Please sign in to access this page'
-  },
-  session_expired: {
-    type: 'warning',
-    text: 'Session Expired',
-    description: 'Your session has expired. Please sign in again'
-  },
-  logged_out: {
-    type: 'success',
-    text: 'Logged Out Successfully',
-    description: 'You have been logged out of your account'
-  },
-  unauthorized: {
-    type: 'error',
-    text: 'Unauthorized Access',
-    description: 'You do not have permission to access that page'
-  }
-}
+const ContactInfo = ({ title, details }) => (
+  <div style={{ display: "flex", gap: 16, alignItems: "center" }}>
+    <div
+      style={{
+        width: 24,
+        height: 24,
+        borderRadius: "50%",
+        background: "linear-gradient(to bottom, #6ba0ff, #235bff)",
+        boxShadow: "0 1px 6px rgba(66,112,255,0.06)",
+        flexShrink: 0,
+      }}
+    />
+    <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+      <div style={{ fontWeight: 600, fontSize: 20, color: "#cbd5ef" }}>{title}</div>
+      <div style={{ fontWeight: 500, fontSize: 18, color: "#dbe2ff" }}>{details}</div>
+    </div>
+  </div>
+);
 
 const FormField = ({
   name,
@@ -92,76 +87,81 @@ const FormField = ({
   </div>
 );
 
-const LoginForm = () => {
-  const router = useRouter()
-  const searchParams = useSearchParams()
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
-  const [error, setError] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [authMessage, setAuthMessage] = useState(null)
+const SignupPage = () => {
+  const router = useRouter();
+  const dispatch = useDispatch();
+  const { loading, error, success, isAuthenticated } = useSelector((state) => state.auth);
 
-  // Check for redirect message
+  const [formData, setFormData] = useState({
+    fullName: "",
+    email: "",
+    phoneNumber: "",
+    universityDomain: "",
+    password: "",
+    confirmPassword: "",
+  });
+  const [localError, setLocalError] = useState("");
+
+  // Redirect if already authenticated
   useEffect(() => {
-    const message = searchParams.get('message')
-    if (message && MESSAGES[message]) {
-      setAuthMessage(MESSAGES[message])
+    if (isAuthenticated) {
+      router.push("/");
     }
-  }, [searchParams])
+  }, [isAuthenticated, router]);
+
+  // Clear errors and success messages when component unmounts
+  useEffect(() => {
+    return () => {
+      dispatch(clearError("register"));
+      dispatch(clearSuccessMessage("register"));
+    };
+  }, [dispatch]);
 
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    setLocalError(""); // Clear local error when user types
   };
 
-  const handleLogin = async (e) => {
-    e.preventDefault()
-    setError('')
-    setAuthMessage(null)
+  const handleSignup = async (e) => {
+    e.preventDefault();
+    setLocalError("");
 
-    if (!formData.email || !formData.password) {
-      setError('Please fill in all fields')
-      return
+    // Validate passwords match
+    if (formData.password !== formData.confirmPassword) {
+      setLocalError("Passwords do not match");
+      return;
     }
 
-    setLoading(true)
+    // Validate all required fields
+    if (!formData.fullName || !formData.email || !formData.password) {
+      setLocalError("Please fill in all required fields");
+      return;
+    }
 
     try {
-      const response = await fetch('/api/v1/auth/signin', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: formData.email, password: formData.password }),
-      })
+      // Prepare data according to backend API format
+      const userData = {
+        full_name: formData.fullName,
+        email: formData.email,
+        password: formData.password,
+        phone_number: formData.phoneNumber || undefined,
+        university_domain: formData.universityDomain || undefined,
+      };
 
-      const data = await response.json()
+      // Dispatch Redux action
+      await dispatch(registerUser(userData)).unwrap();
 
-      if (response.ok && data.success) {
-        if (data.data?.user) {
-          localStorage.setItem('user', JSON.stringify(data.data.user))
-          localStorage.setItem('userEmail', data.data.user.email)
-        }
+      // Success - Show message or redirect
+      // Note: Backend sends verification email, user needs to verify
+      setLocalError("");
 
-        localStorage.setItem('isAuthenticated', 'true')
-        router.push('/')
-      } else {
-        if (data.message && (
-          data.message.toLowerCase().includes('verify') ||
-          data.message.toLowerCase().includes('not verified') ||
-          data.message.toLowerCase().includes('verification')
-        )) {
-          setError('Please verify your email before logging in. Check your inbox for the verification link.')
-        } else {
-          setError(data.message || 'Invalid email or password')
-        }
-      }
-    } catch (error) {
-      console.error('Login error:', error)
-      setError('An error occurred. Please try again.')
-    } finally {
-      setLoading(false)
+      // Optionally redirect to a "check your email" page
+      // For now, show success message in the UI
+    } catch (err) {
+      // Error is already in Redux state
+      console.error("Signup failed:", err);
     }
-  }
+  };
 
   return (
     <>
@@ -238,7 +238,7 @@ const LoginForm = () => {
       >
         <Image
           src="/Card.svg"
-          alt="Welcome Back"
+          alt="Join Guidix Today"
           fill
           style={{
             objectFit: "cover",
@@ -276,7 +276,7 @@ const LoginForm = () => {
           padding: "48px 40px",
         }}>
           <div style={{ fontWeight: 500, fontSize: 48, lineHeight: "56px" }}>
-            Welcome Back!
+            Join Guidix Today
           </div>
           <div
             style={{
@@ -286,7 +286,7 @@ const LoginForm = () => {
               maxWidth: 384,
             }}
           >
-            Sign in to continue your placement journey
+            Create your account and start your placement journey
           </div>
         </div>
       </div>
@@ -314,7 +314,7 @@ const LoginForm = () => {
               margin: 0,
             }}
           >
-            Sign In
+            Create Account
           </h1>
           <p
             style={{
@@ -327,51 +327,11 @@ const LoginForm = () => {
               lineHeight: "24px",
             }}
           >
-            Enter your credentials to access your account
+            Fill in your details to get started
           </p>
         </div>
-
-        {/* Authentication Message */}
-        {authMessage && (
-          <div
-            style={{
-              marginBottom: 16,
-              padding: 16,
-              borderRadius: 16,
-              border: '1px solid',
-              backgroundColor: authMessage.type === 'error' ? '#FEE2E2' :
-                             authMessage.type === 'warning' ? '#FEF3C7' :
-                             authMessage.type === 'success' ? '#D1FAE5' : '#DBEAFE',
-              borderColor: authMessage.type === 'error' ? '#FCA5A5' :
-                          authMessage.type === 'warning' ? '#FCD34D' :
-                          authMessage.type === 'success' ? '#6EE7B7' : '#93C5FD'
-            }}
-          >
-            <p style={{
-              fontSize: 14,
-              fontWeight: 600,
-              marginBottom: 4,
-              fontFamily: "Inter, sans-serif",
-              color: authMessage.type === 'error' ? '#DC2626' :
-                     authMessage.type === 'warning' ? '#D97706' :
-                     authMessage.type === 'success' ? '#059669' : '#2563EB'
-            }}>
-              {authMessage.text}
-            </p>
-            <p style={{
-              fontSize: 12,
-              fontFamily: "Inter, sans-serif",
-              color: authMessage.type === 'error' ? '#991B1B' :
-                     authMessage.type === 'warning' ? '#92400E' :
-                     authMessage.type === 'success' ? '#065F46' : '#1E40AF'
-            }}>
-              {authMessage.description}
-            </p>
-          </div>
-        )}
-
         <form
-          onSubmit={handleLogin}
+          onSubmit={handleSignup}
           autoComplete="off"
           style={{
             display: "flex",
@@ -380,28 +340,100 @@ const LoginForm = () => {
             width: 580,
           }}
         >
-          <FormField
-            name="email"
-            label="Email address"
-            type="email"
-            placeholder="rajesh.sharma@example.com"
-            value={formData.email}
-            onChange={handleInputChange}
-          />
-          <FormField
-            name="password"
-            label="Password"
-            type="password"
-            placeholder="Enter your password"
-            value={formData.password}
-            onChange={handleInputChange}
-          />
+          {/* Row 1 */}
+          <div style={{ display: "flex", gap: 16 }}>
+            <FormField
+              name="fullName"
+              label="Full name"
+              placeholder="Rajesh Kumar"
+              value={formData.fullName}
+              onChange={handleInputChange}
+              styleProps={{ flex: 1 }}
+            />
+            <FormField
+              name="email"
+              label="Email address"
+              type="email"
+              placeholder="rajesh.kumar@example.com"
+              value={formData.email}
+              onChange={handleInputChange}
+              styleProps={{ flex: 1 }}
+            />
+          </div>
+          {/* Row 2 */}
+          <div style={{ display: "flex", gap: 16 }}>
+            <FormField
+              name="phoneNumber"
+              label="Phone number"
+              placeholder="+91 98765 43210"
+              value={formData.phoneNumber}
+              onChange={handleInputChange}
+              styleProps={{ flex: 1 }}
+            />
+            <FormField
+              name="universityDomain"
+              label="University Domain"
+              placeholder="iitd.ac.in"
+              value={formData.universityDomain}
+              onChange={handleInputChange}
+              styleProps={{ flex: 1 }}
+            />
+          </div>
+          {/* Row 3 */}
+          <div style={{ display: "flex", gap: 16 }}>
+            <FormField
+              name="password"
+              label="Password"
+              type="password"
+              placeholder="Enter your password"
+              value={formData.password}
+              onChange={handleInputChange}
+              styleProps={{ flex: 1 }}
+            />
+            <FormField
+              name="confirmPassword"
+              label="Confirm Password"
+              type="password"
+              placeholder="Confirm your password"
+              value={formData.confirmPassword}
+              onChange={handleInputChange}
+              styleProps={{ flex: 1 }}
+            />
+          </div>
+          {/* Submit Button */}
+          {/* Success Message */}
+          {success.register && (
+            <div style={{
+              padding: 16,
+              borderRadius: 16,
+              backgroundColor: '#D1FAE5',
+              border: '1px solid #6EE7B7'
+            }}>
+              <p style={{
+                fontSize: 14,
+                fontWeight: 600,
+                marginBottom: 4,
+                fontFamily: "Inter, sans-serif",
+                color: '#059669'
+              }}>
+                Registration Successful!
+              </p>
+              <p style={{
+                fontSize: 12,
+                fontFamily: "Inter, sans-serif",
+                color: '#065F46',
+                margin: 0
+              }}>
+                {success.register}
+              </p>
+            </div>
+          )}
 
           {/* Error Message */}
-          {error && (
+          {(error.register || localError) && (
             <div style={{
-              padding: 12,
-              borderRadius: 12,
+              padding: 16,
+              borderRadius: 16,
               backgroundColor: '#FEE2E2',
               border: '1px solid #FCA5A5'
             }}>
@@ -411,16 +443,15 @@ const LoginForm = () => {
                 fontFamily: "Inter, sans-serif",
                 margin: 0
               }}>
-                {error}
+                {error.register || localError}
               </p>
             </div>
           )}
 
-          {/* Submit Button */}
           <div>
             <button
               type="submit"
-              disabled={loading}
+              disabled={loading.register}
               style={{
                 display: 'inline-flex',
                 width: '100%',
@@ -429,7 +460,7 @@ const LoginForm = () => {
                 alignItems: 'center',
                 borderRadius: '8px',
                 border: '1px solid rgba(35, 112, 255, 0.30)',
-                background: 'linear-gradient(180deg, #679CFF 0%, #2370FF 100%)',
+                background: loading.register ? '#94A3B8' : 'linear-gradient(180deg, #679CFF 0%, #2370FF 100%)',
                 boxShadow: '0 2px 4px 0 rgba(77, 145, 225, 0.10), 0 1px 0.3px 0 rgba(255, 255, 255, 0.25) inset, 0 -1px 0.3px 0 rgba(0, 19, 88, 0.25) inset',
                 color: '#FFFFFF',
                 textAlign: 'center',
@@ -439,31 +470,14 @@ const LoginForm = () => {
                 fontWeight: 600,
                 lineHeight: '125%',
                 letterSpacing: '-0.32px',
-                cursor: loading ? "not-allowed" : "pointer",
-                opacity: loading ? 0.7 : 1,
+                cursor: loading.register ? 'not-allowed' : 'pointer',
+                opacity: loading.register ? 0.7 : 1,
               }}
             >
-              {loading ? "Signing in..." : "Sign In"}
+              {loading.register ? "Signing up..." : "Sign Up"}
             </button>
           </div>
-
-          {/* Forgot Password */}
-          <div style={{ textAlign: "center" }}>
-            <Link
-              href="/forgot-password"
-              style={{
-                fontSize: 14,
-                color: colorTokens.secondary600,
-                fontWeight: 500,
-                fontFamily: "Inter, sans-serif",
-                textDecoration: "none",
-              }}
-            >
-              Forgot Password?
-            </Link>
-          </div>
-
-          {/* Sign Up Link */}
+          {/* Terms and Sign In */}
           <div style={{ marginTop: 16, textAlign: "center" }}>
             <p
               style={{
@@ -474,16 +488,34 @@ const LoginForm = () => {
                 margin: 0,
               }}
             >
-              Don&apos;t have an account?{" "}
+              By signing up you agree to our{" "}
+              <span style={{ color: colorTokens.secondary600, fontWeight: 500 }}>
+                Terms of Services
+              </span>{" "}
+              and{" "}
+              <span style={{ color: colorTokens.secondary600, fontWeight: 500 }}>
+                Privacy Policy
+              </span>
+            </p>
+            <p
+              style={{
+                fontSize: 14,
+                color: colorTokens.paragraph,
+                fontFamily: "Inter, sans-serif",
+                lineHeight: "20px",
+                marginTop: 8,
+              }}
+            >
+              Already have an account?{" "}
               <span
-                onClick={() => router.push("/signup")}
+                onClick={() => router.push("/login")}
                 style={{
                   color: colorTokens.secondary600,
                   fontWeight: 500,
                   cursor: "pointer",
                 }}
               >
-                Sign Up
+                Sign in
               </span>
             </p>
           </div>
@@ -492,35 +524,7 @@ const LoginForm = () => {
       </div>
     </div>
     </>
-  )
-}
+  );
+};
 
-const LoginPage = () => {
-  return (
-    <Suspense fallback={
-      <div style={{ minHeight: '100vh', backgroundColor: '#F8F9FF', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <div style={{ textAlign: 'center' }}>
-          <div style={{
-            width: '48px',
-            height: '48px',
-            border: '4px solid #E5E7EB',
-            borderTopColor: '#2370FF',
-            borderRadius: '50%',
-            animation: 'spin 1s linear infinite',
-            margin: '0 auto 16px'
-          }} />
-          <style jsx>{`
-            @keyframes spin {
-              to { transform: rotate(360deg); }
-            }
-          `}</style>
-          <p style={{ color: '#6B7280', fontSize: '14px' }}>Loading...</p>
-        </div>
-      </div>
-    }>
-      <LoginForm />
-    </Suspense>
-  )
-}
-
-export default LoginPage
+export default SignupPage;
