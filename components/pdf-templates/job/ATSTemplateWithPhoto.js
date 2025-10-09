@@ -24,6 +24,8 @@ const stripMarkdown = (text) => {
 
 /**
  * ATS-COMPLIANT TEMPLATE WITH PHOTO
+ * Template ID: ats-template-with-photo
+ * Backend ID: TMPL_002
  *
  * ATS Compliance Features:
  * - Single column layout (photo in header, doesn't break flow)
@@ -223,7 +225,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const ATSTemplateWithPhoto = ({ resumeData }) => {
+const ATSTemplateWithPhoto = ({ resumeData, templateId }) => {
   const {
     personalInfo = {},
     experience = [],
@@ -249,7 +251,12 @@ const ATSTemplateWithPhoto = ({ resumeData }) => {
   }, {});
 
   return (
-    <Document>
+    <Document
+      title={`${personalInfo.firstName || 'Resume'} ${personalInfo.lastName || ''} - ATS Template with Photo`}
+      author={`${personalInfo.firstName || ''} ${personalInfo.lastName || ''}`}
+      subject="Professional Resume"
+      creator="Resume Builder"
+    >
       <Page size="A4" style={styles.page}>
         {/* HEADER - Contact Information with Photo */}
         <View style={styles.headerContainer}>
@@ -407,5 +414,11 @@ const ATSTemplateWithPhoto = ({ resumeData }) => {
     </Document>
   );
 };
+
+// Template metadata for identification
+ATSTemplateWithPhoto.templateId = "ats-template-with-photo";
+ATSTemplateWithPhoto.backendId = "TMPL_002";
+ATSTemplateWithPhoto.displayName = "ATS Professional Template with Photo";
+ATSTemplateWithPhoto.hasPhoto = true;
 
 export default ATSTemplateWithPhoto;

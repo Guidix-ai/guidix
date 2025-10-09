@@ -8,7 +8,7 @@ export { default as ATSTemplateWithoutPhoto } from './ATSTemplateWithoutPhoto';
 // Template configurations for job applications - ONLY single-column ATS-friendly templates
 export const jobTemplates = [
   {
-    id: 'ats-template-without-photo',
+    id: 'aa97e710-4457-46fb-ac6f-1765ad3a6d43',
     name: 'ATS Professional (No Photo)',
     component: 'ATSTemplateWithoutPhoto',
     hasPhoto: false,
@@ -17,7 +17,7 @@ export const jobTemplates = [
     preview: '/api/placeholder/300/400',
   },
   {
-    id: 'ats-template-with-photo',
+    id: '41aab622-839d-454e-bf99-9d5a2ce027ec',
     name: 'ATS Professional (With Photo)',
     component: 'ATSTemplateWithPhoto',
     hasPhoto: true,

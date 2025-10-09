@@ -177,6 +177,10 @@ const PDFPreview = ({ templateId, resumeData = sampleResumeData, width = 300, he
 
         // Map template ID to component name
         const componentMap = {
+          // UUID mappings
+          'aa97e710-4457-46fb-ac6f-1765ad3a6d43': 'ATSTemplateWithoutPhoto',
+          '41aab622-839d-454e-bf99-9d5a2ce027ec': 'ATSTemplateWithPhoto',
+          // Legacy string IDs (for backward compatibility)
           'ats-template-with-photo': 'ATSTemplateWithPhoto',
           'ats-template-without-photo': 'ATSTemplateWithoutPhoto',
           'internship-1-with-photo': 'InternshipTemplate1WithPhoto',
