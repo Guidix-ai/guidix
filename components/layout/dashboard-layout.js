@@ -119,6 +119,7 @@ export function DashboardLayout({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
   const [userEmail, setUserEmail] = useState("");
+  const [userName, setUserName] = useState("");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isDesktop, setIsDesktop] = useState(false);
 
@@ -129,8 +130,9 @@ export function DashboardLayout({ children }) {
     setIsAuthenticated(authenticated);
 
     if (authenticated) {
-      // Load user email from localStorage
-      setUserEmail(localStorage.getItem("userEmail") || "User");
+      // Load user name and email from localStorage
+      setUserName(localStorage.getItem("userName") || "User");
+      setUserEmail(localStorage.getItem("userEmail") || "");
     }
   }, [router]);
 
@@ -237,23 +239,37 @@ export function DashboardLayout({ children }) {
             </button>
 
             {/* User Profile */}
-            <div className="relative flex items-center space-x-2 group">
-              <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full overflow-hidden bg-orange-500 flex items-center justify-center">
-                <svg
-                  className="w-4 h-4 sm:w-5 sm:h-5 text-white"
-                  fill="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
-                </svg>
+            {isAuthenticated && (
+              <div className="relative flex items-center space-x-2 group">
+                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full overflow-hidden bg-orange-500 flex items-center justify-center">
+                  <svg
+                    className="w-4 h-4 sm:w-5 sm:h-5 text-white"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                  </svg>
+                </div>
+                <div className="hidden lg:block">
+                  <p className="text-sm font-medium text-gray-900" style={{
+                    maxWidth: "150px",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap"
+                  }}>
+                    {userName || "User"}
+                  </p>
+                  <p className="text-xs text-gray-500" style={{
+                    maxWidth: "150px",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap"
+                  }}>
+                    {userEmail || ""}
+                  </p>
+                </div>
               </div>
-              <div className="hidden lg:block">
-                <p className="text-sm font-medium text-gray-900">
-                  {userEmail.split("@")[0] || "User"}
-                </p>
-                <p className="text-xs text-gray-500">Premium Member</p>
-              </div>
-            </div>
+            )}
           </div>
         </div>
       </header>

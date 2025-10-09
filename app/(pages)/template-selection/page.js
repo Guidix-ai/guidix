@@ -371,12 +371,12 @@ function TemplateSelectionContent() {
                         </span>
                       )}
                       {/* Display Template ID for debugging */}
-                      <span className="px-3 py-1.5 rounded-lg text-xs font-medium" style={{
+                      {/* <span className="px-3 py-1.5 rounded-lg text-xs font-medium" style={{
                         backgroundColor: '#F8F9FA',
                         color: '#6C757D'
                       }}>
                         ID: {selectedTemplate}
-                      </span>
+                      </span> */}
                     </div>
                   </div>
                   <div
