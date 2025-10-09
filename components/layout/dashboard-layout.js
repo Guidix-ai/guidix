@@ -119,22 +119,19 @@ export function DashboardLayout({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
   const [userEmail, setUserEmail] = useState("");
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isDesktop, setIsDesktop] = useState(false);
 
   useEffect(() => {
-    // TEMPORARILY COMMENTED OUT FOR DEVELOPMENT
-    // Uncomment when backend is ready
+    // Check if access token exists in localStorage
+    const accessToken = localStorage.getItem('access_token');
+    const authenticated = !!accessToken;
+    setIsAuthenticated(authenticated);
 
-    // // Check authentication
-    // const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
-    // if (!isAuthenticated) {
-    //   router.push('/login');
-    // } else {
-    //   setUserEmail(localStorage.getItem('userEmail') || 'User');
-    // }
-
-    // For development - set default user
-    setUserEmail(localStorage.getItem("userEmail") || "Developer");
+    if (authenticated) {
+      // Load user email from localStorage
+      setUserEmail(localStorage.getItem("userEmail") || "User");
+    }
   }, [router]);
 
   useEffect(() => {
@@ -555,41 +552,71 @@ export function DashboardLayout({ children }) {
             </ul>
           )}
 
-          {/* Logout Button */}
-          <button
-            onClick={handleLogout}
-            className="flex items-center rounded-lg w-full"
-            style={{
-              padding: "8px 12px",
-              color: "#6477B4",
-              backgroundColor: "transparent",
-              borderRadius: "8px",
-              border: "1px solid transparent",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = "#F0F4FA";
-              e.currentTarget.style.color = "#EF4444";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = "transparent";
-              e.currentTarget.style.color = "#6477B4";
-            }}
-          >
-            {!collapsed && (
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "10px",
-                  width: "100%",
-                }}
-              >
+          {/* Auth Buttons - Show Logout if authenticated, Login/Signup if not */}
+          {isAuthenticated ? (
+            <button
+              onClick={handleLogout}
+              className="flex items-center rounded-lg w-full"
+              style={{
+                padding: "8px 12px",
+                color: "#6477B4",
+                backgroundColor: "transparent",
+                borderRadius: "8px",
+                border: "1px solid transparent",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = "#F0F4FA";
+                e.currentTarget.style.color = "#EF4444";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = "transparent";
+                e.currentTarget.style.color = "#6477B4";
+              }}
+            >
+              {!collapsed && (
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "10px",
+                    width: "100%",
+                  }}
+                >
+                  <svg
+                    className="w-4 h-4 flex-shrink-0"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    style={{ color: "inherit", fontSize: "14px" }}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                    />
+                  </svg>
+                  <span
+                    style={{
+                      fontFamily: "Inter, sans-serif",
+                      fontSize: "12px",
+                      fontWeight: 400,
+                      lineHeight: "125%",
+                      letterSpacing: "-0.24px",
+                      color: "inherit",
+                    }}
+                  >
+                    Logout
+                  </span>
+                </div>
+              )}
+              {collapsed && (
                 <svg
                   className="w-4 h-4 flex-shrink-0"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
-                  style={{ color: "inherit", fontSize: "14px" }}
+                  style={{ color: "inherit" }}
                 >
                   <path
                     strokeLinecap="round"
@@ -598,37 +625,151 @@ export function DashboardLayout({ children }) {
                     d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
                   />
                 </svg>
-                <span
-                  style={{
-                    fontFamily: "Inter, sans-serif",
-                    fontSize: "12px",
-                    fontWeight: 400,
-                    lineHeight: "125%",
-                    letterSpacing: "-0.24px",
-                    color: "inherit",
-                  }}
-                >
-                  Logout
-                </span>
-              </div>
-            )}
-            {collapsed && (
-              <svg
-                className="w-4 h-4 flex-shrink-0"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                style={{ color: "inherit" }}
+              )}
+            </button>
+          ) : (
+            <div style={{ display: "flex", flexDirection: "column", gap: "4px", width: "100%" }}>
+              <button
+                onClick={() => router.push('/login')}
+                className="flex items-center rounded-lg w-full"
+                style={{
+                  padding: "8px 12px",
+                  color: "#FFFFFF",
+                  background: "linear-gradient(180deg, #679CFF 0%, #2370FF 100%)",
+                  borderRadius: "8px",
+                  border: "1px solid rgba(35, 112, 255, 0.30)",
+                  boxShadow: "0 2px 4px 0 rgba(77, 145, 225, 0.10)",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.opacity = "0.9";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.opacity = "1";
+                }}
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-                />
-              </svg>
-            )}
-          </button>
+                {!collapsed && (
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "10px",
+                      width: "100%",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <svg
+                      className="w-4 h-4 flex-shrink-0"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"
+                      />
+                    </svg>
+                    <span
+                      style={{
+                        fontFamily: "Inter, sans-serif",
+                        fontSize: "12px",
+                        fontWeight: 500,
+                        lineHeight: "125%",
+                        letterSpacing: "-0.24px",
+                      }}
+                    >
+                      Login
+                    </span>
+                  </div>
+                )}
+                {collapsed && (
+                  <svg
+                    className="w-4 h-4 flex-shrink-0"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"
+                    />
+                  </svg>
+                )}
+              </button>
+              <button
+                onClick={() => router.push('/signup')}
+                className="flex items-center rounded-lg w-full"
+                style={{
+                  padding: "8px 12px",
+                  color: "#6477B4",
+                  backgroundColor: "transparent",
+                  borderRadius: "8px",
+                  border: "1px solid #6477B4",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = "#F0F4FA";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = "transparent";
+                }}
+              >
+                {!collapsed && (
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "10px",
+                      width: "100%",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <svg
+                      className="w-4 h-4 flex-shrink-0"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"
+                      />
+                    </svg>
+                    <span
+                      style={{
+                        fontFamily: "Inter, sans-serif",
+                        fontSize: "12px",
+                        fontWeight: 400,
+                        lineHeight: "125%",
+                        letterSpacing: "-0.24px",
+                      }}
+                    >
+                      Signup
+                    </span>
+                  </div>
+                )}
+                {collapsed && (
+                  <svg
+                    className="w-4 h-4 flex-shrink-0"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"
+                    />
+                  </svg>
+                )}
+              </button>
+            </div>
+          )}
 
           {/* Collapse Button */}
           {!collapsed && (

@@ -203,15 +203,25 @@ export const loginUser = createAsyncThunk(
       if (response.data && response.data.data) {
         const { user, tokens } = response.data.data;
 
-        // Store tokens and user in localStorage
+        // Store tokens and all user data in localStorage
         if (typeof window !== 'undefined') {
+          // Store tokens
           localStorage.setItem('access_token', tokens.access_token);
           localStorage.setItem('refresh_token', tokens.refresh_token);
-          if (tokens.token_expiry) {
-            localStorage.setItem('token_expiry', tokens.token_expiry.toString());
+          if (tokens.expires_at) {
+            localStorage.setItem('token_expiry', tokens.expires_at.toString());
           }
+
+          // Store user data
           localStorage.setItem('user', JSON.stringify(user));
           localStorage.setItem('isAuthenticated', 'true');
+
+          // Store individual user fields for easy access
+          if (user.email) localStorage.setItem('userEmail', user.email);
+          if (user.full_name) localStorage.setItem('userName', user.full_name);
+          if (user.phone_number) localStorage.setItem('userPhone', user.phone_number);
+          if (user.university_domain) localStorage.setItem('userUniversity', user.university_domain);
+          if (user.id) localStorage.setItem('userId', user.id);
         }
 
         return { user, tokens };
@@ -265,31 +275,42 @@ export const logoutUser = createAsyncThunk(
   'auth/logout',
   async (_, { rejectWithValue }) => {
     try {
-      // Call Next.js API route which handles backend logout
-      await axios.post('/api/v1/auth/logout', {}, { withCredentials: true });
+      // Call backend logout endpoint
+      await axios.post(`${API_BASE_URL}/api/v1/auth/logout`, {}, {
+        headers: {
+          'Authorization': `Bearer ${typeof window !== 'undefined' ? localStorage.getItem('access_token') : ''}`
+        }
+      });
 
-      // Clear cookies (already done by API route, but doing it again for safety)
-      Cookies.remove('access_token');
-      Cookies.remove('refresh_token');
-      Cookies.remove('token_expiry');
-
-      // Clear localStorage
+      // Clear all localStorage items
       if (typeof window !== 'undefined') {
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
+        localStorage.removeItem('token_expiry');
         localStorage.removeItem('user');
         localStorage.removeItem('isAuthenticated');
+        localStorage.removeItem('userEmail');
+        localStorage.removeItem('userName');
+        localStorage.removeItem('userPhone');
+        localStorage.removeItem('userUniversity');
+        localStorage.removeItem('userId');
         localStorage.removeItem('pendingUser');
       }
 
       return true;
     } catch (error) {
-      // Even if API call fails, clear local data
-      Cookies.remove('access_token');
-      Cookies.remove('refresh_token');
-      Cookies.remove('token_expiry');
-
+      // Even if API call fails, clear all local data
       if (typeof window !== 'undefined') {
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
+        localStorage.removeItem('token_expiry');
         localStorage.removeItem('user');
         localStorage.removeItem('isAuthenticated');
+        localStorage.removeItem('userEmail');
+        localStorage.removeItem('userName');
+        localStorage.removeItem('userPhone');
+        localStorage.removeItem('userUniversity');
+        localStorage.removeItem('userId');
         localStorage.removeItem('pendingUser');
       }
 

@@ -1,10 +1,13 @@
-'use client'
+"use client";
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import Image from "next/image";
 import { registerUser } from "@/app/redux/actions/authActions";
-import { clearError, clearSuccessMessage } from "@/app/redux/reducers/authSlice";
+import {
+  clearError,
+  clearSuccessMessage,
+} from "@/app/redux/reducers/authSlice";
 
 const colorTokens = {
   title: "#002A79",
@@ -28,8 +31,12 @@ const ContactInfo = ({ title, details }) => (
       }}
     />
     <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-      <div style={{ fontWeight: 600, fontSize: 20, color: "#cbd5ef" }}>{title}</div>
-      <div style={{ fontWeight: 500, fontSize: 18, color: "#dbe2ff" }}>{details}</div>
+      <div style={{ fontWeight: 600, fontSize: 20, color: "#cbd5ef" }}>
+        {title}
+      </div>
+      <div style={{ fontWeight: 500, fontSize: 18, color: "#dbe2ff" }}>
+        {details}
+      </div>
     </div>
   </div>
 );
@@ -43,7 +50,9 @@ const FormField = ({
   type = "text",
   styleProps,
 }) => (
-  <div style={{ display: "flex", flexDirection: "column", gap: 8, ...styleProps }}>
+  <div
+    style={{ display: "flex", flexDirection: "column", gap: 8, ...styleProps }}
+  >
     <label
       htmlFor={name}
       style={{
@@ -90,7 +99,9 @@ const FormField = ({
 const SignupPage = () => {
   const router = useRouter();
   const dispatch = useDispatch();
-  const { loading, error, success, isAuthenticated } = useSelector((state) => state.auth);
+  const { loading, error, success, isAuthenticated } = useSelector(
+    (state) => state.auth
+  );
 
   const [formData, setFormData] = useState({
     fullName: "",
@@ -167,7 +178,7 @@ const SignupPage = () => {
     <>
       <style jsx>{`
         input::placeholder {
-          color: #6477B4;
+          color: #6477b4;
           font-family: Inter, sans-serif;
           font-size: 16px;
           font-weight: 400;
@@ -175,7 +186,7 @@ const SignupPage = () => {
           letter-spacing: -0.32px;
         }
         input::-webkit-input-placeholder {
-          color: #6477B4;
+          color: #6477b4;
           font-family: Inter, sans-serif;
           font-size: 16px;
           font-weight: 400;
@@ -183,7 +194,7 @@ const SignupPage = () => {
           letter-spacing: -0.32px;
         }
         input::-moz-placeholder {
-          color: #6477B4;
+          color: #6477b4;
           font-family: Inter, sans-serif;
           font-size: 16px;
           font-weight: 400;
@@ -191,7 +202,7 @@ const SignupPage = () => {
           letter-spacing: -0.32px;
         }
         input:-ms-input-placeholder {
-          color: #6477B4;
+          color: #6477b4;
           font-family: Inter, sans-serif;
           font-size: 16px;
           font-weight: 400;
@@ -211,318 +222,343 @@ const SignupPage = () => {
           boxSizing: "border-box",
         }}
       >
-      <div
-        style={{
-          display: "flex",
-          gap: 100,
-          maxWidth: "1400px",
-          width: "100%",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-      {/* Image Container on left */}
-      <div
-        style={{
-          flex: "1",
-          maxWidth: "600px",
-          borderRadius: 24,
-          overflow: "hidden",
-          boxShadow: "0px 12px 32px -4px rgba(35,112,255,0.4), 0px 2px 2px 0 rgba(0,19,88,0.1), 0px 4px 8px -2px rgba(0,19,88,0.4)",
-          minHeight: "600px",
-          position: "relative",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <Image
-          src="/Card.svg"
-          alt="Join Guidix Today"
-          fill
-          style={{
-            objectFit: "cover",
-            objectPosition: "-30px center",
-          }}
-        />
-        <div style={{
-          position: "absolute",
-          top: "40px",
-          left: "40px",
-          zIndex: 1,
-        }}>
-          <Image
-            src="/white guidix.ai logo .svg"
-            alt="Guidix.ai"
-            width={120}
-            height={40}
-            style={{
-              height: "40px",
-              width: "auto",
-              mixBlendMode: "screen",
-            }}
-          />
-        </div>
-        <div style={{
-          position: "relative",
-          zIndex: 1,
-          color: "#dbe2ff",
-          fontFamily: "Inter, sans-serif",
-          textAlign: "center",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          gap: 24,
-          padding: "48px 40px",
-        }}>
-          <div style={{ fontWeight: 500, fontSize: 48, lineHeight: "56px" }}>
-            Join Guidix Today
-          </div>
-          <div
-            style={{
-              fontWeight: 400,
-              fontSize: 18,
-              lineHeight: "28px",
-              maxWidth: 384,
-            }}
-          >
-            Create your account and start your placement journey
-          </div>
-        </div>
-      </div>
-
-      {/* Right Form Container */}
-      <div
-        style={{
-          flex: "1",
-          maxWidth: "600px",
-          display: "flex",
-          flexDirection: "column",
-          gap: 16,
-          justifyContent: "center",
-        }}
-      >
-        <div>
-          <h1
-            style={{
-              width: 580,
-              color: colorTokens.title,
-              fontSize: 48,
-              fontWeight: 500,
-              fontFamily: "Inter, sans-serif",
-              lineHeight: "60px",
-              margin: 0,
-            }}
-          >
-            Create Account
-          </h1>
-          <p
-            style={{
-              marginTop: 12,
-              width: 580,
-              color: colorTokens.paragraph,
-              fontSize: 16,
-              fontWeight: 400,
-              fontFamily: "Inter, sans-serif",
-              lineHeight: "24px",
-            }}
-          >
-            Fill in your details to get started
-          </p>
-        </div>
-        <form
-          onSubmit={handleSignup}
-          autoComplete="off"
+        <div
           style={{
             display: "flex",
-            flexDirection: "column",
-            gap: 16,
-            width: 580,
+            gap: 100,
+            maxWidth: "1400px",
+            width: "100%",
+            alignItems: "center",
+            justifyContent: "center",
           }}
         >
-          {/* Row 1 */}
-          <div style={{ display: "flex", gap: 16 }}>
-            <FormField
-              name="fullName"
-              label="Full name"
-              placeholder="Rajesh Kumar"
-              value={formData.fullName}
-              onChange={handleInputChange}
-              styleProps={{ flex: 1 }}
-            />
-            <FormField
-              name="email"
-              label="Email address"
-              type="email"
-              placeholder="rajesh.kumar@example.com"
-              value={formData.email}
-              onChange={handleInputChange}
-              styleProps={{ flex: 1 }}
-            />
-          </div>
-          {/* Row 2 */}
-          <div style={{ display: "flex", gap: 16 }}>
-            <FormField
-              name="phoneNumber"
-              label="Phone number"
-              placeholder="+91 98765 43210"
-              value={formData.phoneNumber}
-              onChange={handleInputChange}
-              styleProps={{ flex: 1 }}
-            />
-            <FormField
-              name="universityDomain"
-              label="University Domain"
-              placeholder="iitd.ac.in"
-              value={formData.universityDomain}
-              onChange={handleInputChange}
-              styleProps={{ flex: 1 }}
-            />
-          </div>
-          {/* Row 3 */}
-          <div style={{ display: "flex", gap: 16 }}>
-            <FormField
-              name="password"
-              label="Password"
-              type="password"
-              placeholder="Enter your password"
-              value={formData.password}
-              onChange={handleInputChange}
-              styleProps={{ flex: 1 }}
-            />
-            <FormField
-              name="confirmPassword"
-              label="Confirm Password"
-              type="password"
-              placeholder="Confirm your password"
-              value={formData.confirmPassword}
-              onChange={handleInputChange}
-              styleProps={{ flex: 1 }}
-            />
-          </div>
-          {/* Submit Button */}
-          {/* Success Message */}
-          {success.register && (
-            <div style={{
-              padding: 16,
-              borderRadius: 16,
-              backgroundColor: '#D1FAE5',
-              border: '1px solid #6EE7B7'
-            }}>
-              <p style={{
-                fontSize: 14,
-                fontWeight: 600,
-                marginBottom: 4,
-                fontFamily: "Inter, sans-serif",
-                color: '#059669'
-              }}>
-                Registration Successful!
-              </p>
-              <p style={{
-                fontSize: 12,
-                fontFamily: "Inter, sans-serif",
-                color: '#065F46',
-                margin: 0
-              }}>
-                {success.register}
-              </p>
-            </div>
-          )}
-
-          {/* Error Message */}
-          {(error.register || localError) && (
-            <div style={{
-              padding: 16,
-              borderRadius: 16,
-              backgroundColor: '#FEE2E2',
-              border: '1px solid #FCA5A5'
-            }}>
-              <p style={{
-                fontSize: 14,
-                color: '#DC2626',
-                fontFamily: "Inter, sans-serif",
-                margin: 0
-              }}>
-                {error.register || localError}
-              </p>
-            </div>
-          )}
-
-          <div>
-            <button
-              type="submit"
-              disabled={loading.register}
+          {/* Image Container on left */}
+          <div
+            style={{
+              flex: "1",
+              maxWidth: "600px",
+              borderRadius: 24,
+              overflow: "hidden",
+              boxShadow:
+                "0px 12px 32px -4px rgba(35,112,255,0.4), 0px 2px 2px 0 rgba(0,19,88,0.1), 0px 4px 8px -2px rgba(0,19,88,0.4)",
+              minHeight: "600px",
+              position: "relative",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Image
+              src="/Card.svg"
+              alt="Join Guidix Today"
+              fill
               style={{
-                display: 'inline-flex',
-                width: '100%',
-                padding: '12px 16px',
-                justifyContent: 'center',
-                alignItems: 'center',
-                borderRadius: '8px',
-                border: '1px solid rgba(35, 112, 255, 0.30)',
-                background: loading.register ? '#94A3B8' : 'linear-gradient(180deg, #679CFF 0%, #2370FF 100%)',
-                boxShadow: '0 2px 4px 0 rgba(77, 145, 225, 0.10), 0 1px 0.3px 0 rgba(255, 255, 255, 0.25) inset, 0 -1px 0.3px 0 rgba(0, 19, 88, 0.25) inset',
-                color: '#FFFFFF',
-                textAlign: 'center',
-                textShadow: '0 0.5px 1.5px rgba(0, 19, 88, 0.30), 0 2px 5px rgba(0, 19, 88, 0.10)',
-                fontFamily: 'Inter, sans-serif',
-                fontSize: '16px',
-                fontWeight: 600,
-                lineHeight: '125%',
-                letterSpacing: '-0.32px',
-                cursor: loading.register ? 'not-allowed' : 'pointer',
-                opacity: loading.register ? 0.7 : 1,
+                objectFit: "none",
+                objectPosition: "-30px center",
+              }}
+            />
+            <div
+              style={{
+                position: "absolute",
+                top: "40px",
+                left: "40px",
+                zIndex: 1,
               }}
             >
-              {loading.register ? "Signing up..." : "Sign Up"}
-            </button>
-          </div>
-          {/* Terms and Sign In */}
-          <div style={{ marginTop: 16, textAlign: "center" }}>
-            <p
-              style={{
-                fontSize: 14,
-                color: colorTokens.paragraph,
-                fontFamily: "Inter, sans-serif",
-                lineHeight: "20px",
-                margin: 0,
-              }}
-            >
-              By signing up you agree to our{" "}
-              <span style={{ color: colorTokens.secondary600, fontWeight: 500 }}>
-                Terms of Services
-              </span>{" "}
-              and{" "}
-              <span style={{ color: colorTokens.secondary600, fontWeight: 500 }}>
-                Privacy Policy
-              </span>
-            </p>
-            <p
-              style={{
-                fontSize: 14,
-                color: colorTokens.paragraph,
-                fontFamily: "Inter, sans-serif",
-                lineHeight: "20px",
-                marginTop: 8,
-              }}
-            >
-              Already have an account?{" "}
-              <span
-                onClick={() => router.push("/login")}
+              <Image
+                src="/white guidix.ai logo .svg"
+                alt="Guidix.ai"
+                width={120}
+                height={40}
                 style={{
-                  color: colorTokens.secondary600,
-                  fontWeight: 500,
-                  cursor: "pointer",
+                  height: "40px",
+                  width: "auto",
+                  mixBlendMode: "screen",
+                }}
+              />
+            </div>
+            <div
+              style={{
+                position: "relative",
+                zIndex: 1,
+                color: "#dbe2ff",
+                fontFamily: "Inter, sans-serif",
+                textAlign: "center",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                gap: 24,
+                padding: "48px 40px",
+              }}
+            >
+              <div
+                style={{ fontWeight: 500, fontSize: 48, lineHeight: "56px" }}
+              >
+                Join Guidix Today
+              </div>
+              <div
+                style={{
+                  fontWeight: 400,
+                  fontSize: 18,
+                  lineHeight: "28px",
+                  maxWidth: 384,
                 }}
               >
-                Sign in
-              </span>
-            </p>
+                Create your account and start your placement journey
+              </div>
+            </div>
           </div>
-        </form>
+
+          {/* Right Form Container */}
+          <div
+            style={{
+              flex: "1",
+              maxWidth: "600px",
+              display: "flex",
+              flexDirection: "column",
+              gap: 16,
+              justifyContent: "center",
+            }}
+          >
+            <div>
+              <h1
+                style={{
+                  width: 580,
+                  color: colorTokens.title,
+                  fontSize: 48,
+                  fontWeight: 500,
+                  fontFamily: "Inter, sans-serif",
+                  lineHeight: "60px",
+                  margin: 0,
+                }}
+              >
+                Create Account
+              </h1>
+              <p
+                style={{
+                  marginTop: 12,
+                  width: 580,
+                  color: colorTokens.paragraph,
+                  fontSize: 16,
+                  fontWeight: 400,
+                  fontFamily: "Inter, sans-serif",
+                  lineHeight: "24px",
+                }}
+              >
+                Fill in your details to get started
+              </p>
+            </div>
+            <form
+              onSubmit={handleSignup}
+              autoComplete="off"
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: 16,
+                width: 580,
+              }}
+            >
+              {/* Row 1 */}
+              <div style={{ display: "flex", gap: 16 }}>
+                <FormField
+                  name="fullName"
+                  label="Full name"
+                  placeholder="Rajesh Kumar"
+                  value={formData.fullName}
+                  onChange={handleInputChange}
+                  styleProps={{ flex: 1 }}
+                />
+                <FormField
+                  name="email"
+                  label="Email address"
+                  type="email"
+                  placeholder="rajesh.kumar@example.com"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  styleProps={{ flex: 1 }}
+                />
+              </div>
+              {/* Row 2 */}
+              <div style={{ display: "flex", gap: 16 }}>
+                <FormField
+                  name="phoneNumber"
+                  label="Phone number"
+                  placeholder="+91 98765 43210"
+                  value={formData.phoneNumber}
+                  onChange={handleInputChange}
+                  styleProps={{ flex: 1 }}
+                />
+                <FormField
+                  name="universityDomain"
+                  label="University Domain"
+                  placeholder="iitd.ac.in"
+                  value={formData.universityDomain}
+                  onChange={handleInputChange}
+                  styleProps={{ flex: 1 }}
+                />
+              </div>
+              {/* Row 3 */}
+              <div style={{ display: "flex", gap: 16 }}>
+                <FormField
+                  name="password"
+                  label="Password"
+                  type="password"
+                  placeholder="Enter your password"
+                  value={formData.password}
+                  onChange={handleInputChange}
+                  styleProps={{ flex: 1 }}
+                />
+                <FormField
+                  name="confirmPassword"
+                  label="Confirm Password"
+                  type="password"
+                  placeholder="Confirm your password"
+                  value={formData.confirmPassword}
+                  onChange={handleInputChange}
+                  styleProps={{ flex: 1 }}
+                />
+              </div>
+              {/* Submit Button */}
+              {/* Success Message */}
+              {success.register && (
+                <div
+                  style={{
+                    padding: 16,
+                    borderRadius: 16,
+                    backgroundColor: "#D1FAE5",
+                    border: "1px solid #6EE7B7",
+                  }}
+                >
+                  <p
+                    style={{
+                      fontSize: 14,
+                      fontWeight: 600,
+                      marginBottom: 4,
+                      fontFamily: "Inter, sans-serif",
+                      color: "#059669",
+                    }}
+                  >
+                    Registration Successful!
+                  </p>
+                  <p
+                    style={{
+                      fontSize: 12,
+                      fontFamily: "Inter, sans-serif",
+                      color: "#065F46",
+                      margin: 0,
+                    }}
+                  >
+                    {success.register}
+                  </p>
+                </div>
+              )}
+
+              {/* Error Message */}
+              {(error.register || localError) && (
+                <div
+                  style={{
+                    padding: 16,
+                    borderRadius: 16,
+                    backgroundColor: "#FEE2E2",
+                    border: "1px solid #FCA5A5",
+                  }}
+                >
+                  <p
+                    style={{
+                      fontSize: 14,
+                      color: "#DC2626",
+                      fontFamily: "Inter, sans-serif",
+                      margin: 0,
+                    }}
+                  >
+                    {error.register || localError}
+                  </p>
+                </div>
+              )}
+
+              <div>
+                <button
+                  type="submit"
+                  disabled={loading.register}
+                  style={{
+                    display: "inline-flex",
+                    width: "100%",
+                    padding: "12px 16px",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    borderRadius: "8px",
+                    border: "1px solid rgba(35, 112, 255, 0.30)",
+                    background: loading.register
+                      ? "#94A3B8"
+                      : "linear-gradient(180deg, #679CFF 0%, #2370FF 100%)",
+                    boxShadow:
+                      "0 2px 4px 0 rgba(77, 145, 225, 0.10), 0 1px 0.3px 0 rgba(255, 255, 255, 0.25) inset, 0 -1px 0.3px 0 rgba(0, 19, 88, 0.25) inset",
+                    color: "#FFFFFF",
+                    textAlign: "center",
+                    textShadow:
+                      "0 0.5px 1.5px rgba(0, 19, 88, 0.30), 0 2px 5px rgba(0, 19, 88, 0.10)",
+                    fontFamily: "Inter, sans-serif",
+                    fontSize: "16px",
+                    fontWeight: 600,
+                    lineHeight: "125%",
+                    letterSpacing: "-0.32px",
+                    cursor: loading.register ? "not-allowed" : "pointer",
+                    opacity: loading.register ? 0.7 : 1,
+                  }}
+                >
+                  {loading.register ? "Signing up..." : "Sign Up"}
+                </button>
+              </div>
+              {/* Terms and Sign In */}
+              <div style={{ marginTop: 16, textAlign: "center" }}>
+                <p
+                  style={{
+                    fontSize: 14,
+                    color: colorTokens.paragraph,
+                    fontFamily: "Inter, sans-serif",
+                    lineHeight: "20px",
+                    margin: 0,
+                  }}
+                >
+                  By signing up you agree to our{" "}
+                  <span
+                    style={{ color: colorTokens.secondary600, fontWeight: 500 }}
+                  >
+                    Terms of Services
+                  </span>{" "}
+                  and{" "}
+                  <span
+                    style={{ color: colorTokens.secondary600, fontWeight: 500 }}
+                  >
+                    Privacy Policy
+                  </span>
+                </p>
+                <p
+                  style={{
+                    fontSize: 14,
+                    color: colorTokens.paragraph,
+                    fontFamily: "Inter, sans-serif",
+                    lineHeight: "20px",
+                    marginTop: 8,
+                  }}
+                >
+                  Already have an account?{" "}
+                  <span
+                    onClick={() => router.push("/login")}
+                    style={{
+                      color: colorTokens.secondary600,
+                      fontWeight: 500,
+                      cursor: "pointer",
+                    }}
+                  >
+                    Sign in
+                  </span>
+                </p>
+              </div>
+            </form>
+          </div>
+        </div>
       </div>
-      </div>
-    </div>
     </>
   );
 };

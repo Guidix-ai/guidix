@@ -116,35 +116,44 @@ export function getCurrentUser() {
 }
 
 /**
- * Check if user is authenticated
- * Note: Actual token is in HTTP-only cookie, we check localStorage flag
+ * Check if user is authenticated by checking access_token in localStorage
  * @returns {boolean}
  */
 export function isAuthenticated() {
-  const isAuth = localStorage.getItem('isAuthenticated') === 'true';
-  const user = getCurrentUser();
-  return !!(isAuth && user);
+  const accessToken = localStorage.getItem('access_token');
+  return !!accessToken;
 }
 
 /**
- * Logout user and clear all auth data
+ * Logout user and clear all auth data from localStorage
  */
 export async function logout() {
   try {
-    // Call Next.js API route which will clear HTTP-only cookies and call backend
-    await fetch('/api/v1/auth/logout', {
+    const accessToken = localStorage.getItem('access_token');
+
+    // Call backend logout endpoint with token
+    await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000'}/api/v1/auth/logout`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${accessToken}`
       },
     });
   } catch (error) {
     console.error('Logout API error:', error);
   } finally {
-    // Clear localStorage
+    // Clear all localStorage items
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
+    localStorage.removeItem('token_expiry');
     localStorage.removeItem('user');
     localStorage.removeItem('isAuthenticated');
     localStorage.removeItem('userEmail');
+    localStorage.removeItem('userName');
+    localStorage.removeItem('userPhone');
+    localStorage.removeItem('userUniversity');
+    localStorage.removeItem('userId');
+    localStorage.removeItem('pendingUser');
 
     // Redirect to login with logout message
     window.location.href = '/login?message=logged_out';

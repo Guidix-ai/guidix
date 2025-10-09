@@ -247,7 +247,7 @@ const LoginForm = () => {
           alt="Welcome Back"
           fill
           style={{
-            objectFit: "cover",
+            objectFit: "none",
             objectPosition: "-30px center",
           }}
         />
