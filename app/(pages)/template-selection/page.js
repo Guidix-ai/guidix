@@ -107,80 +107,80 @@ function TemplateSelectionContent() {
     return true;
   });
 
-  const handleContinue = async () => {
-    if (!selectedTemplate) return;
-
-    setLoading(true);
-    setError(null);
-
-    try {
-      const isFromUpload = searchParams.get("from") === "upload";
-
-      if (isFromUpload) {
-        // If from upload flow, call enhance API
-        const resumeId = sessionStorage.getItem('uploadedResumeId');
-        if (!resumeId) {
-          throw new Error('Resume ID not found. Please upload your resume again.');
-        }
-
-        const response = await enhanceResume(resumeId);
-
-        if (response.success) {
-          // Store the enhanced data and navigate
-          sessionStorage.setItem('enhancedResumeData', JSON.stringify(response.data));
-          const params = new URLSearchParams(searchParams);
-          params.set("template", selectedTemplate);
-          params.set("resumeId", resumeId);
-          params.set("from", "upload");
-          router.push(`/enhanced-resume?${params.toString()}`);
-        } else {
-          setError(response.message || 'Failed to enhance resume');
-          setLoading(false);
-        }
-      } else {
-        // If from AI prompt flow, call createResumeFromPrompt API
-        const userPrompt = sessionStorage.getItem('userPrompt') || searchParams.get("prompt");
-        if (!userPrompt) {
-          throw new Error('Prompt not found. Please go back and enter your details.');
-        }
-
-        const response = await createResumeFromPrompt(
-          userPrompt,
-          'My Resume',
-          selectedTemplate
-        );
-
-        if (response.success) {
-          // Store the resume data and navigate
-          sessionStorage.setItem('createdResumeId', response.data.resume_id);
-          sessionStorage.setItem('createdResumeData', JSON.stringify(response.data));
-          const params = new URLSearchParams(searchParams);
-          params.set("template", selectedTemplate);
-          params.set("resumeId", response.data.resume_id);
-          params.set("from", "ai");
-          router.push(`/enhanced-resume?${params.toString()}`);
-        } else {
-          setError(response.message || 'Failed to create resume');
-          setLoading(false);
-        }
-      }
-    } catch (err) {
-      const errorMessage = handleApiError(err);
-      logError('TemplateSelectionPage', err);
-      setError(errorMessage);
-      setLoading(false);
-    }
-  };
-
-  // const handleContinue = () => {
+  // const handleContinue = async () => {
   //   if (!selectedTemplate) return;
-  //   const isFromUpload = searchParams.get("from") === "upload";
-  //   if (isFromUpload) {
-  //     router.push("/enhanced-resume");
-  //   } else {
-  //     router.push("/loading-screen");
+
+  //   setLoading(true);
+  //   setError(null);
+
+  //   try {
+  //     const isFromUpload = searchParams.get("from") === "upload";
+
+  //     if (isFromUpload) {
+  //       // If from upload flow, call enhance API
+  //       const resumeId = sessionStorage.getItem('uploadedResumeId');
+  //       if (!resumeId) {
+  //         throw new Error('Resume ID not found. Please upload your resume again.');
+  //       }
+
+  //       const response = await enhanceResume(resumeId);
+
+  //       if (response.success) {
+  //         // Store the enhanced data and navigate
+  //         sessionStorage.setItem('enhancedResumeData', JSON.stringify(response.data));
+  //         const params = new URLSearchParams(searchParams);
+  //         params.set("template", selectedTemplate);
+  //         params.set("resumeId", resumeId);
+  //         params.set("from", "upload");
+  //         router.push(`/enhanced-resume?${params.toString()}`);
+  //       } else {
+  //         setError(response.message || 'Failed to enhance resume');
+  //         setLoading(false);
+  //       }
+  //     } else {
+  //       // If from AI prompt flow, call createResumeFromPrompt API
+  //       const userPrompt = sessionStorage.getItem('userPrompt') || searchParams.get("prompt");
+  //       if (!userPrompt) {
+  //         throw new Error('Prompt not found. Please go back and enter your details.');
+  //       }
+
+  //       const response = await createResumeFromPrompt(
+  //         userPrompt,
+  //         'My Resume',
+  //         selectedTemplate
+  //       );
+
+  //       if (response.success) {
+  //         // Store the resume data and navigate
+  //         sessionStorage.setItem('createdResumeId', response.data.resume_id);
+  //         sessionStorage.setItem('createdResumeData', JSON.stringify(response.data));
+  //         const params = new URLSearchParams(searchParams);
+  //         params.set("template", selectedTemplate);
+  //         params.set("resumeId", response.data.resume_id);
+  //         params.set("from", "ai");
+  //         router.push(`/enhanced-resume?${params.toString()}`);
+  //       } else {
+  //         setError(response.message || 'Failed to create resume');
+  //         setLoading(false);
+  //       }
+  //     }
+  //   } catch (err) {
+  //     const errorMessage = handleApiError(err);
+  //     logError('TemplateSelectionPage', err);
+  //     setError(errorMessage);
+  //     setLoading(false);
   //   }
   // };
+
+  const handleContinue = () => {
+    if (!selectedTemplate) return;
+    const isFromUpload = searchParams.get("from") === "upload";
+    if (isFromUpload) {
+      router.push("/enhanced-resume");
+    } else {
+      router.push("/loading-screen");
+    }
+  };
 
   const handlePrev = () => {
     const isFromUpload = searchParams.get("from") === "upload";

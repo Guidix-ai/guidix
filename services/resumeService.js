@@ -30,7 +30,7 @@ export const uploadAndProcessResume = async (file, resumeName) => {
  */
 export const enhanceResume = async (resumeId, templateId = "aa97e710-4457-46fb-ac6f-1765ad3a6d43") => {
   const response = await resumeApiClient.post(`/api/v1/resumes/${resumeId}/enhance`, {
-    template_id: templateId
+    template_id: "41aab622-839d-454e-bf99-9d5a2ce027ec"
   });
   return response.data;
 };
@@ -46,7 +46,7 @@ export const createResumeFromPrompt = async (prompt, resumeName, templateId = "4
   const response = await resumeApiClient.post('/api/v1/resumes/resume-creation', {
     user_prompt: prompt,
     resume_name: resumeName,
-    template_id: templateId,
+    template_id: "41aab622-839d-454e-bf99-9d5a2ce027ec",
   });
   return response.data;
 };

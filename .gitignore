@@ -36,3 +36,6 @@ next-env.d.ts
 # system files
 nul
 Thumbs.db
+
+#claude
+.claude

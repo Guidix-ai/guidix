@@ -27,7 +27,7 @@ function AIPromptInputContent() {
   const [showCursor, setShowCursor] = useState(true);
   const fullText = 'Tell Us About Yourself';
 
-  const MAX_WORDS = 50;
+  const MAX_WORDS = 100;
 
   const wordCount = prompt
     .trim()
