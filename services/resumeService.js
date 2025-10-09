@@ -29,9 +29,11 @@ export const uploadAndProcessResume = async (file, resumeName) => {
  * @returns {Promise} Enhanced resume data
  */
 export const enhanceResume = async (resumeId, templateId = "aa97e710-4457-46fb-ac6f-1765ad3a6d43") => {
+  console.log('🔵 enhanceResume API - Sending template_id:', templateId);
   const response = await resumeApiClient.post(`/api/v1/resumes/${resumeId}/enhance`, {
-    template_id: "41aab622-839d-454e-bf99-9d5a2ce027ec"
+    template_id: templateId
   });
+  console.log('🔵 enhanceResume API - Response:', response.data);
   return response.data;
 };
 
@@ -42,12 +44,14 @@ export const enhanceResume = async (resumeId, templateId = "aa97e710-4457-46fb-a
  * @param {string} templateId - Optional template ID
  * @returns {Promise} Created resume data
  */
-export const createResumeFromPrompt = async (prompt, resumeName, templateId = "41aab622-839d-454e-bf99-9d5a2ce027ec") => {
+export const createResumeFromPrompt = async (prompt, resumeName, templateId = "aa97e710-4457-46fb-ac6f-1765ad3a6d43") => {
+  console.log('🟢 createResumeFromPrompt API - Sending template_id:', templateId);
   const response = await resumeApiClient.post('/api/v1/resumes/resume-creation', {
     user_prompt: prompt,
     resume_name: resumeName,
-    template_id: "41aab622-839d-454e-bf99-9d5a2ce027ec",
+    template_id: templateId,
   });
+  console.log('🟢 createResumeFromPrompt API - Response:', response.data);
   return response.data;
 };
 

@@ -16,14 +16,21 @@ const stripMarkdown = (text) => {
 };
 
 /**
- * ATS-COMPLIANT TEMPLATE - FIXED SPACING
+ * ATS-COMPLIANT TEMPLATE WITHOUT PHOTO
+ * Template ID: ats-template-without-photo
+ * Backend ID: TMPL_001
  *
- * Key fixes:
- * - Consistent section spacing
- * - Proper header margins
- * - Better bullet point alignment
- * - Removed unnecessary dividers
- * - Balanced whitespace
+ * Key features:
+ * - Single column layout
+ * - Standard fonts (Helvetica)
+ * - Proper heading hierarchy
+ * - Standard section names
+ * - Consistent spacing (1.5 line height)
+ * - Black text on white background
+ * - Standard margins (50pt = ~0.7 inch)
+ * - Simple bullet points
+ * - No headers/footers/text boxes
+ * - No graphics or photos
  */
 
 const styles = StyleSheet.create({
@@ -190,7 +197,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const ATSTemplateWithoutPhoto = ({ resumeData }) => {
+const ATSTemplateWithoutPhoto = ({ resumeData, templateId }) => {
   const {
     personalInfo = {},
     experience = [],
@@ -216,7 +223,12 @@ const ATSTemplateWithoutPhoto = ({ resumeData }) => {
   }, {});
 
   return (
-    <Document>
+    <Document
+      title={`${personalInfo.firstName || 'Resume'} ${personalInfo.lastName || ''} - ATS Template`}
+      author={`${personalInfo.firstName || ''} ${personalInfo.lastName || ''}`}
+      subject="Professional Resume"
+      creator="Resume Builder"
+    >
       <Page size="A4" style={styles.page}>
         {/* HEADER - Contact Information */}
         <View style={styles.header}>
@@ -362,5 +374,11 @@ const ATSTemplateWithoutPhoto = ({ resumeData }) => {
     </Document>
   );
 };
+
+// Template metadata for identification
+ATSTemplateWithoutPhoto.templateId = "ats-template-without-photo";
+ATSTemplateWithoutPhoto.backendId = "TMPL_001";
+ATSTemplateWithoutPhoto.displayName = "ATS Professional Template";
+ATSTemplateWithoutPhoto.hasPhoto = false;
 
 export default ATSTemplateWithoutPhoto;

@@ -16,7 +16,6 @@ import { allTemplates } from "@/components/pdf-templates";
 import dynamic from 'next/dynamic';
 import { enhanceResume, createResumeFromPrompt } from "@/services/resumeService";
 import { handleApiError, logError } from "@/utils/errorHandler";
-import Image from "next/image";
 
 const colorTokens = {
   title: "#002A79",
@@ -37,7 +36,7 @@ const PDFPreview = dynamic(() => import('@/components/PDFPreview'), {
 });
 
 function TemplateSelectionContent() {
-  const [selectedTemplate, setSelectedTemplate] = useState("ats-template-without-photo");
+  const [selectedTemplate, setSelectedTemplate] = useState("aa97e710-4457-46fb-ac6f-1765ad3a6d43");
   const router = useRouter();
   const searchParams = useSearchParams();
   const [userName, setUserName] = useState("there");
@@ -46,9 +45,9 @@ function TemplateSelectionContent() {
 
   // Enhanced filter states
   const [filters, setFilters] = useState({
-    category: "all", // 'internship', 'job', 'all'
-    headshot: "all", // 'with', 'without', 'all'
-    style: "all", // 'modern', 'traditional', 'creative', 'all'
+    category: "all",
+    headshot: "all",
+    style: "all",
   });
 
   useEffect(() => {
@@ -62,11 +61,12 @@ function TemplateSelectionContent() {
   // Enhanced templates with PDF templates
   const templates = allTemplates.map((template, index) => ({
     ...template,
-    isRecommended: index < 4, // First 4 templates are recommended
+    isRecommended: index < 4,
     style: template.category === 'internship' ? 'modern' : 'professional',
   }));
 
   const handleTemplateSelect = (templateId) => {
+    console.log('✅ Template Selected - UUID:', templateId);
     setSelectedTemplate(templateId);
 
     // Scroll to the selected template in the carousel
@@ -107,78 +107,74 @@ function TemplateSelectionContent() {
     return true;
   });
 
-  // const handleContinue = async () => {
-  //   if (!selectedTemplate) return;
-
-  //   setLoading(true);
-  //   setError(null);
-
-  //   try {
-  //     const isFromUpload = searchParams.get("from") === "upload";
-
-  //     if (isFromUpload) {
-  //       // If from upload flow, call enhance API
-  //       const resumeId = sessionStorage.getItem('uploadedResumeId');
-  //       if (!resumeId) {
-  //         throw new Error('Resume ID not found. Please upload your resume again.');
-  //       }
-
-  //       const response = await enhanceResume(resumeId);
-
-  //       if (response.success) {
-  //         // Store the enhanced data and navigate
-  //         sessionStorage.setItem('enhancedResumeData', JSON.stringify(response.data));
-  //         const params = new URLSearchParams(searchParams);
-  //         params.set("template", selectedTemplate);
-  //         params.set("resumeId", resumeId);
-  //         params.set("from", "upload");
-  //         router.push(`/enhanced-resume?${params.toString()}`);
-  //       } else {
-  //         setError(response.message || 'Failed to enhance resume');
-  //         setLoading(false);
-  //       }
-  //     } else {
-  //       // If from AI prompt flow, call createResumeFromPrompt API
-  //       const userPrompt = sessionStorage.getItem('userPrompt') || searchParams.get("prompt");
-  //       if (!userPrompt) {
-  //         throw new Error('Prompt not found. Please go back and enter your details.');
-  //       }
-
-  //       const response = await createResumeFromPrompt(
-  //         userPrompt,
-  //         'My Resume',
-  //         selectedTemplate
-  //       );
-
-  //       if (response.success) {
-  //         // Store the resume data and navigate
-  //         sessionStorage.setItem('createdResumeId', response.data.resume_id);
-  //         sessionStorage.setItem('createdResumeData', JSON.stringify(response.data));
-  //         const params = new URLSearchParams(searchParams);
-  //         params.set("template", selectedTemplate);
-  //         params.set("resumeId", response.data.resume_id);
-  //         params.set("from", "ai");
-  //         router.push(`/enhanced-resume?${params.toString()}`);
-  //       } else {
-  //         setError(response.message || 'Failed to create resume');
-  //         setLoading(false);
-  //       }
-  //     }
-  //   } catch (err) {
-  //     const errorMessage = handleApiError(err);
-  //     logError('TemplateSelectionPage', err);
-  //     setError(errorMessage);
-  //     setLoading(false);
-  //   }
-  // };
-
-  const handleContinue = () => {
+  const handleContinue = async () => {
     if (!selectedTemplate) return;
-    const isFromUpload = searchParams.get("from") === "upload";
-    if (isFromUpload) {
-      router.push("/enhanced-resume");
-    } else {
-      router.push("/loading-screen");
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      console.log('🚀 Sending template UUID to backend:', selectedTemplate);
+
+      const isFromUpload = searchParams.get("from") === "upload";
+
+      if (isFromUpload) {
+        // If from upload flow, call enhance API with selected template
+        const resumeId = sessionStorage.getItem('uploadedResumeId');
+        if (!resumeId) {
+          throw new Error('Resume ID not found. Please upload your resume again.');
+        }
+
+        console.log('📤 Calling enhanceResume API with UUID:', selectedTemplate);
+        const response = await enhanceResume(resumeId, selectedTemplate); // Pass template ID
+
+        if (response.success) {
+          // Store the enhanced data and navigate
+          sessionStorage.setItem('enhancedResumeData', JSON.stringify(response.data));
+          sessionStorage.setItem('selectedTemplateId', selectedTemplate); // Store template ID
+          const params = new URLSearchParams(searchParams);
+          params.set("template", selectedTemplate);
+          params.set("resumeId", resumeId);
+          params.set("from", "upload");
+          router.push(`/enhanced-resume?${params.toString()}`);
+        } else {
+          setError(response.message || 'Failed to enhance resume');
+          setLoading(false);
+        }
+      } else {
+        // If from AI prompt flow, call createResumeFromPrompt API with selected template
+        const userPrompt = sessionStorage.getItem('userPrompt') || searchParams.get("prompt");
+        if (!userPrompt) {
+          throw new Error('Prompt not found. Please go back and enter your details.');
+        }
+
+        console.log('📤 Calling createResumeFromPrompt API with UUID:', selectedTemplate);
+        const response = await createResumeFromPrompt(
+          userPrompt,
+          'My Resume',
+          selectedTemplate // Pass the selected template ID
+        );
+
+        if (response.success) {
+          // Store the resume data and navigate
+          sessionStorage.setItem('createdResumeId', response.data.resume_id);
+          sessionStorage.setItem('createdResumeData', JSON.stringify(response.data));
+          sessionStorage.setItem('selectedTemplateId', selectedTemplate); // Store template ID
+          const params = new URLSearchParams(searchParams);
+          params.set("template", selectedTemplate);
+          params.set("resumeId", response.data.resume_id);
+          params.set("from", "ai");
+          router.push(`/enhanced-resume?${params.toString()}`);
+        } else {
+          setError(response.message || 'Failed to create resume');
+          setLoading(false);
+        }
+      }
+    } catch (err) {
+      const errorMessage = handleApiError(err);
+      logError('TemplateSelectionPage', err);
+      setError(errorMessage);
+      setLoading(false);
     }
   };
 
@@ -216,9 +212,6 @@ function TemplateSelectionContent() {
               <h1 className="text-white font-bold" style={{ textShadow: '0 2px 10px rgba(0, 0, 0, 0.3)', fontSize: '32px', lineHeight: '1.2' }}>
                 Choose Your Perfect Template
               </h1>
-              {/* <p className="text-white mt-2" style={{ textShadow: '0 1px 5px rgba(0, 0, 0, 0.3)', fontSize: '16px' }}>
-                Select a template that best showcases your professional journey
-              </p> */}
             </div>
           </div>
 
@@ -377,6 +370,13 @@ function TemplateSelectionContent() {
                           Recommended
                         </span>
                       )}
+                      {/* Display Template ID for debugging */}
+                      <span className="px-3 py-1.5 rounded-lg text-xs font-medium" style={{
+                        backgroundColor: '#F8F9FA',
+                        color: '#6C757D'
+                      }}>
+                        ID: {selectedTemplate}
+                      </span>
                     </div>
                   </div>
                   <div
