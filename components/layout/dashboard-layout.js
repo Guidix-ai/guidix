@@ -125,7 +125,7 @@ export function DashboardLayout({ children }) {
 
   useEffect(() => {
     // Check if access token exists in localStorage
-    const accessToken = localStorage.getItem('access_token');
+    const accessToken = localStorage.getItem("access_token");
     const authenticated = !!accessToken;
     setIsAuthenticated(authenticated);
 
@@ -214,29 +214,42 @@ export function DashboardLayout({ children }) {
           {/* Right: Upgrade Button and User */}
           <div className="flex items-center space-x-2 sm:space-x-4">
             {/* Upgrade Button - Responsive text */}
-            <button
-              style={{
-                display: "inline-flex",
-                padding: "8px 12px",
-                alignItems: "center",
-                borderRadius: "8px",
-                border: "1px solid rgba(35, 112, 255, 0.30)",
-                background: "linear-gradient(180deg, #679CFF 0%, #2370FF 100%)",
-                boxShadow:
-                  "0 2px 4px 0 rgba(77, 145, 225, 0.10), 0 1px 0.3px 0 rgba(255, 255, 255, 0.25) inset, 0 -1px 0.3px 0 rgba(0, 19, 88, 0.25) inset",
-                color: "#FFFFFF",
-                textAlign: "center",
-                textShadow:
-                  "0 0.5px 1.5px rgba(0, 19, 88, 0.30), 0 2px 5px rgba(0, 19, 88, 0.10)",
-                fontFamily: "Inter, sans-serif",
-                fontSize: "14px",
-                fontWeight: 500,
-                lineHeight: "125%",
-              }}
+
+            <div
+              className="px-[0.12rem] py-[0.12rem] rounded-lg"
+              style={{ backgroundColor: "rgba(35, 112, 255, 0.3)" }}
             >
-              <span className="hidden sm:inline text-xs">Upgrade Now</span>
-              <span className="sm:hidden">Upgrade</span>
-            </button>
+              <div
+                className="p-[0.12rem] rounded-lg"
+                style={{ backgroundColor: "rgba(35, 112, 255, 0.3)" }}
+              >
+                <button
+                  style={{
+                    display: "inline-flex",
+                    padding: "8px 12px",
+                    alignItems: "center",
+                    borderRadius: "8px",
+                    // border: "1px solid rgba(35, 112, 255, 0.30)",
+                    background:
+                      "linear-gradient(180deg, #679CFF 0%, #2370FF 100%)",
+                    boxShadow:
+                      "0 2px 4px 0 rgba(77, 145, 225, 0.10), 0 1px 0.3px 0 rgba(255, 255, 255, 0.25) inset, 0 -1px 0.3px 0 rgba(0, 19, 88, 0.25) inset",
+                    color: "#FFFFFF",
+                    textAlign: "center",
+                    textShadow:
+                      "0 0.5px 1.5px rgba(0, 19, 88, 0.30), 0 2px 5px rgba(0, 19, 88, 0.10)",
+                    fontFamily: "Inter, sans-serif",
+                    fontSize: "14px",
+                    fontWeight: 500,
+                    lineHeight: "125%",
+                  }}
+                >
+                  <Image src="/upgrade-icon.svg" alt="Upgrade" width={16} height={16} />
+                  <span className="hidden sm:inline text-xs">Upgrade Now</span>
+                  <span className="sm:hidden">Upgrade</span>
+                </button>
+              </div>
+            </div>
 
             {/* User Profile */}
             {isAuthenticated && (
@@ -251,20 +264,26 @@ export function DashboardLayout({ children }) {
                   </svg>
                 </div>
                 <div className="hidden lg:block">
-                  <p className="text-sm font-medium text-gray-900" style={{
-                    maxWidth: "150px",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    whiteSpace: "nowrap"
-                  }}>
+                  <p
+                    className="text-sm font-medium text-gray-900"
+                    style={{
+                      maxWidth: "150px",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
                     {userName || "User"}
                   </p>
-                  <p className="text-xs text-gray-500" style={{
-                    maxWidth: "150px",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    whiteSpace: "nowrap"
-                  }}>
+                  <p
+                    className="text-xs text-gray-500"
+                    style={{
+                      maxWidth: "150px",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
                     {userEmail || ""}
                   </p>
                 </div>
@@ -393,23 +412,30 @@ export function DashboardLayout({ children }) {
                   href={item.href}
                   onClick={() => setSidebarOpen(false)}
                   className="flex items-center rounded-lg transition-none"
-                  style={isActive(item.href) ? {
-                    background: 'linear-gradient(180deg, #679CFF 0%, #2370FF 100%)',
-                    padding: '8px 12px',
-                    color: '#FFFFFF',
-                    borderRadius: '8px',
-                    border: '1px solid rgba(35, 112, 255, 0.30)',
-                    boxShadow: '0 2px 4px 0 rgba(77, 145, 225, 0.10), 0 1px 0.3px 0 rgba(255, 255, 255, 0.25) inset, 0 -1px 0.3px 0 rgba(0, 19, 88, 0.25) inset',
-                    textShadow: '0 0.5px 1.5px rgba(0, 19, 88, 0.30), 0 2px 5px rgba(0, 19, 88, 0.10)',
-                    transition: 'none'
-                  } : {
-                    padding: '8px 12px',
-                    color: '#6477B4',
-                    backgroundColor: 'transparent',
-                    borderRadius: '8px',
-                    border: '1px solid transparent',
-                    transition: 'none'
-                  }}
+                  style={
+                    isActive(item.href)
+                      ? {
+                          background:
+                            "linear-gradient(180deg, #679CFF 0%, #2370FF 100%)",
+                          padding: "8px 12px",
+                          color: "#FFFFFF",
+                          borderRadius: "8px",
+                          border: "1px solid rgba(35, 112, 255, 0.30)",
+                          boxShadow:
+                            "0 2px 4px 0 rgba(77, 145, 225, 0.10), 0 1px 0.3px 0 rgba(255, 255, 255, 0.25) inset, 0 -1px 0.3px 0 rgba(0, 19, 88, 0.25) inset",
+                          textShadow:
+                            "0 0.5px 1.5px rgba(0, 19, 88, 0.30), 0 2px 5px rgba(0, 19, 88, 0.10)",
+                          transition: "none",
+                        }
+                      : {
+                          padding: "8px 12px",
+                          color: "#6477B4",
+                          backgroundColor: "transparent",
+                          borderRadius: "8px",
+                          border: "1px solid transparent",
+                          transition: "none",
+                        }
+                  }
                   onMouseEnter={(e) => {
                     if (!isActive(item.href)) {
                       e.currentTarget.style.backgroundColor = "#F0F4FA";
@@ -439,7 +465,7 @@ export function DashboardLayout({ children }) {
                           filter: "none",
                           opacity: 1,
                           backgroundColor: "transparent",
-                          mixBlendMode: "normal"
+                          mixBlendMode: "normal",
                         }}
                       >
                         {item.icon}
@@ -449,9 +475,9 @@ export function DashboardLayout({ children }) {
                           fontFamily: "Inter, sans-serif",
                           fontSize: "12px",
                           fontWeight: 400,
-                          lineHeight: '125%',
-                          letterSpacing: '-0.24px',
-                          color: isActive(item.href) ? '#FFFFFF' : '#6477B4'
+                          lineHeight: "125%",
+                          letterSpacing: "-0.24px",
+                          color: isActive(item.href) ? "#FFFFFF" : "#6477B4",
                         }}
                       >
                         {item.title}
@@ -468,7 +494,7 @@ export function DashboardLayout({ children }) {
                         filter: "none",
                         opacity: 1,
                         backgroundColor: "transparent",
-                        mixBlendMode: "normal"
+                        mixBlendMode: "normal",
                       }}
                     >
                       {item.icon}
@@ -644,14 +670,22 @@ export function DashboardLayout({ children }) {
               )}
             </button>
           ) : (
-            <div style={{ display: "flex", flexDirection: "column", gap: "4px", width: "100%" }}>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "4px",
+                width: "100%",
+              }}
+            >
               <button
-                onClick={() => router.push('/login')}
+                onClick={() => router.push("/login")}
                 className="flex items-center rounded-lg w-full"
                 style={{
                   padding: "8px 12px",
                   color: "#FFFFFF",
-                  background: "linear-gradient(180deg, #679CFF 0%, #2370FF 100%)",
+                  background:
+                    "linear-gradient(180deg, #679CFF 0%, #2370FF 100%)",
                   borderRadius: "8px",
                   border: "1px solid rgba(35, 112, 255, 0.30)",
                   boxShadow: "0 2px 4px 0 rgba(77, 145, 225, 0.10)",
@@ -716,7 +750,7 @@ export function DashboardLayout({ children }) {
                 )}
               </button>
               <button
-                onClick={() => router.push('/signup')}
+                onClick={() => router.push("/signup")}
                 className="flex items-center rounded-lg w-full"
                 style={{
                   padding: "8px 12px",
