@@ -186,6 +186,24 @@ function EnhancedResumeContent() {
       button, input, select, textarea {
         font-family: 'Inter', sans-serif !important;
       }
+
+      /* Custom scrollbar for resume preview */
+      .resume-preview-scroll::-webkit-scrollbar {
+        width: 10px;
+        height: 10px;
+      }
+      .resume-preview-scroll::-webkit-scrollbar-track {
+        background: #E9F1FF;
+        border-radius: 10px;
+      }
+      .resume-preview-scroll::-webkit-scrollbar-thumb {
+        background: linear-gradient(180deg, #679CFF 0%, #2370FF 100%);
+        border-radius: 10px;
+        border: 2px solid #E9F1FF;
+      }
+      .resume-preview-scroll::-webkit-scrollbar-thumb:hover {
+        background: linear-gradient(180deg, #2370FF 0%, #1a5acc 100%);
+      }
     `;
     document.head.appendChild(style);
   }, []);
@@ -3534,17 +3552,29 @@ function EnhancedResumeContent() {
                   </div>
                 </div>
               </CardHeader>
-              <CardContent className="p-4">
-                <div className="w-full overflow-auto flex justify-center" style={{
-                  maxHeight: 'calc(100vh - 250px)'
-                }}>
-                  <div className="bg-white border border-gray-200 shadow-lg" style={{
-                    width: '210mm',
-                    minHeight: '297mm',
-                    transform: 'scale(0.7)',
-                    transformOrigin: 'top center',
-                    marginBottom: '2rem'
-                  }}>
+              <CardContent style={{ padding: 0, height: 'calc(100vh - 200px)' }}>
+                <div
+                  className="resume-preview-scroll"
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    background: 'linear-gradient(135deg, #F8F9FF 0%, #E9F1FF 100%)',
+                    overflow: 'auto',
+                    padding: '40px 20px'
+                  }}
+                >
+                  <div
+                    style={{
+                      width: '100%',
+                      maxWidth: '900px',
+                      minHeight: '100%',
+                      margin: '0 auto',
+                      background: '#FFFFFF',
+                      boxShadow: '0 20px 60px rgba(35, 112, 255, 0.15), 0 0 1px rgba(0, 0, 0, 0.1)',
+                      borderRadius: '12px',
+                      overflow: 'hidden'
+                    }}
+                  >
                     <PDFPreview
                       templateId={selectedTemplate}
                       resumeData={resumeData}
