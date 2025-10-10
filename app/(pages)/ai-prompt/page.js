@@ -7,6 +7,7 @@ import {
   ArrowLeft,
 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useSelector } from "react-redux";
 import { DashboardLayout } from "@/components/layout/dashboard-layout";
 
 const colorTokens = {
@@ -26,6 +27,20 @@ function AIPromptInputContent() {
   const [typewriterText, setTypewriterText] = useState('');
   const [showCursor, setShowCursor] = useState(true);
   const fullText = 'Tell Us About Yourself';
+
+  // Get user data from Redux and localStorage (fallback)
+  const user = useSelector((state) => state.auth.user);
+
+  // Try Redux first, then localStorage as fallback
+  const userName = user?.full_name ||
+                   (typeof window !== 'undefined' ? localStorage.getItem('userName') : null) ||
+                   '[Your Name]';
+  const userEmail = user?.email ||
+                    (typeof window !== 'undefined' ? localStorage.getItem('userEmail') : null) ||
+                    '[Email]';
+  const userPhone = user?.phone_number ||
+                    (typeof window !== 'undefined' ? localStorage.getItem('userPhone') : null) ||
+                    '[Phone]';
 
   const MAX_WORDS = 100;
 
@@ -52,6 +67,23 @@ function AIPromptInputContent() {
     if (education) setUserEducation(education);
     if (career) setUserCareer(career);
   }, [searchParams]);
+
+  // Log user data for debugging
+  useEffect(() => {
+    console.log('👤 User data check:', {
+      reduxUser: user,
+      fromLocalStorage: {
+        name: typeof window !== 'undefined' ? localStorage.getItem('userName') : null,
+        email: typeof window !== 'undefined' ? localStorage.getItem('userEmail') : null,
+        phone: typeof window !== 'undefined' ? localStorage.getItem('userPhone') : null
+      },
+      finalValues: {
+        name: userName,
+        email: userEmail,
+        phone: userPhone
+      }
+    });
+  }, [user, userName, userEmail, userPhone]);
 
   // Typewriter effect
   useEffect(() => {
@@ -267,7 +299,7 @@ function AIPromptInputContent() {
         type: "fillable",
         prompt: `Hey, I need a resume for a fresher role (like [SDE Intern, Business Analyst, etc.]). Here's the info:
 
-Me: [Your Name], [Email], [Phone], [LinkedIn URL]
+Me: ${userName}, ${userEmail}, ${userPhone}, [LinkedIn URL]
 
 School: Graduating with a [Degree] from [University] in [Month, 2025] (Course dates: [2021-2025])
 
@@ -280,7 +312,7 @@ Proof: My best project was [Project Name, Year: 2024] and I interned at [Company
         type: "complete",
         prompt: `Can you whip up a 2025 fresher resume for me? I'm aiming for a role as a [Target Role, e.g., Data Analyst].
 
-My Info: [Name], [Email], [Phone], [LinkedIn].
+My Info: ${userName}, ${userEmail}, ${userPhone}, [LinkedIn].
 
 Education: I'm finishing my [Degree] at [University]. My course ran from [2021] to [Graduation Month, 2025].
 
@@ -293,7 +325,7 @@ The Good Stuff: My strongest skills are [Skill 1, Skill 2, Skill 3]. I proved th
 
 What's the goal? A [Target Role] position.
 
-Who am I? [Name, Email, Phone, LinkedIn].
+Who am I? ${userName}, ${userEmail}, ${userPhone}, [LinkedIn].
 
 When did I graduate? [Degree] from [University], Class of [Month, 2025]. (Timeline: [2021-2025])
 
@@ -498,7 +530,7 @@ My experience? [Key Project] from [Year], and an internship [Role/Company] with 
 
               <div className="relative">
                 <textarea
-                  placeholder="Example: I'm Advika, a 3rd year Computer Science student from Mumbai. I'm skilled in React, Node.js, and Python. I've built web applications and am looking for internship opportunities."
+                  placeholder={`Example: I'm ${userName.split(' ')[0] || 'Advika'}, a 3rd year Computer Science student from Mumbai. I'm skilled in React, Node.js, and Python. I've built web applications and am looking for internship opportunities.`}
                   value={prompt}
                   onChange={(e) => setPrompt(e.target.value)}
                   rows={12}

@@ -16,37 +16,76 @@ function ResumeReviewPageContent() {
   const education = searchParams.get("education") || "";
   const filename = searchParams.get("filename") || "your-resume.pdf";
 
-  // Mock analysis results
-  const analysisResults = {
+  // Get uploaded resume data from sessionStorage
+  const [analysisResults, setAnalysisResults] = React.useState({
+    strengths: [],
+    improvements: []
+  });
+
+  React.useEffect(() => {
+    const uploadedDataStr = sessionStorage.getItem('uploadedResumeData');
+
+    if (uploadedDataStr) {
+      try {
+        const uploadedData = JSON.parse(uploadedDataStr);
+        const originalFeedback = uploadedData.original_feedback || {};
+
+        // Map API response to display format
+        const strengths = (originalFeedback.strengths || []).map(strength => ({
+          title: strength,
+          description: ""
+        }));
+
+        const improvements = (originalFeedback.suggestions || []).map(suggestion => ({
+          title: suggestion,
+          description: ""
+        }));
+
+        setAnalysisResults({ strengths, improvements });
+
+        console.log('✅ Loaded resume feedback:', { strengths, improvements });
+      } catch (error) {
+        console.error('Error parsing uploaded resume data:', error);
+        // Use default mock data if parsing fails
+        setAnalysisResults(getDefaultAnalysisResults());
+      }
+    } else {
+      // Use default mock data if no data in sessionStorage
+      setAnalysisResults(getDefaultAnalysisResults());
+    }
+  }, []);
+
+  // Default mock analysis results (fallback)
+  const getDefaultAnalysisResults = () => ({
     strengths: [
       {
         title: "Your skills section is comprehensive and well-organized",
-        description: "Listed all the relevant technical skills that match industry requirements"
+        description: ""
       },
       {
         title: "Experience section demonstrates clear impact",
-        description: "Project descriptions are detailed and showcase your accomplishments effectively"
+        description: ""
       },
       {
         title: "Contact information is professional and complete",
-        description: "Professional email address and phone number are properly formatted"
+        description: ""
       }
     ],
     improvements: [
       {
         title: "Add more industry-specific keywords for ATS optimization",
-        description: "Include additional relevant keywords to improve applicant tracking system compatibility"
+        description: ""
       },
       {
         title: "Quantify achievements with specific metrics",
-        description: "Add numbers and measurable results to strengthen the impact of your accomplishments"
+        description: ""
       },
       {
         title: "Update formatting for modern aesthetics",
-        description: "Consider a more contemporary layout to enhance visual appeal"
+        description: ""
       }
     ]
-  };
+  });
 
   const handleContinue = () => {
     router.push(`/template-selection?from=upload&field=${field}&education=${education}&filename=${encodeURIComponent(filename)}`);
@@ -102,20 +141,23 @@ function ResumeReviewPageContent() {
                       border: '1px solid #E1E4EB',
                       boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05)'
                     }}>
-                      <h4 className="font-semibold mb-1" style={{
+                      <h4 className="font-semibold" style={{
                         color: '#0F172A',
                         fontFamily: 'Inter, sans-serif',
-                        fontSize: '14px'
+                        fontSize: '14px',
+                        marginBottom: strength.description ? '4px' : '0'
                       }}>
                         {strength.title}
                       </h4>
-                      <p className="text-xs" style={{
-                        color: '#64748B',
-                        fontFamily: 'Inter, sans-serif',
-                        lineHeight: '1.6'
-                      }}>
-                        {strength.description}
-                      </p>
+                      {strength.description && (
+                        <p className="text-xs" style={{
+                          color: '#64748B',
+                          fontFamily: 'Inter, sans-serif',
+                          lineHeight: '1.6'
+                        }}>
+                          {strength.description}
+                        </p>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -144,20 +186,23 @@ function ResumeReviewPageContent() {
                       border: '1px solid #E1E4EB',
                       boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05)'
                     }}>
-                      <h4 className="font-semibold mb-1" style={{
+                      <h4 className="font-semibold" style={{
                         color: '#0F172A',
                         fontFamily: 'Inter, sans-serif',
-                        fontSize: '14px'
+                        fontSize: '14px',
+                        marginBottom: improvement.description ? '4px' : '0'
                       }}>
                         {improvement.title}
                       </h4>
-                      <p className="text-xs" style={{
-                        color: '#64748B',
-                        fontFamily: 'Inter, sans-serif',
-                        lineHeight: '1.6'
-                      }}>
-                        {improvement.description}
-                      </p>
+                      {improvement.description && (
+                        <p className="text-xs" style={{
+                          color: '#64748B',
+                          fontFamily: 'Inter, sans-serif',
+                          lineHeight: '1.6'
+                        }}>
+                          {improvement.description}
+                        </p>
+                      )}
                     </div>
                   ))}
                 </div>

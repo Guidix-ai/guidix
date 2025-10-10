@@ -47,6 +47,7 @@ import dynamic from 'next/dynamic';
 import { pdf } from '@react-pdf/renderer';
 import * as Templates from '@/components/pdf-templates';
 import { getResume, saveResumeAssets } from "@/services/resumeService";
+import { getJobsWithResumeId } from "@/services/jobService";
 import { handleApiError, logError } from "@/utils/errorHandler";
 import html2canvas from 'html2canvas';
 
@@ -242,9 +243,47 @@ function EnhancedResumeContent() {
 
         // If we have data from API, update the resume
         if (resumeDataFromAPI) {
-          setResumeData(resumeDataFromAPI);
-          if (resumeDataFromAPI.personalInfo?.name) {
-            setUserName(resumeDataFromAPI.personalInfo.name);
+          console.log('📥 Raw API Data:', resumeDataFromAPI);
+
+          // Check if we have structure data (from resume-creation API - AI Prompt flow)
+          if (resumeDataFromAPI.structure) {
+            const transformedData = transformAPIStructureToUI(resumeDataFromAPI.structure);
+            if (transformedData) {
+              console.log('✅ Transformed Data from structure:', transformedData);
+              setResumeData(transformedData);
+              if (transformedData.personalInfo?.name) {
+                setUserName(transformedData.personalInfo.name);
+              }
+            }
+          }
+          // Check if we have enhanced_resume data (from enhance API - Upload flow after template selection)
+          else if (resumeDataFromAPI.enhanced_resume && Array.isArray(resumeDataFromAPI.enhanced_resume)) {
+            const transformedData = transformAPIStructureToUI(resumeDataFromAPI.enhanced_resume);
+            if (transformedData) {
+              console.log('✅ Transformed Data from enhanced_resume:', transformedData);
+              setResumeData(transformedData);
+              if (transformedData.personalInfo?.name) {
+                setUserName(transformedData.personalInfo.name);
+              }
+            }
+          }
+          // Check if we have original_resume data (from upload_and_process API - Upload flow)
+          else if (resumeDataFromAPI.original_resume && Array.isArray(resumeDataFromAPI.original_resume)) {
+            const transformedData = transformAPIStructureToUI(resumeDataFromAPI.original_resume);
+            if (transformedData) {
+              console.log('✅ Transformed Data from original_resume:', transformedData);
+              setResumeData(transformedData);
+              if (transformedData.personalInfo?.name) {
+                setUserName(transformedData.personalInfo.name);
+              }
+            }
+          }
+          // If no structure, assume it's already in the correct format
+          else {
+            setResumeData(resumeDataFromAPI);
+            if (resumeDataFromAPI.personalInfo?.name) {
+              setUserName(resumeDataFromAPI.personalInfo.name);
+            }
           }
         } else {
           // Fallback: Extract from prompt if no API data
@@ -335,6 +374,145 @@ function EnhancedResumeContent() {
       type: "added",
     },
   ];
+
+  // Transform API structure to UI format
+  const transformAPIStructureToUI = (apiStructure) => {
+    if (!apiStructure || !Array.isArray(apiStructure)) {
+      return null;
+    }
+
+    const transformed = {
+      personalInfo: {
+        name: "",
+        title: "",
+        email: "",
+        phone: "",
+        location: "",
+        photo: null,
+        summary: "",
+      },
+      experience: [],
+      skills: [],
+      education: [],
+      certifications: [],
+      languages: [],
+      projects: [],
+    };
+
+    apiStructure.forEach((section) => {
+      switch (section.section) {
+        case "contact_info":
+          const contactDetails = section.details || {};
+          transformed.personalInfo = {
+            ...transformed.personalInfo,
+            name: contactDetails.name || contactDetails.full_name || "",
+            email: contactDetails.email || "",
+            phone: contactDetails.phone || "",
+            location: contactDetails.location || "",
+            linkedin: contactDetails.linkedin_url || contactDetails.linkedin || "",
+            github: contactDetails.github_url || contactDetails.github || contactDetails.portfolio_url || "",
+            website: contactDetails.portfolio_url || contactDetails.website || "",
+          };
+          break;
+
+        case "profile_summary":
+          transformed.personalInfo.summary = section.details || "";
+          break;
+
+        case "skills":
+          // Append to existing skills (API might return multiple skill sections)
+          const newSkills = Array.isArray(section.details) ? section.details : [];
+          transformed.skills = [...transformed.skills, ...newSkills];
+          break;
+
+        case "education":
+          // Append to existing education entries (API might return multiple education sections)
+          const newEducation = (Array.isArray(section.details) ? section.details : []).map((edu, index) => ({
+            id: transformed.education.length + index + 1,
+            degree: edu.degree || "",
+            school: edu.university || edu.institution || edu.school || "",
+            year: edu.graduation_date || edu.end_date || edu.year || "",
+            gpa: edu.gpa_or_percentage || edu.gpa || "",
+          }));
+          transformed.education = [...transformed.education, ...newEducation];
+          break;
+
+        case "experience":
+          // Append to existing experiences (API might return multiple experience sections)
+          const newExperiences = (Array.isArray(section.details) ? section.details : []).map((exp, index) => {
+            let achievements = [];
+
+            // Handle different formats of achievements
+            if (exp.highlights && Array.isArray(exp.highlights)) {
+              achievements = exp.highlights;
+            } else if (exp.achievements && Array.isArray(exp.achievements)) {
+              achievements = exp.achievements;
+            } else if (exp.description) {
+              // If description is a string, wrap it in array
+              achievements = [exp.description];
+            }
+
+            return {
+              id: transformed.experience.length + index + 1,
+              company: exp.company || "",
+              position: exp.title || exp.position || exp.role || "",
+              duration: exp.dates || exp.duration || "",
+              location: exp.location || "",
+              achievements: achievements,
+            };
+          });
+          transformed.experience = [...transformed.experience, ...newExperiences];
+          break;
+
+        case "projects":
+          // Append to existing projects (API might return multiple project sections)
+          const newProjects = (Array.isArray(section.details) ? section.details : []).map((proj, index) => {
+            // Combine description with highlights if available
+            let fullDescription = proj.description || "";
+            if (proj.highlights && Array.isArray(proj.highlights)) {
+              const highlightsText = proj.highlights.join(". ");
+              fullDescription = fullDescription ? `${fullDescription}. ${highlightsText}` : highlightsText;
+            }
+
+            return {
+              id: transformed.projects.length + index + 1,
+              name: proj.title || proj.project_name || proj.name || "",
+              description: fullDescription,
+              technologies: proj.tools_and_skills || proj.technologies || [],
+              date: proj.date || proj.duration || "",
+            };
+          });
+          transformed.projects = [...transformed.projects, ...newProjects];
+          break;
+
+        case "certifications":
+          // Append to existing certifications (API might return multiple certification sections)
+          const newCertifications = (Array.isArray(section.details) ? section.details : []).map((cert, index) => ({
+            id: transformed.certifications.length + index + 1,
+            name: cert.name || cert.certification_name || "",
+            issuer: cert.issuer || cert.organization || "",
+            year: cert.date || cert.year || "",
+          }));
+          transformed.certifications = [...transformed.certifications, ...newCertifications];
+          break;
+
+        case "languages":
+          // Append to existing languages (API might return multiple language sections)
+          const newLanguages = (Array.isArray(section.details) ? section.details : []).map((lang, index) => ({
+            id: transformed.languages.length + index + 1,
+            name: lang.language || lang.name || "",
+            level: lang.proficiency || lang.level || "",
+          }));
+          transformed.languages = [...transformed.languages, ...newLanguages];
+          break;
+
+        default:
+          console.log(`Unknown section type: ${section.section}`);
+      }
+    });
+
+    return transformed;
+  };
 
   // Hardcoded resume data - would come from API in real app
   const [resumeData, setResumeData] = useState({
@@ -499,12 +677,24 @@ function EnhancedResumeContent() {
     }));
   };
 
+  // Download the UPDATED resume (includes all user edits)
   const handleDownload = async () => {
     try {
       setIsGenerating(true);
 
-      // Map template ID to component name
+      console.log('📥 Starting download process...');
+      console.log('Template ID:', selectedTemplate);
+      console.log('Resume data:', resumeData);
+      console.log('Available Templates:', Object.keys(Templates));
+
+      // Map template ID to component name (includes UUID mappings)
       const componentMap = {
+        // UUID mappings
+        'aa97e710-4457-46fb-ac6f-1765ad3a6d43': 'ATSTemplateWithoutPhoto',
+        '41aab622-839d-454e-bf99-9d5a2ce027ec': 'ATSTemplateWithPhoto',
+        // Legacy string IDs (for backward compatibility)
+        'ats-template-with-photo': 'ATSTemplateWithPhoto',
+        'ats-template-without-photo': 'ATSTemplateWithoutPhoto',
         'internship-1-with-photo': 'InternshipTemplate1WithPhoto',
         'internship-2-with-photo': 'InternshipTemplate2WithPhoto',
         'internship-3-with-photo': 'InternshipTemplate3WithPhoto',
@@ -520,17 +710,27 @@ function EnhancedResumeContent() {
       };
 
       const componentName = componentMap[selectedTemplate];
+      console.log('Mapped component name:', componentName);
+
       if (!componentName) {
-        throw new Error(`Template ${selectedTemplate} not found`);
+        console.error('❌ Template mapping failed');
+        console.error('Selected template:', selectedTemplate);
+        console.error('Available mappings:', Object.keys(componentMap));
+        throw new Error(`Template "${selectedTemplate}" not found in component map`);
       }
 
       const TemplateComponent = Templates[componentName];
+      console.log('Template component loaded:', !!TemplateComponent);
+
       if (!TemplateComponent) {
-        throw new Error(`Component ${componentName} not found`);
+        console.error('❌ Component not found in Templates object');
+        console.error('Looking for:', componentName);
+        console.error('Available components:', Object.keys(Templates));
+        throw new Error(`Component "${componentName}" not found in Templates`);
       }
 
       // Transform resume data to match template expectations
-      const nameParts = (resumeData.personalInfo?.name || '').split(' ');
+      const nameParts = (resumeData.personalInfo?.name || 'User').split(' ');
       const transformedData = {
         personalInfo: {
           ...resumeData.personalInfo,
@@ -541,15 +741,16 @@ function EnhancedResumeContent() {
           location: resumeData.personalInfo?.location || '',
           linkedin: resumeData.personalInfo?.linkedin || '',
           website: resumeData.personalInfo?.website || '',
-          photo: resumeData.personalInfo?.photo || '',
+          github: resumeData.personalInfo?.github || '',
+          photo: resumeData.personalInfo?.photo || profilePhoto || '',
         },
         summary: resumeData.personalInfo?.summary || resumeData.summary || '',
         experience: (resumeData.experience || []).map(exp => ({
           position: exp.position || 'Position',
           company: exp.company || 'Company',
           location: exp.location || resumeData.personalInfo?.location || '',
-          startDate: exp.duration ? exp.duration.split(' - ')[0] : (exp.startDate || 'Start'),
-          endDate: exp.duration ? exp.duration.split(' - ')[1] || 'Present' : (exp.endDate || 'Present'),
+          startDate: exp.duration ? exp.duration.split(' - ')[0]?.trim() : (exp.startDate || 'Start'),
+          endDate: exp.duration ? (exp.duration.split(' - ')[1]?.trim() || 'Present') : (exp.endDate || 'Present'),
           responsibilities: exp.achievements || exp.responsibilities || [],
         })),
         education: (resumeData.education || []).map(edu => ({
@@ -565,7 +766,7 @@ function EnhancedResumeContent() {
           name: proj.name || 'Project',
           description: proj.description || '',
           technologies: proj.technologies || [],
-          startDate: proj.startDate || '',
+          startDate: proj.startDate || proj.date || '',
           endDate: proj.endDate || '',
         })),
         certifications: resumeData.certifications || [],
@@ -573,65 +774,122 @@ function EnhancedResumeContent() {
         achievements: resumeData.achievements || [],
       };
 
-      // Generate PDF
-      const blob = await pdf(<TemplateComponent resumeData={transformedData} />).toBlob();
-      const pdfFile = new File([blob], `${resumeData.personalInfo.name.replace(/\s+/g, '_')}_Resume.pdf`, { type: 'application/pdf' });
+      console.log('🔄 Generating PDF...');
+      console.log('Transformed data:', transformedData);
 
-      // Capture screenshot
-      const resumeElement = document.querySelector('.resume-preview-container') || document.body;
-      const canvas = await html2canvas(resumeElement, {
-        scale: 2,
-        useCORS: true,
-        logging: false,
-      });
-      const screenshotBlob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
-      const screenshotFile = new File([screenshotBlob], 'screenshot.png', { type: 'image/png' });
-
-      // Upload to backend if we have a resumeId
-      if (resumeId) {
-        try {
-          const response = await saveResumeAssets(
-            resumeId,
-            pdfFile,
-            screenshotFile,
-            resumeData.personalInfo.name
-          );
-
-          if (response.success) {
-            console.log('Resume saved successfully');
-            console.log('PDF path:', response.data.gcs_pdf_path);
-            console.log('Screenshot path:', response.data.gcs_screenshot_path);
-          }
-        } catch (apiError) {
-          console.error('Error uploading to backend:', apiError);
-          // Continue with download even if upload fails
-        }
+      // Generate PDF with error handling
+      let blob;
+      try {
+        blob = await pdf(<TemplateComponent resumeData={transformedData} />).toBlob();
+        console.log('✅ PDF blob created, size:', blob.size, 'bytes');
+      } catch (pdfError) {
+        console.error('❌ PDF generation failed:', pdfError);
+        console.error('PDF error details:', {
+          message: pdfError.message,
+          stack: pdfError.stack,
+          componentName: componentName,
+          dataKeys: Object.keys(transformedData)
+        });
+        throw new Error(`PDF generation failed: ${pdfError.message}`);
       }
 
-      // Download PDF locally
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `${resumeData.personalInfo.name.replace(/\s+/g, '_')}_Resume.pdf`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
+      // Download PDF
+      try {
+        const fileName = `${resumeData.personalInfo?.name?.replace(/\s+/g, '_') || 'Resume'}.pdf`;
+        console.log('💾 Creating download link for:', fileName);
+
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = fileName;
+        link.style.display = 'none';
+
+        document.body.appendChild(link);
+
+        // Trigger download
+        link.click();
+
+        // Cleanup
+        setTimeout(() => {
+          document.body.removeChild(link);
+          URL.revokeObjectURL(url);
+        }, 100);
+
+        console.log('✅ Download triggered successfully:', fileName);
+        setIsGenerating(false);
+
+        // Show success message
+        alert(`Resume downloaded successfully as ${fileName}`);
+
+      } catch (downloadError) {
+        console.error('❌ Download trigger failed:', downloadError);
+        throw new Error(`Failed to trigger download: ${downloadError.message}`);
+      }
+
+    } catch (error) {
+      console.error('❌ Download process error:', error);
+      console.error('Full error details:', {
+        message: error.message,
+        stack: error.stack,
+        selectedTemplate: selectedTemplate,
+        resumeDataKeys: Object.keys(resumeData),
+        templatesAvailable: Object.keys(Templates)
+      });
 
       setIsGenerating(false);
-    } catch (error) {
-      console.error('Error generating PDF:', error);
-      logError('EnhancedResumePage - Download', error);
-      setIsGenerating(false);
-      alert('Error generating PDF. Please try again.');
+
+      // Show detailed error to user
+      alert(`Download failed!\n\nError: ${error.message}\n\nPlease check the console for details and try again.`);
     }
   };
 
   const handleGenerate = async () => {
-    setIsGenerating(true);
+    try {
+      setIsGenerating(true);
+      setError(null);
 
-    // Navigate to resume complete page immediately
-    router.push("/resume-complete");
+      console.log('🎯 Finish button clicked');
+
+      // Check if we have a resumeId
+      if (!resumeId) {
+        console.error('❌ No resumeId found');
+        setError('Resume ID not found. Please try again.');
+        setIsGenerating(false);
+        return;
+      }
+
+      console.log('📤 Fetching jobs with resume_id:', resumeId);
+
+      // Call the getJobsWithResumeId API
+      const response = await getJobsWithResumeId(resumeId, 20, 0, false);
+
+      if (response.success) {
+        console.log('✅ Jobs fetched successfully:', response.data);
+        console.log('📊 Total jobs:', response.data.pagination?.total_count || 0);
+
+        // Store jobs data in sessionStorage for next page
+        sessionStorage.setItem('jobsData', JSON.stringify(response.data));
+        sessionStorage.setItem('resumeIdUsedForJobs', resumeId);
+
+        // Navigate to job listings or resume complete page
+        router.push("/resume-complete");
+      } else {
+        console.error('❌ Failed to fetch jobs:', response.message);
+        setError(response.message || 'Failed to fetch job recommendations');
+        setIsGenerating(false);
+      }
+    } catch (err) {
+      console.error('❌ Error fetching jobs:', err);
+      const errorMessage = handleApiError(err);
+      logError('EnhancedResumePage - Finish', err);
+      setError(errorMessage);
+      setIsGenerating(false);
+
+      // Navigate anyway even if jobs API fails
+      setTimeout(() => {
+        router.push("/resume-complete");
+      }, 2000);
+    }
   };
 
   const handleAddToSection = (sectionName) => {

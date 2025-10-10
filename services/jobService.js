@@ -147,7 +147,7 @@ export const searchJobs = async (query, filters = {}, pageToken = null) => {
 };
 
 /**
- * Get jobs with AI scoring using saved resume ID
+ * Get jobs with AI scoring using saved resume ID (Old endpoint - GET)
  * @param {number} resumeId - Resume ID from resume service
  * @param {number} limit - Number of jobs (default: 20)
  * @param {number} offset - Offset for pagination (default: 0)
@@ -158,6 +158,30 @@ export const getJobsWithAIScoring = async (resumeId, limit = 20, offset = 0, for
   const response = await jobApiClient.get('/api/v1/integrated-jobs/', {
     params: { resume_id: resumeId, limit, offset, force_refresh: forceRefresh }
   });
+  return response.data;
+};
+
+/**
+ * Get jobs with AI-powered match scores using resume_id (POST endpoint)
+ * @param {string} resumeId - Resume UUID from resume service (e.g., "a1b2c3d4-e5f6-7890-abcd-ef1234567890")
+ * @param {number} limit - Number of jobs to fetch (default: 20, max: 100)
+ * @param {number} offset - Offset for pagination (default: 0)
+ * @param {boolean} forceRefresh - Force refresh from external API (default: false)
+ * @returns {Promise} Jobs with AI match scores
+ */
+export const getJobsWithResumeId = async (resumeId, limit = 20, offset = 0, forceRefresh = false) => {
+  const response = await jobApiClient.post(
+    '/api/v1/integrated-jobs/with-resume-id',
+    null, // No request body
+    {
+      params: {
+        resume_id: resumeId,
+        limit: limit,
+        offset: offset,
+        force_refresh: forceRefresh
+      }
+    }
+  );
   return response.data;
 };
 

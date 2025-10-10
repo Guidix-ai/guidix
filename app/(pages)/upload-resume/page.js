@@ -85,8 +85,9 @@ function UploadResumePageContent() {
       const response = await uploadAndProcessResume(selectedFile, selectedFile.name);
 
       if (response.success) {
-        // Store resume_id in sessionStorage for next page
+        // Store resume_id and complete data in sessionStorage for next page
         sessionStorage.setItem('uploadedResumeId', response.data.resume_id);
+        sessionStorage.setItem('uploadedResumeData', JSON.stringify(response.data));
 
         // Navigate to analyzing-resume page
         router.push(`/analyzing-resume?field=${field}&education=${education}&filename=${encodeURIComponent(selectedFile.name)}&resumeId=${response.data.resume_id}`);
