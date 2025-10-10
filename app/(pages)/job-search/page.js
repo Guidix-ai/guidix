@@ -2,6 +2,7 @@
 import React, { useState, useMemo, useEffect, useRef } from "react";
 import { DashboardLayout } from "@/components/layout/dashboard-layout";
 import { useRouter } from "next/navigation";
+import { useSelector } from "react-redux";
 import {
   getJobsWithResumeUpload,
   addToWishlist,
@@ -222,6 +223,8 @@ const shadowBoxStyle = `
   inset 0 -2px 3px 0 rgba(0, 0, 0, 0.08)
 `;
 
+
+
 const EnhancedJobCard = ({
   job,
   onApply,
@@ -260,6 +263,8 @@ const EnhancedJobCard = ({
     }
   }, [cardHeight]);
 
+
+  
   return (
     <div
       className="rounded-lg shadow-sm"
@@ -1063,6 +1068,7 @@ const EnhancedJobCard = ({
 
 const JobSearchPage = () => {
   const router = useRouter();
+  const user = useSelector((state) => state.auth.user);
   const [appliedJobs, setAppliedJobs] = useState(new Set());
   const [savedJobs, setSavedJobs] = useState(new Set());
   const [dismissedJobs, setDismissedJobs] = useState(new Set());
@@ -1072,7 +1078,8 @@ const JobSearchPage = () => {
   const [showSortDropdown, setShowSortDropdown] = useState(false);
   const [typewriterText, setTypewriterText] = useState("");
   const [showCursor, setShowCursor] = useState(true);
-  const fullText = " Hey Advika, 85+ Matches Across 25 Job Portals!";
+  const userName = user?.full_name || "User";
+  const fullText = ` Hey ${userName}, 85+ Matches Across 25 Job Portals!`;
   const [jobs, setJobs] = useState(allJobs);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -1173,6 +1180,8 @@ const JobSearchPage = () => {
 
   useEffect(() => {
     let currentIndex = 0;
+    setTypewriterText("");
+    setShowCursor(true);
     const interval = setInterval(() => {
       setTypewriterText(fullText.slice(0, currentIndex));
       currentIndex++;
@@ -1182,7 +1191,7 @@ const JobSearchPage = () => {
       }
     }, 80);
     return () => clearInterval(interval);
-  }, []);
+  }, [fullText]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {

@@ -70,13 +70,14 @@ function AIGeneratorPageContent() {
     if (currentStep < 3) {
       setCurrentStep(currentStep + 1);
     } else {
-      if (path === "ai") {
-        router.push(`/ai-prompt?field=${selectedField}&education=${selectedYear}&career=${selectedCareer}`);
-      } else if (path === "upload") {
-        router.push(`/upload-resume?field=${selectedField}&education=${selectedYear}&career=${selectedCareer}`);
-      } else {
-        router.push(`/ai-prompt?field=${selectedField}&education=${selectedYear}&career=${selectedCareer}`);
-      }
+      const targetUrl = path === "ai" || !path
+        ? `/ai-prompt?fields=${selectedField}&education=${selectedYear}&career=${selectedCareer}`
+        : `/upload-resume?fields=${selectedField}&education=${selectedYear}&career=${selectedCareer}`;
+
+      console.log('🚀 Navigating to:', targetUrl);
+      console.log('📋 Path:', path, 'Field:', selectedField, 'Year:', selectedYear, 'Career:', selectedCareer);
+
+      router.push(targetUrl);
     }
   };
 

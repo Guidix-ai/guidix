@@ -188,13 +188,14 @@ function ResumeConfirmationPageContent() {
     setJobType(type);
 
     // Navigate immediately
-    if (path === "ai") {
-      router.push(`/ai-prompt?fields=${branch}&education=${academicYear}&career=${type}`);
-    } else if (path === "upload") {
-      router.push(`/upload-resume?fields=${branch}&education=${academicYear}&career=${type}`);
-    } else {
-      router.push(`/ai-prompt?fields=${branch}&education=${academicYear}&career=${type}`);
-    }
+    const targetUrl = path === "ai" || !path
+      ? `/ai-prompt?fields=${branch}&education=${academicYear}&career=${type}`
+      : `/upload-resume?fields=${branch}&education=${academicYear}&career=${type}`;
+
+    console.log('🚀 Resume Confirmation - Navigating to:', targetUrl);
+    console.log('📋 Path:', path, 'Branch:', branch, 'Year:', academicYear, 'Career:', type);
+
+    router.push(targetUrl);
 
     // Call API in background
     try {
