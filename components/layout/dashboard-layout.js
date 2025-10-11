@@ -216,11 +216,11 @@ export function DashboardLayout({ children }) {
             {/* Upgrade Button - Responsive text */}
 
             <div
-              className="px-[0.12rem] py-[0.12rem] rounded-lg"
+              className="px-[0.15rem] py-[0.15rem] rounded-lg"
               style={{ backgroundColor: "rgba(35, 112, 255, 0.3)" }}
             >
               <div
-                className="p-[0.12rem] rounded-lg"
+                className="px-[0.15rem] py-[0.15rem] rounded-lg"
                 style={{ backgroundColor: "rgba(35, 112, 255, 0.3)" }}
               >
                 <button
@@ -242,9 +242,15 @@ export function DashboardLayout({ children }) {
                     fontSize: "14px",
                     fontWeight: 500,
                     lineHeight: "125%",
+                    gap: "0.5rem",
                   }}
                 >
-                  <Image src="/upgrade-icon.svg" alt="Upgrade" width={16} height={16} />
+                  <Image
+                    src="/upgrade-icon.svg"
+                    alt="Upgrade"
+                    width={24}
+                    height={24}
+                  />
                   <span className="hidden sm:inline text-xs">Upgrade Now</span>
                   <span className="sm:hidden">Upgrade</span>
                 </button>

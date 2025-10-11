@@ -238,8 +238,13 @@ const EnhancedJobCard = ({
   const [animated, setAnimated] = useState(false);
 
   useEffect(() => {
-    setTimeout(() => setAnimated(true), 100);
-  }, []);
+    if (isHoveringMatchScore) {
+      // Reset animation
+      setAnimated(false);
+      // Trigger animation after a brief delay
+      setTimeout(() => setAnimated(true), 50);
+    }
+  }, [isHoveringMatchScore]);
 
   const handleCardClick = (e) => {
     // Card click disabled - no routing
@@ -345,8 +350,8 @@ const EnhancedJobCard = ({
                 <Image
                   src="/dismiss.svg"
                   alt="Dismiss"
-                  width={20}
-                  height={20}
+                  width={24}
+                  height={24}
                 />
               </button>
               <button
@@ -366,8 +371,8 @@ const EnhancedJobCard = ({
                 <Image
                   src="/wishlist.svg"
                   alt="Save"
-                  width={20}
-                  height={20}
+                  width={24}
+                  height={24}
                   style={{ opacity: isSaved ? 1 : 0.6 }}
                 />
               </button>
@@ -383,13 +388,13 @@ const EnhancedJobCard = ({
 
           <div className="flex items-center gap-4 text-xs mb-2 flex-wrap">
             <div className="flex items-center gap-1">
-              <Image src="/salary.svg" alt="Salary" width={20} height={20} />
+              <Image src="/salary.svg" alt="Salary" width={24} height={24} />
               <span style={{ fontWeight: "500", color: "#353E5C" }}>
                 {job.salary}
               </span>
             </div>
             <div className="flex items-center gap-1">
-              <Image src="/jobtype.svg" alt="Job Type" width={20} height={20} />
+              <Image src="/jobtype.svg" alt="Job Type" width={24} height={24} />
               <span style={{ fontWeight: "500", color: "#353E5C" }}>
                 {job.type}
               </span>
@@ -398,8 +403,8 @@ const EnhancedJobCard = ({
               <Image
                 src="/location.svg"
                 alt="Location"
-                width={20}
-                height={20}
+                width={24}
+                height={24}
               />
               <span style={{ fontWeight: "500", color: "#353E5C" }}>
                 {job.location}
@@ -414,22 +419,54 @@ const EnhancedJobCard = ({
           </div>
 
           <div
-            className="flex items-center justify-between gap-3 pt-3"
+            className="flex items-center justify-between gap-4 pt-3"
             style={{ borderTop: "1px solid #F1F3F7" }}
           >
             <div
-              className="cursor-pointer text-sm flex-1"
-              style={{ color: "#353E5C", fontWeight: 500 }}
+              className="cursor-pointer text-sm flex items-center gap-2"
+              style={{
+                color: "#353E5C",
+                fontWeight: 500,
+                backgroundColor: "#EBF1FF",
+                padding: "8px 12px",
+                borderRadius: "20px",
+                maxWidth: "fit-content",
+              }}
               onMouseEnter={() => setIsHoveringMatchScore(true)}
               data-match-score="true"
             >
-              You match{" "}
-              <span style={{ fontWeight: 700, color: "#2370FF" }}>
-                {job.matchScore}%
-              </span>{" "}
-              and success rate is{" "}
-              <span style={{ fontWeight: 700, color: "#74D184" }}>
-                {job.predictabilityScore}%
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 20 20"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                style={{ flexShrink: 0 }}
+              >
+                <circle
+                  cx="10"
+                  cy="10"
+                  r="9"
+                  fill="#2370FF"
+                  opacity="0.15"
+                />
+                <path
+                  d="M6 11L10 7L14 11"
+                  stroke="#2370FF"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+              <span>
+                You match{" "}
+                <span style={{ fontWeight: 700, color: "#64A7FF" }}>
+                  {job.matchScore}%
+                </span>{" "}
+                and success rate is{" "}
+                <span style={{ fontWeight: 700, color: "#74D184" }}>
+                  {job.predictabilityScore}%
+                </span>
               </span>
             </div>
             <button
@@ -535,8 +572,8 @@ const EnhancedJobCard = ({
                 <Image
                   src="/dismiss.svg"
                   alt="Dismiss"
-                  width={20}
-                  height={20}
+                  width={24}
+                  height={24}
                 />
               </button>
               <button
@@ -556,8 +593,8 @@ const EnhancedJobCard = ({
                 <Image
                   src="/wishlist.svg"
                   alt="Save"
-                  width={20}
-                  height={20}
+                  width={24}
+                  height={24}
                   style={{ opacity: isSaved ? 1 : 0.6 }}
                 />
               </button>
@@ -581,60 +618,25 @@ const EnhancedJobCard = ({
             </div>
           </div>
 
-          <div className="px-4 pb-4 space-y-2">
-            <div className="flex items-center justify-between mb-2">
-              <h3
-                className="text-base font-bold"
-                style={{ color: "#002A79" }}
-              >
-                {job.title}
-              </h3>
-              <div className="flex gap-2">
-                <div
-                  className="bg-gray-200 text-gray-700 rounded-lg px-2 py-1"
-                  onMouseLeave={() => setIsHoveringMatchScore(false)}
-                  data-match-score="true"
-                >
-                  <div className="text-center">
-                    <div className="text-xs mb-0.5">Match</div>
-                    <div className="text-sm font-bold">{job.matchScore}%</div>
-                  </div>
-                </div>
-                <div
-                  className="bg-gray-200 text-gray-700 rounded-lg px-2 py-1"
-                  onMouseLeave={() => setIsHoveringMatchScore(false)}
-                  data-match-score="true"
-                >
-                  <div className="text-center">
-                    <div className="text-xs mb-0.5">Success</div>
-                    <div className="text-sm font-bold">
-                      {job.predictabilityScore}%
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <p
-              className="text-xs mb-2.5 leading-relaxed line-clamp-2"
-              style={{ color: "#6D7586" }}
-            >
-              {job.companyDescription}
-            </p>
-            <div className="grid grid-cols-1 gap-1 mb-1">
+          <div className="px-4 pb-4">
+
+            <div className="flex gap-3 mb-3">
               <div
-                className="rounded-lg p-1.5"
+                className="flex-1 rounded-lg p-2.5"
                 style={{
                   backgroundColor: "#EBF1FF",
                   border: "1px solid #B2CDFF",
                 }}
+                onMouseLeave={() => setIsHoveringMatchScore(false)}
+                data-match-score="true"
               >
-                <h4
-                  className="text-xs font-bold mb-1"
-                  style={{ color: "#003598" }}
-                >
-                  Match Breakdown
-                </h4>
-                <div className="space-y-1">
+                <div className="text-xs font-bold mb-1" style={{ color: "#003598" }}>
+                  Match Score
+                </div>
+                <div className="text-2xl font-bold mb-2" style={{ color: "#2370FF" }}>
+                  {job.matchScore}%
+                </div>
+                <div className="space-y-1.5">
                   {[
                     {
                       label: "Skills",
@@ -652,102 +654,89 @@ const EnhancedJobCard = ({
                     );
 
                     return (
-                      <div
-                        key={stat.label}
-                        className="flex items-center gap-1.5"
-                      >
-                        <span
-                          className="text-xs font-semibold w-16 flex-shrink-0"
-                          style={{ color: "#353E5C" }}
-                        >
-                          {stat.label}
-                        </span>
-
-                        <div className="flex gap-0.5" style={{ width: "50%" }}>
+                      <div key={stat.label} className="space-y-1">
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs font-medium" style={{ color: "#353E5C" }}>
+                            {stat.label}
+                          </span>
+                          <span className="text-xs font-bold" style={{ color: stat.color }}>
+                            {stat.value}%
+                          </span>
+                        </div>
+                        <div className="flex gap-1">
                           {[...Array(totalBlocks)].map((_, blockIndex) => (
                             <div
                               key={blockIndex}
-                              className="flex-1 rounded"
+                              className="flex-1 rounded-md"
                               style={{
-                                height: "3px",
+                                height: "8px",
                                 backgroundColor:
                                   blockIndex < filledBlocks && animated
                                     ? stat.color
                                     : "#E5E7EB",
                                 opacity: animated ? 1 : 0.3,
-                                transition: "all 300ms",
+                                transition: "all 400ms cubic-bezier(0.4, 0, 0.2, 1)",
                                 transitionDelay: animated
-                                  ? `${300 + index * 60 + blockIndex * 40}ms`
+                                  ? `${300 + index * 60 + blockIndex * 60}ms`
                                   : "0ms",
                                 transform: animated
-                                  ? "scale(1)"
-                                  : "scale(0.85)",
+                                  ? "scaleY(1)"
+                                  : "scaleY(0.3)",
+                                transformOrigin: "bottom",
                               }}
                             />
                           ))}
                         </div>
-
-                        <span
-                          className="text-xs font-bold w-8 text-right"
-                          style={{
-                            color: stat.color,
-                            opacity: animated ? 1 : 0,
-                            transition: "opacity 300ms",
-                            transitionDelay: `${300 + index * 60 + 250}ms`,
-                          }}
-                        >
-                          {animated ? `${stat.value}%` : "0%"}
-                        </span>
                       </div>
                     );
                   })}
                 </div>
               </div>
+
               <div
-                className="rounded-lg p-1.5"
+                className="flex-1 rounded-lg p-2.5"
                 style={{
                   backgroundColor: "#F8F9FF",
                   border: "1px solid #E1E4ED",
                 }}
+                onMouseLeave={() => setIsHoveringMatchScore(false)}
+                data-match-score="true"
               >
-                <h4
-                  className="text-xs font-bold mb-1"
-                  style={{ color: "#003598" }}
-                >
+                <div className="text-xs font-bold mb-1" style={{ color: "#003598" }}>
                   Success Rate
-                </h4>
-                <div className="space-y-1">
-                  <div className="text-xs" style={{ color: "#6D7586" }}>
-                    <span className="font-semibold">
-                      Based on similar profiles
-                    </span>
-                  </div>
-                  <div className="flex gap-0.5" style={{ width: "50%" }}>
-                    {[...Array(totalBlocks)].map((_, blockIndex) => {
-                      const successFilledBlocks = Math.round(
-                        (job.predictabilityScore / 100) * totalBlocks
-                      );
-                      return (
-                        <div
-                          key={blockIndex}
-                          className="flex-1 rounded"
-                          style={{
-                            height: "3px",
-                            backgroundColor:
-                              blockIndex < successFilledBlocks && animated
-                                ? "#82A5FF"
-                                : "#E5E7EB",
-                            opacity: animated ? 1 : 0.3,
-                            transition: "all 300ms",
-                            transitionDelay: animated
-                              ? `${600 + blockIndex * 40}ms`
-                              : "0ms",
-                            transform: animated ? "scale(1)" : "scale(0.85)",
-                          }}
-                        />
-                      );
-                    })}
-                  </div>
+                </div>
+                <div className="text-2xl font-bold mb-2" style={{ color: "#74D184" }}>
+                  {job.predictabilityScore}%
+                </div>
+                <div className="text-xs mb-2" style={{ color: "#6D7586" }}>
+                  Based on similar profiles
+                </div>
+                <div className="flex gap-1">
+                  {[...Array(totalBlocks)].map((_, blockIndex) => {
+                    const successFilledBlocks = Math.round(
+                      (job.predictabilityScore / 100) * totalBlocks
+                    );
+                    return (
+                      <div
+                        key={blockIndex}
+                        className="flex-1 rounded-md"
+                        style={{
+                          height: "8px",
+                          backgroundColor:
+                            blockIndex < successFilledBlocks && animated
+                              ? "#82A5FF"
+                              : "#E5E7EB",
+                          opacity: animated ? 1 : 0.3,
+                          transition: "all 400ms cubic-bezier(0.4, 0, 0.2, 1)",
+                          transitionDelay: animated
+                            ? `${600 + blockIndex * 60}ms`
+                            : "0ms",
+                          transform: animated ? "scaleY(1)" : "scaleY(0.3)",
+                          transformOrigin: "bottom",
+                        }}
+                      />
+                    );
+                  })}
                 </div>
               </div>
             </div>
@@ -838,8 +827,8 @@ const EnhancedJobCard = ({
                 <Image
                   src="/dismiss.svg"
                   alt="Dismiss"
-                  width={20}
-                  height={20}
+                  width={24}
+                  height={24}
                 />
               </button>
               <button
@@ -859,8 +848,8 @@ const EnhancedJobCard = ({
                 <Image
                   src="/wishlist.svg"
                   alt="Save"
-                  width={20}
-                  height={20}
+                  width={24}
+                  height={24}
                   style={{ opacity: isSaved ? 1 : 0.6 }}
                 />
               </button>
@@ -1358,7 +1347,8 @@ const JobSearchPage = () => {
                           justifyContent: "center",
                           alignItems: "center",
                           borderRadius: "10px",
-                          background: "#073DA3",
+                          background:
+                            "linear-gradient(180deg, #0349cc 0%, #073b9c 100%)",
                           boxShadow:
                             "0 -1.5px 1px 0 rgba(6, 51, 165, 0.37) inset, 0 1.5px 1px 0 rgba(255, 255, 255, 0.24) inset",
                           color: "#FFFFFF",
