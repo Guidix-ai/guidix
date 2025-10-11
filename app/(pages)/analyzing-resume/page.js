@@ -26,8 +26,10 @@ function AnalyzingResumePageContent() {
 
   return (
     <DashboardLayout>
-      <div className="min-h-screen w-full flex items-center justify-center" style={{backgroundColor: '#FFFFFF'}}>
-        <div className="flex flex-col items-center justify-center gap-8">
+      <div className="min-h-screen w-full flex flex-col" style={{backgroundColor: '#FFFFFF'}}>
+
+        <div className="flex-1 flex items-center justify-center">
+          <div className="flex flex-col items-center justify-center gap-8">
           {/* Loading Spinner */}
           <div className="relative w-16 h-16">
             <div
@@ -49,6 +51,7 @@ function AnalyzingResumePageContent() {
           >
             Analyzing Your Resume
           </h1>
+        </div>
         </div>
 
         <style jsx>{`

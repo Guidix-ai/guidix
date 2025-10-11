@@ -4,7 +4,8 @@
       "WebFetch(domain:builder.zety.com)",
       "Bash(npm run dev:*)",
       "Bash(ls:*)",
-      "Read(//c/Users/Kunal/Pictures/Screenshots/**)"
+      "Read(//c/Users/Kunal/Pictures/Screenshots/**)",
+      "Bash(find:*)"
     ],
     "deny": [],
     "ask": []

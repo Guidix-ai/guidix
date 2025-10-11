@@ -189,6 +189,11 @@ function TemplateSelectionContent() {
 
   const selectedTemplateData = filteredTemplates.find(t => t.id === selectedTemplate);
 
+  // Determine step based on flow
+  const isFromUpload = searchParams.get("from") === "upload";
+  const currentStep = isFromUpload ? 5 : 3;
+  const totalSteps = isFromUpload ? 7 : 6;
+
   return (
     <DashboardLayout>
       <div
@@ -214,6 +219,7 @@ function TemplateSelectionContent() {
               </h1>
             </div>
           </div>
+
 
           <div className="flex flex-col lg:flex-row gap-6">
             {/* Filters Sidebar */}

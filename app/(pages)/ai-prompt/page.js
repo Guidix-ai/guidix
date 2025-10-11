@@ -26,21 +26,30 @@ function AIPromptInputContent() {
   const [userCareer, setUserCareer] = useState("");
   const [typewriterText, setTypewriterText] = useState('');
   const [showCursor, setShowCursor] = useState(true);
+  const [isClient, setIsClient] = useState(false);
   const fullText = 'Tell Us About Yourself';
 
-  // Get user data from Redux and localStorage (fallback)
+  // Get user data from Redux
   const user = useSelector((state) => state.auth.user);
 
-  // Try Redux first, then localStorage as fallback
-  const userName = user?.full_name ||
-                   (typeof window !== 'undefined' ? localStorage.getItem('userName') : null) ||
-                   '[Your Name]';
-  const userEmail = user?.email ||
-                    (typeof window !== 'undefined' ? localStorage.getItem('userEmail') : null) ||
-                    '[Email]';
-  const userPhone = user?.phone_number ||
-                    (typeof window !== 'undefined' ? localStorage.getItem('userPhone') : null) ||
-                    '[Phone]';
+  // State for user data to prevent hydration mismatch
+  const [userName, setUserName] = useState('[Your Name]');
+  const [userEmail, setUserEmail] = useState('[Email]');
+  const [userPhone, setUserPhone] = useState('[Phone]');
+
+  // Set client-side data after hydration
+  useEffect(() => {
+    setIsClient(true);
+
+    // Get user data from Redux or localStorage
+    const name = user?.full_name || localStorage.getItem('userName') || '[Your Name]';
+    const email = user?.email || localStorage.getItem('userEmail') || '[Email]';
+    const phone = user?.phone_number || localStorage.getItem('userPhone') || '[Phone]';
+
+    setUserName(name);
+    setUserEmail(email);
+    setUserPhone(phone);
+  }, [user]);
 
   const MAX_WORDS = 100;
 
@@ -67,23 +76,6 @@ function AIPromptInputContent() {
     if (education) setUserEducation(education);
     if (career) setUserCareer(career);
   }, [searchParams]);
-
-  // Log user data for debugging
-  useEffect(() => {
-    console.log('👤 User data check:', {
-      reduxUser: user,
-      fromLocalStorage: {
-        name: typeof window !== 'undefined' ? localStorage.getItem('userName') : null,
-        email: typeof window !== 'undefined' ? localStorage.getItem('userEmail') : null,
-        phone: typeof window !== 'undefined' ? localStorage.getItem('userPhone') : null
-      },
-      finalValues: {
-        name: userName,
-        email: userEmail,
-        phone: userPhone
-      }
-    });
-  }, [user, userName, userEmail, userPhone]);
 
   // Typewriter effect
   useEffect(() => {

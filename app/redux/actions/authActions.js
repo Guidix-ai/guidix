@@ -46,6 +46,8 @@ const requiresAuth = (url) => {
 /**
  * REQUEST INTERCEPTOR
  * Attaches access token to all authenticated requests
+ * NOTE: Passwords in request payload are normal and expected for authentication.
+ * The browser DevTools will show them in Network tab, but they are encrypted in transit via HTTPS.
  */
 axiosInstance.interceptors.request.use(
   (config) => {
@@ -56,6 +58,39 @@ axiosInstance.interceptors.request.use(
       if (accessToken) {
         config.headers.Authorization = `Bearer ${accessToken}`;
       }
+    }
+
+    // Prevent accidental logging of sensitive data
+    // Override console methods during request to filter out passwords
+    if (process.env.NODE_ENV === 'development') {
+      const originalLog = console.log;
+      const originalError = console.error;
+      const originalWarn = console.warn;
+
+      // Temporarily override console methods to filter passwords
+      const sanitize = (args) => {
+        return args.map(arg => {
+          if (typeof arg === 'object' && arg !== null) {
+            const sanitized = { ...arg };
+            if (sanitized.password) sanitized.password = '***REDACTED***';
+            if (sanitized.new_password) sanitized.new_password = '***REDACTED***';
+            if (sanitized.confirmPassword) sanitized.confirmPassword = '***REDACTED***';
+            return sanitized;
+          }
+          return arg;
+        });
+      };
+
+      console.log = (...args) => originalLog(...sanitize(args));
+      console.error = (...args) => originalError(...sanitize(args));
+      console.warn = (...args) => originalWarn(...sanitize(args));
+
+      // Restore after a short delay
+      setTimeout(() => {
+        console.log = originalLog;
+        console.error = originalError;
+        console.warn = originalWarn;
+      }, 100);
     }
 
     return config;
@@ -229,7 +264,16 @@ export const loginUser = createAsyncThunk(
 
       return rejectWithValue('Invalid response format');
     } catch (error) {
-      const message = error.response?.data?.message || error.message || 'Login failed';
+      // Extract exact error message from backend
+      const errorData = error.response?.data;
+      const message =
+        errorData?.detail ||           // FastAPI/Python style
+        errorData?.message ||           // Node/Express style
+        errorData?.error ||             // Generic error field
+        error.message ||                // JavaScript error message
+        'Login failed';                 // Fallback
+
+      console.error('🔴 Login Error:', errorData || error.message);
       return rejectWithValue(message);
     }
   }
@@ -261,7 +305,16 @@ export const registerUser = createAsyncThunk(
 
       return rejectWithValue('Invalid response format');
     } catch (error) {
-      const message = error.response?.data?.message || error.message || 'Registration failed';
+      // Extract exact error message from backend
+      const errorData = error.response?.data;
+      const message =
+        errorData?.detail ||
+        errorData?.message ||
+        errorData?.error ||
+        error.message ||
+        'Registration failed';
+
+      console.error('🔴 Registration Error:', errorData || error.message);
       return rejectWithValue(message);
     }
   }
@@ -314,7 +367,16 @@ export const logoutUser = createAsyncThunk(
         localStorage.removeItem('pendingUser');
       }
 
-      const message = error.response?.data?.message || error.message || 'Logout failed';
+      // Extract exact error message from backend
+      const errorData = error.response?.data;
+      const message =
+        errorData?.detail ||
+        errorData?.message ||
+        errorData?.error ||
+        error.message ||
+        'Logout failed';
+
+      console.error('🔴 Logout Error:', errorData || error.message);
       return rejectWithValue(message);
     }
   }
@@ -346,7 +408,16 @@ export const getUserProfile = createAsyncThunk(
 
       return rejectWithValue('Invalid response format');
     } catch (error) {
-      const message = error.response?.data?.message || error.message || 'Failed to fetch profile';
+      // Extract exact error message from backend
+      const errorData = error.response?.data;
+      const message =
+        errorData?.detail ||
+        errorData?.message ||
+        errorData?.error ||
+        error.message ||
+        'Failed to fetch profile';
+
+      console.error('🔴 Get Profile Error:', errorData || error.message);
       return rejectWithValue(message);
     }
   }
@@ -375,7 +446,16 @@ export const updateUserProfile = createAsyncThunk(
 
       return rejectWithValue('Invalid response format');
     } catch (error) {
-      const message = error.response?.data?.message || error.message || 'Failed to update profile';
+      // Extract exact error message from backend
+      const errorData = error.response?.data;
+      const message =
+        errorData?.detail ||
+        errorData?.message ||
+        errorData?.error ||
+        error.message ||
+        'Failed to update profile';
+
+      console.error('🔴 Update Profile Error:', errorData || error.message);
       return rejectWithValue(message);
     }
   }
@@ -393,7 +473,16 @@ export const forgotPassword = createAsyncThunk(
       const response = await axiosInstance.post('/api/v1/auth/forgot-password', { email });
       return response.data.message || 'Password reset email sent';
     } catch (error) {
-      const message = error.response?.data?.message || error.message || 'Failed to send reset email';
+      // Extract exact error message from backend
+      const errorData = error.response?.data;
+      const message =
+        errorData?.detail ||
+        errorData?.message ||
+        errorData?.error ||
+        error.message ||
+        'Failed to send reset email';
+
+      console.error('🔴 Forgot Password Error:', errorData || error.message);
       return rejectWithValue(message);
     }
   }
@@ -411,7 +500,16 @@ export const resetPassword = createAsyncThunk(
       const response = await axiosInstance.post('/api/v1/auth/reset-password', data);
       return response.data.message || 'Password reset successful';
     } catch (error) {
-      const message = error.response?.data?.message || error.message || 'Failed to reset password';
+      // Extract exact error message from backend
+      const errorData = error.response?.data;
+      const message =
+        errorData?.detail ||
+        errorData?.message ||
+        errorData?.error ||
+        error.message ||
+        'Failed to reset password';
+
+      console.error('🔴 Reset Password Error:', errorData || error.message);
       return rejectWithValue(message);
     }
   }
@@ -429,7 +527,16 @@ export const verifyEmail = createAsyncThunk(
       const response = await axiosInstance.post('/api/v1/auth/verify-email', { token });
       return response.data.message || 'Email verified successfully';
     } catch (error) {
-      const message = error.response?.data?.message || error.message || 'Email verification failed';
+      // Extract exact error message from backend
+      const errorData = error.response?.data;
+      const message =
+        errorData?.detail ||
+        errorData?.message ||
+        errorData?.error ||
+        error.message ||
+        'Email verification failed';
+
+      console.error('🔴 Verify Email Error:', errorData || error.message);
       return rejectWithValue(message);
     }
   }

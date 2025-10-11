@@ -3400,8 +3400,11 @@ function EnhancedResumeContent() {
     }
   };
 
+  // Determine current step and total steps for progress bar
+
   return (
     <DashboardLayout>
+
       <TextSelectionMenu onEnhance={handleEnhanceText} />
 
       {/* Custom styles */}

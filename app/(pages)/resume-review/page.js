@@ -116,6 +116,7 @@ function ResumeReviewPageContent() {
           </div>
         </div>
 
+
         <div className="max-w-6xl mx-auto w-full relative z-10 mt-8 px-4">
           {/* Cards Grid - Side by Side */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">

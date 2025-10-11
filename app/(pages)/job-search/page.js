@@ -223,6 +223,8 @@ const shadowBoxStyle = `
   inset 0 -2px 3px 0 rgba(0, 0, 0, 0.08)
 `;
 
+
+
 const EnhancedJobCard = ({
   job,
   onApply,
@@ -252,28 +254,27 @@ const EnhancedJobCard = ({
 
   const totalBlocks = 5;
 
-  const cardRef = useRef(null);
   const [cardHeight, setCardHeight] = useState(null);
+  const defaultViewRef = useRef(null);
 
   useEffect(() => {
-    if (cardRef.current && !cardHeight) {
-      // Measure the full card height including sticky buttons
-      const fullHeight = cardRef.current.offsetHeight;
-      setCardHeight(fullHeight);
+    if (defaultViewRef.current && !cardHeight) {
+      setCardHeight(defaultViewRef.current.offsetHeight);
     }
   }, [cardHeight]);
 
+
+  
   return (
     <div
-      ref={cardRef}
       className="rounded-lg shadow-sm"
       style={{
         backgroundColor: "#FFFFFF",
         border: "1px solid #F1F3F7",
         boxShadow: shadowBoxStyle,
+        height: cardHeight ? `${cardHeight}px` : "auto",
         overflow: "hidden",
         position: "relative",
-        minHeight: cardHeight ? `${cardHeight}px` : "auto",
       }}
       onMouseLeave={() => {
         setIsHoveringMatchScore(false);
@@ -282,15 +283,12 @@ const EnhancedJobCard = ({
     >
       {!isHoveringMatchScore && !isHoveringCompanyDetails ? (
         <div
-          className="px-4 pb-4"
+          ref={defaultViewRef}
+          className="p-4"
           style={{ animation: "fadeIn 0.3s ease-out" }}
         >
-          <div className="flex justify-between items-center py-3 mb-3">
-            <div
-              className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity flex-1"
-              onMouseEnter={() => setIsHoveringCompanyDetails(true)}
-              data-company-details="true"
-            >
+          <div className="flex justify-between items-start mb-3">
+            <div className="flex items-center gap-2">
               <div
                 className="w-10 h-10 rounded-lg flex items-center justify-center bg-white"
                 style={{ border: "1px solid #E1E4ED" }}
@@ -327,50 +325,51 @@ const EnhancedJobCard = ({
                 </div>
               </div>
             </div>
-            <div className="flex items-center gap-2">
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onBlock(job.id);
-                }}
+
+            <div className="flex gap-2 flex-shrink-0">
+              <div
+                className="cursor-pointer"
                 style={{
-                  ...buttonStyles,
-                  padding: "4px",
-                  background: "transparent",
-                  boxShadow: "none",
+                  display: "inline-flex",
+                  padding: "6px 12px",
+                  alignItems: "center",
+                  gap: "4px",
+                  borderRadius: "200px",
+                  background:
+                    "linear-gradient(180deg, #679CFF 0%, #2370FF 100%)",
+                  boxShadow:
+                    "0 -1.5px 1px 0 rgba(0, 19, 88, 0.30) inset, 0 1.5px 1px 0 rgba(255, 255, 255, 0.25) inset",
+                  fontFamily: "Inter, sans-serif",
+                  fontSize: "14px",
+                  fontWeight: 600,
+                  color: "#FFFFFF",
                 }}
-                className="hover:opacity-70 transition-all"
-                title="Dismiss"
+                onMouseEnter={() => setIsHoveringMatchScore(true)}
+                data-match-score="true"
               >
-                <Image
-                  src="/dismiss.svg"
-                  alt="Dismiss"
-                  width={20}
-                  height={20}
-                />
-              </button>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onSave(job.id);
-                }}
+                Match {job.matchScore}%
+              </div>
+              <div
+                className="cursor-pointer"
                 style={{
-                  ...buttonStyles,
-                  background: "transparent",
-                  padding: "4px",
-                  boxShadow: "none",
+                  display: "inline-flex",
+                  padding: "6px 12px",
+                  alignItems: "center",
+                  gap: "4px",
+                  borderRadius: "200px",
+                  background: "#74D184",
+                  boxShadow:
+                    "0 -1.5px 1px 0 rgba(0, 19, 88, 0.30) inset, 0 1.5px 1px 0 rgba(255, 255, 255, 0.25) inset",
+                  fontFamily: "Inter, sans-serif",
+                  fontSize: "14px",
+                  fontWeight: 600,
+                  color: "#FFFFFF",
                 }}
-                className="transition-all hover:opacity-70"
-                title="Save Job"
+                onMouseEnter={() => setIsHoveringMatchScore(true)}
+                data-match-score="true"
               >
-                <Image
-                  src="/wishlist.svg"
-                  alt="Save"
-                  width={20}
-                  height={20}
-                  style={{ opacity: isSaved ? 1 : 0.6 }}
-                />
-              </button>
+                Success {job.predictabilityScore}%
+              </div>
             </div>
           </div>
 
@@ -414,108 +413,33 @@ const EnhancedJobCard = ({
           </div>
 
           <div
-            className="flex items-center justify-between gap-3 pt-3"
+            className="flex items-center justify-between pt-2"
             style={{ borderTop: "1px solid #F1F3F7" }}
           >
             <div
-              className="cursor-pointer text-sm flex-1"
-              style={{ color: "#353E5C", fontWeight: 500 }}
-              onMouseEnter={() => setIsHoveringMatchScore(true)}
-              data-match-score="true"
-            >
-              You match{" "}
-              <span style={{ fontWeight: 700, color: "#2370FF" }}>
-                {job.matchScore}%
-              </span>{" "}
-              and success rate is{" "}
-              <span style={{ fontWeight: 700, color: "#74D184" }}>
-                {job.predictabilityScore}%
-              </span>
-            </div>
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                onApply(job.id);
-              }}
-              disabled={isApplied}
-              style={{
-                ...applyButtonStyles,
-                background: isApplied
-                  ? "linear-gradient(180deg, #4ade80 0%, #22c55e 100%)"
-                  : "linear-gradient(180deg, #679CFF 0%, #2370FF 100%)",
-                cursor: isApplied ? "not-allowed" : "pointer",
-              }}
-              className="transition-all hover:opacity-90"
-            >
-              {isApplied ? "Applied" : "Apply Now"}
-            </button>
-          </div>
-        </div>
-      ) : isHoveringMatchScore ? (
-        <div
-          className="hover-overlay-scroll"
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundColor: "#FFFFFF",
-            overflowY: "auto",
-            animation: "slideUpBlur 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)",
-          }}
-        >
-          {/* Sticky Top row with company logo and action icons */}
-          <div
-            className="flex justify-between items-center py-3 px-4 mb-3"
-            style={{
-              position: "sticky",
-              top: 0,
-              backgroundColor: "#FFFFFF",
-              zIndex: 10,
-              borderBottom: "1px solid #F1F3F7",
-            }}
-          >
-            <div
-              className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity flex-1"
+              className="flex items-center gap-1 text-xs hover:opacity-80 cursor-pointer font-medium transition-all"
+              style={{ color: "#6D7586" }}
               onMouseEnter={() => setIsHoveringCompanyDetails(true)}
               data-company-details="true"
             >
-              <div
-                className="w-10 h-10 rounded-lg flex items-center justify-center bg-white"
-                style={{ border: "1px solid #E1E4ED" }}
+              <svg
+                width="20"
+                height="20"
+                fill="none"
+                viewBox="0 0 14 14"
+                className={`transition-transform ${
+                  isHoveringCompanyDetails ? "" : "rotate-180"
+                }`}
               >
-                <Image
-                  src={`https://logo.clearbit.com/${job.company
-                    .toLowerCase()
-                    .replace(/\s+/g, "")}.com`}
-                  alt={job.company}
-                  className="w-full h-full object-contain rounded-lg"
-                  width={40}
-                  height={40}
-                  onError={(e) => {
-                    e.target.style.display = "none";
-                    e.target.nextElementSibling.style.display = "flex";
-                  }}
+                <path
+                  d="M3.5 5.25L7 8.75L10.5 5.25"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 />
-                <div
-                  className="w-full h-full rounded-lg flex items-center justify-center text-white font-bold text-sm"
-                  style={{ backgroundColor: "#0F2678", display: "none" }}
-                >
-                  {job.company.charAt(0)}
-                </div>
-              </div>
-              <div>
-                <div
-                  className="text-sm font-semibold"
-                  style={{ color: "#002A79" }}
-                >
-                  {job.company}
-                </div>
-                <div className="text-xs" style={{ color: "#6D7586" }}>
-                  {job.companyType.split(" · ")[0]}
-                </div>
-              </div>
+              </svg>
+              Company Details
             </div>
             <div className="flex items-center gap-2">
               <button
@@ -580,15 +504,43 @@ const EnhancedJobCard = ({
               </button>
             </div>
           </div>
-
-          <div className="px-4 pb-4 space-y-2">
-            <div className="flex items-center justify-between mb-2">
-              <h3
-                className="text-base font-bold"
-                style={{ color: "#002A79" }}
-              >
-                {job.title}
-              </h3>
+        </div>
+      ) : isHoveringMatchScore ? (
+        <div
+          className="p-4"
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            overflowY: "auto",
+            animation: "slideUpBlur 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)",
+            backgroundColor: "rgba(255, 255, 255, 0.98)",
+            backdropFilter: "blur(8px)",
+          }}
+        >
+          <div className="space-y-2">
+            <div className="flex justify-between items-start mb-2">
+              <div className="flex items-center gap-2">
+                <div
+                  className="w-8 h-8 rounded-lg flex items-center justify-center text-white font-bold text-sm"
+                  style={{ backgroundColor: "#0F2678" }}
+                >
+                  {job.company.charAt(0)}
+                </div>
+                <div>
+                  <div
+                    className="text-sm font-semibold"
+                    style={{ color: "#002A79" }}
+                  >
+                    {job.company}
+                  </div>
+                  <div className="text-xs" style={{ color: "#6D7586" }}>
+                    Score Analysis
+                  </div>
+                </div>
+              </div>
               <div className="flex gap-2">
                 <div
                   className="bg-gray-200 text-gray-700 rounded-lg px-2 py-1"
@@ -614,6 +566,12 @@ const EnhancedJobCard = ({
                 </div>
               </div>
             </div>
+            <h3
+              className="text-base font-bold mb-1.5"
+              style={{ color: "#002A79" }}
+            >
+              {job.title}
+            </h3>
             <p
               className="text-xs mb-2.5 leading-relaxed line-clamp-2"
               style={{ color: "#6D7586" }}
@@ -751,140 +709,131 @@ const EnhancedJobCard = ({
                 </div>
               </div>
             </div>
+            <div
+              className="flex items-center justify-end pt-1.5"
+              style={{ borderTop: "1px solid #F1F3F7" }}
+            >
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onBlock(job.id);
+                  }}
+                  style={{
+                    ...buttonStyles,
+                    padding: "4px",
+                    background: "transparent",
+                    boxShadow: "none",
+                  }}
+                  className="hover:opacity-70 transition-all"
+                  title="Dismiss"
+                >
+                  <Image
+                    src="/dismiss.svg"
+                    alt="Dismiss"
+                    width={20}
+                    height={20}
+                  />
+                </button>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onSave(job.id);
+                  }}
+                  style={{
+                    ...buttonStyles,
+                    background: "transparent",
+                    padding: "4px",
+                    boxShadow: "none",
+                  }}
+                  className="transition-all hover:opacity-70"
+                  title="Save Job"
+                >
+                  <Image
+                    src="/wishlist.svg"
+                    alt="Save"
+                    width={20}
+                    height={20}
+                    style={{ opacity: isSaved ? 1 : 0.6 }}
+                  />
+                </button>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onApply(job.id);
+                  }}
+                  disabled={isApplied}
+                  style={{
+                    ...applyButtonStyles,
+                    background: isApplied
+                      ? "linear-gradient(180deg, #4ade80 0%, #22c55e 100%)"
+                      : "linear-gradient(180deg, #679CFF 0%, #2370FF 100%)",
+                    cursor: isApplied ? "not-allowed" : "pointer",
+                  }}
+                  className="transition-all hover:opacity-90"
+                >
+                  {isApplied ? "Applied" : "Apply Now"}
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       ) : (
         <div
-          className="hover-overlay-scroll"
+          className="p-4"
           style={{
             position: "absolute",
             top: 0,
             left: 0,
             right: 0,
             bottom: 0,
-            backgroundColor: "#FFFFFF",
             overflowY: "auto",
             animation: "slideUpBlur 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)",
+            backgroundColor: "rgba(255, 255, 255, 0.98)",
+            backdropFilter: "blur(8px)",
           }}
         >
-          {/* Sticky Top row with company logo and action icons */}
-          <div
-            className="flex justify-between items-center py-3 px-4 mb-3"
-            style={{
-              position: "sticky",
-              top: 0,
-              backgroundColor: "#FFFFFF",
-              zIndex: 10,
-              borderBottom: "1px solid #F1F3F7",
-            }}
-            data-company-details="true"
-          >
-            <div
-              className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity flex-1"
-              onMouseEnter={() => setIsHoveringCompanyDetails(true)}
-              data-company-details="true"
-            >
-              <div
-                className="w-10 h-10 rounded-lg flex items-center justify-center bg-white"
-                style={{ border: "1px solid #E1E4ED" }}
-              >
-                <Image
-                  src={`https://logo.clearbit.com/${job.company
-                    .toLowerCase()
-                    .replace(/\s+/g, "")}.com`}
-                  alt={job.company}
-                  className="w-full h-full object-contain rounded-lg"
-                  width={40}
-                  height={40}
-                  onError={(e) => {
-                    e.target.style.display = "none";
-                    e.target.nextElementSibling.style.display = "flex";
-                  }}
-                />
+          <div className="space-y-2" data-company-details="true">
+            <div className="flex justify-between items-start mb-2">
+              <div className="flex items-center gap-2">
                 <div
-                  className="w-full h-full rounded-lg flex items-center justify-center text-white font-bold text-sm"
-                  style={{ backgroundColor: "#0F2678", display: "none" }}
+                  className="w-10 h-10 rounded-lg flex items-center justify-center bg-white"
+                  style={{ border: "1px solid #E1E4ED" }}
                 >
-                  {job.company.charAt(0)}
+                  <Image
+                    src={`https://logo.clearbit.com/${job.company
+                      .toLowerCase()
+                      .replace(/\s+/g, "")}.com`}
+                    alt={job.company}
+                    className="w-full h-full object-contain rounded-lg"
+                    width={40}
+                    height={40}
+                    onError={(e) => {
+                      e.target.style.display = "none";
+                      e.target.nextElementSibling.style.display = "flex";
+                    }}
+                  />
+                  <div
+                    className="w-full h-full rounded-lg flex items-center justify-center text-white font-bold text-sm"
+                    style={{ backgroundColor: "#0F2678", display: "none" }}
+                  >
+                    {job.company.charAt(0)}
+                  </div>
                 </div>
-              </div>
-              <div>
-                <div
-                  className="text-sm font-semibold"
-                  style={{ color: "#002A79" }}
-                >
-                  {job.company}
-                </div>
-                <div className="text-xs" style={{ color: "#6D7586" }}>
-                  {job.companyType.split(" · ")[0]}
+                <div>
+                  <div
+                    className="text-sm font-semibold"
+                    style={{ color: "#002A79" }}
+                  >
+                    {job.company}
+                  </div>
+                  <div className="text-xs" style={{ color: "#6D7586" }}>
+                    Company Details
+                  </div>
                 </div>
               </div>
             </div>
-            <div className="flex items-center gap-2">
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onBlock(job.id);
-                }}
-                style={{
-                  ...buttonStyles,
-                  padding: "4px",
-                  background: "transparent",
-                  boxShadow: "none",
-                }}
-                className="hover:opacity-70 transition-all"
-                title="Dismiss"
-              >
-                <Image
-                  src="/dismiss.svg"
-                  alt="Dismiss"
-                  width={20}
-                  height={20}
-                />
-              </button>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onSave(job.id);
-                }}
-                style={{
-                  ...buttonStyles,
-                  background: "transparent",
-                  padding: "4px",
-                  boxShadow: "none",
-                }}
-                className="transition-all hover:opacity-70"
-                title="Save Job"
-              >
-                <Image
-                  src="/wishlist.svg"
-                  alt="Save"
-                  width={20}
-                  height={20}
-                  style={{ opacity: isSaved ? 1 : 0.6 }}
-                />
-              </button>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onApply(job.id);
-                }}
-                disabled={isApplied}
-                style={{
-                  ...applyButtonStyles,
-                  background: isApplied
-                    ? "linear-gradient(180deg, #4ade80 0%, #22c55e 100%)"
-                    : "linear-gradient(180deg, #679CFF 0%, #2370FF 100%)",
-                  cursor: isApplied ? "not-allowed" : "pointer",
-                }}
-                className="transition-all hover:opacity-90"
-              >
-                {isApplied ? "Applied" : "Apply Now"}
-              </button>
-            </div>
-          </div>
 
-          <div className="px-4 pb-4 space-y-2" data-company-details="true">
             <h3
               className="text-base font-bold mb-1.5"
               style={{ color: "#002A79" }}
@@ -1042,6 +991,74 @@ const EnhancedJobCard = ({
                 </div>
               </div>
             </div>
+
+            <div
+              className="flex items-center justify-end pt-1.5"
+              style={{ borderTop: "1px solid #F1F3F7" }}
+            >
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onBlock(job.id);
+                  }}
+                  style={{
+                    ...buttonStyles,
+                    padding: "4px",
+                    background: "transparent",
+                    boxShadow: "none",
+                  }}
+                  className="hover:opacity-70 transition-all"
+                  title="Dismiss"
+                >
+                  <Image
+                    src="/dismiss.svg"
+                    alt="Dismiss"
+                    width={20}
+                    height={20}
+                  />
+                </button>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onSave(job.id);
+                  }}
+                  style={{
+                    ...buttonStyles,
+                    background: "transparent",
+                    padding: "4px",
+                    boxShadow: "none",
+                  }}
+                  className="transition-all hover:opacity-70"
+                  title="Save Job"
+                >
+                  <Image
+                    src="/wishlist.svg"
+                    alt="Save"
+                    width={20}
+                    height={20}
+                    style={{ opacity: isSaved ? 1 : 0.6 }}
+                  />
+                </button>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onApply(job.id);
+                  }}
+                  disabled={isApplied}
+                  style={{
+                    ...applyButtonStyles,
+                    background: isApplied
+                      ? "linear-gradient(180deg, #4ade80 0%, #22c55e 100%)"
+                      : "linear-gradient(180deg, #679CFF 0%, #2370FF 100%)",
+                    cursor: isApplied ? "not-allowed" : "pointer",
+                  }}
+                  className="transition-all hover:opacity-90"
+                >
+                  {isApplied ? "Applied" : "Apply Now"}
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}
@@ -1143,21 +1160,19 @@ const JobSearchPage = () => {
       }
 
       /* Custom scrollbar for hover views */
-      .hover-overlay-scroll::-webkit-scrollbar {
-        width: 8px;
+      .p-4::-webkit-scrollbar {
+        width: 6px;
       }
-      .hover-overlay-scroll::-webkit-scrollbar-track {
-        background: #F8F9FF;
+      .p-4::-webkit-scrollbar-track {
+        background: #F1F3F7;
         border-radius: 10px;
-        margin: 8px 0;
       }
-      .hover-overlay-scroll::-webkit-scrollbar-thumb {
-        background: linear-gradient(180deg, #679CFF 0%, #2370FF 100%);
+      .p-4::-webkit-scrollbar-thumb {
+        background: #6477B4;
         border-radius: 10px;
-        border: 2px solid #F8F9FF;
       }
-      .hover-overlay-scroll::-webkit-scrollbar-thumb:hover {
-        background: linear-gradient(180deg, #2370FF 0%, #1a5acc 100%);
+      .p-4::-webkit-scrollbar-thumb:hover {
+        background: #4a5c8f;
       }
     `;
     document.head.appendChild(style);

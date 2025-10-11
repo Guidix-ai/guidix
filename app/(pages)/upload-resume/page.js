@@ -142,6 +142,7 @@ function UploadResumePageContent() {
           </div>
         </div>
 
+
       <div className="max-w-2xl mx-auto w-full relative z-10 mt-8 px-4">
 
         {/* Upload Card */}

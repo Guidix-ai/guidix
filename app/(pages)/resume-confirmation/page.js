@@ -280,7 +280,6 @@ function ResumeConfirmationPageContent() {
             transform: animateIn ? 'translateY(0)' : 'translateY(20px)',
             transition: 'all 0.3s ease'
           }}>
-            {/* Progress Bar */}
             <div style={{ marginBottom: '1.5rem' }}>
               <div style={{
                 height: '4px',
