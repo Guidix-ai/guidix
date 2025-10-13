@@ -248,8 +248,8 @@ export function DashboardLayout({ children }) {
                   <Image
                     src="/upgrade-icon.svg"
                     alt="Upgrade"
-                    width={24}
-                    height={24}
+                    width={16}
+                    height={16}
                   />
                   <span className="hidden sm:inline text-xs">Upgrade Now</span>
                   <span className="sm:hidden">Upgrade</span>

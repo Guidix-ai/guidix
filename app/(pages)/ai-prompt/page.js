@@ -9,6 +9,7 @@ import {
 import { useRouter, useSearchParams } from "next/navigation";
 import { useSelector } from "react-redux";
 import { DashboardLayout } from "@/components/layout/dashboard-layout";
+import ResumeBreadcrumbs from "@/components/ResumeBreadcrumbs";
 
 const colorTokens = {
   title: "#002A79",
@@ -444,7 +445,7 @@ My experience? [Key Project] from [Year], and an internship [Role/Company] with 
         )}
 
         {/* Main Content */}
-        <div className="px-8 py-6"  style={{ backgroundColor: '#F8F9FF' }}>
+        <div className="px-8 py-6"  style={{ backgroundColor: '#F8F9FF', paddingBottom: '120px' }}>
           {/* Row Layout: Examples on Left, Prompt on Right */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
             {/* Examples Section - Left */}
@@ -570,48 +571,41 @@ My experience? [Key Project] from [Year], and an internship [Role/Company] with 
             </div>
           </div>
 
-          {/* Navigation */}
-          <div className="flex justify-between items-center bg-white rounded-lg p-6" style={{
-            border: '1px solid #F1F3F7',
-            boxShadow: '0 0 6px 0 rgba(0, 0, 0, 0.12), 0 2px 3px 0 rgba(0, 0, 0, 0.04), 0 2px 6px 0 rgba(0, 0, 0, 0.04), inset 0 -2px 3px 0 rgba(0, 0, 0, 0.08)'
-          }}>
-            <button
-              onClick={handlePrev}
-              className="px-6 py-3 rounded-lg font-medium text-sm flex items-center gap-2 transition-all hover:opacity-90"
-              style={{
-                border: '1px solid #E9F1FF',
-                background: 'linear-gradient(180deg, #F4F8FF 0%, #E9F1FF 100%)',
-                color: '#474FA3'
-              }}
-            >
-              <ArrowLeft className="h-4 w-4" />
-              Back
-            </button>
-
-            <button
-              onClick={handleNext}
-              disabled={!prompt.trim() || wordCount > MAX_WORDS}
-              className={`px-8 py-3 rounded-lg font-medium text-sm flex items-center gap-2 transition-all ${
-                !prompt.trim() || wordCount > MAX_WORDS
-                  ? "opacity-50 cursor-not-allowed"
-                  : "hover:opacity-90"
-              }`}
-              style={{
-                border: '1px solid rgba(35, 112, 255, 0.30)',
-                background: !prompt.trim() || wordCount > MAX_WORDS
-                  ? '#9CA3AF'
-                  : 'linear-gradient(180deg, #679CFF 0%, #2370FF 100%)',
-                boxShadow: '0 2px 4px 0 rgba(77, 145, 225, 0.10), 0 1px 0.3px 0 rgba(255, 255, 255, 0.25) inset, 0 -1px 0.3px 0 rgba(0, 19, 88, 0.25) inset',
-                color: '#FFFFFF',
-                textShadow: '0 0.5px 1.5px rgba(0, 19, 88, 0.30), 0 2px 5px rgba(0, 19, 88, 0.10)'
-              }}
-            >
-              Generate Resume
-              <ArrowRight className="h-4 w-4" />
-            </button>
-          </div>
         </div>
       </div>
+
+      {/* Floating Generate Button */}
+      <div style={{
+        position: 'fixed',
+        bottom: '120px',
+        right: '2rem',
+        zIndex: 50
+      }}>
+        <button
+          onClick={handleNext}
+          disabled={!prompt.trim() || wordCount > MAX_WORDS}
+          className={`px-8 py-4 rounded-full font-semibold text-base flex items-center gap-3 transition-all shadow-lg ${
+            !prompt.trim() || wordCount > MAX_WORDS
+              ? "opacity-50 cursor-not-allowed"
+              : "hover:shadow-xl hover:scale-105"
+          }`}
+          style={{
+            border: '2px solid rgba(35, 112, 255, 0.30)',
+            background: !prompt.trim() || wordCount > MAX_WORDS
+              ? '#9CA3AF'
+              : 'linear-gradient(135deg, #679CFF 0%, #2370FF 100%)',
+            boxShadow: '0 8px 24px rgba(35, 112, 255, 0.4)',
+            color: '#FFFFFF',
+            textShadow: '0 1px 2px rgba(0, 19, 88, 0.30)'
+          }}
+        >
+          Generate Resume
+          <ArrowRight className="h-5 w-5" />
+        </button>
+      </div>
+
+      {/* Breadcrumbs */}
+      <ResumeBreadcrumbs currentStep={2} totalSteps={4} />
     </DashboardLayout>
     </>
   );

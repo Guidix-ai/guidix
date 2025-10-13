@@ -16,6 +16,7 @@ import { allTemplates } from "@/components/pdf-templates";
 import dynamic from 'next/dynamic';
 import { enhanceResume, createResumeFromPrompt } from "@/services/resumeService";
 import { handleApiError, logError } from "@/utils/errorHandler";
+import ResumeBreadcrumbs from "@/components/ResumeBreadcrumbs";
 
 const colorTokens = {
   title: "#002A79",
@@ -197,9 +198,10 @@ function TemplateSelectionContent() {
   return (
     <DashboardLayout>
       <div
-        className="min-h-screen pb-12"
+        className="min-h-screen"
         style={{
           background: 'linear-gradient(180deg, #F8F9FF 0%, #FFFFFF 100%)',
+          paddingBottom: '140px'
         }}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
@@ -462,55 +464,66 @@ function TemplateSelectionContent() {
             </div>
           )}
 
-          {/* Navigation Buttons */}
-          <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3 sm:gap-4">
-            <button
-              onClick={handlePrev}
-              disabled={loading}
-              className="px-6 py-3.5 rounded-xl font-medium text-base flex items-center justify-center gap-2 transition-all hover:scale-105 active:scale-95"
-              style={{
-                border: '2px solid #E1E4EB',
-                background: '#FFFFFF',
-                color: colorTokens.paragraph,
-                opacity: loading ? 0.5 : 1,
-                cursor: loading ? 'not-allowed' : 'pointer',
-                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.06)'
-              }}
-            >
-              <ArrowLeft className="h-5 w-5" />
-              Back
-            </button>
-            <button
-              onClick={handleContinue}
-              disabled={!selectedTemplate || loading}
-              className="px-8 py-3.5 rounded-xl font-bold text-base flex items-center justify-center gap-2 transition-all hover:scale-105 active:scale-95"
-              style={{
-                background: !selectedTemplate || loading
-                  ? '#9CA3AF'
-                  : `linear-gradient(135deg, ${colorTokens.secondary600} 0%, ${colorTokens.secondary700} 100%)`,
-                boxShadow: !selectedTemplate || loading
-                  ? 'none'
-                  : '0 4px 16px rgba(35, 112, 255, 0.3)',
-                color: '#FFFFFF',
-                cursor: !selectedTemplate || loading ? 'not-allowed' : 'pointer',
-                opacity: !selectedTemplate || loading ? 0.6 : 1
-              }}
-            >
-              {loading ? (
-                <>
-                  <div className="w-5 h-5 border-3 border-white border-t-transparent rounded-full animate-spin"></div>
-                  Processing...
-                </>
-              ) : (
-                <>
-                  Continue to Editor
-                  <ArrowRight className="h-5 w-5" />
-                </>
-              )}
-            </button>
-          </div>
         </div>
       </div>
+
+      {/* Floating Continue Button */}
+      <div style={{
+        position: 'fixed',
+        bottom: '120px',
+        right: '2rem',
+        zIndex: 50
+      }}>
+        <button
+          onClick={handleContinue}
+          disabled={!selectedTemplate || loading}
+          className={`px-8 py-4 rounded-full font-semibold text-base flex items-center gap-3 transition-all shadow-lg ${
+            !selectedTemplate || loading
+              ? "opacity-50 cursor-not-allowed"
+              : "hover:shadow-xl hover:scale-105"
+          }`}
+          style={{
+            border: '2px solid rgba(35, 112, 255, 0.30)',
+            background: !selectedTemplate || loading
+              ? '#9CA3AF'
+              : 'linear-gradient(135deg, #679CFF 0%, #2370FF 100%)',
+            boxShadow: '0 8px 24px rgba(35, 112, 255, 0.4)',
+            color: '#FFFFFF',
+            textShadow: '0 1px 2px rgba(0, 19, 88, 0.30)'
+          }}
+        >
+          {loading ? (
+            <>
+              <div className="w-5 h-5 border-3 border-white border-t-transparent rounded-full animate-spin"></div>
+              Processing...
+            </>
+          ) : (
+            <>
+              Continue to Editor
+              <ArrowRight className="h-5 w-5" />
+            </>
+          )}
+        </button>
+      </div>
+
+      {/* Breadcrumbs */}
+      {searchParams.get("from") === "ai" && (
+        <ResumeBreadcrumbs currentStep={3} totalSteps={4} />
+      )}
+      {searchParams.get("from") === "upload" && (
+        <ResumeBreadcrumbs
+          currentStep={5}
+          totalSteps={6}
+          steps={[
+            { id: 1, label: 'Info', route: '/resume-confirmation?path=upload' },
+            { id: 2, label: 'Upload', route: '/upload-resume' },
+            { id: 3, label: 'Analyzing', route: '#' },
+            { id: 4, label: 'Review', route: '/resume-review' },
+            { id: 5, label: 'Template', route: '#' },
+            { id: 6, label: 'Editor', route: '#' }
+          ]}
+        />
+      )}
     </DashboardLayout>
   );
 }

@@ -14,6 +14,7 @@ import { Input } from "@/components/ui/input";
 import React, { useState, useEffect, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { DashboardLayout } from "@/components/layout/dashboard-layout";
+import ResumeBreadcrumbs from "@/components/ResumeBreadcrumbs";
 import {
   Download,
   Edit3,
@@ -5017,26 +5018,26 @@ function EnhancedResumeContent() {
             </div>
           </div>
         )}
-
-        {/* Back Button at Bottom */}
-        <div className="mt-6 mb-6 flex justify-center">
-          <button
-            onClick={handlePrev}
-            className="flex items-center gap-2 px-6 py-3 rounded-lg transition-all hover:opacity-90"
-            style={{
-              border: '1px solid #E1E4EB',
-              background: '#F8F9FF',
-              color: '#6477B4',
-              fontFamily: 'Inter, sans-serif',
-              fontSize: '14px',
-              fontWeight: 500
-            }}
-          >
-            <ArrowLeft className="h-4 w-4" />
-            <span>Back to Templates</span>
-          </button>
-        </div>
       </div>
+
+      {/* Breadcrumbs */}
+      {isFromAI && (
+        <ResumeBreadcrumbs currentStep={4} totalSteps={4} />
+      )}
+      {isFromUpload && (
+        <ResumeBreadcrumbs
+          currentStep={6}
+          totalSteps={6}
+          steps={[
+            { id: 1, label: 'Info', route: '/resume-confirmation?path=upload' },
+            { id: 2, label: 'Upload', route: '/upload-resume' },
+            { id: 3, label: 'Analyzing', route: '#' },
+            { id: 4, label: 'Review', route: '/resume-review' },
+            { id: 5, label: 'Template', route: '#' },
+            { id: 6, label: 'Editor', route: '#' }
+          ]}
+        />
+      )}
     </DashboardLayout>
   );
 }

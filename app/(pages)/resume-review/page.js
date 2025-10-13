@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useTypewriter } from "@/hooks/useTypewriter";
+import ResumeBreadcrumbs from "@/components/ResumeBreadcrumbs";
 
 function ResumeReviewPageContent() {
   const router = useRouter();
@@ -93,7 +94,7 @@ function ResumeReviewPageContent() {
 
   return (
     <DashboardLayout>
-      <div style={{ minHeight: '100vh', backgroundColor: '#F8F9FF', width: '100%' }}>
+      <div style={{ minHeight: '100vh', backgroundColor: '#F8F9FF', width: '100%', paddingBottom: '120px' }}>
         {/* Banner */}
         <div className="relative py-6 px-8 overflow-hidden flex items-center" style={{
           backgroundImage: 'url(/header-banner.svg)',
@@ -255,6 +256,20 @@ function ResumeReviewPageContent() {
           }
         `}</style>
       </div>
+
+      {/* Breadcrumbs */}
+      <ResumeBreadcrumbs
+        currentStep={4}
+        totalSteps={6}
+        steps={[
+          { id: 1, label: 'Info', route: '/resume-confirmation?path=upload' },
+          { id: 2, label: 'Upload', route: '/upload-resume' },
+          { id: 3, label: 'Analyzing', route: '#' },
+          { id: 4, label: 'Review', route: '#' },
+          { id: 5, label: 'Template', route: '#' },
+          { id: 6, label: 'Editor', route: '#' }
+        ]}
+      />
     </DashboardLayout>
   );
 }

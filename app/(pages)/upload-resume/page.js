@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { DashboardLayout } from "@/components/layout/dashboard-layout";
 import { uploadAndProcessResume } from "@/services/resumeService";
 import { handleApiError, logError } from "@/utils/errorHandler";
+import ResumeBreadcrumbs from "@/components/ResumeBreadcrumbs";
 
 function UploadResumePageContent() {
   const router = useRouter();
@@ -124,7 +125,7 @@ function UploadResumePageContent() {
 
   return (
     <DashboardLayout>
-      <div style={{ minHeight: '100vh', backgroundColor: '#F8F9FF', width: '100%' }}>
+      <div style={{ minHeight: '100vh', backgroundColor: '#F8F9FF', width: '100%', paddingBottom: '120px' }}>
         {/* Blue Banner */}
         <div className="relative py-6 px-8 overflow-hidden flex items-center" style={{
           backgroundImage: 'url(/header-banner.svg)',
@@ -322,6 +323,20 @@ function UploadResumePageContent() {
         </div>
       </div>
       </div>
+
+      {/* Breadcrumbs */}
+      <ResumeBreadcrumbs
+        currentStep={2}
+        totalSteps={6}
+        steps={[
+          { id: 1, label: 'Info', route: '/resume-confirmation?path=upload' },
+          { id: 2, label: 'Upload', route: '/upload-resume' },
+          { id: 3, label: 'Analyzing', route: '#' },
+          { id: 4, label: 'Review', route: '#' },
+          { id: 5, label: 'Template', route: '#' },
+          { id: 6, label: 'Editor', route: '#' }
+        ]}
+      />
     </DashboardLayout>
   );
 }

@@ -5,7 +5,13 @@
       "Bash(npm run dev:*)",
       "Bash(ls:*)",
       "Read(//c/Users/Kunal/Pictures/Screenshots/**)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Read(//c/Users/Kunal/Downloads/**)",
+      "Bash(netstat:*)",
+      "Bash(findstr:*)",
+      "Bash(npm run build:*)",
+      "Bash(wc:*)",
+      "Bash(if exist .next rmdir /s /q .next)"
     ],
     "deny": [],
     "ask": []

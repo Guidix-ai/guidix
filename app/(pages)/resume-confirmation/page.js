@@ -4,6 +4,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { DashboardLayout } from "@/components/layout/dashboard-layout";
 import { getSuggestedPrompts } from "@/services/resumeService";
 import { handleApiError, logError } from "@/utils/errorHandler";
+import ResumeBreadcrumbs from "@/components/ResumeBreadcrumbs";
 import {
   Monitor,
   Radio,
@@ -111,6 +112,7 @@ function ResumeConfirmationPageContent() {
 
   useEffect(() => {
     const pathParam = searchParams.get("path");
+    console.log('🔍 Resume Confirmation - Path Param:', pathParam);
     if (pathParam) setPath(pathParam);
   }, [searchParams]);
 
@@ -270,7 +272,7 @@ function ResumeConfirmationPageContent() {
           display: 'flex',
           alignItems: 'flex-start',
           justifyContent: 'center',
-          padding: '2rem 1rem 1rem 1rem',
+          padding: '2rem 1rem 120px 1rem',
           overflow: 'hidden'
         }}>
           <div style={{
@@ -280,30 +282,6 @@ function ResumeConfirmationPageContent() {
             transform: animateIn ? 'translateY(0)' : 'translateY(20px)',
             transition: 'all 0.3s ease'
           }}>
-            <div style={{ marginBottom: '1.5rem' }}>
-              <div style={{
-                height: '4px',
-                backgroundColor: '#E1E4ED',
-                borderRadius: '4px',
-                overflow: 'hidden'
-              }}>
-                <div style={{
-                  height: '100%',
-                  width: `${(currentStep / 3) * 100}%`,
-                  background: 'linear-gradient(180deg, #474FA3 0%, #2A338B 100%)',
-                  transition: 'width 0.3s ease'
-                }} />
-              </div>
-              <div style={{
-                marginTop: '0.5rem',
-                textAlign: 'center',
-                color: '#6D7586',
-                fontSize: '13px',
-                fontWeight: 500
-              }}>
-                Step {currentStep} of 3
-              </div>
-            </div>
 
             {/* Question Card */}
             <div style={{
@@ -477,32 +455,32 @@ function ResumeConfirmationPageContent() {
                 </div>
               )}
 
-              {/* Back Button */}
-              {currentStep > 1 && (
-                <div style={{ marginTop: 'auto', paddingTop: '1.5rem', textAlign: 'center' }}>
-                  <button
-                    onClick={handleBack}
-                    style={{
-                      background: 'transparent',
-                      border: 'none',
-                      color: '#474FA3',
-                      fontSize: '13px',
-                      fontWeight: 500,
-                      cursor: 'pointer',
-                      padding: '6px 12px',
-                      transition: 'opacity 0.2s ease'
-                    }}
-                    onMouseEnter={(e) => e.currentTarget.style.opacity = '0.7'}
-                    onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}
-                  >
-                    ← Back
-                  </button>
-                </div>
-              )}
             </div>
           </div>
         </div>
       </div>
+
+      {/* Breadcrumbs */}
+      {(path === "ai" || !path) && (
+        <ResumeBreadcrumbs
+          currentStep={1}
+          totalSteps={4}
+        />
+      )}
+      {path === "upload" && (
+        <ResumeBreadcrumbs
+          currentStep={1}
+          totalSteps={6}
+          steps={[
+            { id: 1, label: 'Info', route: '/resume-confirmation?path=upload' },
+            { id: 2, label: 'Upload', route: '#' },
+            { id: 3, label: 'Analyzing', route: '#' },
+            { id: 4, label: 'Review', route: '#' },
+            { id: 5, label: 'Template', route: '#' },
+            { id: 6, label: 'Editor', route: '#' }
+          ]}
+        />
+      )}
     </DashboardLayout>
   );
 }

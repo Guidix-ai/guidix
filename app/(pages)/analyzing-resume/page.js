@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useTypewriter } from "@/hooks/useTypewriter";
 import { DashboardLayout } from "@/components/layout/dashboard-layout";
 import Image from "next/image";
+import ResumeBreadcrumbs from "@/components/ResumeBreadcrumbs";
 
 function AnalyzingResumePageContent() {
   const router = useRouter();
@@ -68,6 +69,20 @@ function AnalyzingResumePageContent() {
           }
         `}</style>
       </div>
+
+      {/* Breadcrumbs */}
+      <ResumeBreadcrumbs
+        currentStep={3}
+        totalSteps={6}
+        steps={[
+          { id: 1, label: 'Info', route: '/resume-confirmation?path=upload' },
+          { id: 2, label: 'Upload', route: '/upload-resume' },
+          { id: 3, label: 'Analyzing', route: '#' },
+          { id: 4, label: 'Review', route: '#' },
+          { id: 5, label: 'Template', route: '#' },
+          { id: 6, label: 'Editor', route: '#' }
+        ]}
+      />
     </DashboardLayout>
   );
 }
