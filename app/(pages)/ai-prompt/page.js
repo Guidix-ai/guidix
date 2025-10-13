@@ -445,7 +445,7 @@ My experience? [Key Project] from [Year], and an internship [Role/Company] with 
         )}
 
         {/* Main Content */}
-        <div className="px-8 py-6"  style={{ backgroundColor: '#F8F9FF', paddingBottom: '120px' }}>
+        <div className="px-8 py-6"  style={{ backgroundColor: '#F8F9FF' }}>
           {/* Row Layout: Examples on Left, Prompt on Right */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
             {/* Examples Section - Left */}
@@ -584,23 +584,35 @@ My experience? [Key Project] from [Year], and an internship [Role/Company] with 
         <button
           onClick={handleNext}
           disabled={!prompt.trim() || wordCount > MAX_WORDS}
-          className={`px-8 py-4 rounded-full font-semibold text-base flex items-center gap-3 transition-all shadow-lg ${
+          className={`flex items-center gap-2 ${
             !prompt.trim() || wordCount > MAX_WORDS
               ? "opacity-50 cursor-not-allowed"
-              : "hover:shadow-xl hover:scale-105"
+              : ""
           }`}
           style={{
-            border: '2px solid rgba(35, 112, 255, 0.30)',
+            display: "inline-flex",
+            padding: "12px 20px",
+            alignItems: "center",
+            borderRadius: "8px",
             background: !prompt.trim() || wordCount > MAX_WORDS
               ? '#9CA3AF'
-              : 'linear-gradient(135deg, #679CFF 0%, #2370FF 100%)',
-            boxShadow: '0 8px 24px rgba(35, 112, 255, 0.4)',
-            color: '#FFFFFF',
-            textShadow: '0 1px 2px rgba(0, 19, 88, 0.30)'
+              : "linear-gradient(180deg, #679CFF 0%, #2370FF 100%)",
+            boxShadow: !prompt.trim() || wordCount > MAX_WORDS
+              ? 'none'
+              : "0 2px 4px 0 rgba(77, 145, 225, 0.10), 0 1px 0.3px 0 rgba(255, 255, 255, 0.25) inset, 0 -1px 0.3px 0 rgba(0, 19, 88, 0.25) inset",
+            color: "#FFFFFF",
+            textAlign: "center",
+            textShadow: "0 0.5px 1.5px rgba(0, 19, 88, 0.30), 0 2px 5px rgba(0, 19, 88, 0.10)",
+            fontFamily: "Inter, sans-serif",
+            fontSize: "15px",
+            fontWeight: 600,
+            lineHeight: "125%",
+            letterSpacing: "-0.36px",
+            transition: "all 0.3s ease"
           }}
         >
           Generate Resume
-          <ArrowRight className="h-5 w-5" />
+          <ArrowRight className="h-4 w-4" />
         </button>
       </div>
 

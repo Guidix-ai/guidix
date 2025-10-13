@@ -125,7 +125,7 @@ function UploadResumePageContent() {
 
   return (
     <DashboardLayout>
-      <div style={{ minHeight: '100vh', backgroundColor: '#F8F9FF', width: '100%', paddingBottom: '120px' }}>
+      <div style={{ minHeight: '100vh', backgroundColor: '#F8F9FF', width: '100%' }}>
         {/* Blue Banner */}
         <div className="relative py-6 px-8 overflow-hidden flex items-center" style={{
           backgroundImage: 'url(/header-banner.svg)',

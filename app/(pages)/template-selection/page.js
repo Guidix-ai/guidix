@@ -222,247 +222,306 @@ function TemplateSelectionContent() {
             </div>
           </div>
 
-          {/* Filter Bar */}
-          <div className="bg-white rounded-2xl p-4 sm:p-6 mb-6 md:mb-8" style={{
-            border: '1px solid #F1F3F7',
-            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.06)'
-          }}>
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-              <h2 className="text-lg font-semibold" style={{ color: colorTokens.title }}>
-                Filter Templates
-              </h2>
-              <button
-                onClick={clearFilters}
-                className="text-sm font-medium hover:underline self-start sm:self-auto"
-                style={{ color: colorTokens.secondary600 }}
-              >
-                Clear All Filters
-              </button>
-            </div>
+          {/* Main Layout: Filters Left, Templates Right */}
+          <div className="flex gap-6" style={{ position: 'relative' }}>
+            {/* Left Sidebar - Sticky Filters */}
+            <div style={{ width: '280px', flexShrink: 0 }}>
+              <div style={{ position: 'sticky', top: '80px', zIndex: 10 }}>
+                <div className="bg-white rounded-xl p-5" style={{
+                  border: '1px solid #F1F3F7',
+                  boxShadow: '0 0 6px 0 rgba(0, 0, 0, 0.12), 0 2px 3px 0 rgba(0, 0, 0, 0.04), 0 2px 6px 0 rgba(0, 0, 0, 0.04), inset 0 -2px 3px 0 rgba(0, 0, 0, 0.08)',
+                  maxHeight: 'calc(100vh - 100px)',
+                  overflowY: 'auto'
+                }}>
+                  <div className="flex items-center justify-between mb-5">
+                    <h2 className="font-semibold" style={{
+                      color: '#000E41',
+                      fontSize: '16px'
+                    }}>
+                      Filters
+                    </h2>
+                    <button
+                      onClick={clearFilters}
+                      className="text-sm font-medium hover:opacity-70 transition-all"
+                      style={{ color: colorTokens.secondary600 }}
+                    >
+                      Clear All
+                    </button>
+                  </div>
 
-            <div className="mt-4 sm:mt-6 flex flex-col sm:flex-row gap-4 sm:gap-6">
-              {/* Category Pills */}
-              <div className="flex-1">
-                <label className="text-sm font-medium mb-2 block" style={{ color: colorTokens.title }}>
-                  Category
-                </label>
-                <div className="flex gap-2 scroll-x-only">
-                  <button
-                    onClick={() => handleFilterChange("category", "all")}
-                    className="px-4 py-2 rounded-full text-sm font-medium transition-all"
-                    style={{
-                      background: filters.category === "all" ? colorTokens.secondary600 : '#FFFFFF',
-                      color: filters.category === "all" ? '#FFFFFF' : colorTokens.paragraph,
-                      border: `1.5px solid ${filters.category === "all" ? colorTokens.secondary600 : '#E1E4EB'}`
-                    }}
-                  >
-                    All
-                  </button>
-                  <button
-                    onClick={() => handleFilterChange("category", "internship")}
-                    className="px-4 py-2 rounded-full text-sm font-medium transition-all"
-                    style={{
-                      background: filters.category === "internship" ? colorTokens.secondary600 : '#FFFFFF',
-                      color: filters.category === "internship" ? '#FFFFFF' : colorTokens.paragraph,
-                      border: `1.5px solid ${filters.category === "internship" ? colorTokens.secondary600 : '#E1E4EB'}`
-                    }}
-                  >
-                    <Briefcase className="h-3.5 w-3.5 inline-block mr-1.5" />
-                    Internship
-                  </button>
-                  <button
-                    onClick={() => handleFilterChange("category", "job")}
-                    className="px-4 py-2 rounded-full text-sm font-medium transition-all"
-                    style={{
-                      background: filters.category === "job" ? colorTokens.secondary600 : '#FFFFFF',
-                      color: filters.category === "job" ? '#FFFFFF' : colorTokens.paragraph,
-                      border: `1.5px solid ${filters.category === "job" ? colorTokens.secondary600 : '#E1E4EB'}`
-                    }}
-                  >
-                    <Briefcase className="h-3.5 w-3.5 inline-block mr-1.5" />
-                    Professional
-                  </button>
-                </div>
-              </div>
-
-              {/* Photo Pills */}
-              <div className="flex-1">
-                <label className="text-sm font-medium mb-2 block" style={{ color: colorTokens.title }}>
-                  Photo
-                </label>
-                <div className="flex gap-2 scroll-x-only">
-                  <button
-                    onClick={() => handleFilterChange("headshot", "all")}
-                    className="px-4 py-2 rounded-full text-sm font-medium transition-all"
-                    style={{
-                      background: filters.headshot === "all" ? colorTokens.secondary600 : '#FFFFFF',
-                      color: filters.headshot === "all" ? '#FFFFFF' : colorTokens.paragraph,
-                      border: `1.5px solid ${filters.headshot === "all" ? colorTokens.secondary600 : '#E1E4EB'}`
-                    }}
-                  >
-                    All
-                  </button>
-                  <button
-                    onClick={() => handleFilterChange("headshot", "with")}
-                    className="px-4 py-2 rounded-full text-sm font-medium transition-all"
-                    style={{
-                      background: filters.headshot === "with" ? colorTokens.secondary600 : '#FFFFFF',
-                      color: filters.headshot === "with" ? '#FFFFFF' : colorTokens.paragraph,
-                      border: `1.5px solid ${filters.headshot === "with" ? colorTokens.secondary600 : '#E1E4EB'}`
-                    }}
-                  >
-                    <User className="h-3.5 w-3.5 inline-block mr-1.5" />
-                    With Photo
-                  </button>
-                  <button
-                    onClick={() => handleFilterChange("headshot", "without")}
-                    className="px-4 py-2 rounded-full text-sm font-medium transition-all"
-                    style={{
-                      background: filters.headshot === "without" ? colorTokens.secondary600 : '#FFFFFF',
-                      color: filters.headshot === "without" ? '#FFFFFF' : colorTokens.paragraph,
-                      border: `1.5px solid ${filters.headshot === "without" ? colorTokens.secondary600 : '#E1E4EB'}`
-                    }}
-                  >
-                    Without Photo
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Templates Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-8">
-            {filteredTemplates.map((template) => (
-              <div
-                key={template.id}
-                id={`template-${template.id}`}
-                onClick={() => handleTemplateSelect(template.id)}
-                className="group cursor-pointer transition-all duration-300 hover:scale-105"
-              >
-                <div
-                  className="bg-white rounded-2xl overflow-hidden"
-                  style={{
-                    border: selectedTemplate === template.id
-                      ? `3px solid ${colorTokens.secondary600}`
-                      : '1px solid #F1F3F7',
-                    boxShadow: selectedTemplate === template.id
-                      ? '0 8px 24px rgba(35, 112, 255, 0.25)'
-                      : '0 2px 8px rgba(0, 0, 0, 0.06)',
-                  }}
-                >
-                  {/* Template Preview */}
-                  <div className="relative" style={{ height: '300px', background: colorTokens.bgLight }}>
-                    <PDFPreview
-                      templateId={template.id}
-                      width="100%"
-                      height="100%"
-                    />
-                    {/* Overlay on hover */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
-                      <button className="w-full py-2 rounded-lg text-sm font-medium transition-all"
+                  {/* Category Filter */}
+                  <div className="mb-5">
+                    <label className="text-sm font-semibold mb-3 block" style={{ color: '#002A79' }}>
+                      Category
+                    </label>
+                    <div className="flex flex-col gap-2">
+                      <button
+                        onClick={() => handleFilterChange("category", "all")}
+                        className="px-4 py-2.5 rounded-lg text-sm font-medium transition-all text-left"
                         style={{
-                          background: colorTokens.secondary600,
-                          color: '#FFFFFF'
+                          background: filters.category === "all" ? 'linear-gradient(180deg, #679CFF 0%, #2370FF 100%)' : 'linear-gradient(180deg, #F4F8FF 0%, #E9F1FF 100%)',
+                          color: filters.category === "all" ? '#FFFFFF' : '#474FA3',
+                          border: filters.category === "all" ? '1px solid rgba(35, 112, 255, 0.30)' : '1px solid #D5E4FF',
+                          boxShadow: filters.category === "all"
+                            ? '0 2px 4px 0 rgba(77, 145, 225, 0.10), 0 1px 0.3px 0 rgba(255, 255, 255, 0.25) inset, 0 -1px 0.3px 0 rgba(0, 19, 88, 0.25) inset'
+                            : '0 4px 8px -2px rgba(0, 19, 88, 0.10)',
+                          textShadow: filters.category === "all" ? '0 0.5px 1.5px rgba(0, 19, 88, 0.30), 0 2px 5px rgba(0, 19, 88, 0.10)' : 'none'
                         }}
                       >
-                        Select Template
+                        All Templates
+                      </button>
+                      <button
+                        onClick={() => handleFilterChange("category", "internship")}
+                        className="px-4 py-2.5 rounded-lg text-sm font-medium transition-all text-left flex items-center gap-2"
+                        style={{
+                          background: filters.category === "internship" ? 'linear-gradient(180deg, #679CFF 0%, #2370FF 100%)' : 'linear-gradient(180deg, #F4F8FF 0%, #E9F1FF 100%)',
+                          color: filters.category === "internship" ? '#FFFFFF' : '#474FA3',
+                          border: filters.category === "internship" ? '1px solid rgba(35, 112, 255, 0.30)' : '1px solid #D5E4FF',
+                          boxShadow: filters.category === "internship"
+                            ? '0 2px 4px 0 rgba(77, 145, 225, 0.10), 0 1px 0.3px 0 rgba(255, 255, 255, 0.25) inset, 0 -1px 0.3px 0 rgba(0, 19, 88, 0.25) inset'
+                            : '0 4px 8px -2px rgba(0, 19, 88, 0.10)',
+                          textShadow: filters.category === "internship" ? '0 0.5px 1.5px rgba(0, 19, 88, 0.30), 0 2px 5px rgba(0, 19, 88, 0.10)' : 'none'
+                        }}
+                      >
+                        <Briefcase className="h-4 w-4" />
+                        Internship
+                      </button>
+                      <button
+                        onClick={() => handleFilterChange("category", "job")}
+                        className="px-4 py-2.5 rounded-lg text-sm font-medium transition-all text-left flex items-center gap-2"
+                        style={{
+                          background: filters.category === "job" ? 'linear-gradient(180deg, #679CFF 0%, #2370FF 100%)' : 'linear-gradient(180deg, #F4F8FF 0%, #E9F1FF 100%)',
+                          color: filters.category === "job" ? '#FFFFFF' : '#474FA3',
+                          border: filters.category === "job" ? '1px solid rgba(35, 112, 255, 0.30)' : '1px solid #D5E4FF',
+                          boxShadow: filters.category === "job"
+                            ? '0 2px 4px 0 rgba(77, 145, 225, 0.10), 0 1px 0.3px 0 rgba(255, 255, 255, 0.25) inset, 0 -1px 0.3px 0 rgba(0, 19, 88, 0.25) inset'
+                            : '0 4px 8px -2px rgba(0, 19, 88, 0.10)',
+                          textShadow: filters.category === "job" ? '0 0.5px 1.5px rgba(0, 19, 88, 0.30), 0 2px 5px rgba(0, 19, 88, 0.10)' : 'none'
+                        }}
+                      >
+                        <Briefcase className="h-4 w-4" />
+                        Professional
                       </button>
                     </div>
-                    {/* Selected Badge */}
-                    {selectedTemplate === template.id && (
-                      <div className="absolute top-3 right-3">
-                        <div
-                          className="w-8 h-8 rounded-full flex items-center justify-center shadow-lg"
-                          style={{
-                            backgroundColor: colorTokens.secondary600,
-                          }}
-                        >
-                          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M3 8L6 11L13 4" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                          </svg>
-                        </div>
-                      </div>
-                    )}
-                    {/* Recommended Badge */}
-                    {template.isRecommended && (
-                      <div className="absolute top-3 left-3">
-                        <span className="px-2.5 py-1 rounded-full text-xs font-bold flex items-center gap-1 shadow-lg"
-                          style={{
-                            backgroundColor: '#FFD700',
-                            color: '#002A79'
-                          }}
-                        >
-                          <Star className="h-3 w-3 fill-current" />
-                          Top Pick
-                        </span>
-                      </div>
-                    )}
                   </div>
 
-                  {/* Template Info */}
-                  <div className="p-4">
-                    <h3
-                      className="font-bold text-base mb-1 truncate"
-                      style={{
-                        color: selectedTemplate === template.id
-                          ? colorTokens.secondary600
-                          : colorTokens.title
-                      }}
-                    >
-                      {template.name}
-                    </h3>
-                    <p className="text-sm mb-3 line-clamp-2" style={{ color: colorTokens.paragraph }}>
-                      {template.description}
-                    </p>
-                    <div className="flex flex-wrap gap-1.5">
-                      <span className="px-2.5 py-1 rounded-full text-xs font-medium" style={{
-                        backgroundColor: template.hasPhoto ? '#E9F1FF' : '#F1F3F7',
-                        color: colorTokens.title
-                      }}>
-                        {template.hasPhoto ? "With Photo" : "No Photo"}
-                      </span>
-                      <span className="px-2.5 py-1 rounded-full text-xs font-medium" style={{
-                        backgroundColor: '#F1F3F7',
-                        color: colorTokens.title
-                      }}>
-                        {template.category === 'internship' ? 'Internship' : 'Professional'}
-                      </span>
+                  {/* Photo Filter */}
+                  <div>
+                    <label className="text-sm font-semibold mb-3 block" style={{ color: '#002A79' }}>
+                      Photo
+                    </label>
+                    <div className="flex flex-col gap-2">
+                      <button
+                        onClick={() => handleFilterChange("headshot", "all")}
+                        className="px-4 py-2.5 rounded-lg text-sm font-medium transition-all text-left"
+                        style={{
+                          background: filters.headshot === "all" ? 'linear-gradient(180deg, #679CFF 0%, #2370FF 100%)' : 'linear-gradient(180deg, #F4F8FF 0%, #E9F1FF 100%)',
+                          color: filters.headshot === "all" ? '#FFFFFF' : '#474FA3',
+                          border: filters.headshot === "all" ? '1px solid rgba(35, 112, 255, 0.30)' : '1px solid #D5E4FF',
+                          boxShadow: filters.headshot === "all"
+                            ? '0 2px 4px 0 rgba(77, 145, 225, 0.10), 0 1px 0.3px 0 rgba(255, 255, 255, 0.25) inset, 0 -1px 0.3px 0 rgba(0, 19, 88, 0.25) inset'
+                            : '0 4px 8px -2px rgba(0, 19, 88, 0.10)',
+                          textShadow: filters.headshot === "all" ? '0 0.5px 1.5px rgba(0, 19, 88, 0.30), 0 2px 5px rgba(0, 19, 88, 0.10)' : 'none'
+                        }}
+                      >
+                        All
+                      </button>
+                      <button
+                        onClick={() => handleFilterChange("headshot", "with")}
+                        className="px-4 py-2.5 rounded-lg text-sm font-medium transition-all text-left flex items-center gap-2"
+                        style={{
+                          background: filters.headshot === "with" ? 'linear-gradient(180deg, #679CFF 0%, #2370FF 100%)' : 'linear-gradient(180deg, #F4F8FF 0%, #E9F1FF 100%)',
+                          color: filters.headshot === "with" ? '#FFFFFF' : '#474FA3',
+                          border: filters.headshot === "with" ? '1px solid rgba(35, 112, 255, 0.30)' : '1px solid #D5E4FF',
+                          boxShadow: filters.headshot === "with"
+                            ? '0 2px 4px 0 rgba(77, 145, 225, 0.10), 0 1px 0.3px 0 rgba(255, 255, 255, 0.25) inset, 0 -1px 0.3px 0 rgba(0, 19, 88, 0.25) inset'
+                            : '0 4px 8px -2px rgba(0, 19, 88, 0.10)',
+                          textShadow: filters.headshot === "with" ? '0 0.5px 1.5px rgba(0, 19, 88, 0.30), 0 2px 5px rgba(0, 19, 88, 0.10)' : 'none'
+                        }}
+                      >
+                        <User className="h-4 w-4" />
+                        With Photo
+                      </button>
+                      <button
+                        onClick={() => handleFilterChange("headshot", "without")}
+                        className="px-4 py-2.5 rounded-lg text-sm font-medium transition-all text-left"
+                        style={{
+                          background: filters.headshot === "without" ? 'linear-gradient(180deg, #679CFF 0%, #2370FF 100%)' : 'linear-gradient(180deg, #F4F8FF 0%, #E9F1FF 100%)',
+                          color: filters.headshot === "without" ? '#FFFFFF' : '#474FA3',
+                          border: filters.headshot === "without" ? '1px solid rgba(35, 112, 255, 0.30)' : '1px solid #D5E4FF',
+                          boxShadow: filters.headshot === "without"
+                            ? '0 2px 4px 0 rgba(77, 145, 225, 0.10), 0 1px 0.3px 0 rgba(255, 255, 255, 0.25) inset, 0 -1px 0.3px 0 rgba(0, 19, 88, 0.25) inset'
+                            : '0 4px 8px -2px rgba(0, 19, 88, 0.10)',
+                          textShadow: filters.headshot === "without" ? '0 0.5px 1.5px rgba(0, 19, 88, 0.30), 0 2px 5px rgba(0, 19, 88, 0.10)' : 'none'
+                        }}
+                      >
+                        Without Photo
+                      </button>
                     </div>
                   </div>
                 </div>
               </div>
-            ))}
+            </div>
+
+            {/* Right Content - Templates Grid */}
+            <div style={{ flex: 1 }}>
+              {/* Templates Grid - 2 columns */}
+              <div className="grid grid-cols-2 gap-6 mb-8">
+                {filteredTemplates.map((template) => (
+                  <div
+                    key={template.id}
+                    id={`template-${template.id}`}
+                    onClick={() => handleTemplateSelect(template.id)}
+                    className="group cursor-pointer"
+                    style={{ transition: 'all 0.2s ease' }}
+                  >
+                    <div
+                      className="bg-white rounded-xl overflow-hidden"
+                      style={{
+                        border: selectedTemplate === template.id
+                          ? `2px solid ${colorTokens.secondary600}`
+                          : '1px solid #F1F3F7',
+                        boxShadow: selectedTemplate === template.id
+                          ? '0 0 6px 0 rgba(35, 112, 255, 0.3), 0 2px 3px 0 rgba(35, 112, 255, 0.15), 0 2px 6px 0 rgba(35, 112, 255, 0.15), inset 0 -2px 3px 0 rgba(35, 112, 255, 0.1)'
+                          : '0 0 6px 0 rgba(0, 0, 0, 0.12), 0 2px 3px 0 rgba(0, 0, 0, 0.04), 0 2px 6px 0 rgba(0, 0, 0, 0.04), inset 0 -2px 3px 0 rgba(0, 0, 0, 0.08)',
+                        transition: 'all 0.2s ease'
+                      }}
+                    >
+                      {/* Template Preview */}
+                      <div className="relative" style={{
+                        height: '450px',
+                        background: colorTokens.bgLight,
+                        overflow: 'hidden'
+                      }}>
+                        <PDFPreview
+                          templateId={template.id}
+                          width="100%"
+                          height="100%"
+                        />
+                        {/* Overlay on hover */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 flex items-end p-4"
+                          style={{ transition: 'opacity 0.2s ease' }}
+                        >
+                          <button className="w-full text-sm font-medium"
+                            style={{
+                              display: "inline-flex",
+                              padding: "10px 16px",
+                              justifyContent: "center",
+                              alignItems: "center",
+                              borderRadius: "8px",
+                              background: "linear-gradient(180deg, #679CFF 0%, #2370FF 100%)",
+                              boxShadow: "0 2px 4px 0 rgba(77, 145, 225, 0.10), 0 1px 0.3px 0 rgba(255, 255, 255, 0.25) inset, 0 -1px 0.3px 0 rgba(0, 19, 88, 0.25) inset",
+                              color: "#FFFFFF",
+                              textShadow: "0 0.5px 1.5px rgba(0, 19, 88, 0.30), 0 2px 5px rgba(0, 19, 88, 0.10)",
+                              fontFamily: "Inter, sans-serif",
+                              fontSize: "14px",
+                              fontWeight: 600,
+                              lineHeight: "125%",
+                              letterSpacing: "-0.28px",
+                            }}
+                          >
+                            Select Template
+                          </button>
+                        </div>
+                        {/* Selected Badge */}
+                        {selectedTemplate === template.id && (
+                          <div className="absolute top-3 right-3">
+                            <div
+                              className="w-8 h-8 rounded-full flex items-center justify-center shadow-lg"
+                              style={{
+                                backgroundColor: colorTokens.secondary600,
+                              }}
+                            >
+                              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M3 8L6 11L13 4" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                              </svg>
+                            </div>
+                          </div>
+                        )}
+                        {/* Recommended Badge */}
+                        {template.isRecommended && (
+                          <div className="absolute top-3 left-3">
+                            <span className="px-2.5 py-1 rounded-full text-xs font-bold flex items-center gap-1"
+                              style={{
+                                background: 'linear-gradient(180deg, #679CFF 0%, #2370FF 100%)',
+                                color: '#FFFFFF',
+                                boxShadow: '0 2px 4px 0 rgba(77, 145, 225, 0.10), 0 1px 0.3px 0 rgba(255, 255, 255, 0.25) inset, 0 -1px 0.3px 0 rgba(0, 19, 88, 0.25) inset',
+                                textShadow: '0 0.5px 1.5px rgba(0, 19, 88, 0.30), 0 2px 5px rgba(0, 19, 88, 0.10)'
+                              }}
+                            >
+                              <Star className="h-3 w-3 fill-current" />
+                              Top Pick
+                            </span>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Template Info */}
+                      <div className="p-4">
+                        <h3
+                          className="font-bold text-base mb-1 truncate"
+                          style={{
+                            color: selectedTemplate === template.id
+                              ? colorTokens.secondary600
+                              : colorTokens.title
+                          }}
+                        >
+                          {template.name}
+                        </h3>
+                        <p className="text-sm mb-3 line-clamp-2" style={{ color: colorTokens.paragraph }}>
+                          {template.description}
+                        </p>
+                        <div className="flex flex-wrap gap-1.5">
+                          <span className="px-2.5 py-1 rounded-full text-xs font-medium" style={{
+                            backgroundColor: template.hasPhoto ? '#E9F1FF' : '#F1F3F7',
+                            color: colorTokens.title
+                          }}>
+                            {template.hasPhoto ? "With Photo" : "No Photo"}
+                          </span>
+                          <span className="px-2.5 py-1 rounded-full text-xs font-medium" style={{
+                            backgroundColor: '#F1F3F7',
+                            color: colorTokens.title
+                          }}>
+                            {template.category === 'internship' ? 'Internship' : 'Professional'}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* No Results Message */}
+              {filteredTemplates.length === 0 && (
+                <div className="text-center py-16">
+                  <div className="text-6xl mb-4">📄</div>
+                  <h3 className="text-xl font-bold mb-2" style={{ color: colorTokens.title }}>
+                    No templates found
+                  </h3>
+                  <p className="mb-6" style={{ color: colorTokens.paragraph }}>
+                    Try adjusting your filters to see more templates
+                  </p>
+                  <button
+                    onClick={clearFilters}
+                    className="px-6 py-3 rounded-lg font-medium transition-all"
+                    style={{
+                      background: colorTokens.secondary600,
+                      color: '#FFFFFF'
+                    }}
+                  >
+                    Clear All Filters
+                  </button>
+                </div>
+              )}
+
+              {/* Error Message */}
+              {error && (
+                <div className="mt-6 bg-red-50 border border-red-200 rounded-lg p-4">
+                  <p className="text-red-600 text-sm font-medium text-center">{error}</p>
+                </div>
+              )}
+            </div>
           </div>
-
-          {/* No Results Message */}
-          {filteredTemplates.length === 0 && (
-            <div className="text-center py-16">
-              <div className="text-6xl mb-4">📄</div>
-              <h3 className="text-xl font-bold mb-2" style={{ color: colorTokens.title }}>
-                No templates found
-              </h3>
-              <p className="mb-6" style={{ color: colorTokens.paragraph }}>
-                Try adjusting your filters to see more templates
-              </p>
-              <button
-                onClick={clearFilters}
-                className="px-6 py-3 rounded-lg font-medium transition-all"
-                style={{
-                  background: colorTokens.secondary600,
-                  color: '#FFFFFF'
-                }}
-              >
-                Clear All Filters
-              </button>
-            </div>
-          )}
-
-          {/* Error Message */}
-          {error && (
-            <div className="mt-6 bg-red-50 border border-red-200 rounded-lg p-4">
-              <p className="text-red-600 text-sm font-medium text-center">{error}</p>
-            </div>
-          )}
 
         </div>
       </div>
@@ -477,30 +536,42 @@ function TemplateSelectionContent() {
         <button
           onClick={handleContinue}
           disabled={!selectedTemplate || loading}
-          className={`px-8 py-4 rounded-full font-semibold text-base flex items-center gap-3 transition-all shadow-lg ${
+          className={`flex items-center gap-2 ${
             !selectedTemplate || loading
               ? "opacity-50 cursor-not-allowed"
-              : "hover:shadow-xl hover:scale-105"
+              : ""
           }`}
           style={{
-            border: '2px solid rgba(35, 112, 255, 0.30)',
+            display: "inline-flex",
+            padding: "12px 20px",
+            alignItems: "center",
+            borderRadius: "8px",
             background: !selectedTemplate || loading
               ? '#9CA3AF'
-              : 'linear-gradient(135deg, #679CFF 0%, #2370FF 100%)',
-            boxShadow: '0 8px 24px rgba(35, 112, 255, 0.4)',
-            color: '#FFFFFF',
-            textShadow: '0 1px 2px rgba(0, 19, 88, 0.30)'
+              : "linear-gradient(180deg, #679CFF 0%, #2370FF 100%)",
+            boxShadow: !selectedTemplate || loading
+              ? 'none'
+              : "0 2px 4px 0 rgba(77, 145, 225, 0.10), 0 1px 0.3px 0 rgba(255, 255, 255, 0.25) inset, 0 -1px 0.3px 0 rgba(0, 19, 88, 0.25) inset",
+            color: "#FFFFFF",
+            textAlign: "center",
+            textShadow: "0 0.5px 1.5px rgba(0, 19, 88, 0.30), 0 2px 5px rgba(0, 19, 88, 0.10)",
+            fontFamily: "Inter, sans-serif",
+            fontSize: "15px",
+            fontWeight: 600,
+            lineHeight: "125%",
+            letterSpacing: "-0.36px",
+            transition: "all 0.3s ease"
           }}
         >
           {loading ? (
             <>
-              <div className="w-5 h-5 border-3 border-white border-t-transparent rounded-full animate-spin"></div>
+              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
               Processing...
             </>
           ) : (
             <>
               Continue to Editor
-              <ArrowRight className="h-5 w-5" />
+              <ArrowRight className="h-4 w-4" />
             </>
           )}
         </button>

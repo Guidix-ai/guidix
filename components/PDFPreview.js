@@ -266,18 +266,64 @@ const PDFPreview = ({ templateId, resumeData = sampleResumeData, width = 300, he
   }
 
   return (
-    <div
-      className="border border-gray-300 rounded overflow-hidden bg-white"
-      style={{ width, height, overflow: 'auto' }}
-    >
-      <iframe
-        src={`${pdfUrl}#toolbar=0&navpanes=0`}
-        width="100%"
-        height="100%"
-        style={{ border: 'none' }}
-        title="PDF Preview"
-      />
-    </div>
+    <>
+      <style jsx global>{`
+        .pdf-preview-wrapper {
+          width: 100%;
+          height: 100%;
+          overflow: hidden !important;
+          position: relative;
+        }
+
+        .pdf-preview-wrapper iframe {
+          width: calc(100% + 30px);
+          height: calc(100% + 20px);
+          border: none;
+          overflow: hidden !important;
+          pointer-events: none;
+          position: relative;
+          left: -5px;
+          top: -5px;
+          transform: scale(1.02);
+          transform-origin: top left;
+        }
+
+        /* Force hide all scrollbars */
+        .pdf-preview-wrapper,
+        .pdf-preview-wrapper *,
+        .pdf-preview-wrapper iframe,
+        .pdf-preview-wrapper iframe * {
+          overflow: hidden !important;
+          overflow-x: hidden !important;
+          overflow-y: hidden !important;
+        }
+
+        /* Hide scrollbar for Chrome, Safari and Opera */
+        .pdf-preview-wrapper::-webkit-scrollbar,
+        .pdf-preview-wrapper *::-webkit-scrollbar,
+        .pdf-preview-wrapper iframe::-webkit-scrollbar {
+          display: none !important;
+          width: 0 !important;
+          height: 0 !important;
+        }
+
+        /* Hide scrollbar for IE, Edge and Firefox */
+        .pdf-preview-wrapper,
+        .pdf-preview-wrapper *,
+        .pdf-preview-wrapper iframe {
+          -ms-overflow-style: none !important;
+          scrollbar-width: none !important;
+        }
+      `}</style>
+      <div className="pdf-preview-wrapper" style={{ overflow: 'hidden' }}>
+        <iframe
+          src={`${pdfUrl}#page=1&toolbar=0&navpanes=0&scrollbar=0&view=FitH`}
+          title="PDF Preview"
+          scrolling="no"
+          style={{ overflow: 'hidden' }}
+        />
+      </div>
+    </>
   );
 };
 

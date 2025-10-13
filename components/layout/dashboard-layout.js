@@ -216,19 +216,19 @@ export function DashboardLayout({ children }) {
             {/* Upgrade Button - Responsive text */}
 
             <div
-              className="px-[0.15rem] py-[0.15rem] rounded-lg"
+              className="px-[0.15rem] py-[0.15rem] rounded-xl"
               style={{ backgroundColor: "rgba(35, 112, 255, 0.3)" }}
             >
               <div
-                className="px-[0.15rem] py-[0.15rem] rounded-lg"
+                className="px-[0.15rem] py-[0.15rem] rounded-xl"
                 style={{ backgroundColor: "rgba(35, 112, 255, 0.3)" }}
               >
                 <button
                   style={{
                     display: "inline-flex",
-                    padding: "8px 12px",
+                    padding: "10px 16px",
                     alignItems: "center",
-                    borderRadius: "8px",
+                    borderRadius: "10px",
                     // border: "1px solid rgba(35, 112, 255, 0.30)",
                     background:
                       "linear-gradient(180deg, #679CFF 0%, #2370FF 100%)",
@@ -242,16 +242,16 @@ export function DashboardLayout({ children }) {
                     fontSize: "14px",
                     fontWeight: 500,
                     lineHeight: "125%",
-                    gap: "0.5rem",
+                    gap: "0.3rem",
                   }}
                 >
                   <Image
                     src="/upgrade-icon.svg"
                     alt="Upgrade"
-                    width={16}
-                    height={16}
+                    width={14}
+                    height={14}
                   />
-                  <span className="hidden sm:inline text-xs">Upgrade Now</span>
+                  <span className="hidden sm:inline text-md">Upgrade Now</span>
                   <span className="sm:hidden">Upgrade</span>
                 </button>
               </div>
@@ -468,7 +468,7 @@ export function DashboardLayout({ children }) {
                         style={{
                           display: "flex",
                           alignItems: "center",
-                          filter: "none",
+                          filter: isActive(item.href) ? "brightness(0) invert(1)" : "none",
                           opacity: 1,
                           backgroundColor: "transparent",
                           mixBlendMode: "normal",
@@ -497,7 +497,7 @@ export function DashboardLayout({ children }) {
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
-                        filter: "none",
+                        filter: isActive(item.href) ? "brightness(0) invert(1)" : "none",
                         opacity: 1,
                         backgroundColor: "transparent",
                         mixBlendMode: "normal",
@@ -689,18 +689,16 @@ export function DashboardLayout({ children }) {
                 className="flex items-center rounded-lg w-full"
                 style={{
                   padding: "8px 12px",
-                  color: "#FFFFFF",
-                  background:
-                    "linear-gradient(180deg, #679CFF 0%, #2370FF 100%)",
+                  color: "#6477B4",
+                  backgroundColor: "transparent",
                   borderRadius: "8px",
-                  border: "1px solid rgba(35, 112, 255, 0.30)",
-                  boxShadow: "0 2px 4px 0 rgba(77, 145, 225, 0.10)",
+                  border: "1px solid transparent",
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.opacity = "0.9";
+                  e.currentTarget.style.backgroundColor = "#F0F4FA";
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.opacity = "1";
+                  e.currentTarget.style.backgroundColor = "transparent";
                 }}
               >
                 {!collapsed && (
@@ -710,7 +708,6 @@ export function DashboardLayout({ children }) {
                       alignItems: "center",
                       gap: "10px",
                       width: "100%",
-                      justifyContent: "center",
                     }}
                   >
                     <svg
@@ -730,9 +727,10 @@ export function DashboardLayout({ children }) {
                       style={{
                         fontFamily: "Inter, sans-serif",
                         fontSize: "12px",
-                        fontWeight: 500,
+                        fontWeight: 400,
                         lineHeight: "125%",
                         letterSpacing: "-0.24px",
+                        color: "#6477B4",
                       }}
                     >
                       Login
@@ -763,7 +761,7 @@ export function DashboardLayout({ children }) {
                   color: "#6477B4",
                   backgroundColor: "transparent",
                   borderRadius: "8px",
-                  border: "1px solid #6477B4",
+                  border: "1px solid transparent",
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.backgroundColor = "#F0F4FA";
@@ -779,7 +777,6 @@ export function DashboardLayout({ children }) {
                       alignItems: "center",
                       gap: "10px",
                       width: "100%",
-                      justifyContent: "center",
                     }}
                   >
                     <svg
@@ -802,6 +799,7 @@ export function DashboardLayout({ children }) {
                         fontWeight: 400,
                         lineHeight: "125%",
                         letterSpacing: "-0.24px",
+                        color: "#6477B4",
                       }}
                     >
                       Signup
@@ -952,7 +950,6 @@ export function DashboardLayout({ children }) {
               borderRadius: "12px",
               background: "#FFF",
               boxShadow: "0 4px 8px -2px rgba(0, 19, 88, 0.10)",
-              minHeight: "calc(100vh - 8rem)",
               width: "100%",
             }}
           >

@@ -314,7 +314,7 @@ const EnhancedJobCard = ({
                   }}
                 />
                 <div
-                  className="w-full h-full rounded-lg flex items-center justify-center text-white font-bold text-sm"
+                  className="w-full h-full rounded-lg flex items-center justify-center text-white font-semibold text-sm"
                   style={{ backgroundColor: "#0F2678", display: "none" }}
                 >
                   {job.company.charAt(0)}
@@ -333,27 +333,6 @@ const EnhancedJobCard = ({
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onBlock(job.id);
-                }}
-                style={{
-                  ...buttonStyles,
-                  padding: "4px",
-                  background: "transparent",
-                  boxShadow: "none",
-                }}
-                className="hover:opacity-70 transition-all"
-                title="Dismiss"
-              >
-                <Image
-                  src="/dismiss.svg"
-                  alt="Dismiss"
-                  width={24}
-                  height={24}
-                />
-              </button>
               <button
                 onClick={(e) => {
                   e.stopPropagation();
@@ -376,12 +355,33 @@ const EnhancedJobCard = ({
                   style={{ opacity: isSaved ? 1 : 0.6 }}
                 />
               </button>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onBlock(job.id);
+                }}
+                style={{
+                  ...buttonStyles,
+                  padding: "4px",
+                  background: "transparent",
+                  boxShadow: "none",
+                }}
+                className="hover:opacity-70 transition-all"
+                title="Dismiss"
+              >
+                <Image
+                  src="/dismiss.svg"
+                  alt="Dismiss"
+                  width={24}
+                  height={24}
+                />
+              </button>
             </div>
           </div>
 
           <h3
             className="text-lg font-semibold mb-2"
-            style={{ color: "#002A79" }}
+            style={{ color: "#000E41" }}
           >
             {job.title}
           </h3>
@@ -443,13 +443,7 @@ const EnhancedJobCard = ({
                 xmlns="http://www.w3.org/2000/svg"
                 style={{ flexShrink: 0 }}
               >
-                <circle
-                  cx="10"
-                  cy="10"
-                  r="9"
-                  fill="#2370FF"
-                  opacity="0.15"
-                />
+                <circle cx="10" cy="10" r="9" fill="#2370FF" opacity="0.15" />
                 <path
                   d="M6 11L10 7L14 11"
                   stroke="#2370FF"
@@ -536,7 +530,7 @@ const EnhancedJobCard = ({
                   }}
                 />
                 <div
-                  className="w-full h-full rounded-lg flex items-center justify-center text-white font-bold text-sm"
+                  className="w-full h-full rounded-lg flex items-center justify-center text-white font-semibold text-sm"
                   style={{ backgroundColor: "#0F2678", display: "none" }}
                 >
                   {job.company.charAt(0)}
@@ -555,27 +549,6 @@ const EnhancedJobCard = ({
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onBlock(job.id);
-                }}
-                style={{
-                  ...buttonStyles,
-                  padding: "4px",
-                  background: "transparent",
-                  boxShadow: "none",
-                }}
-                className="hover:opacity-70 transition-all"
-                title="Dismiss"
-              >
-                <Image
-                  src="/dismiss.svg"
-                  alt="Dismiss"
-                  width={24}
-                  height={24}
-                />
-              </button>
               <button
                 onClick={(e) => {
                   e.stopPropagation();
@@ -601,6 +574,27 @@ const EnhancedJobCard = ({
               <button
                 onClick={(e) => {
                   e.stopPropagation();
+                  onBlock(job.id);
+                }}
+                style={{
+                  ...buttonStyles,
+                  padding: "4px",
+                  background: "transparent",
+                  boxShadow: "none",
+                }}
+                className="hover:opacity-70 transition-all"
+                title="Dismiss"
+              >
+                <Image
+                  src="/dismiss.svg"
+                  alt="Dismiss"
+                  width={24}
+                  height={24}
+                />
+              </button>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
                   onApply(job.id);
                 }}
                 disabled={isApplied}
@@ -619,7 +613,6 @@ const EnhancedJobCard = ({
           </div>
 
           <div className="px-4 pb-4">
-
             <div className="flex gap-3 mb-3">
               <div
                 className="flex-1 rounded-lg p-2.5"
@@ -630,10 +623,16 @@ const EnhancedJobCard = ({
                 onMouseLeave={() => setIsHoveringMatchScore(false)}
                 data-match-score="true"
               >
-                <div className="text-xs font-bold mb-1" style={{ color: "#003598" }}>
+                <div
+                  className="text-xs font-semibold mb-1"
+                  style={{ color: "#003598" }}
+                >
                   Match Score
                 </div>
-                <div className="text-2xl font-bold mb-2" style={{ color: "#2370FF" }}>
+                <div
+                  className="text-2xl font-semibold mb-2"
+                  style={{ color: "#2370FF" }}
+                >
                   {job.matchScore}%
                 </div>
                 <div className="space-y-1.5">
@@ -656,10 +655,16 @@ const EnhancedJobCard = ({
                     return (
                       <div key={stat.label} className="space-y-1">
                         <div className="flex items-center justify-between">
-                          <span className="text-xs font-medium" style={{ color: "#353E5C" }}>
+                          <span
+                            className="text-xs font-medium"
+                            style={{ color: "#353E5C" }}
+                          >
                             {stat.label}
                           </span>
-                          <span className="text-xs font-bold" style={{ color: stat.color }}>
+                          <span
+                            className="text-xs font-semibold"
+                            style={{ color: stat.color }}
+                          >
                             {stat.value}%
                           </span>
                         </div>
@@ -675,7 +680,8 @@ const EnhancedJobCard = ({
                                     ? stat.color
                                     : "#E5E7EB",
                                 opacity: animated ? 1 : 0.3,
-                                transition: "all 400ms cubic-bezier(0.4, 0, 0.2, 1)",
+                                transition:
+                                  "all 400ms cubic-bezier(0.4, 0, 0.2, 1)",
                                 transitionDelay: animated
                                   ? `${300 + index * 60 + blockIndex * 60}ms`
                                   : "0ms",
@@ -702,10 +708,16 @@ const EnhancedJobCard = ({
                 onMouseLeave={() => setIsHoveringMatchScore(false)}
                 data-match-score="true"
               >
-                <div className="text-xs font-bold mb-1" style={{ color: "#003598" }}>
+                <div
+                  className="text-xs font-semibold mb-1"
+                  style={{ color: "#003598" }}
+                >
                   Success Rate
                 </div>
-                <div className="text-2xl font-bold mb-2" style={{ color: "#74D184" }}>
+                <div
+                  className="text-2xl font-semibold mb-2"
+                  style={{ color: "#74D184" }}
+                >
                   {job.predictabilityScore}%
                 </div>
                 <div className="text-xs mb-2" style={{ color: "#6D7586" }}>
@@ -791,7 +803,7 @@ const EnhancedJobCard = ({
                   }}
                 />
                 <div
-                  className="w-full h-full rounded-lg flex items-center justify-center text-white font-bold text-sm"
+                  className="w-full h-full rounded-lg flex items-center justify-center text-white font-semibold text-sm"
                   style={{ backgroundColor: "#0F2678", display: "none" }}
                 >
                   {job.company.charAt(0)}
@@ -810,27 +822,6 @@ const EnhancedJobCard = ({
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onBlock(job.id);
-                }}
-                style={{
-                  ...buttonStyles,
-                  padding: "4px",
-                  background: "transparent",
-                  boxShadow: "none",
-                }}
-                className="hover:opacity-70 transition-all"
-                title="Dismiss"
-              >
-                <Image
-                  src="/dismiss.svg"
-                  alt="Dismiss"
-                  width={24}
-                  height={24}
-                />
-              </button>
               <button
                 onClick={(e) => {
                   e.stopPropagation();
@@ -856,6 +847,27 @@ const EnhancedJobCard = ({
               <button
                 onClick={(e) => {
                   e.stopPropagation();
+                  onBlock(job.id);
+                }}
+                style={{
+                  ...buttonStyles,
+                  padding: "4px",
+                  background: "transparent",
+                  boxShadow: "none",
+                }}
+                className="hover:opacity-70 transition-all"
+                title="Dismiss"
+              >
+                <Image
+                  src="/dismiss.svg"
+                  alt="Dismiss"
+                  width={24}
+                  height={24}
+                />
+              </button>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
                   onApply(job.id);
                 }}
                 disabled={isApplied}
@@ -875,8 +887,8 @@ const EnhancedJobCard = ({
 
           <div className="px-4 pb-4 space-y-2" data-company-details="true">
             <h3
-              className="text-base font-bold mb-1.5"
-              style={{ color: "#002A79" }}
+              className="text-base font-semibold mb-1.5"
+              style={{ color: "#000E41" }}
             >
               {job.title}
             </h3>
@@ -895,7 +907,7 @@ const EnhancedJobCard = ({
               }}
             >
               <h4
-                className="font-bold mb-2 text-xs"
+                className="font-semibold mb-2 text-xs"
                 style={{ color: "#002A79" }}
               >
                 Company Links
@@ -963,7 +975,7 @@ const EnhancedJobCard = ({
               }}
             >
               <h4
-                className="font-bold mb-2 text-xs"
+                className="font-semibold mb-2 text-xs"
                 style={{ color: "#003598" }}
               >
                 Company Insights
@@ -983,7 +995,7 @@ const EnhancedJobCard = ({
                     Team
                   </div>
                   <div
-                    className="font-bold text-xs"
+                    className="font-semibold text-xs"
                     style={{ color: "#353E5C" }}
                   >
                     {job.teamSize}
@@ -1003,7 +1015,7 @@ const EnhancedJobCard = ({
                     Founded
                   </div>
                   <div
-                    className="font-bold text-xs"
+                    className="font-semibold text-xs"
                     style={{ color: "#353E5C" }}
                   >
                     {job.foundedYear}
@@ -1023,7 +1035,7 @@ const EnhancedJobCard = ({
                     Industry
                   </div>
                   <div
-                    className="font-bold text-xs"
+                    className="font-semibold text-xs"
                     style={{ color: "#353E5C" }}
                   >
                     {job.companyType.split(" · ")[0]}
@@ -1309,7 +1321,7 @@ const JobSearchPage = () => {
         >
           <div className="relative z-10">
             <h1
-              className="text-white font-bold mb-2"
+              className="text-white font-semibold mb-2"
               style={{
                 textShadow: "0 2px 10px rgba(0, 0, 0, 0.3)",
                 fontSize: "32px",
@@ -1392,7 +1404,10 @@ const JobSearchPage = () => {
               ))}
             </div>
             <div className="flex items-center gap-3">
-              <label className="text-sm font-semibold text-gray-700">
+              <label
+                className="text-sm font-semibold"
+                style={{ color: "#000E41" }}
+              >
                 Sort by:
               </label>
               <div
@@ -1401,7 +1416,7 @@ const JobSearchPage = () => {
               >
                 <div
                   onClick={() => setShowSortDropdown(!showSortDropdown)}
-                  className="w-full text-sm font-medium text-gray-700 cursor-pointer focus:outline-none flex items-center justify-between"
+                  className="w-full text-sm font-medium cursor-pointer focus:outline-none flex items-center justify-between"
                   style={{
                     padding: "8px 12px",
                     borderRadius: "8px",
@@ -1409,6 +1424,7 @@ const JobSearchPage = () => {
                     background: "#FFF",
                     boxShadow:
                       "0 -4px 4px 0 rgba(0, 19, 88, 0.10) inset, 0 4px 16px 0 rgba(0, 19, 88, 0.04), 0 4px 4px 0 rgba(0, 19, 88, 0.04), 0 0 2px 0 rgba(0, 19, 88, 0.15)",
+                    color: "#000E41",
                   }}
                 >
                   <span>
@@ -1467,7 +1483,7 @@ const JobSearchPage = () => {
                               ? "rgba(35, 112, 255, 0.08)"
                               : "transparent",
                           color:
-                            sortBy === option.value ? "#2370FF" : "#374151",
+                            sortBy === option.value ? "#000E41" : "#374151",
                         }}
                       >
                         {option.label}
