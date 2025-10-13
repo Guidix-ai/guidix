@@ -186,24 +186,6 @@ function EnhancedResumeContent() {
       button, input, select, textarea {
         font-family: 'Inter', sans-serif !important;
       }
-
-      /* Custom scrollbar for resume preview */
-      .resume-preview-scroll::-webkit-scrollbar {
-        width: 10px;
-        height: 10px;
-      }
-      .resume-preview-scroll::-webkit-scrollbar-track {
-        background: #E9F1FF;
-        border-radius: 10px;
-      }
-      .resume-preview-scroll::-webkit-scrollbar-thumb {
-        background: linear-gradient(180deg, #679CFF 0%, #2370FF 100%);
-        border-radius: 10px;
-        border: 2px solid #E9F1FF;
-      }
-      .resume-preview-scroll::-webkit-scrollbar-thumb:hover {
-        background: linear-gradient(180deg, #2370FF 0%, #1a5acc 100%);
-      }
     `;
     document.head.appendChild(style);
   }, []);
@@ -3400,11 +3382,8 @@ function EnhancedResumeContent() {
     }
   };
 
-  // Determine current step and total steps for progress bar
-
   return (
     <DashboardLayout>
-
       <TextSelectionMenu onEnhance={handleEnhanceText} />
 
       {/* Custom styles */}
@@ -3495,21 +3474,21 @@ function EnhancedResumeContent() {
               boxShadow: shadowBoxStyle,
               borderRadius: '16px'
             }}>
-              <CardHeader className="pb-3 lg:pb-4">
+              <CardHeader className="pb-3 lg:pb-4 border-b" style={{ borderColor: '#F1F3F7' }}>
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                   <CardTitle style={{
                     color: colorTokens.title,
                     fontFamily: 'Inter, sans-serif',
                     fontSize: '16px',
-                    fontWeight: 500
+                    fontWeight: 600
                   }}>
                     Resume Preview
                   </CardTitle>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 flex-wrap">
                     <button
                       onClick={handleDownload}
                       disabled={isGenerating}
-                      className="flex items-center gap-1 px-3 py-2 transition-all hover:opacity-90"
+                      className="flex items-center gap-1.5 px-3 py-2 text-sm transition-all hover:opacity-90"
                       style={{
                         borderRadius: '8px',
                         border: '1px solid rgba(35, 112, 255, 0.30)',
@@ -3518,25 +3497,26 @@ function EnhancedResumeContent() {
                         ...buttonTextStyles,
                         cursor: isGenerating ? 'not-allowed' : 'pointer',
                         opacity: isGenerating ? 0.5 : 1,
-                        fontSize: '12px'
+                        fontSize: '13px'
                       }}
                     >
                       {isGenerating ? (
                         <>
-                          <Loader2 className="h-3 w-3 animate-spin" />
-                          <span>Generating...</span>
+                          <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                          <span className="hidden sm:inline">Generating...</span>
                         </>
                       ) : (
                         <>
-                          <Download className="h-3 w-3" />
-                          <span>Download PDF</span>
+                          <Download className="h-3.5 w-3.5" />
+                          <span className="hidden sm:inline">Download</span>
+                          <span className="sm:hidden">PDF</span>
                         </>
                       )}
                     </button>
                     <button
                       onClick={handleGenerate}
                       disabled={isGenerating}
-                      className="flex items-center gap-1 px-3 py-2 transition-all hover:opacity-90"
+                      className="flex items-center gap-1.5 px-3 py-2 text-sm transition-all hover:opacity-90"
                       style={{
                         borderRadius: '8px',
                         border: '1px solid rgba(35, 112, 255, 0.30)',
@@ -3545,43 +3525,36 @@ function EnhancedResumeContent() {
                         ...buttonTextStyles,
                         cursor: isGenerating ? 'not-allowed' : 'pointer',
                         opacity: isGenerating ? 0.5 : 1,
-                        fontSize: '12px'
+                        fontSize: '13px'
                       }}
                     >
-                      <span className="hidden sm:inline">
-                        {isGenerating ? "Finishing..." : "Finish"}
-                      </span>
+                      <Sparkles className="h-3.5 w-3.5" />
+                      <span>{isGenerating ? "Finishing..." : "Finish"}</span>
                     </button>
                   </div>
                 </div>
               </CardHeader>
-              <CardContent style={{ padding: 0, height: 'calc(100vh - 200px)' }}>
-                <div
-                  className="resume-preview-scroll"
-                  style={{
-                    width: '100%',
-                    height: '100%',
-                    background: 'linear-gradient(135deg, #F8F9FF 0%, #E9F1FF 100%)',
-                    overflow: 'auto',
-                    padding: '40px 20px'
-                  }}
-                >
+              <CardContent className="p-4 lg:p-6">
+                <div className="bg-gray-50 p-4 rounded-lg">
                   <div
+                    className="bg-white border border-gray-200 shadow-lg mx-auto overflow-hidden"
                     style={{
-                      width: '100%',
-                      maxWidth: '900px',
-                      minHeight: '100%',
-                      margin: '0 auto',
-                      background: '#FFFFFF',
-                      boxShadow: '0 20px 60px rgba(35, 112, 255, 0.15), 0 0 1px rgba(0, 0, 0, 0.1)',
-                      borderRadius: '12px',
-                      overflow: 'hidden'
+                      aspectRatio: "0.707",
+                      maxWidth: "100%",
+                      width: "100%",
+                      minHeight: isMobile ? "400px" : "600px",
+                      maxHeight: isMobile ? "500px" : "850px",
                     }}
                   >
-                    <PDFPreview
-                      templateId={selectedTemplate}
-                      resumeData={resumeData}
-                    />
+                    <div className="h-full overflow-y-auto overflow-x-hidden">
+                      <PDFPreview
+                        key={JSON.stringify(resumeData)}
+                        templateId={selectedTemplate}
+                        width="100%"
+                        height="100%"
+                        data={resumeData}
+                      />
+                    </div>
                   </div>
                 </div>
               </CardContent>
