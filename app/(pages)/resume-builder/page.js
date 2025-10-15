@@ -555,7 +555,7 @@ export default function ResumeBuilderPage() {
                 className="py-3 px-3 lg:px-4 rounded-lg text-xs lg:text-sm font-medium transition-all"
                 style={{
                   background: activeTab === "ai-prompt" ? "#FFFFFF" : "transparent",
-                  color: activeTab === "ai-prompt" ? "#002A79" : "#6D7586",
+                  color: activeTab === "ai-prompt" ? "#002A79" : "#6477B4",
                   borderRadius: "8px",
                   border: activeTab === "ai-prompt" ? "1px solid #FFF" : "1px solid transparent",
                   boxShadow: activeTab === "ai-prompt"
@@ -586,7 +586,7 @@ export default function ResumeBuilderPage() {
                 className="py-3 px-3 lg:px-4 rounded-lg text-xs lg:text-sm font-medium transition-all"
                 style={{
                   background: activeTab === "all" ? "#FFFFFF" : "transparent",
-                  color: activeTab === "all" ? "#002A79" : "#6D7586",
+                  color: activeTab === "all" ? "#002A79" : "#6477B4",
                   borderRadius: "8px",
                   border: activeTab === "all" ? "1px solid #FFF" : "1px solid transparent",
                   boxShadow: activeTab === "all"
@@ -617,7 +617,7 @@ export default function ResumeBuilderPage() {
                 className="py-3 px-3 lg:px-4 rounded-lg text-xs lg:text-sm font-medium transition-all"
                 style={{
                   background: activeTab === "linkedin" ? "#FFFFFF" : "transparent",
-                  color: activeTab === "linkedin" ? "#002A79" : "#6D7586",
+                  color: activeTab === "linkedin" ? "#002A79" : "#6477B4",
                   borderRadius: "8px",
                   border: activeTab === "linkedin" ? "1px solid #FFF" : "1px solid transparent",
                   boxShadow: activeTab === "linkedin"

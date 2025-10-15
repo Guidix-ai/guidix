@@ -362,7 +362,7 @@ My experience? [Key Project] from [Year], and an internship [Role/Company] with 
         textarea::placeholder {
           color: #6477B4;
           font-family: Inter, sans-serif;
-          font-size: 16px;
+          font-size: 14px;
           font-weight: 400;
           line-height: 125%;
           letter-spacing: -0.32px;
@@ -370,7 +370,7 @@ My experience? [Key Project] from [Year], and an internship [Role/Company] with 
         textarea::-webkit-input-placeholder {
           color: #6477B4;
           font-family: Inter, sans-serif;
-          font-size: 16px;
+          font-size: 14px;
           font-weight: 400;
           line-height: 125%;
           letter-spacing: -0.32px;
@@ -378,7 +378,7 @@ My experience? [Key Project] from [Year], and an internship [Role/Company] with 
         textarea::-moz-placeholder {
           color: #6477B4;
           font-family: Inter, sans-serif;
-          font-size: 16px;
+          font-size: 14px;
           font-weight: 400;
           line-height: 125%;
           letter-spacing: -0.32px;
@@ -386,7 +386,7 @@ My experience? [Key Project] from [Year], and an internship [Role/Company] with 
         textarea:-ms-input-placeholder {
           color: #6477B4;
           font-family: Inter, sans-serif;
-          font-size: 16px;
+          font-size: 14px;
           font-weight: 400;
           line-height: 125%;
           letter-spacing: -0.32px;
@@ -420,7 +420,6 @@ My experience? [Key Project] from [Year], and an internship [Role/Company] with 
                 backgroundColor: '#E9F1FF',
                 color: colorTokens.title
               }}>
-                <Image src="/resumebuilder.svg" alt="Education" width={14} height={14} />
                 {userEducation === "first" ? "1st Year" : userEducation === "second" ? "2nd Year" : userEducation === "third" ? "3rd Year" : "4th Year"}
               </span>
               {userFields.map((fieldId) => (
@@ -428,7 +427,6 @@ My experience? [Key Project] from [Year], and an internship [Role/Company] with 
                   backgroundColor: '#E9F1FF',
                   color: colorTokens.title
                 }}>
-                  <Image src="/dashboard.svg" alt="Field" width={14} height={14} />
                   {getFieldData(fieldId).name}
                 </span>
               ))}
@@ -454,7 +452,6 @@ My experience? [Key Project] from [Year], and an internship [Role/Company] with 
               boxShadow: '0 0 6px 0 rgba(0, 0, 0, 0.12), 0 2px 3px 0 rgba(0, 0, 0, 0.04), 0 2px 6px 0 rgba(0, 0, 0, 0.04), inset 0 -2px 3px 0 rgba(0, 0, 0, 0.08)'
             }}>
               <div className="flex items-center gap-2 mb-4">
-                <Image src="/dashboard.svg" alt="Examples" width={16} height={16} />
                 <h3 className="font-semibold" style={{ color: colorTokens.title, fontSize: '16px' }}>
                   Quick Examples
                 </h3>
@@ -486,7 +483,8 @@ My experience? [Key Project] from [Year], and an internship [Role/Company] with 
                   >
                     <div className="flex items-start gap-3">
                       <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0" style={{
-                        background: colorTokens.secondary600
+                        background: 'linear-gradient(180deg, #679CFF 0%, #2370FF 100%)',
+                        boxShadow: '0 1px 6px rgba(35, 112, 255, 0.2)'
                       }}>
                         <span className="text-white text-xs font-bold">{index + 1}</span>
                       </div>
@@ -512,7 +510,6 @@ My experience? [Key Project] from [Year], and an internship [Role/Company] with 
               boxShadow: '0 0 6px 0 rgba(0, 0, 0, 0.12), 0 2px 3px 0 rgba(0, 0, 0, 0.04), 0 2px 6px 0 rgba(0, 0, 0, 0.04), inset 0 -2px 3px 0 rgba(0, 0, 0, 0.08)'
             }}>
               <div className="flex items-center gap-2 mb-4">
-                <Image src="/resumebuilder.svg" alt="Info" width={16} height={16} />
                 <h2 className="font-semibold" style={{ color: colorTokens.title, fontSize: '16px' }}>
                   Your Information
                 </h2>
@@ -539,7 +536,7 @@ My experience? [Key Project] from [Year], and an internship [Role/Company] with 
                     borderRadius: 12,
                     border: wordCount > MAX_WORDS ? "1px solid #EF4444" : "1px solid #E1E4ED",
                     boxShadow: "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
-                    fontSize: 16,
+                    fontSize: 14,
                     color: colorTokens.title,
                     fontFamily: "Inter, sans-serif",
                     fontWeight: 400,
