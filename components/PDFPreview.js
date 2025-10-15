@@ -277,50 +277,35 @@ const PDFPreview = ({ templateId, resumeData = sampleResumeData, width = 300, he
         .pdf-preview-wrapper {
           width: 100%;
           height: 100%;
-          overflow-y: auto !important;
-          overflow-x: hidden !important;
           position: relative;
+          background: white;
+          overflow: hidden !important;
         }
 
-        .pdf-preview-wrapper iframe {
+        .pdf-preview-inner {
+          width: calc(100% + 40px);
+          height: calc(100% + 40px);
+          position: absolute;
+          top: -20px;
+          left: -20px;
+          overflow: hidden !important;
+        }
+
+        .pdf-preview-inner iframe {
           width: 100%;
           height: 100%;
-          min-height: 800px;
           border: none;
-          position: relative;
-        }
-
-        /* Custom scrollbar styling */
-        .pdf-preview-wrapper::-webkit-scrollbar {
-          width: 8px;
-        }
-
-        .pdf-preview-wrapper::-webkit-scrollbar-track {
-          background: #f1f1f1;
-          border-radius: 4px;
-        }
-
-        .pdf-preview-wrapper::-webkit-scrollbar-thumb {
-          background: #888;
-          border-radius: 4px;
-        }
-
-        .pdf-preview-wrapper::-webkit-scrollbar-thumb:hover {
-          background: #555;
-        }
-
-        /* Firefox scrollbar */
-        .pdf-preview-wrapper {
-          scrollbar-width: thin;
-          scrollbar-color: #888 #f1f1f1;
+          display: block;
+          background: white;
         }
       `}</style>
       <div className="pdf-preview-wrapper">
-        <iframe
-          src={`${pdfUrl}#page=1&toolbar=0&navpanes=0&scrollbar=1&view=FitV`}
-          title="PDF Preview"
-          style={{ display: 'block' }}
-        />
+        <div className="pdf-preview-inner">
+          <iframe
+            src={`${pdfUrl}#view=FitH&toolbar=0&navpanes=0&scrollbar=0`}
+            title="PDF Preview"
+          />
+        </div>
       </div>
     </>
   );

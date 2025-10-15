@@ -579,17 +579,24 @@ function TemplateSelectionContent() {
                         {/* Overlay on hover - with full template info */}
                         <div
                           className="absolute inset-0 opacity-0 group-hover:opacity-100 flex flex-col justify-end p-4"
-                          style={{ transition: "opacity 0.2s ease" }}
+                          style={{ transition: "opacity 0.3s ease" }}
                         >
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/20 to-transparent"></div>
+                          {/* Backdrop blur layer - only on bottom */}
                           <div
                             className="absolute bottom-0 left-0 right-0"
                             style={{
                               height: '60%',
-                              backdropFilter: 'blur(8px',
+                              backdropFilter: 'blur(12px)',
                               WebkitBackdropFilter: 'blur(12px)',
-                              maskImage: 'linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 100%)',
-                              WebkitMaskImage: 'linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 100%)'
+                              maskImage: 'linear-gradient(to top, black 0%, black 40%, transparent 100%)',
+                              WebkitMaskImage: 'linear-gradient(to top, black 0%, black 40%, transparent 100%)',
+                            }}
+                          ></div>
+                          {/* Dark gradient overlay - entire card */}
+                          <div
+                            className="absolute bottom-0 left-0 right-0 top-0"
+                            style={{
+                              background: 'linear-gradient(to top, rgba(0,0,0,0.90) 0%, rgba(0,0,0,0.85) 10%, rgba(0,0,0,0.75) 20%, rgba(0,0,0,0.62) 30%, rgba(0,0,0,0.48) 40%, rgba(0,0,0,0.35) 50%, rgba(0,0,0,0.22) 60%, rgba(0,0,0,0.12) 70%, rgba(0,0,0,0.05) 80%, rgba(0,0,0,0.02) 90%, rgba(0,0,0,0) 100%)',
                             }}
                           ></div>
                           <div className="relative z-10">
