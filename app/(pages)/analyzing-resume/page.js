@@ -26,7 +26,21 @@ function AnalyzingResumePageContent() {
   }, [router, field, education, filename]);
 
   return (
-    <DashboardLayout>
+    <DashboardLayout progressBar={
+      <ResumeBreadcrumbs
+        currentStep={3}
+        totalSteps={6}
+        inNavbar={true}
+        steps={[
+          { id: 1, label: 'Info', route: '/resume-confirmation?path=upload' },
+          { id: 2, label: 'Upload', route: '/upload-resume' },
+          { id: 3, label: 'Analyzing', route: '#' },
+          { id: 4, label: 'Review', route: '#' },
+          { id: 5, label: 'Template', route: '#' },
+          { id: 6, label: 'Editor', route: '#' }
+        ]}
+      />
+    }>
       <div className="min-h-screen w-full flex flex-col" style={{backgroundColor: '#FFFFFF'}}>
 
         <div className="flex-1 flex items-center justify-center">
@@ -69,20 +83,6 @@ function AnalyzingResumePageContent() {
           }
         `}</style>
       </div>
-
-      {/* Breadcrumbs */}
-      <ResumeBreadcrumbs
-        currentStep={3}
-        totalSteps={6}
-        steps={[
-          { id: 1, label: 'Info', route: '/resume-confirmation?path=upload' },
-          { id: 2, label: 'Upload', route: '/upload-resume' },
-          { id: 3, label: 'Analyzing', route: '#' },
-          { id: 4, label: 'Review', route: '#' },
-          { id: 5, label: 'Template', route: '#' },
-          { id: 6, label: 'Editor', route: '#' }
-        ]}
-      />
     </DashboardLayout>
   );
 }

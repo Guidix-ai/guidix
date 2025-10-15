@@ -11,7 +11,7 @@ import {
   User,
   Briefcase,
 } from "lucide-react";
-import { DashboardLayout } from "@/components/layout/dashboard-layout";
+import { DashboardLayout, useSidebar } from "@/components/layout/dashboard-layout";
 import { allTemplates } from "@/components/pdf-templates";
 import dynamic from 'next/dynamic';
 import { enhanceResume, createResumeFromPrompt } from "@/services/resumeService";
@@ -43,6 +43,9 @@ function TemplateSelectionContent() {
   const [userName, setUserName] = useState("there");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  // Get sidebar collapsed state
+  const { collapsed } = useSidebar();
 
   // Enhanced filter states - using arrays for multi-select
   const [filters, setFilters] = useState({
@@ -200,8 +203,27 @@ function TemplateSelectionContent() {
   const currentStep = isFromUpload ? 5 : 3;
   const totalSteps = isFromUpload ? 7 : 6;
 
+  // Prepare progress bar
+  const progressBarElement = isFromUpload ? (
+    <ResumeBreadcrumbs
+      currentStep={5}
+      totalSteps={6}
+      inNavbar={true}
+      steps={[
+        { id: 1, label: "Info", route: "/resume-confirmation?path=upload" },
+        { id: 2, label: "Upload", route: "/upload-resume" },
+        { id: 3, label: "Analyzing", route: "#" },
+        { id: 4, label: "Review", route: "/resume-review" },
+        { id: 5, label: "Template", route: "#" },
+        { id: 6, label: "Editor", route: "#" },
+      ]}
+    />
+  ) : (
+    <ResumeBreadcrumbs currentStep={3} totalSteps={4} inNavbar={true} />
+  );
+
   return (
-    <DashboardLayout>
+    <DashboardLayout progressBar={progressBarElement}>
       <div
         className="min-h-screen"
         style={{
@@ -719,9 +741,15 @@ function TemplateSelectionContent() {
       <div
         style={{
           position: "fixed",
-          bottom: "120px",
-          right: "2rem",
+          bottom: "2rem",
+          left: typeof window !== 'undefined' && window.innerWidth >= 1024
+            ? collapsed
+              ? 'calc((100vw - 96px) / 2 + 96px)'  // Collapsed: center of (viewport - sidebar)
+              : 'calc((100vw - 272px) / 2 + 272px)' // Expanded: center of (viewport - sidebar)
+            : '50%',
+          transform: "translateX(-50%)",
           zIndex: 50,
+          transition: 'left 0.3s ease'
         }}
       >
         <button
@@ -768,25 +796,6 @@ function TemplateSelectionContent() {
           )}
         </button>
       </div>
-
-      {/* Breadcrumbs */}
-      {searchParams.get("from") === "ai" && (
-        <ResumeBreadcrumbs currentStep={3} totalSteps={4} />
-      )}
-      {searchParams.get("from") === "upload" && (
-        <ResumeBreadcrumbs
-          currentStep={5}
-          totalSteps={6}
-          steps={[
-            { id: 1, label: "Info", route: "/resume-confirmation?path=upload" },
-            { id: 2, label: "Upload", route: "/upload-resume" },
-            { id: 3, label: "Analyzing", route: "#" },
-            { id: 4, label: "Review", route: "/resume-review" },
-            { id: 5, label: "Template", route: "#" },
-            { id: 6, label: "Editor", route: "#" },
-          ]}
-        />
-      )}
     </DashboardLayout>
   );
 }

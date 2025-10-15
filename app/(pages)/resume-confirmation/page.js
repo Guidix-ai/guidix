@@ -281,8 +281,26 @@ function ResumeConfirmationPageContent() {
     }, 300);
   };
 
+  const progressBarElement = (path === "ai" || !path) ? (
+    <ResumeBreadcrumbs currentStep={1} totalSteps={4} inNavbar={true} />
+  ) : (
+    <ResumeBreadcrumbs
+      currentStep={1}
+      totalSteps={6}
+      inNavbar={true}
+      steps={[
+        { id: 1, label: "Info", route: "/resume-confirmation?path=upload" },
+        { id: 2, label: "Upload", route: "#" },
+        { id: 3, label: "Analyzing", route: "#" },
+        { id: 4, label: "Review", route: "#" },
+        { id: 5, label: "Template", route: "#" },
+        { id: 6, label: "Editor", route: "#" },
+      ]}
+    />
+  );
+
   return (
-    <DashboardLayout>
+    <DashboardLayout progressBar={progressBarElement}>
       <div
         style={{
           minHeight: "100vh",
@@ -574,25 +592,6 @@ function ResumeConfirmationPageContent() {
           </div>
         </div>
       </div>
-
-      {/* Breadcrumbs */}
-      {(path === "ai" || !path) && (
-        <ResumeBreadcrumbs currentStep={1} totalSteps={4} />
-      )}
-      {path === "upload" && (
-        <ResumeBreadcrumbs
-          currentStep={1}
-          totalSteps={6}
-          steps={[
-            { id: 1, label: "Info", route: "/resume-confirmation?path=upload" },
-            { id: 2, label: "Upload", route: "#" },
-            { id: 3, label: "Analyzing", route: "#" },
-            { id: 4, label: "Review", route: "#" },
-            { id: 5, label: "Template", route: "#" },
-            { id: 6, label: "Editor", route: "#" },
-          ]}
-        />
-      )}
     </DashboardLayout>
   );
 }

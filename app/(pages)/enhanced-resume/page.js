@@ -164,10 +164,37 @@ function EnhancedResumeContent() {
   const isFromUpload = searchParams.get("from") === "upload";
   const isFromAI = searchParams.get("from") === "ai";
   const selectedTemplate = searchParams.get("template") || "internship-1-with-photo";
-  const resumeId = searchParams.get("resumeId");
+  const resumeId = searchParams.get("resumeId") ||
+                   (typeof window !== 'undefined' ? sessionStorage.getItem('createdResumeId') : null) ||
+                   (typeof window !== 'undefined' ? sessionStorage.getItem('uploadedResumeId') : null) ||
+                   (typeof window !== 'undefined' ? sessionStorage.getItem('resumeIdUsedForJobs') : null);
 
   // Get template metadata
   const currentTemplate = getTemplateById(selectedTemplate);
+
+  // Store resumeId in sessionStorage when component loads
+  useEffect(() => {
+    const urlResumeId = searchParams.get("resumeId");
+
+    if (urlResumeId) {
+      console.log('📋 Resume ID from URL params:', urlResumeId);
+      // Store in sessionStorage for later use
+      sessionStorage.setItem('resumeIdUsedForJobs', urlResumeId);
+      sessionStorage.setItem('createdResumeId', urlResumeId);
+      sessionStorage.setItem('uploadedResumeId', urlResumeId);
+    } else {
+      // Check if it exists in sessionStorage
+      const storedResumeId = sessionStorage.getItem('resumeIdUsedForJobs') ||
+                             sessionStorage.getItem('createdResumeId') ||
+                             sessionStorage.getItem('uploadedResumeId');
+
+      if (storedResumeId) {
+        console.log('📋 Resume ID from sessionStorage:', storedResumeId);
+      } else {
+        console.warn('⚠️ No resume ID found in URL or sessionStorage');
+      }
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     // Load Inter font
@@ -851,45 +878,45 @@ function EnhancedResumeContent() {
 
       console.log('🎯 Finish button clicked');
 
+      // Get resumeId from URL params or sessionStorage
+      const currentResumeId = searchParams.get("resumeId") ||
+                              sessionStorage.getItem('resumeIdUsedForJobs') ||
+                              sessionStorage.getItem('createdResumeId') ||
+                              sessionStorage.getItem('uploadedResumeId');
+
+      console.log('🔍 Checking resumeId sources:');
+      console.log('  - URL params:', searchParams.get("resumeId"));
+      console.log('  - resumeIdUsedForJobs:', sessionStorage.getItem('resumeIdUsedForJobs'));
+      console.log('  - createdResumeId:', sessionStorage.getItem('createdResumeId'));
+      console.log('  - uploadedResumeId:', sessionStorage.getItem('uploadedResumeId'));
+      console.log('  - Final resumeId:', currentResumeId);
+
       // Check if we have a resumeId
-      if (!resumeId) {
-        console.error('❌ No resumeId found');
-        setError('Resume ID not found. Please try again.');
+      if (!currentResumeId) {
+        console.error('❌ No resumeId found in any source');
+        setError('Resume ID not found. Please try again from the template selection page.');
         setIsGenerating(false);
         return;
       }
 
-      console.log('📤 Fetching jobs with resume_id:', resumeId);
+      console.log('📤 Using resume_id:', currentResumeId);
 
-      // Call the getJobsWithResumeId API
-      const response = await getJobsWithResumeId(resumeId, 20, 0, false);
+      // Store resumeId in sessionStorage before API call
+      sessionStorage.setItem('resumeIdUsedForJobs', currentResumeId);
 
-      if (response.success) {
-        console.log('✅ Jobs fetched successfully:', response.data);
-        console.log('📊 Total jobs:', response.data.pagination?.total_count || 0);
+      // Call the getJobsWithResumeId API (commenting out for now as per new API)
+      // const response = await getJobsWithResumeId(currentResumeId, 20, 0, false);
 
-        // Store jobs data in sessionStorage for next page
-        sessionStorage.setItem('jobsData', JSON.stringify(response.data));
-        sessionStorage.setItem('resumeIdUsedForJobs', resumeId);
+      // Navigate to resume-complete page (the API call will happen there)
+      console.log('✅ Navigating to resume-complete with resumeId stored');
+      router.push("/resume-complete");
 
-        // Navigate to job listings or resume complete page
-        router.push("/resume-complete");
-      } else {
-        console.error('❌ Failed to fetch jobs:', response.message);
-        setError(response.message || 'Failed to fetch job recommendations');
-        setIsGenerating(false);
-      }
     } catch (err) {
-      console.error('❌ Error fetching jobs:', err);
+      console.error('❌ Error in handleGenerate:', err);
       const errorMessage = handleApiError(err);
       logError('EnhancedResumePage - Finish', err);
       setError(errorMessage);
       setIsGenerating(false);
-
-      // Navigate anyway even if jobs API fails
-      setTimeout(() => {
-        router.push("/resume-complete");
-      }, 2000);
     }
   };
 
@@ -3383,8 +3410,27 @@ function EnhancedResumeContent() {
     }
   };
 
+  // Create progress bar element based on flow
+  const progressBarElement = isFromAI ? (
+    <ResumeBreadcrumbs currentStep={4} totalSteps={4} inNavbar={true} />
+  ) : isFromUpload ? (
+    <ResumeBreadcrumbs
+      currentStep={6}
+      totalSteps={6}
+      inNavbar={true}
+      steps={[
+        { id: 1, label: 'Info', route: '/resume-confirmation?path=upload' },
+        { id: 2, label: 'Upload', route: '/upload-resume' },
+        { id: 3, label: 'Analyzing', route: '#' },
+        { id: 4, label: 'Review', route: '#' },
+        { id: 5, label: 'Template', route: '#' },
+        { id: 6, label: 'Editor', route: '#' }
+      ]}
+    />
+  ) : null;
+
   return (
-    <DashboardLayout>
+    <DashboardLayout progressBar={progressBarElement}>
       <TextSelectionMenu onEnhance={handleEnhanceText} />
 
       {/* Custom styles */}
@@ -5019,25 +5065,6 @@ function EnhancedResumeContent() {
           </div>
         )}
       </div>
-
-      {/* Breadcrumbs */}
-      {isFromAI && (
-        <ResumeBreadcrumbs currentStep={4} totalSteps={4} />
-      )}
-      {isFromUpload && (
-        <ResumeBreadcrumbs
-          currentStep={6}
-          totalSteps={6}
-          steps={[
-            { id: 1, label: 'Info', route: '/resume-confirmation?path=upload' },
-            { id: 2, label: 'Upload', route: '/upload-resume' },
-            { id: 3, label: 'Analyzing', route: '#' },
-            { id: 4, label: 'Review', route: '/resume-review' },
-            { id: 5, label: 'Template', route: '#' },
-            { id: 6, label: 'Editor', route: '#' }
-          ]}
-        />
-      )}
     </DashboardLayout>
   );
 }

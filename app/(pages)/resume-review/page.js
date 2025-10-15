@@ -93,7 +93,21 @@ function ResumeReviewPageContent() {
   };
 
   return (
-    <DashboardLayout>
+    <DashboardLayout progressBar={
+      <ResumeBreadcrumbs
+        currentStep={4}
+        totalSteps={6}
+        inNavbar={true}
+        steps={[
+          { id: 1, label: 'Info', route: '/resume-confirmation?path=upload' },
+          { id: 2, label: 'Upload', route: '/upload-resume' },
+          { id: 3, label: 'Analyzing', route: '#' },
+          { id: 4, label: 'Review', route: '#' },
+          { id: 5, label: 'Template', route: '#' },
+          { id: 6, label: 'Editor', route: '#' }
+        ]}
+      />
+    }>
       <div style={{ minHeight: '100vh', backgroundColor: '#F8F9FF', width: '100%' }}>
         {/* Banner */}
         <div className="relative py-6 px-8 overflow-hidden flex items-center" style={{
@@ -256,20 +270,6 @@ function ResumeReviewPageContent() {
           }
         `}</style>
       </div>
-
-      {/* Breadcrumbs */}
-      <ResumeBreadcrumbs
-        currentStep={4}
-        totalSteps={6}
-        steps={[
-          { id: 1, label: 'Info', route: '/resume-confirmation?path=upload' },
-          { id: 2, label: 'Upload', route: '/upload-resume' },
-          { id: 3, label: 'Analyzing', route: '#' },
-          { id: 4, label: 'Review', route: '#' },
-          { id: 5, label: 'Template', route: '#' },
-          { id: 6, label: 'Editor', route: '#' }
-        ]}
-      />
     </DashboardLayout>
   );
 }

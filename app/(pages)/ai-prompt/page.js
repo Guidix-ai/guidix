@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useSelector } from "react-redux";
-import { DashboardLayout } from "@/components/layout/dashboard-layout";
+import { DashboardLayout, useSidebar } from "@/components/layout/dashboard-layout";
 import ResumeBreadcrumbs from "@/components/ResumeBreadcrumbs";
 
 const colorTokens = {
@@ -32,6 +32,9 @@ function AIPromptInputContent() {
 
   // Get user data from Redux
   const user = useSelector((state) => state.auth.user);
+
+  // Get sidebar collapsed state
+  const { collapsed } = useSidebar();
 
   // State for user data to prevent hydration mismatch
   const [userName, setUserName] = useState('[Your Name]');
@@ -392,7 +395,9 @@ My experience? [Key Project] from [Year], and an internship [Role/Company] with 
           letter-spacing: -0.32px;
         }
       `}</style>
-      <DashboardLayout>
+      <DashboardLayout
+        progressBar={<ResumeBreadcrumbs currentStep={2} totalSteps={4} inNavbar={true} />}
+      >
         <div style={{ minHeight: '100vh', backgroundColor: '#F8F9FF', width: '100%' }}>
         {/* Banner */}
         <div className="relative py-6 px-8 overflow-hidden flex items-center" style={{
@@ -574,9 +579,15 @@ My experience? [Key Project] from [Year], and an internship [Role/Company] with 
       {/* Floating Generate Button */}
       <div style={{
         position: 'fixed',
-        bottom: '120px',
-        right: '2rem',
-        zIndex: 50
+        bottom: '2rem',
+        left: typeof window !== 'undefined' && window.innerWidth >= 1024
+          ? collapsed
+            ? 'calc((100vw - 96px) / 2 + 96px)'  // Collapsed: center of (viewport - sidebar)
+            : 'calc((100vw - 272px) / 2 + 272px)' // Expanded: center of (viewport - sidebar)
+          : '50%',
+        transform: 'translateX(-50%)',
+        zIndex: 50,
+        transition: 'left 0.3s ease'
       }}>
         <button
           onClick={handleNext}
@@ -612,9 +623,6 @@ My experience? [Key Project] from [Year], and an internship [Role/Company] with 
           <ArrowRight className="h-4 w-4" />
         </button>
       </div>
-
-      {/* Breadcrumbs */}
-      <ResumeBreadcrumbs currentStep={2} totalSteps={4} />
     </DashboardLayout>
     </>
   );

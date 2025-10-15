@@ -215,6 +215,35 @@ export const getTrendingJobs = async (timePeriod = 'week', location = null, indu
 };
 
 /**
+ * Get integrated jobs with existing resume ID (New API endpoint)
+ * Fetches AI-matched jobs using an existing resume from the database
+ * @param {string} resumeId - UUID of existing resume in database
+ * @returns {Promise} Integrated jobs with AI match scores
+ */
+export const getIntegratedJobsWithResumeId = async (resumeId) => {
+  const response = await jobApiClient.post('/auto-apply/integrated-jobs', {
+    resume_id: resumeId
+  });
+  return response.data;
+};
+
+/**
+ * Get integrated jobs with uploaded resume file (New API endpoint)
+ * Fetches AI-matched jobs by uploading a resume file without saving to database
+ * @param {File} file - Resume file (PDF, DOCX, or TXT)
+ * @returns {Promise} Integrated jobs with AI match scores
+ */
+export const getIntegratedJobsWithUpload = async (file) => {
+  const formData = new FormData();
+  formData.append('resume_file', file);
+
+  const response = await jobApiClient.post('/auto-apply/integrated-jobs/upload', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' }
+  });
+  return response.data;
+};
+
+/**
  * Job status enum
  */
 export const JobStatusEnum = {

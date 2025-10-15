@@ -1,11 +1,13 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { DashboardLayout } from "@/components/layout/dashboard-layout";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Loader2 } from "lucide-react";
 import confetti from "canvas-confetti";
 import Image from "next/image";
+import { getIntegratedJobsWithResumeId } from "@/services/jobService";
+import { handleApiError, logError } from "@/utils/errorHandler";
 
 const colorTokens = {
   title: "#002A79",
@@ -17,6 +19,23 @@ const colorTokens = {
 
 export default function ResumeCompletePage() {
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [resumeId, setResumeId] = useState(null);
+
+  useEffect(() => {
+    // Get resumeId from sessionStorage
+    const storedResumeId = sessionStorage.getItem('resumeIdUsedForJobs') ||
+                           sessionStorage.getItem('createdResumeId') ||
+                           sessionStorage.getItem('uploadedResumeId');
+
+    if (storedResumeId) {
+      setResumeId(storedResumeId);
+      console.log('📋 Resume ID loaded:', storedResumeId);
+    } else {
+      console.warn('⚠️ No resume ID found in sessionStorage');
+    }
+  }, []);
 
   useEffect(() => {
     const googleFontsLink = document.createElement('link');
@@ -66,8 +85,61 @@ export default function ResumeCompletePage() {
     return () => clearInterval(interval);
   }, []);
 
-  const handleNext = () => {
-    router.push("/job-search");
+  const handleNext = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      // Check if we have a resume ID
+      if (!resumeId) {
+        console.error('❌ No resume ID found');
+        setError('Resume ID not found. Redirecting anyway...');
+        setTimeout(() => {
+          router.push("/job-search");
+        }, 1500);
+        return;
+      }
+
+      console.log('🚀 Fetching integrated jobs with resume ID:', resumeId);
+
+      // Call the integrated jobs API
+      const response = await getIntegratedJobsWithResumeId(resumeId);
+
+      if (response.success) {
+        console.log('✅ Integrated jobs fetched successfully!');
+        console.log('📊 Total jobs:', response.data.total_jobs);
+        console.log('🎯 Jobs returned:', response.data.jobs?.length);
+        console.log('🔍 Extracted filters:', response.data.extracted_filters);
+        console.log('⚡ Cache used:', response.data.cache_used);
+
+        // Store the integrated jobs data in sessionStorage
+        sessionStorage.setItem('integratedJobsData', JSON.stringify(response.data));
+        sessionStorage.setItem('integratedJobsTimestamp', Date.now().toString());
+
+        // Navigate to job search page
+        router.push("/job-search");
+      } else {
+        console.error('❌ Failed to fetch integrated jobs:', response.message);
+        setError(response.message || 'Failed to fetch job matches');
+        setLoading(false);
+
+        // Navigate anyway after showing error
+        setTimeout(() => {
+          router.push("/job-search");
+        }, 2000);
+      }
+    } catch (err) {
+      console.error('❌ Error fetching integrated jobs:', err);
+      const errorMessage = handleApiError(err);
+      logError('ResumeCompletePage - handleNext', err);
+      setError(errorMessage);
+      setLoading(false);
+
+      // Navigate to job search page anyway even if API fails
+      setTimeout(() => {
+        router.push("/job-search");
+      }, 2000);
+    }
   };
 
   return (
@@ -127,26 +199,50 @@ export default function ResumeCompletePage() {
             Now let&apos;s find some jobs for you
           </p>
 
+          {/* Error Message */}
+          {error && (
+            <div
+              className="mb-6 p-4 rounded-lg"
+              style={{
+                backgroundColor: '#FEE2E2',
+                border: '1px solid #FCA5A5',
+                color: '#991B1B'
+              }}
+            >
+              <p className="text-sm">{error}</p>
+            </div>
+          )}
+
           {/* Next Button */}
           <button
             onClick={handleNext}
-            className="inline-flex items-center gap-2 transition-all hover:opacity-90"
+            disabled={loading}
+            className="inline-flex items-center gap-2 transition-all hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
             style={{
               padding: '12px 32px',
               borderRadius: '8px',
               border: '1px solid rgba(35, 112, 255, 0.30)',
-              background: 'linear-gradient(180deg, #679CFF 0%, #2370FF 100%)',
+              background: loading ? '#9CA3AF' : 'linear-gradient(180deg, #679CFF 0%, #2370FF 100%)',
               boxShadow: '0 2px 4px 0 rgba(77, 145, 225, 0.10), 0 1px 0.3px 0 rgba(255, 255, 255, 0.25) inset, 0 -1px 0.3px 0 rgba(0, 19, 88, 0.25) inset',
               color: '#FFFFFF',
               fontSize: '16px',
               fontWeight: 500,
               fontFamily: 'Inter',
               textShadow: '0 0.5px 1.5px rgba(0, 19, 88, 0.30), 0 2px 5px rgba(0, 19, 88, 0.10)',
-              cursor: 'pointer'
+              cursor: loading ? 'not-allowed' : 'pointer'
             }}
           >
-            <span>Next</span>
-            <ArrowRight className="w-5 h-5" />
+            {loading ? (
+              <>
+                <Loader2 className="w-5 h-5 animate-spin" />
+                <span>Finding Jobs...</span>
+              </>
+            ) : (
+              <>
+                <span>Next</span>
+                <ArrowRight className="w-5 h-5" />
+              </>
+            )}
           </button>
         </div>
       </div>

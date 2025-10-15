@@ -1,11 +1,17 @@
 // components/layout/dashboard-layout.js
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, createContext, useContext } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { logout as authLogout } from "@/utils/auth";
+
+// Create context for sidebar state
+const SidebarContext = createContext({ collapsed: false });
+
+// Export hook to use sidebar state
+export const useSidebar = () => useContext(SidebarContext);
 
 const sidebarItems = [
   {
@@ -113,7 +119,7 @@ const sidebarItems = [
 
 const footerItems = [];
 
-export function DashboardLayout({ children }) {
+export function DashboardLayout({ children, progressBar }) {
   const pathname = usePathname();
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -160,6 +166,7 @@ export function DashboardLayout({ children }) {
   };
 
   return (
+    <SidebarContext.Provider value={{ collapsed }}>
     <div className="min-h-screen" style={{ backgroundColor: "#E9F1FF" }}>
       {/* Header - Full Width */}
       <header
@@ -177,7 +184,7 @@ export function DashboardLayout({ children }) {
             marginLeft: isDesktop ? "272px" : "0",
           }}
         ></div>
-        <div className="flex items-center justify-between w-full h-full">
+        <div className="flex items-center justify-between w-full h-full relative">
           {/* Left: Logo */}
           <div className="flex items-center space-x-2 sm:space-x-3">
             <button
@@ -210,6 +217,13 @@ export function DashboardLayout({ children }) {
               />
             </div>
           </div>
+
+          {/* Left: Progress Bar (if provided) */}
+          {progressBar && (
+            <div className="hidden lg:flex absolute" style={{ left: '272px' }}>
+              {progressBar}
+            </div>
+          )}
 
           {/* Right: Upgrade Button and User */}
           <div className="flex items-center space-x-2 sm:space-x-4">
@@ -958,5 +972,6 @@ export function DashboardLayout({ children }) {
         </div>
       </div>
     </div>
+    </SidebarContext.Provider>
   );
 }

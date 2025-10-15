@@ -18,141 +18,113 @@
   }
 }
 
-.breadcrumb-glass-card {
-  background: rgba(233, 241, 255, 0.8);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border-radius: 50px;
-  padding: 1rem 3rem 0.625rem 3rem;
-  box-shadow: 0 2px 4px 0 rgba(35, 112, 255, 0.15), 0 0.5px 1px 0 rgba(35, 112, 255, 0.30);
-  border: 1px solid rgba(255, 255, 255, 0.8);
-  pointer-events: auto;
+/* Navbar Container Styles */
+.breadcrumb-navbar-container {
   display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  min-height: 60px;
+  justify-content: center;
+  align-items: center;
+  pointer-events: none;
+  animation: fadeIn 0.4s ease-out;
 }
 
-/* Circles and Lines Row */
+.breadcrumb-glass-card {
+  background: transparent;
+  padding: 10px 20px;
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  border-radius: 6px;
+}
+
+.breadcrumb-navbar-card {
+  background: transparent;
+  padding: 10px 20px;
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+}
+
+/* Simple Breadcrumb List */
 .breadcrumb-circles-wrapper {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 0;
+  gap: 10px;
   position: relative;
 }
 
+/* Breadcrumb Item */
 .breadcrumb-circle-container {
   display: flex;
   align-items: center;
-  justify-content: center;
-  position: relative;
-  z-index: 2;
+  gap: 10px;
 }
 
-/* Circle Styles */
+/* Breadcrumb Link */
 .breadcrumb-circle {
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 11px;
-  font-weight: 600;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
-  z-index: 2;
-}
-
-.breadcrumb-circle.inactive {
-  background: #E9F1FF;
-  border: 1.5px solid #D5E4FF;
-  color: #9EAED6;
-}
-
-.breadcrumb-circle.active {
-  background: linear-gradient(180deg, #679CFF 0%, #2370FF 100%);
+  font-size: 15px;
+  font-weight: 400;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', sans-serif;
+  transition: all 0.2s ease;
+  cursor: default;
+  white-space: nowrap;
+  background: transparent;
   border: none;
-  color: #FFFFFF;
-  box-shadow: 0 2px 8px rgba(35, 112, 255, 0.3), 0 0 0 2px rgba(35, 112, 255, 0.08);
+  padding: 0;
+  line-height: 1.4;
 }
 
+/* Completed State - Clickable link without underline */
 .breadcrumb-circle.completed {
-  background: linear-gradient(180deg, #679CFF 0%, #2370FF 100%);
-  border: none;
-  color: #FFFFFF;
-  box-shadow: 0 1px 6px rgba(35, 112, 255, 0.2);
+  color: #0F2678;
+  text-decoration: none;
+  cursor: pointer;
 }
 
-.breadcrumb-circle.hoverable:hover {
-  transform: translateY(-2px);
+.breadcrumb-circle.completed:hover {
+  color: #0F2678;
+  opacity: 0.8;
 }
 
-/* Line Styles */
+/* Active State - Current page with underline */
+.breadcrumb-circle.active {
+  color: #679cff;
+  text-decoration: none;
+  border-bottom: 2px solid #679cff;
+  padding-bottom: 0px;
+}
+
+/* Inactive State - Future steps, no underline */
+.breadcrumb-circle.inactive {
+  color: #8492C2;
+  text-decoration: none;
+}
+
+/* Separator */
+.breadcrumb-separator {
+  color: #1E3A8A;
+  font-size: 15px;
+  user-select: none;
+  font-weight: 400;
+}
+
+/* Hide lines - not needed */
 .breadcrumb-line-container {
-  display: flex;
-  align-items: center;
-  flex-shrink: 0;
+  display: none;
 }
 
-.breadcrumb-line-bg {
-  width: 80px;
-  height: 3px;
-  background: #D5E4FF;
-  border-radius: 2px;
-  position: relative;
-  overflow: hidden;
-}
-
-.breadcrumb-line-fill {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-  background: linear-gradient(90deg, #679CFF 0%, #2370FF 100%);
-  border-radius: 2px;
-  transform-origin: left;
-}
-
-/* Labels Row */
+/* Hide separate labels - text is inline */
 .breadcrumb-labels-wrapper {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 80px;
+  display: none;
 }
 
 .breadcrumb-label-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 24px;
-  text-align: center;
+  display: none;
 }
 
-/* Label Styles */
 .breadcrumb-label {
-  font-size: 10px;
-  text-align: center;
-  white-space: nowrap;
-  font-family: 'Inter', sans-serif;
-  transition: all 0.3s ease;
-}
-
-.breadcrumb-label.inactive {
-  font-weight: 500;
-  color: #9EAED6;
-}
-
-.breadcrumb-label.active {
-  font-weight: 600;
-  color: #002A79;
-}
-
-.breadcrumb-label.completed {
-  font-weight: 500;
-  color: #002A79;
+  display: none;
 }
 
 /* Animations */

@@ -183,6 +183,12 @@ const PDFPreview = ({ templateId, resumeData = sampleResumeData, width = 300, he
           // Legacy string IDs (for backward compatibility)
           'ats-template-with-photo': 'ATSTemplateWithPhoto',
           'ats-template-without-photo': 'ATSTemplateWithoutPhoto',
+          'saanvi-patel-1': 'InternshipTemplate1WithoutPhoto',
+          'saanvi-patel-2': 'InternshipTemplate2WithoutPhoto',
+          'saanvi-patel-3': 'InternshipTemplate3WithoutPhoto',
+          'saanvi-patel-1-with-photo': 'InternshipTemplate1WithPhoto',
+          'saanvi-patel-2-with-photo': 'InternshipTemplate2WithPhoto',
+          'saanvi-patel-3-with-photo': 'InternshipTemplate3WithPhoto',
           'internship-1-with-photo': 'InternshipTemplate1WithPhoto',
           'internship-2-with-photo': 'InternshipTemplate2WithPhoto',
           'internship-3-with-photo': 'InternshipTemplate3WithPhoto',
