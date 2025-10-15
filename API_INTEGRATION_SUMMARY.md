@@ -3,13 +3,16 @@
 ## Completed Integrations
 
 ### 1. API Client Setup ✅
+
 **Files Created**:
+
 - `lib/api/resumeClient.js` - Axios client with interceptors
 - `services/resumeService.js` - All API endpoint functions
 - `utils/errorHandler.js` - Error handling utilities
 - `.env.local.example` - Environment variable template
 
 **Features**:
+
 - Bearer token authentication
 - Auto-redirect on 401 (unauthorized)
 - Error handling and logging
@@ -18,15 +21,18 @@
 ---
 
 ### 2. Resume Builder Page (`app/resume-builder/page.js`) ✅
+
 **API Integrated**: `getAllResumes()`
 
 **What it does**:
+
 - Fetches all resumes for the authenticated user on page load
 - Transforms API data to match component structure
 - Falls back to mock data if API fails
 - Shows resume screenshots, ATS scores, and metadata
 
 **Key Features**:
+
 - Loading state management
 - Error handling with fallback
 - Relative time calculation (e.g., "3 hours ago")
@@ -37,9 +43,11 @@
 ---
 
 ### 3. Resume Confirmation Page (`app/resume-confirmation/page.js`) ✅
+
 **API Integrated**: `getSuggestedPrompts()`
 
 **What it does**:
+
 - Called when user clicks "Build My Perfect Resume" button
 - Sends user's academic year, degree, branch, and career type
 - Receives 3 AI-generated suggested prompts
@@ -47,6 +55,7 @@
 - Navigates to AI prompt page
 
 **Parameters Sent**:
+
 ```javascript
 {
   academic_year: 1-8,      // Mapped from "first", "second", etc.
@@ -57,6 +66,7 @@
 ```
 
 **Key Features**:
+
 - Loading button state with spinner
 - Error display with graceful fallback
 - SessionStorage for prompt persistence
@@ -69,11 +79,13 @@
 ## Pending Integrations
 
 ### 4. Template Selection Page (NEXT TO IMPLEMENT)
+
 **File**: `app/template-selection/page.js` (needs to be identified)
 
 **API to Integrate**: `createResumeFromPrompt()`
 
 **What needs to be done**:
+
 1. Add template_id state to track selected template
 2. Pass template_id when user clicks "Continue" button
 3. Call `createResumeFromPrompt()` API with:
@@ -87,6 +99,7 @@
 4. Navigate to enhanced-resume page with resume_id
 
 **Implementation Steps**:
+
 ```javascript
 const [selectedTemplateId, setSelectedTemplateId] = useState(null);
 const [loading, setLoading] = useState(false);
@@ -94,10 +107,10 @@ const [loading, setLoading] = useState(false);
 const handleContinue = async () => {
   setLoading(true);
   try {
-    const userPrompt = sessionStorage.getItem('userPrompt');
+    const userPrompt = sessionStorage.getItem("userPrompt");
     const response = await createResumeFromPrompt(
       userPrompt,
-      'My Resume', // or from user input
+      "My Resume", // or from user input
       selectedTemplateId
     );
 
@@ -115,11 +128,13 @@ const handleContinue = async () => {
 ---
 
 ### 5. Enhanced Resume Page (FINAL INTEGRATION)
+
 **File**: `app/enhanced-resume/page.js`
 
 **API to Integrate**: `saveResumeAssets()`
 
 **What needs to be done**:
+
 1. Generate PDF from resume data
 2. Capture screenshot of resume
 3. Call `saveResumeAssets()` when user clicks Download button:
@@ -135,32 +150,37 @@ const handleContinue = async () => {
 5. Allow user to download PDF
 
 **Implementation Steps**:
+
 ```javascript
 const handleDownload = async () => {
   setLoading(true);
   try {
     // 1. Generate PDF (using jsPDF or similar)
     const pdfBlob = await generatePDF(resumeData);
-    const pdfFile = new File([pdfBlob], 'resume.pdf', { type: 'application/pdf' });
+    const pdfFile = new File([pdfBlob], "resume.pdf", {
+      type: "application/pdf",
+    });
 
     // 2. Capture screenshot (using html2canvas)
     const screenshotBlob = await captureScreenshot();
-    const screenshotFile = new File([screenshotBlob], 'screenshot.png', { type: 'image/png' });
+    const screenshotFile = new File([screenshotBlob], "screenshot.png", {
+      type: "image/png",
+    });
 
     // 3. Upload to backend
     const response = await saveResumeAssets(
       resumeId,
       pdfFile,
       screenshotFile,
-      'My Professional Resume'
+      "My Professional Resume"
     );
 
     if (response.success) {
-      console.log('PDF saved at:', response.data.gcs_pdf_path);
-      console.log('Screenshot saved at:', response.data.gcs_screenshot_path);
+      console.log("PDF saved at:", response.data.gcs_pdf_path);
+      console.log("Screenshot saved at:", response.data.gcs_screenshot_path);
 
       // 4. Download PDF locally
-      downloadFile(pdfBlob, 'resume.pdf');
+      downloadFile(pdfBlob, "resume.pdf");
     }
   } catch (error) {
     // Handle error
@@ -175,23 +195,24 @@ const handleDownload = async () => {
 ## Environment Setup
 
 Create `.env.local` file:
+
 ```bash
-NEXT_PUBLIC_RESUME_SERVICE_URL=http://localhost:8000
+NEXT_PUBLIC_RESUME_SERVICE_URL=http://api.guidix.ai
 ```
 
 ---
 
 ## API Endpoints Reference
 
-| Endpoint | Method | Purpose | Status |
-|----------|--------|---------|--------|
-| `/api/v1/resume-list` | GET | Get all resumes | ✅ Integrated |
-| `/api/v1/suggested_prompts` | POST | Get AI prompts | ✅ Integrated |
-| `/api/v1/resume-creation` | POST | Create from prompt | 🔄 Next |
-| `/api/v1/{id}/save_assets` | PUT | Save PDF & screenshot | ⏳ Pending |
-| `/api/v1/{id}` | GET | Get single resume | 📝 Available |
-| `/api/v1/upload_and_process` | POST | Upload resume | 📝 Available |
-| `/api/v1/{id}/enhance` | POST | Enhance resume | 📝 Available |
+| Endpoint                     | Method | Purpose               | Status        |
+| ---------------------------- | ------ | --------------------- | ------------- |
+| `/api/v1/resume-list`        | GET    | Get all resumes       | ✅ Integrated |
+| `/api/v1/suggested_prompts`  | POST   | Get AI prompts        | ✅ Integrated |
+| `/api/v1/resume-creation`    | POST   | Create from prompt    | 🔄 Next       |
+| `/api/v1/{id}/save_assets`   | PUT    | Save PDF & screenshot | ⏳ Pending    |
+| `/api/v1/{id}`               | GET    | Get single resume     | 📝 Available  |
+| `/api/v1/upload_and_process` | POST   | Upload resume         | 📝 Available  |
+| `/api/v1/{id}/enhance`       | POST   | Enhance resume        | 📝 Available  |
 
 ---
 
@@ -200,13 +221,13 @@ NEXT_PUBLIC_RESUME_SERVICE_URL=http://localhost:8000
 All API calls use centralized error handling:
 
 ```javascript
-import { handleApiError, logError } from '@/utils/errorHandler';
+import { handleApiError, logError } from "@/utils/errorHandler";
 
 try {
   const response = await apiCall();
 } catch (error) {
-  const message = handleApiError(error);  // User-friendly message
-  logError('ComponentName', error);        // Console logging
+  const message = handleApiError(error); // User-friendly message
+  logError("ComponentName", error); // Console logging
   setError(message);
 }
 ```
@@ -216,6 +237,7 @@ try {
 ## Testing Checklist
 
 ### Completed ✅
+
 - [x] API client configuration
 - [x] Resume list fetching
 - [x] Suggested prompts API call
@@ -223,6 +245,7 @@ try {
 - [x] Loading states
 
 ### To Test 🔄
+
 - [ ] Template selection with template_id
 - [ ] Resume creation from prompt
 - [ ] PDF generation
@@ -279,4 +302,4 @@ resume-builder-v2/
 
 ---
 
-*Last Updated: Current Session*
+_Last Updated: Current Session_

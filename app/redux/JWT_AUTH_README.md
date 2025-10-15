@@ -31,7 +31,8 @@ app/redux/
 Update in `authActions.js`:
 
 ```javascript
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000';
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_BASE_URL || "http://api.guidix.ai";
 ```
 
 ### 2. Public Endpoints
@@ -40,11 +41,11 @@ Modify in `authActions.js` to match your API:
 
 ```javascript
 const PUBLIC_ENDPOINTS = [
-  '/api/v1/auth/login',
-  '/api/v1/auth/register',
-  '/api/v1/auth/forgot-password',
-  '/api/v1/auth/reset-password',
-  '/api/v1/auth/refresh',
+  "/api/v1/auth/login",
+  "/api/v1/auth/register",
+  "/api/v1/auth/forgot-password",
+  "/api/v1/auth/reset-password",
+  "/api/v1/auth/refresh",
 ];
 ```
 
@@ -53,10 +54,10 @@ const PUBLIC_ENDPOINTS = [
 ### Login
 
 ```javascript
-'use client';
+"use client";
 
-import { useDispatch, useSelector } from 'react-redux';
-import { loginUser } from '@/app/redux/actions/authActions';
+import { useDispatch, useSelector } from "react-redux";
+import { loginUser } from "@/app/redux/actions/authActions";
 
 export default function LoginPage() {
   const dispatch = useDispatch();
@@ -66,16 +67,16 @@ export default function LoginPage() {
     e.preventDefault();
 
     const credentials = {
-      email: 'user@example.com',
-      password: 'password123',
+      email: "user@example.com",
+      password: "password123",
     };
 
     try {
       await dispatch(loginUser(credentials)).unwrap();
       // Redirect to dashboard or home
-      window.location.href = '/dashboard';
+      window.location.href = "/dashboard";
     } catch (err) {
-      console.error('Login failed:', err);
+      console.error("Login failed:", err);
     }
   };
 
@@ -85,7 +86,7 @@ export default function LoginPage() {
       <input type="email" placeholder="Email" required />
       <input type="password" placeholder="Password" required />
       <button type="submit" disabled={loading.login}>
-        {loading.login ? 'Logging in...' : 'Login'}
+        {loading.login ? "Logging in..." : "Login"}
       </button>
     </form>
   );
@@ -95,15 +96,15 @@ export default function LoginPage() {
 ### Register
 
 ```javascript
-import { registerUser } from '@/app/redux/actions/authActions';
+import { registerUser } from "@/app/redux/actions/authActions";
 
 const handleRegister = async (userData) => {
   try {
     await dispatch(registerUser(userData)).unwrap();
     // Show success message
-    alert('Registration successful!');
+    alert("Registration successful!");
   } catch (err) {
-    console.error('Registration failed:', err);
+    console.error("Registration failed:", err);
   }
 };
 ```
@@ -111,14 +112,14 @@ const handleRegister = async (userData) => {
 ### Logout
 
 ```javascript
-import { logoutUser } from '@/app/redux/actions/authActions';
+import { logoutUser } from "@/app/redux/actions/authActions";
 
 const handleLogout = async () => {
   try {
     await dispatch(logoutUser()).unwrap();
-    window.location.href = '/login';
+    window.location.href = "/login";
   } catch (err) {
-    console.error('Logout failed:', err);
+    console.error("Logout failed:", err);
   }
 };
 ```
@@ -126,14 +127,14 @@ const handleLogout = async () => {
 ### Protected API Calls
 
 ```javascript
-import { getUserProfile } from '@/app/redux/actions/authActions';
+import { getUserProfile } from "@/app/redux/actions/authActions";
 
 // Fetch user profile (automatically handles token)
 const loadProfile = async () => {
   try {
     await dispatch(getUserProfile()).unwrap();
   } catch (err) {
-    console.error('Failed to load profile:', err);
+    console.error("Failed to load profile:", err);
   }
 };
 ```
@@ -141,12 +142,12 @@ const loadProfile = async () => {
 ### Custom Protected API Call
 
 ```javascript
-import { axiosInstance } from '@/app/redux/actions/authActions';
+import { axiosInstance } from "@/app/redux/actions/authActions";
 
 // Create your own protected API call
 const fetchMyData = async () => {
   try {
-    const response = await axiosInstance.get('/api/v1/my-data');
+    const response = await axiosInstance.get("/api/v1/my-data");
     return response.data;
   } catch (error) {
     throw error.response?.data || error.message;
@@ -256,6 +257,7 @@ If refresh fails:
 ## 🛡️ Security Features
 
 1. **Tokens in Cookies** - More secure than localStorage
+
    - `access_token` expires in 1 hour
    - `refresh_token` expires in 7 days
 
@@ -268,7 +270,7 @@ If refresh fails:
 ## 🔄 Accessing Auth State
 
 ```javascript
-import { useSelector } from 'react-redux';
+import { useSelector } from "react-redux";
 
 // In your component
 const MyComponent = () => {
@@ -295,24 +297,28 @@ const MyComponent = () => {
 ## 🧹 Clearing State
 
 ```javascript
-import { clearErrors, clearSuccessMessages } from '@/app/redux/reducers/authSlice';
+import {
+  clearErrors,
+  clearSuccessMessages,
+} from "@/app/redux/reducers/authSlice";
 
 // Clear all errors
 dispatch(clearErrors());
 
 // Clear specific error
-dispatch(clearError('login'));
+dispatch(clearError("login"));
 
 // Clear success messages
 dispatch(clearSuccessMessages());
 
 // Clear specific success message
-dispatch(clearSuccessMessage('register'));
+dispatch(clearSuccessMessage("register"));
 ```
 
 ## 🎯 Best Practices
 
 1. **Always use `.unwrap()`** when calling async thunks to catch errors:
+
    ```javascript
    try {
      await dispatch(loginUser(creds)).unwrap();
@@ -322,18 +328,20 @@ dispatch(clearSuccessMessage('register'));
    ```
 
 2. **Clear errors on unmount** or when user navigates away:
+
    ```javascript
    useEffect(() => {
      return () => {
-       dispatch(clearError('login'));
+       dispatch(clearError("login"));
      };
    }, []);
    ```
 
 3. **Check authentication before rendering**:
+
    ```javascript
    if (!isAuthenticated) {
-     router.push('/login');
+     router.push("/login");
      return null;
    }
    ```
@@ -345,19 +353,25 @@ dispatch(clearSuccessMessage('register'));
 ## 🐛 Troubleshooting
 
 ### "Module not found" Error
+
 Make sure axios and js-cookie are installed:
+
 ```bash
 npm install axios js-cookie
 ```
 
 ### Tokens not persisting
+
 Check cookie settings - ensure `withCredentials: true` is set
 
 ### Refresh loop
+
 Verify `/api/v1/auth/refresh` is in PUBLIC_ENDPOINTS array
 
 ### 401 after refresh
+
 Check backend refresh token endpoint returns proper token structure:
+
 ```javascript
 {
   data: {
@@ -394,6 +408,7 @@ Your backend should return responses in this format:
 ## 🎨 Example Component
 
 See `exampleProtectedAPI.js` for complete examples of:
+
 - Simple GET/POST requests
 - File uploads
 - Pagination

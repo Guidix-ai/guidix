@@ -10,6 +10,7 @@
 This project supports multiple deployment methods:
 
 1. **Google Cloud Run** (Recommended) - See `CLOUD_RUN_DEPLOYMENT.md`
+
    - ✅ Automatic SSL/HTTPS
    - ✅ Auto-scaling
    - ✅ Pay-per-use
@@ -76,7 +77,7 @@ These are embedded at **build time** and stored in the Docker image.
 ### Development
 
 ```bash
-# Local development uses .env.local (localhost:8000)
+# Local development uses .env.local (api.guidix.ai)
 npm run dev
 ```
 
@@ -110,6 +111,7 @@ docker push your-registry.com/guidix-frontend:latest
 ## Architecture
 
 ### Google Cloud Run (Production)
+
 ```
 Internet
     ↓
@@ -121,12 +123,13 @@ Backend API (api.guidix.ai)
 ```
 
 ### Local Development
+
 ```
 localhost:8080
     ↓
 Next.js Application (Docker)
     ↓
-Backend API (localhost:8000)
+Backend API (api.guidix.ai)
 ```
 
 ## Access the Application
@@ -164,18 +167,21 @@ docker exec -it guidix-frontend sh
 ## Troubleshooting
 
 ### Check container health
+
 ```bash
 docker ps
 docker logs guidix-frontend
 ```
 
 ### Port already in use
+
 ```bash
 # Use different port
 docker run -d -p 3001:3000 --name guidix-frontend guidix-frontend:latest
 ```
 
 ### Rebuild without cache
+
 ```bash
 docker build --no-cache -t guidix-frontend:latest .
 ```
