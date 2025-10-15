@@ -277,56 +277,49 @@ const PDFPreview = ({ templateId, resumeData = sampleResumeData, width = 300, he
         .pdf-preview-wrapper {
           width: 100%;
           height: 100%;
-          overflow: hidden !important;
-          position: relative;
-        }
-
-        .pdf-preview-wrapper iframe {
-          width: calc(100% + 30px);
-          height: calc(100% + 20px);
-          border: none;
-          overflow: hidden !important;
-          pointer-events: none;
-          position: relative;
-          left: -5px;
-          top: -5px;
-          transform: scale(1.02);
-          transform-origin: top left;
-        }
-
-        /* Force hide all scrollbars */
-        .pdf-preview-wrapper,
-        .pdf-preview-wrapper *,
-        .pdf-preview-wrapper iframe,
-        .pdf-preview-wrapper iframe * {
-          overflow: hidden !important;
+          overflow-y: auto !important;
           overflow-x: hidden !important;
-          overflow-y: hidden !important;
+          position: relative;
         }
 
-        /* Hide scrollbar for Chrome, Safari and Opera */
-        .pdf-preview-wrapper::-webkit-scrollbar,
-        .pdf-preview-wrapper *::-webkit-scrollbar,
-        .pdf-preview-wrapper iframe::-webkit-scrollbar {
-          display: none !important;
-          width: 0 !important;
-          height: 0 !important;
-        }
-
-        /* Hide scrollbar for IE, Edge and Firefox */
-        .pdf-preview-wrapper,
-        .pdf-preview-wrapper *,
         .pdf-preview-wrapper iframe {
-          -ms-overflow-style: none !important;
-          scrollbar-width: none !important;
+          width: 100%;
+          height: 100%;
+          min-height: 800px;
+          border: none;
+          position: relative;
+        }
+
+        /* Custom scrollbar styling */
+        .pdf-preview-wrapper::-webkit-scrollbar {
+          width: 8px;
+        }
+
+        .pdf-preview-wrapper::-webkit-scrollbar-track {
+          background: #f1f1f1;
+          border-radius: 4px;
+        }
+
+        .pdf-preview-wrapper::-webkit-scrollbar-thumb {
+          background: #888;
+          border-radius: 4px;
+        }
+
+        .pdf-preview-wrapper::-webkit-scrollbar-thumb:hover {
+          background: #555;
+        }
+
+        /* Firefox scrollbar */
+        .pdf-preview-wrapper {
+          scrollbar-width: thin;
+          scrollbar-color: #888 #f1f1f1;
         }
       `}</style>
-      <div className="pdf-preview-wrapper" style={{ overflow: 'hidden' }}>
+      <div className="pdf-preview-wrapper">
         <iframe
-          src={`${pdfUrl}#page=1&toolbar=0&navpanes=0&scrollbar=0&view=FitH`}
+          src={`${pdfUrl}#page=1&toolbar=0&navpanes=0&scrollbar=1&view=FitV`}
           title="PDF Preview"
-          scrolling="no"
-          style={{ overflow: 'hidden' }}
+          style={{ display: 'block' }}
         />
       </div>
     </>

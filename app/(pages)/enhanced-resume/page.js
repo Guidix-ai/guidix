@@ -3599,7 +3599,7 @@ function EnhancedResumeContent() {
                         templateId={selectedTemplate}
                         width="100%"
                         height="100%"
-                        data={resumeData}
+                        resumeData={resumeData}
                       />
                     </div>
                   </div>
@@ -4494,7 +4494,7 @@ function EnhancedResumeContent() {
                         templateId={selectedTemplate}
                         width="100%"
                         height="100%"
-                        data={resumeData}
+                        resumeData={resumeData}
                       />
                     </div>
                   </div>
@@ -5055,7 +5055,7 @@ function EnhancedResumeContent() {
                         templateId={selectedTemplate}
                         width="100%"
                         height="100%"
-                        data={resumeData}
+                        resumeData={resumeData}
                       />
                     </div>
                   </div>
