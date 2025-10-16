@@ -197,7 +197,7 @@ const handleDownload = async () => {
 Create `.env.local` file:
 
 ```bash
-NEXT_PUBLIC_RESUME_SERVICE_URL=http://api.guidix.ai
+NEXT_PUBLIC_RESUME_SERVICE_URL=https://api.guidix.ai
 ```
 
 ---

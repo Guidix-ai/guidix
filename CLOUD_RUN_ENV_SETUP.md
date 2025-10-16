@@ -69,19 +69,19 @@ All API routes now use runtime environment variables:
 **app/api/v1/auth/signin/route.js**
 
 ```javascript
-const API_BASE_URL = process.env.API_BASE_URL || "http://api.guidix.ai";
+const API_BASE_URL = process.env.API_BASE_URL || "https://api.guidix.ai";
 ```
 
 **app/api/v1/auth/logout/route.js**
 
 ```javascript
-const API_BASE_URL = process.env.API_BASE_URL || "http://api.guidix.ai";
+const API_BASE_URL = process.env.API_BASE_URL || "https://api.guidix.ai";
 ```
 
 **app/api/v1/auth/refresh/route.js**
 
 ```javascript
-const API_BASE_URL = process.env.API_BASE_URL || "http://api.guidix.ai";
+const API_BASE_URL = process.env.API_BASE_URL || "https://api.guidix.ai";
 ```
 
 ---
@@ -91,8 +91,8 @@ const API_BASE_URL = process.env.API_BASE_URL || "http://api.guidix.ai";
 ### Development (localhost)
 
 ```
-Client-side: NEXT_PUBLIC_API_BASE_URL=http://api.guidix.ai (from .env.local)
-Server-side: Falls back to http://api.guidix.ai
+Client-side: NEXT_PUBLIC_API_BASE_URL=https://api.guidix.ai (from .env.local)
+Server-side: Falls back to https://api.guidix.ai
 ```
 
 ### Production (Cloud Run)
@@ -193,7 +193,7 @@ gcloud run deploy guidix-frontend \
 ### Development
 
 - Frontend: http://localhost:3000
-- Backend API: http://api.guidix.ai
+- Backend API: https://api.guidix.ai
 
 ### Production
 

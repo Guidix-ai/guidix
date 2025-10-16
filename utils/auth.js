@@ -134,7 +134,7 @@ export async function logout() {
     // Call backend logout endpoint with token
     await fetch(
       `${
-        process.env.NEXT_PUBLIC_API_BASE_URL || "http://api.guidix.ai"
+        process.env.NEXT_PUBLIC_API_BASE_URL || "https://api.guidix.ai"
       }/api/v1/auth/logout`,
       {
         method: "POST",

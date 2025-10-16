@@ -362,9 +362,9 @@ GET /api/v1/integrated-jobs/trending
 
 Your Next.js API routes act as proxies:
 
-- `/api/v1/auth/signin/route.js` → Backend: `http://api.guidix.ai/api/v1/auth/signin`
-- `/api/v1/auth/logout/route.js` → Backend: `http://api.guidix.ai/api/v1/auth/logout`
-- `/api/v1/auth/refresh/route.js` → Backend: `http://api.guidix.ai/api/v1/auth/refresh`
+- `/api/v1/auth/signin/route.js` → Backend: `https://api.guidix.ai/api/v1/auth/signin`
+- `/api/v1/auth/logout/route.js` → Backend: `https://api.guidix.ai/api/v1/auth/logout`
+- `/api/v1/auth/refresh/route.js` → Backend: `https://api.guidix.ai/api/v1/auth/refresh`
 
 ### 4. **Response Format**
 
@@ -402,7 +402,7 @@ Errors follow this format:
 
 ```bash
 # Backend API URL
-NEXT_PUBLIC_API_BASE_URL=http://api.guidix.ai
+NEXT_PUBLIC_API_BASE_URL=https://api.guidix.ai
 
 # Or in production
 NEXT_PUBLIC_API_BASE_URL=https://api.yourdomain.com

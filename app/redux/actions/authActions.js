@@ -13,7 +13,7 @@ import axios from "axios";
 
 // Base API URL - uses your actual backend URL
 const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL || "http://api.guidix.ai";
+  process.env.NEXT_PUBLIC_API_BASE_URL || "https://api.guidix.ai";
 
 // Create axios instance
 export const axiosInstance = axios.create({

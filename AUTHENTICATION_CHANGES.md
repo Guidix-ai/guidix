@@ -49,7 +49,7 @@ Implemented secure HTTP-only cookie-based authentication system with proper API 
 **Development (.env.local):**
 
 ```
-NEXT_PUBLIC_API_BASE_URL=http://api.guidix.ai
+NEXT_PUBLIC_API_BASE_URL=https://api.guidix.ai
 ```
 
 **Production (.env.production):**

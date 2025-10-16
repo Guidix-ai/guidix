@@ -30,20 +30,20 @@ This document explains how environment variables are configured for different en
 
 ```bash
 # Backend API Base URL
-NEXT_PUBLIC_API_BASE_URL=http://api.guidix.ai
+NEXT_PUBLIC_API_BASE_URL=https://api.guidix.ai
 
 # Service-specific URLs (all use same backend)
-NEXT_PUBLIC_RESUME_API_URL=http://api.guidix.ai
-NEXT_PUBLIC_AUTO_APPLY_API_URL=http://api.guidix.ai
-NEXT_PUBLIC_JOB_SERVICE_URL=http://api.guidix.ai
-NEXT_PUBLIC_RESUME_SERVICE_URL=http://api.guidix.ai
+NEXT_PUBLIC_RESUME_API_URL=https://api.guidix.ai
+NEXT_PUBLIC_AUTO_APPLY_API_URL=https://api.guidix.ai
+NEXT_PUBLIC_JOB_SERVICE_URL=https://api.guidix.ai
+NEXT_PUBLIC_RESUME_SERVICE_URL=https://api.guidix.ai
 ```
 
 ### Usage in Development
 
 ```javascript
 // Client-side code
-const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL; // http://api.guidix.ai
+const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL; // https://api.guidix.ai
 
 // Server-side API routes (fallback to client-side for dev)
 const apiUrl = process.env.API_BASE_URL || process.env.NEXT_PUBLIC_API_BASE_URL;
@@ -135,7 +135,7 @@ import { resumeApiClient } from "@/lib/api/resumeClient";
 
 // resumeClient.js
 const RESUME_SERVICE_URL =
-  process.env.NEXT_PUBLIC_RESUME_SERVICE_URL || "http://api.guidix.ai";
+  process.env.NEXT_PUBLIC_RESUME_SERVICE_URL || "https://api.guidix.ai";
 ```
 
 ### Server-Side API Routes
@@ -143,7 +143,7 @@ const RESUME_SERVICE_URL =
 ```javascript
 // app/api/v1/auth/signin/route.js
 // Uses runtime ENV (without NEXT_PUBLIC prefix)
-const API_BASE_URL = process.env.API_BASE_URL || "http://api.guidix.ai";
+const API_BASE_URL = process.env.API_BASE_URL || "https://api.guidix.ai";
 
 export async function POST(request) {
   const response = await fetch(`${API_BASE_URL}/api/v1/auth/signin`, {
@@ -159,21 +159,21 @@ export async function POST(request) {
 
 ### Client-Side (Build Time)
 
-| Variable                       | Development          | Production            |
-| ------------------------------ | -------------------- | --------------------- |
-| NEXT_PUBLIC_API_BASE_URL       | http://api.guidix.ai | https://api.guidix.ai |
-| NEXT_PUBLIC_RESUME_API_URL     | http://api.guidix.ai | https://api.guidix.ai |
-| NEXT_PUBLIC_AUTO_APPLY_API_URL | http://api.guidix.ai | https://api.guidix.ai |
-| NEXT_PUBLIC_JOB_SERVICE_URL    | http://api.guidix.ai | https://api.guidix.ai |
+| Variable                       | Development           | Production            |
+| ------------------------------ | --------------------- | --------------------- |
+| NEXT_PUBLIC_API_BASE_URL       | https://api.guidix.ai | https://api.guidix.ai |
+| NEXT_PUBLIC_RESUME_API_URL     | https://api.guidix.ai | https://api.guidix.ai |
+| NEXT_PUBLIC_AUTO_APPLY_API_URL | https://api.guidix.ai | https://api.guidix.ai |
+| NEXT_PUBLIC_JOB_SERVICE_URL    | https://api.guidix.ai | https://api.guidix.ai |
 
 ### Server-Side (Runtime)
 
-| Variable           | Development          | Production            |
-| ------------------ | -------------------- | --------------------- |
-| API_BASE_URL       | http://api.guidix.ai | https://api.guidix.ai |
-| RESUME_API_URL     | http://api.guidix.ai | https://api.guidix.ai |
-| AUTO_APPLY_API_URL | http://api.guidix.ai | https://api.guidix.ai |
-| JOB_SERVICE_URL    | http://api.guidix.ai | https://api.guidix.ai |
+| Variable           | Development           | Production            |
+| ------------------ | --------------------- | --------------------- |
+| API_BASE_URL       | https://api.guidix.ai | https://api.guidix.ai |
+| RESUME_API_URL     | https://api.guidix.ai | https://api.guidix.ai |
+| AUTO_APPLY_API_URL | https://api.guidix.ai | https://api.guidix.ai |
+| JOB_SERVICE_URL    | https://api.guidix.ai | https://api.guidix.ai |
 
 ---
 
@@ -199,7 +199,7 @@ export async function POST(request) {
 
 ```bash
 # Create .env.local
-NEXT_PUBLIC_API_BASE_URL=http://api.guidix.ai
+NEXT_PUBLIC_API_BASE_URL=https://api.guidix.ai
 
 # Run dev server
 npm run dev

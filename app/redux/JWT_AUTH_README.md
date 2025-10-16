@@ -32,7 +32,7 @@ Update in `authActions.js`:
 
 ```javascript
 const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL || "http://api.guidix.ai";
+  process.env.NEXT_PUBLIC_API_BASE_URL || "https://api.guidix.ai";
 ```
 
 ### 2. Public Endpoints

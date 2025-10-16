@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
 // Use runtime environment variable from Docker/Cloud Run
-const API_BASE_URL = process.env.API_BASE_URL || "http://api.guidix.ai";
+const API_BASE_URL = process.env.API_BASE_URL || "https://api.guidix.ai";
 
 export async function POST(request) {
   try {
