@@ -92,10 +92,10 @@ const inputStyles = {
   border: 'none',
   boxShadow: "0px 0px 2px 0px rgba(0,19,88,0.15), 0px 4px 4px 0px rgba(0,19,88,0.04), 0px 4px 16px 0px rgba(0,19,88,0.04), inset 0px -4px 4px 0px rgba(0,19,88,0.10)",
   outline: "1px solid #C7D6ED",
-  fontSize: 16,
-  color: colorTokens.paragraph,
+  fontSize: 14,
+  color: "rgb(15, 38, 120)",
   fontFamily: "Inter, sans-serif",
-  fontWeight: 400,
+  fontWeight: 500,
   lineHeight: "125%",
   letterSpacing: "-0.32px",
 };
@@ -109,10 +109,10 @@ const textareaStyles = {
   border: 'none',
   boxShadow: "0px 0px 2px 0px rgba(0,19,88,0.15), 0px 4px 4px 0px rgba(0,19,88,0.04), 0px 4px 16px 0px rgba(0,19,88,0.04), inset 0px -4px 4px 0px rgba(0,19,88,0.10)",
   outline: "1px solid #C7D6ED",
-  fontSize: 16,
-  color: colorTokens.paragraph,
+  fontSize: 14,
+  color: "rgb(15, 38, 120)",
   fontFamily: "Inter, sans-serif",
-  fontWeight: 400,
+  fontWeight: 500,
   lineHeight: "125%",
   letterSpacing: "-0.32px",
   resize: 'vertical'
@@ -120,11 +120,12 @@ const textareaStyles = {
 
 const labelStyles = {
   color: colorTokens.title,
-  fontSize: 16,
-  fontWeight: 500,
+  fontSize: 14,
+  fontWeight: 600,
   fontFamily: "Inter, sans-serif",
   lineHeight: "20px",
-  marginBottom: 8
+  marginBottom: 12,
+  display: "block"
 };
 
 // Dynamically import PDFPreview to avoid SSR issues
@@ -3474,40 +3475,75 @@ function EnhancedResumeContent() {
         }
       `}</style>
 
+      <style jsx>{`
+        /* Custom scrollbar for tab navigation - Hidden but still scrollable */
+        :global(.tab-scroll-container::-webkit-scrollbar) {
+          display: none;
+        }
+        :global(.tab-scroll-container) {
+          scrollbar-width: none;
+          -ms-overflow-style: none;
+        }
+
+        /* Focus styles for input and textarea fields */
+        :global(input:focus),
+        :global(textarea:focus) {
+          outline: 1px solid rgb(35, 112, 255) !important;
+        }
+      `}</style>
+
       <div className="w-full py-6">
         {/* Tab Navigation */}
-        <div className="mb-6 overflow-x-auto" style={{
-          backgroundColor: '#FFFFFF',
-          border: '1px solid #F1F3F7',
-          boxShadow: shadowBoxStyle,
-          borderRadius: '16px',
-          padding: '16px'
-        }}>
-          <div className="flex gap-2 min-w-max">
-            {tabs.map((tab) => {
-              const Icon = tab.icon;
-              const isActive = activeTab === tab.id;
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => handleTabClick(tab.id)}
-                  className="flex items-center gap-2 px-4 py-2 rounded-lg transition-all whitespace-nowrap"
-                  style={{
-                    background: isActive ? 'linear-gradient(180deg, #679CFF 0%, #2370FF 100%)' : '#FFFFFF',
-                    border: `1px solid ${isActive ? 'rgba(35, 112, 255, 0.30)' : '#E1E4EB'}`,
-                    boxShadow: isActive ? '0 2px 4px 0 rgba(77, 145, 225, 0.10), 0 1px 0.3px 0 rgba(255, 255, 255, 0.25) inset, 0 -1px 0.3px 0 rgba(0, 19, 88, 0.25) inset' : 'none',
-                    color: isActive ? '#FFFFFF' : '#6477B4',
-                    fontFamily: 'Inter, sans-serif',
-                    fontSize: '14px',
-                    fontWeight: 500,
-                    cursor: 'pointer'
-                  }}
-                >
-                  <Icon className="h-4 w-4" />
-                  <span className="hidden sm:inline">{tab.label}</span>
-                </button>
-              );
-            })}
+        <div className="mb-6">
+          <div
+            className="rounded-xl shadow-sm border p-1 tab-scroll-container"
+            style={{
+              borderColor: "#E9F1FF",
+              backgroundColor: "#E9F1FF",
+              overflowX: "auto"
+            }}
+          >
+            <div className="flex gap-2" style={{ minWidth: "max-content" }}>
+              {tabs.map((tab) => {
+                const Icon = tab.icon;
+                const isActive = activeTab === tab.id;
+                return (
+                  <button
+                    key={tab.id}
+                    onClick={() => handleTabClick(tab.id)}
+                    className="flex items-center gap-2 px-3 py-3 rounded-lg transition-all whitespace-nowrap"
+                    style={{
+                      background: isActive ? "#FFFFFF" : "transparent",
+                      color: isActive ? "#002A79" : "#6477B4",
+                      borderRadius: "8px",
+                      border: isActive ? "1px solid #FFF" : "1px solid transparent",
+                      boxShadow: isActive
+                        ? "2px 2px 8px -2px rgba(0, 19, 88, 0.08)"
+                        : "none",
+                      fontFamily: 'Inter, sans-serif',
+                      fontSize: '12px',
+                      fontWeight: isActive ? 600 : 500,
+                      lineHeight: '125%',
+                      letterSpacing: '-0.32px',
+                      cursor: 'pointer'
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!isActive) {
+                        e.target.style.opacity = "0.8";
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!isActive) {
+                        e.target.style.opacity = "1";
+                      }
+                    }}
+                  >
+                    <Icon className="h-4 w-4" />
+                    <span className="hidden sm:inline">{tab.label}</span>
+                  </button>
+                );
+              })}
+            </div>
           </div>
         </div>
 
@@ -3586,11 +3622,10 @@ function EnhancedResumeContent() {
                   <div
                     className="bg-white border border-gray-200 shadow-lg mx-auto overflow-hidden"
                     style={{
-                      aspectRatio: "0.707",
+                      width: isMobile ? "100%" : "210mm",
+                      height: isMobile ? "auto" : "297mm",
+                      aspectRatio: "210/297",
                       maxWidth: "100%",
-                      width: "100%",
-                      minHeight: isMobile ? "400px" : "600px",
-                      maxHeight: isMobile ? "500px" : "850px",
                     }}
                   >
                     <div className="h-full overflow-y-auto overflow-x-hidden">
@@ -3617,14 +3652,46 @@ function EnhancedResumeContent() {
               borderRadius: '16px'
             }}>
               <CardHeader className="pb-3 lg:pb-4 border-b" style={{ borderColor: '#F1F3F7' }}>
-                <CardTitle style={{
-                  color: colorTokens.title,
-                  fontFamily: 'Inter, sans-serif',
-                  fontSize: '18px',
-                  fontWeight: 600
-                }}>
-                  Edit {tabs.find(t => t.id === activeTab)?.label}
-                </CardTitle>
+                <div className="flex items-center justify-between">
+                  <CardTitle style={{
+                    color: colorTokens.title,
+                    fontFamily: 'Inter, sans-serif',
+                    fontSize: '14px',
+                    fontWeight: 600
+                  }}>
+                    Edit {tabs.find(t => t.id === activeTab)?.label}
+                  </CardTitle>
+                  <div className="flex gap-3">
+                    <button
+                      onClick={handleCancelForm}
+                      className="px-4 py-2 rounded-lg transition-all hover:opacity-90"
+                      style={{
+                        border: '1px solid #E1E4EB',
+                        background: '#F8F9FF',
+                        color: '#6477B4',
+                        fontFamily: 'Inter, sans-serif',
+                        fontSize: '13px',
+                        fontWeight: 500
+                      }}
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={handleSaveForm}
+                      className="px-4 py-2 rounded-lg transition-all hover:opacity-90"
+                      style={{
+                        borderRadius: '8px',
+                        border: '1px solid rgba(35, 112, 255, 0.30)',
+                        background: 'linear-gradient(180deg, #679CFF 0%, #2370FF 100%)',
+                        boxShadow: '0 2px 4px 0 rgba(77, 145, 225, 0.10), 0 1px 0.3px 0 rgba(255, 255, 255, 0.25) inset, 0 -1px 0.3px 0 rgba(0, 19, 88, 0.25) inset',
+                        ...buttonTextStyles,
+                        fontSize: '13px'
+                      }}
+                    >
+                      Save Changes
+                    </button>
+                  </div>
+                </div>
               </CardHeader>
               <CardContent className="p-4 md:p-6">
                 <div className="w-full max-w-4xl mx-auto">
@@ -3644,57 +3711,59 @@ function EnhancedResumeContent() {
                           style={inputStyles}
                         />
                       </div>
-                      <div>
-                        <label style={labelStyles}>Title/Position</label>
-                        <input
-                          type="text"
-                          value={tempFormData.personalInfo.title}
-                          onChange={(e) => setTempFormData(prev => ({
-                            ...prev,
-                            personalInfo: { ...prev.personalInfo, title: e.target.value }
-                          }))}
-                          placeholder="Software Engineer"
-                          style={inputStyles}
-                        />
-                      </div>
-                      <div>
-                        <label style={labelStyles}>Email</label>
-                        <input
-                          type="email"
-                          value={tempFormData.personalInfo.email}
-                          onChange={(e) => setTempFormData(prev => ({
-                            ...prev,
-                            personalInfo: { ...prev.personalInfo, email: e.target.value }
-                          }))}
-                          placeholder="your.email@example.com"
-                          style={inputStyles}
-                        />
-                      </div>
-                      <div>
-                        <label style={labelStyles}>Phone</label>
-                        <input
-                          type="tel"
-                          value={tempFormData.personalInfo.phone}
-                          onChange={(e) => setTempFormData(prev => ({
-                            ...prev,
-                            personalInfo: { ...prev.personalInfo, phone: e.target.value }
-                          }))}
-                          placeholder="+1 (555) 123-4567"
-                          style={inputStyles}
-                        />
-                      </div>
-                      <div>
-                        <label style={labelStyles}>Location</label>
-                        <input
-                          type="text"
-                          value={tempFormData.personalInfo.location}
-                          onChange={(e) => setTempFormData(prev => ({
-                            ...prev,
-                            personalInfo: { ...prev.personalInfo, location: e.target.value }
-                          }))}
-                          placeholder="City, Country"
-                          style={inputStyles}
-                        />
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <label style={labelStyles}>Title/Position</label>
+                          <input
+                            type="text"
+                            value={tempFormData.personalInfo.title}
+                            onChange={(e) => setTempFormData(prev => ({
+                              ...prev,
+                              personalInfo: { ...prev.personalInfo, title: e.target.value }
+                            }))}
+                            placeholder="Software Engineer"
+                            style={inputStyles}
+                          />
+                        </div>
+                        <div>
+                          <label style={labelStyles}>Email</label>
+                          <input
+                            type="email"
+                            value={tempFormData.personalInfo.email}
+                            onChange={(e) => setTempFormData(prev => ({
+                              ...prev,
+                              personalInfo: { ...prev.personalInfo, email: e.target.value }
+                            }))}
+                            placeholder="your.email@example.com"
+                            style={inputStyles}
+                          />
+                        </div>
+                        <div>
+                          <label style={labelStyles}>Phone</label>
+                          <input
+                            type="tel"
+                            value={tempFormData.personalInfo.phone}
+                            onChange={(e) => setTempFormData(prev => ({
+                              ...prev,
+                              personalInfo: { ...prev.personalInfo, phone: e.target.value }
+                            }))}
+                            placeholder="+1 (555) 123-4567"
+                            style={inputStyles}
+                          />
+                        </div>
+                        <div>
+                          <label style={labelStyles}>Location</label>
+                          <input
+                            type="text"
+                            value={tempFormData.personalInfo.location}
+                            onChange={(e) => setTempFormData(prev => ({
+                              ...prev,
+                              personalInfo: { ...prev.personalInfo, location: e.target.value }
+                            }))}
+                            placeholder="City, Country"
+                            style={inputStyles}
+                          />
+                        </div>
                       </div>
                     </div>
                   )}
@@ -3722,7 +3791,7 @@ function EnhancedResumeContent() {
                       {tempFormData.education.map((edu, index) => (
                         <div key={edu.id || index} className="p-4 rounded-lg space-y-3" style={{ border: '1px solid #E1E4EB', background: '#F8F9FF' }}>
                           <div className="flex justify-between items-center">
-                            <h4 className="font-medium" style={{ color: colorTokens.title }}>Education {index + 1}</h4>
+                            <h4 style={{ color: colorTokens.title, fontSize: '14px', fontWeight: 600, fontFamily: 'Inter, sans-serif' }}>Education {index + 1}</h4>
                             <button
                               onClick={() => {
                                 const newEducation = tempFormData.education.filter((_, i) => i !== index);
@@ -3747,33 +3816,35 @@ function EnhancedResumeContent() {
                               style={inputStyles}
                             />
                           </div>
-                          <div>
-                            <label style={labelStyles}>School/University</label>
-                            <input
-                              type="text"
-                              value={edu.school}
-                              onChange={(e) => {
-                                const newEducation = [...tempFormData.education];
-                                newEducation[index].school = e.target.value;
-                                setTempFormData(prev => ({ ...prev, education: newEducation }));
-                              }}
-                              placeholder="University Name"
-                              style={inputStyles}
-                            />
-                          </div>
-                          <div>
-                            <label style={labelStyles}>Year</label>
-                            <input
-                              type="text"
-                              value={edu.year}
-                              onChange={(e) => {
-                                const newEducation = [...tempFormData.education];
-                                newEducation[index].year = e.target.value;
-                                setTempFormData(prev => ({ ...prev, education: newEducation }));
-                              }}
-                              placeholder="2020"
-                              style={inputStyles}
-                            />
+                          <div className="grid grid-cols-2 gap-4">
+                            <div>
+                              <label style={labelStyles}>School/University</label>
+                              <input
+                                type="text"
+                                value={edu.school}
+                                onChange={(e) => {
+                                  const newEducation = [...tempFormData.education];
+                                  newEducation[index].school = e.target.value;
+                                  setTempFormData(prev => ({ ...prev, education: newEducation }));
+                                }}
+                                placeholder="University Name"
+                                style={inputStyles}
+                              />
+                            </div>
+                            <div>
+                              <label style={labelStyles}>Year</label>
+                              <input
+                                type="text"
+                                value={edu.year}
+                                onChange={(e) => {
+                                  const newEducation = [...tempFormData.education];
+                                  newEducation[index].year = e.target.value;
+                                  setTempFormData(prev => ({ ...prev, education: newEducation }));
+                                }}
+                                placeholder="2020"
+                                style={inputStyles}
+                              />
+                            </div>
                           </div>
                         </div>
                       ))}
@@ -3805,7 +3876,7 @@ function EnhancedResumeContent() {
                       {tempFormData.experience.map((exp, index) => (
                         <div key={exp.id || index} className="p-4 rounded-lg space-y-3" style={{ border: '1px solid #E1E4EB', background: '#F8F9FF' }}>
                           <div className="flex justify-between items-center">
-                            <h4 className="font-medium" style={{ color: colorTokens.title }}>Experience {index + 1}</h4>
+                            <h4 style={{ color: colorTokens.title, fontSize: '14px', fontWeight: 600, fontFamily: 'Inter, sans-serif' }}>Experience {index + 1}</h4>
                             <button
                               onClick={() => {
                                 const newExperience = tempFormData.experience.filter((_, i) => i !== index);
@@ -3830,33 +3901,35 @@ function EnhancedResumeContent() {
                               style={inputStyles}
                             />
                           </div>
-                          <div>
-                            <label style={labelStyles}>Company</label>
-                            <input
-                              type="text"
-                              value={exp.company}
-                              onChange={(e) => {
-                                const newExperience = [...tempFormData.experience];
-                                newExperience[index].company = e.target.value;
-                                setTempFormData(prev => ({ ...prev, experience: newExperience }));
-                              }}
-                              placeholder="Company Name"
-                              style={inputStyles}
-                            />
-                          </div>
-                          <div>
-                            <label style={labelStyles}>Duration</label>
-                            <input
-                              type="text"
-                              value={exp.duration}
-                              onChange={(e) => {
-                                const newExperience = [...tempFormData.experience];
-                                newExperience[index].duration = e.target.value;
-                                setTempFormData(prev => ({ ...prev, experience: newExperience }));
-                              }}
-                              placeholder="2022 - Present"
-                              style={inputStyles}
-                            />
+                          <div className="grid grid-cols-2 gap-4">
+                            <div>
+                              <label style={labelStyles}>Company</label>
+                              <input
+                                type="text"
+                                value={exp.company}
+                                onChange={(e) => {
+                                  const newExperience = [...tempFormData.experience];
+                                  newExperience[index].company = e.target.value;
+                                  setTempFormData(prev => ({ ...prev, experience: newExperience }));
+                                }}
+                                placeholder="Company Name"
+                                style={inputStyles}
+                              />
+                            </div>
+                            <div>
+                              <label style={labelStyles}>Duration</label>
+                              <input
+                                type="text"
+                                value={exp.duration}
+                                onChange={(e) => {
+                                  const newExperience = [...tempFormData.experience];
+                                  newExperience[index].duration = e.target.value;
+                                  setTempFormData(prev => ({ ...prev, experience: newExperience }));
+                                }}
+                                placeholder="2022 - Present"
+                                style={inputStyles}
+                              />
+                            </div>
                           </div>
                           <div>
                             <label style={labelStyles}>Achievements</label>
@@ -3927,7 +4000,7 @@ function EnhancedResumeContent() {
                       {tempFormData.projects.map((project, index) => (
                         <div key={project.id || index} className="p-4 rounded-lg space-y-3" style={{ border: '1px solid #E1E4EB', background: '#F8F9FF' }}>
                           <div className="flex justify-between items-center">
-                            <h4 className="font-medium" style={{ color: colorTokens.title }}>Project {index + 1}</h4>
+                            <h4 style={{ color: colorTokens.title, fontSize: '14px', fontWeight: 600, fontFamily: 'Inter, sans-serif' }}>Project {index + 1}</h4>
                             <button
                               onClick={() => {
                                 const newProjects = tempFormData.projects.filter((_, i) => i !== index);
@@ -3966,19 +4039,35 @@ function EnhancedResumeContent() {
                               style={textareaStyles}
                             />
                           </div>
-                          <div>
-                            <label style={labelStyles}>Technologies (comma separated)</label>
-                            <input
-                              type="text"
-                              value={project.technologies?.join(', ') || ''}
-                              onChange={(e) => {
-                                const newProjects = [...tempFormData.projects];
-                                newProjects[index].technologies = e.target.value.split(',').map(t => t.trim());
-                                setTempFormData(prev => ({ ...prev, projects: newProjects }));
-                              }}
-                              placeholder="React, Node.js, MongoDB"
-                              style={inputStyles}
-                            />
+                          <div className="grid grid-cols-2 gap-4">
+                            <div>
+                              <label style={labelStyles}>Technologies (comma separated)</label>
+                              <input
+                                type="text"
+                                value={project.technologies?.join(', ') || ''}
+                                onChange={(e) => {
+                                  const newProjects = [...tempFormData.projects];
+                                  newProjects[index].technologies = e.target.value.split(',').map(t => t.trim());
+                                  setTempFormData(prev => ({ ...prev, projects: newProjects }));
+                                }}
+                                placeholder="React, Node.js, MongoDB"
+                                style={inputStyles}
+                              />
+                            </div>
+                            <div>
+                              <label style={labelStyles}>Date</label>
+                              <input
+                                type="text"
+                                value={project.date || ''}
+                                onChange={(e) => {
+                                  const newProjects = [...tempFormData.projects];
+                                  newProjects[index].date = e.target.value;
+                                  setTempFormData(prev => ({ ...prev, projects: newProjects }));
+                                }}
+                                placeholder="2023"
+                                style={inputStyles}
+                              />
+                            </div>
                           </div>
                         </div>
                       ))}
@@ -4058,7 +4147,7 @@ function EnhancedResumeContent() {
                       {tempFormData.certifications.map((cert, index) => (
                         <div key={cert.id || index} className="p-4 rounded-lg space-y-3" style={{ border: '1px solid #E1E4EB', background: '#F8F9FF' }}>
                           <div className="flex justify-between items-center">
-                            <h4 className="font-medium" style={{ color: colorTokens.title }}>Certification {index + 1}</h4>
+                            <h4 style={{ color: colorTokens.title, fontSize: '14px', fontWeight: 600, fontFamily: 'Inter, sans-serif' }}>Certification {index + 1}</h4>
                             <button
                               onClick={() => {
                                 const newCerts = tempFormData.certifications.filter((_, i) => i !== index);
@@ -4083,33 +4172,35 @@ function EnhancedResumeContent() {
                               style={inputStyles}
                             />
                           </div>
-                          <div>
-                            <label style={labelStyles}>Issuer</label>
-                            <input
-                              type="text"
-                              value={cert.issuer}
-                              onChange={(e) => {
-                                const newCerts = [...tempFormData.certifications];
-                                newCerts[index].issuer = e.target.value;
-                                setTempFormData(prev => ({ ...prev, certifications: newCerts }));
-                              }}
-                              placeholder="Amazon Web Services"
-                              style={inputStyles}
-                            />
-                          </div>
-                          <div>
-                            <label style={labelStyles}>Year</label>
-                            <input
-                              type="text"
-                              value={cert.year}
-                              onChange={(e) => {
-                                const newCerts = [...tempFormData.certifications];
-                                newCerts[index].year = e.target.value;
-                                setTempFormData(prev => ({ ...prev, certifications: newCerts }));
-                              }}
-                              placeholder="2023"
-                              style={inputStyles}
-                            />
+                          <div className="grid grid-cols-2 gap-4">
+                            <div>
+                              <label style={labelStyles}>Issuer</label>
+                              <input
+                                type="text"
+                                value={cert.issuer}
+                                onChange={(e) => {
+                                  const newCerts = [...tempFormData.certifications];
+                                  newCerts[index].issuer = e.target.value;
+                                  setTempFormData(prev => ({ ...prev, certifications: newCerts }));
+                                }}
+                                placeholder="Amazon Web Services"
+                                style={inputStyles}
+                              />
+                            </div>
+                            <div>
+                              <label style={labelStyles}>Year</label>
+                              <input
+                                type="text"
+                                value={cert.year}
+                                onChange={(e) => {
+                                  const newCerts = [...tempFormData.certifications];
+                                  newCerts[index].year = e.target.value;
+                                  setTempFormData(prev => ({ ...prev, certifications: newCerts }));
+                                }}
+                                placeholder="2023"
+                                style={inputStyles}
+                              />
+                            </div>
                           </div>
                         </div>
                       ))}
@@ -4141,7 +4232,7 @@ function EnhancedResumeContent() {
                       {tempFormData.languages.map((lang, index) => (
                         <div key={lang.id || index} className="p-4 rounded-lg space-y-3" style={{ border: '1px solid #E1E4EB', background: '#F8F9FF' }}>
                           <div className="flex justify-between items-center">
-                            <h4 className="font-medium" style={{ color: colorTokens.title }}>Language {index + 1}</h4>
+                            <h4 style={{ color: colorTokens.title, fontSize: '14px', fontWeight: 600, fontFamily: 'Inter, sans-serif' }}>Language {index + 1}</h4>
                             <button
                               onClick={() => {
                                 const newLangs = tempFormData.languages.filter((_, i) => i !== index);
@@ -4152,33 +4243,35 @@ function EnhancedResumeContent() {
                               <X className="h-4 w-4" />
                             </button>
                           </div>
-                          <div>
-                            <label style={labelStyles}>Language</label>
-                            <input
-                              type="text"
-                              value={lang.name}
-                              onChange={(e) => {
-                                const newLangs = [...tempFormData.languages];
-                                newLangs[index].name = e.target.value;
-                                setTempFormData(prev => ({ ...prev, languages: newLangs }));
-                              }}
-                              placeholder="English"
-                              style={inputStyles}
-                            />
-                          </div>
-                          <div>
-                            <label style={labelStyles}>Proficiency Level</label>
-                            <input
-                              type="text"
-                              value={lang.level}
-                              onChange={(e) => {
-                                const newLangs = [...tempFormData.languages];
-                                newLangs[index].level = e.target.value;
-                                setTempFormData(prev => ({ ...prev, languages: newLangs }));
-                              }}
-                              placeholder="Fluent"
-                              style={inputStyles}
-                            />
+                          <div className="grid grid-cols-2 gap-4">
+                            <div>
+                              <label style={labelStyles}>Language</label>
+                              <input
+                                type="text"
+                                value={lang.name}
+                                onChange={(e) => {
+                                  const newLangs = [...tempFormData.languages];
+                                  newLangs[index].name = e.target.value;
+                                  setTempFormData(prev => ({ ...prev, languages: newLangs }));
+                                }}
+                                placeholder="English"
+                                style={inputStyles}
+                              />
+                            </div>
+                            <div>
+                              <label style={labelStyles}>Proficiency Level</label>
+                              <input
+                                type="text"
+                                value={lang.level}
+                                onChange={(e) => {
+                                  const newLangs = [...tempFormData.languages];
+                                  newLangs[index].level = e.target.value;
+                                  setTempFormData(prev => ({ ...prev, languages: newLangs }));
+                                }}
+                                placeholder="Fluent"
+                                style={inputStyles}
+                              />
+                            </div>
                           </div>
                         </div>
                       ))}
@@ -4205,36 +4298,6 @@ function EnhancedResumeContent() {
                     </div>
                   )}
 
-                  {/* Save and Cancel Buttons */}
-                  <div className="flex gap-3 mt-6 pt-6 border-t" style={{ borderColor: '#F1F3F7' }}>
-                    <button
-                      onClick={handleCancelForm}
-                      className="flex-1 px-4 py-2 rounded-lg transition-all hover:opacity-90"
-                      style={{
-                        border: '1px solid #E1E4EB',
-                        background: '#F8F9FF',
-                        color: '#6477B4',
-                        fontFamily: 'Inter, sans-serif',
-                        fontSize: '14px',
-                        fontWeight: 500
-                      }}
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      onClick={handleSaveForm}
-                      className="flex-1 px-4 py-2 rounded-lg transition-all hover:opacity-90"
-                      style={{
-                        borderRadius: '8px',
-                        border: '1px solid rgba(35, 112, 255, 0.30)',
-                        background: 'linear-gradient(180deg, #679CFF 0%, #2370FF 100%)',
-                        boxShadow: '0 2px 4px 0 rgba(77, 145, 225, 0.10), 0 1px 0.3px 0 rgba(255, 255, 255, 0.25) inset, 0 -1px 0.3px 0 rgba(0, 19, 88, 0.25) inset',
-                        ...buttonTextStyles
-                      }}
-                    >
-                      Save Changes
-                    </button>
-                  </div>
                 </div>
               </CardContent>
             </Card>

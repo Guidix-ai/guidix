@@ -1,4 +1,4 @@
-import { refreshAccessToken } from './auth';
+import { refreshAccessToken, handleAuthFailure } from './auth';
 import { API_BASE_URL } from '@/lib/api-config';
 
 /**
@@ -30,6 +30,7 @@ class APIClient {
 
     // If unauthorized, try to refresh token
     if (response.status === 401) {
+      console.log('401 Unauthorized - Attempting token refresh');
       const refreshed = await refreshAccessToken();
 
       if (refreshed) {
@@ -44,14 +45,22 @@ class APIClient {
           },
         });
 
+        // If still unauthorized after refresh, session is invalid
+        if (retryResponse.status === 401) {
+          console.error('Token refresh failed - Session invalid');
+          await handleAuthFailure('session_expired');
+          throw new Error('Session expired');
+        }
+
         if (!retryResponse.ok) {
           throw new Error(`API Error: ${retryResponse.status}`);
         }
 
         return retryResponse.json();
       } else {
-        // Redirect to login
-        window.location.href = '/login';
+        // Token refresh failed - clear auth and redirect
+        console.error('Token refresh failed - Clearing auth data');
+        await handleAuthFailure('session_expired');
         throw new Error('Session expired');
       }
     }

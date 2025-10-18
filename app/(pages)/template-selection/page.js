@@ -631,37 +631,13 @@ function TemplateSelectionContent() {
                               </span>
                             </div>
                             <p
-                              className="text-white text-sm mb-3 leading-relaxed"
+                              className="text-white text-sm leading-relaxed"
                               style={{
                                 textShadow: "0 2px 4px rgba(0,0,0,0.8)",
                               }}
                             >
                               {template.description}
                             </p>
-                            <button
-                              className="w-full text-sm font-medium"
-                              style={{
-                                display: "inline-flex",
-                                padding: "10px 16px",
-                                justifyContent: "center",
-                                alignItems: "center",
-                                borderRadius: "8px",
-                                background:
-                                  "linear-gradient(180deg, #679CFF 0%, #2370FF 100%)",
-                                boxShadow:
-                                  "0 2px 4px 0 rgba(77, 145, 225, 0.10), 0 1px 0.3px 0 rgba(255, 255, 255, 0.25) inset, 0 -1px 0.3px 0 rgba(0, 19, 88, 0.25) inset",
-                                color: "#FFFFFF",
-                                textShadow:
-                                  "0 0.5px 1.5px rgba(0, 19, 88, 0.30), 0 2px 5px rgba(0, 19, 88, 0.10)",
-                                fontFamily: "Inter, sans-serif",
-                                fontSize: "14px",
-                                fontWeight: 600,
-                                lineHeight: "125%",
-                                letterSpacing: "-0.28px",
-                              }}
-                            >
-                              Select Template
-                            </button>
                           </div>
                         </div>
                         {/* Selected Badge */}
