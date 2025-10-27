@@ -128,6 +128,12 @@ const labelStyles = {
   display: "block"
 };
 
+const dateInputStyles = {
+  ...inputStyles,
+  colorScheme: "light",
+  cursor: "pointer",
+};
+
 // Dynamically import PDFPreview to avoid SSR issues
 const PDFPreview = dynamic(() => import('@/components/PDFPreview'), {
   ssr: false,
@@ -508,7 +514,9 @@ function EnhancedResumeContent() {
               name: proj.title || proj.project_name || proj.name || "",
               description: fullDescription,
               technologies: proj.tools_and_skills || proj.technologies || [],
-              date: proj.date || proj.duration || "",
+              startDate: proj.start_date || proj.startDate || "",
+              endDate: proj.end_date || proj.endDate || "",
+              liveLink: proj.live_link || proj.liveLink || proj.url || "",
             };
           });
           transformed.projects = [...transformed.projects, ...newProjects];
@@ -617,12 +625,18 @@ function EnhancedResumeContent() {
         name: "E-Commerce Platform",
         description: "Built a full-stack e-commerce platform with React and Node.js serving 50,000+ users",
         technologies: ["React", "Node.js", "MongoDB", "AWS"],
+        startDate: "",
+        endDate: "",
+        liveLink: "",
       },
       {
         id: 2,
         name: "Real-time Chat Application",
         description: "Developed a real-time messaging app using WebSockets and Redis for instant communication",
         technologies: ["Socket.io", "Redis", "Express", "React"],
+        startDate: "",
+        endDate: "",
+        liveLink: "",
       },
     ],
   });
@@ -797,6 +811,7 @@ function EnhancedResumeContent() {
           technologies: proj.technologies || [],
           startDate: proj.startDate || proj.date || '',
           endDate: proj.endDate || '',
+          liveLink: proj.liveLink || '',
         })),
         certifications: resumeData.certifications || [],
         languages: resumeData.languages || [],
@@ -980,6 +995,9 @@ function EnhancedResumeContent() {
             name: "New Project",
             description: "Project description",
             technologies: ["Technology1", "Technology2"],
+            startDate: "",
+            endDate: "",
+            liveLink: "",
           };
           newData.projects.push(newProject);
           break;
@@ -1094,10 +1112,13 @@ function EnhancedResumeContent() {
   const handleTabClick = (tabId) => {
     if (tabId === "preview") {
       setActiveTab("preview");
-      setTempFormData(null);
+      // Don't clear tempFormData - keep it so edits persist when switching back to edit tabs
     } else {
-      // Save current resume data as temp data for editing
-      setTempFormData(JSON.parse(JSON.stringify(resumeData)));
+      // Only initialize tempFormData if it doesn't exist yet
+      // This preserves unsaved changes when switching between edit tabs
+      if (!tempFormData) {
+        setTempFormData(JSON.parse(JSON.stringify(resumeData)));
+      }
       setActiveTab(tabId);
     }
   };
@@ -1105,6 +1126,13 @@ function EnhancedResumeContent() {
   const handleSaveForm = () => {
     if (tempFormData) {
       setResumeData(tempFormData);
+
+      // Persist to sessionStorage to maintain data across sessions
+      if (isFromUpload) {
+        sessionStorage.setItem('enhancedResumeData', JSON.stringify(tempFormData));
+      } else if (isFromAI) {
+        sessionStorage.setItem('createdResumeData', JSON.stringify(tempFormData));
+      }
     }
     setActiveTab("preview");
     setTempFormData(null);
@@ -3630,11 +3658,16 @@ function EnhancedResumeContent() {
                   >
                     <div className="h-full overflow-y-auto overflow-x-hidden">
                       <PDFPreview
-                        key={JSON.stringify(resumeData)}
+                        key={JSON.stringify(tempFormData || resumeData)}
                         templateId={selectedTemplate}
                         width="100%"
                         height="100%"
-                        resumeData={resumeData}
+                        resumeData={(() => {
+                          const data = tempFormData || resumeData;
+                          console.log('📄 PDFPreview receiving data:', data);
+                          console.log('📄 PDFPreview projects:', data?.projects);
+                          return data;
+                        })()}
                       />
                     </div>
                   </div>
@@ -3765,6 +3798,60 @@ function EnhancedResumeContent() {
                           />
                         </div>
                       </div>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <label style={labelStyles}>LinkedIn (Optional)</label>
+                          <input
+                            type="url"
+                            value={tempFormData.personalInfo.linkedin || ''}
+                            onChange={(e) => setTempFormData(prev => ({
+                              ...prev,
+                              personalInfo: { ...prev.personalInfo, linkedin: e.target.value }
+                            }))}
+                            placeholder="https://linkedin.com/in/yourprofile"
+                            style={inputStyles}
+                          />
+                        </div>
+                        <div>
+                          <label style={labelStyles}>GitHub (Optional)</label>
+                          <input
+                            type="url"
+                            value={tempFormData.personalInfo.github || ''}
+                            onChange={(e) => setTempFormData(prev => ({
+                              ...prev,
+                              personalInfo: { ...prev.personalInfo, github: e.target.value }
+                            }))}
+                            placeholder="https://github.com/yourusername"
+                            style={inputStyles}
+                          />
+                        </div>
+                        <div>
+                          <label style={labelStyles}>Portfolio (Optional)</label>
+                          <input
+                            type="url"
+                            value={tempFormData.personalInfo.portfolio || ''}
+                            onChange={(e) => setTempFormData(prev => ({
+                              ...prev,
+                              personalInfo: { ...prev.personalInfo, portfolio: e.target.value }
+                            }))}
+                            placeholder="https://yourportfolio.com"
+                            style={inputStyles}
+                          />
+                        </div>
+                        <div>
+                          <label style={labelStyles}>Other Link (Optional)</label>
+                          <input
+                            type="url"
+                            value={tempFormData.personalInfo.website || ''}
+                            onChange={(e) => setTempFormData(prev => ({
+                              ...prev,
+                              personalInfo: { ...prev.personalInfo, website: e.target.value }
+                            }))}
+                            placeholder="https://yourwebsite.com"
+                            style={inputStyles}
+                          />
+                        </div>
+                      </div>
                     </div>
                   )}
 
@@ -3816,33 +3903,47 @@ function EnhancedResumeContent() {
                               style={inputStyles}
                             />
                           </div>
+                          <div>
+                            <label style={labelStyles}>School/University</label>
+                            <input
+                              type="text"
+                              value={edu.school}
+                              onChange={(e) => {
+                                const newEducation = [...tempFormData.education];
+                                newEducation[index].school = e.target.value;
+                                setTempFormData(prev => ({ ...prev, education: newEducation }));
+                              }}
+                              placeholder="University Name"
+                              style={inputStyles}
+                            />
+                          </div>
                           <div className="grid grid-cols-2 gap-4">
                             <div>
-                              <label style={labelStyles}>School/University</label>
+                              <label style={labelStyles}>Start Date</label>
                               <input
-                                type="text"
-                                value={edu.school}
+                                type="month"
+                                value={edu.startDate || ''}
                                 onChange={(e) => {
                                   const newEducation = [...tempFormData.education];
-                                  newEducation[index].school = e.target.value;
+                                  newEducation[index].startDate = e.target.value;
                                   setTempFormData(prev => ({ ...prev, education: newEducation }));
                                 }}
-                                placeholder="University Name"
-                                style={inputStyles}
+                                placeholder="2020-09"
+                                style={dateInputStyles}
                               />
                             </div>
                             <div>
-                              <label style={labelStyles}>Year</label>
+                              <label style={labelStyles}>End Date</label>
                               <input
-                                type="text"
-                                value={edu.year}
+                                type="month"
+                                value={edu.endDate || ''}
                                 onChange={(e) => {
                                   const newEducation = [...tempFormData.education];
-                                  newEducation[index].year = e.target.value;
+                                  newEducation[index].endDate = e.target.value;
                                   setTempFormData(prev => ({ ...prev, education: newEducation }));
                                 }}
-                                placeholder="2020"
-                                style={inputStyles}
+                                placeholder="2024-05"
+                                style={dateInputStyles}
                               />
                             </div>
                           </div>
@@ -3852,7 +3953,7 @@ function EnhancedResumeContent() {
                         onClick={() => {
                           setTempFormData(prev => ({
                             ...prev,
-                            education: [...prev.education, { id: Date.now(), degree: '', school: '', year: '' }]
+                            education: [...prev.education, { id: Date.now(), degree: '', school: '', startDate: '', endDate: '' }]
                           }));
                         }}
                         className="w-full px-4 py-2 rounded-lg transition-all hover:opacity-90 flex items-center justify-center gap-2"
@@ -3901,33 +4002,47 @@ function EnhancedResumeContent() {
                               style={inputStyles}
                             />
                           </div>
+                          <div>
+                            <label style={labelStyles}>Company</label>
+                            <input
+                              type="text"
+                              value={exp.company}
+                              onChange={(e) => {
+                                const newExperience = [...tempFormData.experience];
+                                newExperience[index].company = e.target.value;
+                                setTempFormData(prev => ({ ...prev, experience: newExperience }));
+                              }}
+                              placeholder="Company Name"
+                              style={inputStyles}
+                            />
+                          </div>
                           <div className="grid grid-cols-2 gap-4">
                             <div>
-                              <label style={labelStyles}>Company</label>
+                              <label style={labelStyles}>Start Date</label>
                               <input
-                                type="text"
-                                value={exp.company}
+                                type="month"
+                                value={exp.startDate || ''}
                                 onChange={(e) => {
                                   const newExperience = [...tempFormData.experience];
-                                  newExperience[index].company = e.target.value;
+                                  newExperience[index].startDate = e.target.value;
                                   setTempFormData(prev => ({ ...prev, experience: newExperience }));
                                 }}
-                                placeholder="Company Name"
-                                style={inputStyles}
+                                placeholder="2022-01"
+                                style={dateInputStyles}
                               />
                             </div>
                             <div>
-                              <label style={labelStyles}>Duration</label>
+                              <label style={labelStyles}>End Date (Leave empty if current)</label>
                               <input
-                                type="text"
-                                value={exp.duration}
+                                type="month"
+                                value={exp.endDate || ''}
                                 onChange={(e) => {
                                   const newExperience = [...tempFormData.experience];
-                                  newExperience[index].duration = e.target.value;
+                                  newExperience[index].endDate = e.target.value;
                                   setTempFormData(prev => ({ ...prev, experience: newExperience }));
                                 }}
-                                placeholder="2022 - Present"
-                                style={inputStyles}
+                                placeholder="2024-12"
+                                style={dateInputStyles}
                               />
                             </div>
                           </div>
@@ -3976,7 +4091,7 @@ function EnhancedResumeContent() {
                         onClick={() => {
                           setTempFormData(prev => ({
                             ...prev,
-                            experience: [...prev.experience, { id: Date.now(), position: '', company: '', duration: '', achievements: [''] }]
+                            experience: [...prev.experience, { id: Date.now(), position: '', company: '', startDate: '', endDate: '', achievements: [''] }]
                           }));
                         }}
                         className="w-full px-4 py-2 rounded-lg transition-all hover:opacity-90 flex items-center justify-center gap-2"
@@ -4039,35 +4154,65 @@ function EnhancedResumeContent() {
                               style={textareaStyles}
                             />
                           </div>
+                          <div>
+                            <label style={labelStyles}>Technologies (comma separated)</label>
+                            <input
+                              type="text"
+                              value={project.technologies?.join(', ') || ''}
+                              onChange={(e) => {
+                                const newProjects = [...tempFormData.projects];
+                                newProjects[index].technologies = e.target.value.split(',').map(t => t.trim());
+                                setTempFormData(prev => ({ ...prev, projects: newProjects }));
+                              }}
+                              placeholder="React, Node.js, MongoDB"
+                              style={inputStyles}
+                            />
+                          </div>
                           <div className="grid grid-cols-2 gap-4">
                             <div>
-                              <label style={labelStyles}>Technologies (comma separated)</label>
+                              <label style={labelStyles}>Start Date</label>
                               <input
-                                type="text"
-                                value={project.technologies?.join(', ') || ''}
+                                type="month"
+                                value={project.startDate || ''}
                                 onChange={(e) => {
                                   const newProjects = [...tempFormData.projects];
-                                  newProjects[index].technologies = e.target.value.split(',').map(t => t.trim());
+                                  newProjects[index].startDate = e.target.value;
                                   setTempFormData(prev => ({ ...prev, projects: newProjects }));
                                 }}
-                                placeholder="React, Node.js, MongoDB"
-                                style={inputStyles}
+                                placeholder="2023-01"
+                                style={dateInputStyles}
                               />
                             </div>
                             <div>
-                              <label style={labelStyles}>Date</label>
+                              <label style={labelStyles}>End Date (Leave empty if ongoing)</label>
                               <input
-                                type="text"
-                                value={project.date || ''}
+                                type="month"
+                                value={project.endDate || ''}
                                 onChange={(e) => {
                                   const newProjects = [...tempFormData.projects];
-                                  newProjects[index].date = e.target.value;
+                                  newProjects[index].endDate = e.target.value;
                                   setTempFormData(prev => ({ ...prev, projects: newProjects }));
                                 }}
-                                placeholder="2023"
-                                style={inputStyles}
+                                placeholder="2023-12"
+                                style={dateInputStyles}
                               />
                             </div>
+                          </div>
+                          <div>
+                            <label style={labelStyles}>Live Link (Optional)</label>
+                            <input
+                              type="url"
+                              value={project.liveLink || ''}
+                              onChange={(e) => {
+                                console.log('🔗 Live Link changed:', e.target.value);
+                                const newProjects = [...tempFormData.projects];
+                                newProjects[index].liveLink = e.target.value;
+                                console.log('🔗 Updated project:', newProjects[index]);
+                                setTempFormData(prev => ({ ...prev, projects: newProjects }));
+                              }}
+                              placeholder="https://yourproject.com"
+                              style={inputStyles}
+                            />
                           </div>
                         </div>
                       ))}
@@ -4075,7 +4220,7 @@ function EnhancedResumeContent() {
                         onClick={() => {
                           setTempFormData(prev => ({
                             ...prev,
-                            projects: [...prev.projects, { id: Date.now(), name: '', description: '', technologies: [] }]
+                            projects: [...prev.projects, { id: Date.now(), name: '', description: '', technologies: [], startDate: '', endDate: '', liveLink: '' }]
                           }));
                         }}
                         className="w-full px-4 py-2 rounded-lg transition-all hover:opacity-90 flex items-center justify-center gap-2"

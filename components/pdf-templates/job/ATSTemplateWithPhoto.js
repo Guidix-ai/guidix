@@ -6,6 +6,7 @@ import {
   View,
   StyleSheet,
   Image,
+  Link,
 } from "@react-pdf/renderer";
 
 // Utility function to strip markdown
@@ -20,6 +21,17 @@ const stripMarkdown = (text) => {
     .replace(/`(.*?)`/g, "$1")
     .replace(/#+\s/g, "")
     .trim();
+};
+
+// Utility function to format date from YYYY-MM to Month Year
+const formatDate = (dateStr) => {
+  if (!dateStr) return "";
+  const [year, month] = dateStr.split('-');
+  if (!year || !month) return dateStr;
+  const monthNames = ["January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"];
+  const monthIndex = parseInt(month, 10) - 1;
+  return `${monthNames[monthIndex]} ${year}`;
 };
 
 /**
@@ -102,7 +114,8 @@ const styles = StyleSheet.create({
   },
   // Section Styles
   section: {
-    marginBottom: 14,
+    marginTop: 12,
+    marginBottom: 10,
   },
   sectionTitle: {
     fontSize: 12,
@@ -124,7 +137,7 @@ const styles = StyleSheet.create({
   },
   // Experience Section
   experienceItem: {
-    marginBottom: 12,
+    marginBottom: 14,
   },
   jobPosition: {
     fontSize: 11,
@@ -152,7 +165,7 @@ const styles = StyleSheet.create({
   },
   // Education Section
   educationItem: {
-    marginBottom: 10,
+    marginBottom: 12,
   },
   degree: {
     fontSize: 11,
@@ -175,7 +188,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
   },
   skillCategory: {
-    marginBottom: 6,
+    marginBottom: 8,
   },
   skillCategoryName: {
     fontSize: 10,
@@ -190,13 +203,23 @@ const styles = StyleSheet.create({
   },
   // Projects Section
   projectItem: {
-    marginBottom: 10,
+    marginBottom: 12,
+  },
+  projectHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 2,
   },
   projectName: {
     fontSize: 11,
     fontWeight: "bold",
     color: "#000000",
-    marginBottom: 2,
+  },
+  projectDemo: {
+    fontSize: 9,
+    color: "#2370FF",
+    textDecoration: "underline",
   },
   projectTech: {
     fontSize: 9,
@@ -209,9 +232,15 @@ const styles = StyleSheet.create({
     color: "#000000",
     lineHeight: 1.5,
   },
+  projectDate: {
+    fontSize: 9,
+    color: "#000000",
+    fontStyle: "italic",
+    marginBottom: 3,
+  },
   // Certifications Section
   certItem: {
-    marginBottom: 8,
+    marginBottom: 10,
   },
   certName: {
     fontSize: 10,
@@ -281,6 +310,15 @@ const ATSTemplateWithPhoto = ({ resumeData, templateId }) => {
                   ` | LinkedIn: ${personalInfo.linkedin}`}
               </Text>
             </View>
+            {(personalInfo.github || personalInfo.portfolio || personalInfo.website) && (
+              <View style={styles.contactLine}>
+                <Text style={styles.contactInfo}>
+                  {personalInfo.github && `GitHub: ${personalInfo.github}`}
+                  {personalInfo.portfolio && `${personalInfo.github ? ' | ' : ''}Portfolio: ${personalInfo.portfolio}`}
+                  {personalInfo.website && `${personalInfo.github || personalInfo.portfolio ? ' | ' : ''}Website: ${personalInfo.website}`}
+                </Text>
+              </View>
+            )}
           </View>
           <View style={styles.photoContainer}>
             {/* eslint-disable-next-line jsx-a11y/alt-text */}
@@ -313,7 +351,7 @@ const ATSTemplateWithPhoto = ({ resumeData, templateId }) => {
                   {exp.location && ` | ${exp.location}`}
                 </Text>
                 <Text style={styles.jobDate}>
-                  {exp.startDate} - {exp.endDate || "Present"}
+                  {formatDate(exp.startDate)} - {exp.endDate ? formatDate(exp.endDate) : "Present"}
                 </Text>
                 {exp.responsibilities && exp.responsibilities.length > 0 && (
                   <View>
@@ -341,7 +379,7 @@ const ATSTemplateWithPhoto = ({ resumeData, templateId }) => {
                 </Text>
                 <Text style={styles.institution}>{edu.institution}</Text>
                 <Text style={styles.eduDate}>
-                  {edu.startDate} - {edu.endDate || "Expected"}
+                  {formatDate(edu.startDate)} - {edu.endDate ? formatDate(edu.endDate) : "Expected"}
                   {edu.gpa && ` | GPA: ${edu.gpa}`}
                 </Text>
               </View>
@@ -392,7 +430,22 @@ const ATSTemplateWithPhoto = ({ resumeData, templateId }) => {
             <Text style={styles.sectionTitle}>PROJECTS</Text>
             {projects.map((project, index) => (
               <View key={index} style={styles.projectItem}>
-                <Text style={styles.projectName}>{project.name}</Text>
+                <View style={styles.projectHeader}>
+                  <Text style={styles.projectName}>{project.name}</Text>
+                  {project.liveLink && (
+                    <Link
+                      src={project.liveLink.startsWith('http') ? project.liveLink : `https://${project.liveLink}`}
+                      style={styles.projectDemo}
+                    >
+                      Demo
+                    </Link>
+                  )}
+                </View>
+                {(project.startDate || project.endDate) && (
+                  <Text style={styles.projectDate}>
+                    {formatDate(project.startDate)} - {project.endDate ? formatDate(project.endDate) : "Present"}
+                  </Text>
+                )}
                 {project.technologies && project.technologies.length > 0 && (
                   <Text style={styles.projectTech}>
                     Technologies:{" "}

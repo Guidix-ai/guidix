@@ -1,5 +1,5 @@
 import React from "react";
-import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
+import { Document, Page, Text, View, StyleSheet, Link } from "@react-pdf/renderer";
 
 // Utility function to strip markdown
 const stripMarkdown = (text) => {
@@ -13,6 +13,17 @@ const stripMarkdown = (text) => {
     .replace(/`(.*?)`/g, "$1")
     .replace(/#+\s/g, "")
     .trim();
+};
+
+// Utility function to format date from YYYY-MM to Month Year
+const formatDate = (dateStr) => {
+  if (!dateStr) return "";
+  const [year, month] = dateStr.split('-');
+  if (!year || !month) return dateStr;
+  const monthNames = ["January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"];
+  const monthIndex = parseInt(month, 10) - 1;
+  return `${monthNames[monthIndex]} ${year}`;
 };
 
 /**
@@ -71,8 +82,8 @@ const styles = StyleSheet.create({
   },
   // Section Styles
   section: {
-    marginTop: 18,
-    marginBottom: 16,
+    marginTop: 12,
+    marginBottom: 10,
   },
   sectionTitle: {
     fontSize: 11,
@@ -164,11 +175,21 @@ const styles = StyleSheet.create({
   projectItem: {
     marginBottom: 12,
   },
+  projectHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 3,
+  },
   projectName: {
     fontSize: 11,
     fontWeight: "bold",
     color: "#000000",
-    marginBottom: 3,
+  },
+  projectDemo: {
+    fontSize: 9,
+    color: "#2370FF",
+    textDecoration: "underline",
   },
   projectTech: {
     fontSize: 9,
@@ -180,6 +201,12 @@ const styles = StyleSheet.create({
     fontSize: 10,
     color: "#000000",
     lineHeight: 1.5,
+  },
+  projectDate: {
+    fontSize: 9,
+    color: "#000000",
+    fontStyle: "italic",
+    marginBottom: 3,
   },
   // Certifications Section
   certItem: {
@@ -251,6 +278,15 @@ const ATSTemplateWithoutPhoto = ({ resumeData, templateId }) => {
               {personalInfo.linkedin && ` | LinkedIn: ${personalInfo.linkedin}`}
             </Text>
           </View>
+          {(personalInfo.github || personalInfo.portfolio || personalInfo.website) && (
+            <View style={styles.contactLine}>
+              <Text style={styles.contactInfo}>
+                {personalInfo.github && `GitHub: ${personalInfo.github}`}
+                {personalInfo.portfolio && `${personalInfo.github ? ' | ' : ''}Portfolio: ${personalInfo.portfolio}`}
+                {personalInfo.website && `${personalInfo.github || personalInfo.portfolio ? ' | ' : ''}Website: ${personalInfo.website}`}
+              </Text>
+            </View>
+          )}
         </View>
 
         {/* PROFESSIONAL SUMMARY */}
@@ -273,7 +309,7 @@ const ATSTemplateWithoutPhoto = ({ resumeData, templateId }) => {
                   {exp.location && ` | ${exp.location}`}
                 </Text>
                 <Text style={styles.jobDate}>
-                  {exp.startDate} - {exp.endDate || "Present"}
+                  {formatDate(exp.startDate)} - {exp.endDate ? formatDate(exp.endDate) : "Present"}
                 </Text>
                 {exp.responsibilities && exp.responsibilities.length > 0 && (
                   <View>
@@ -301,7 +337,7 @@ const ATSTemplateWithoutPhoto = ({ resumeData, templateId }) => {
                 </Text>
                 <Text style={styles.institution}>{edu.institution}</Text>
                 <Text style={styles.eduDate}>
-                  {edu.startDate} - {edu.endDate || "Expected"}
+                  {formatDate(edu.startDate)} - {edu.endDate ? formatDate(edu.endDate) : "Expected"}
                   {edu.gpa && ` | GPA: ${edu.gpa}`}
                 </Text>
               </View>
@@ -350,9 +386,27 @@ const ATSTemplateWithoutPhoto = ({ resumeData, templateId }) => {
         {projects && projects.length > 0 && (
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>PROJECTS</Text>
-            {projects.map((project, index) => (
+            {projects.map((project, index) => {
+              console.log(`Project ${index}:`, project);
+              console.log(`Project ${index} liveLink:`, project.liveLink, typeof project.liveLink);
+              return (
               <View key={index} style={styles.projectItem}>
-                <Text style={styles.projectName}>{project.name}</Text>
+                <View style={styles.projectHeader}>
+                  <Text style={styles.projectName}>{project.name}</Text>
+                  {project.liveLink && (
+                    <Link
+                      src={project.liveLink.startsWith('http') ? project.liveLink : `https://${project.liveLink}`}
+                      style={styles.projectDemo}
+                    >
+                      Demo
+                    </Link>
+                  )}
+                </View>
+                {(project.startDate || project.endDate) && (
+                  <Text style={styles.projectDate}>
+                    {formatDate(project.startDate)} - {project.endDate ? formatDate(project.endDate) : "Present"}
+                  </Text>
+                )}
                 {project.technologies && project.technologies.length > 0 && (
                   <Text style={styles.projectTech}>
                     Technologies:{" "}
@@ -367,7 +421,7 @@ const ATSTemplateWithoutPhoto = ({ resumeData, templateId }) => {
                   </Text>
                 )}
               </View>
-            ))}
+            )})}
           </View>
         )}
       </Page>

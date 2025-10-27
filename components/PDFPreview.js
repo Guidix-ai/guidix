@@ -151,6 +151,7 @@ const PDFPreview = ({ templateId, resumeData = sampleResumeData, width = 300, he
           technologies: proj.technologies || [],
           startDate: proj.startDate || '',
           endDate: proj.endDate || '',
+          liveLink: proj.liveLink || '',
         })),
         certifications: (resumeData.certifications || []).map(cert => ({
           name: cert.name || '',
