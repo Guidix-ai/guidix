@@ -1,0 +1,1170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Job Card Component</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* Theme Variables */
+        :root {
+            --bg: #ffffff;
+            --text: #1a1a1a;
+            --muted: #6b7280;
+            --primary: #2370FF;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --card: #ffffff;
+            --chip: #f0f5ff;
+            --border: #e5e9f2;
+            --glow: rgba(35, 112, 255, 0.4);
+            --radius: 20px;
+        }
+
+        /* Reset & Base */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: radial-gradient(circle at 20% 50%, rgba(35, 112, 255, 0.08), transparent 50%),
+                        radial-gradient(circle at 80% 80%, rgba(35, 112, 255, 0.06), transparent 50%),
+                        radial-gradient(circle at 40% 20%, rgba(35, 112, 255, 0.04), transparent 50%),
+                        linear-gradient(180deg, #f8faff 0%, #ffffff 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            -webkit-font-smoothing: antialiased;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Animated Background Orbs */
+        body::before,
+        body::after {
+            content: '';
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            border-radius: 50%;
+            filter: blur(100px);
+            animation: float 20s infinite ease-in-out;
+        }
+
+        body::before {
+            background: rgba(35, 112, 255, 0.15);
+            top: -200px;
+            left: -200px;
+        }
+
+        body::after {
+            background: rgba(35, 112, 255, 0.1);
+            bottom: -200px;
+            right: -200px;
+            animation-delay: -10s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(50px, -50px) scale(1.1); }
+            50% { transform: translate(-30px, 30px) scale(0.95); }
+            75% { transform: translate(-50px, -30px) scale(1.05); }
+        }
+
+        /* Job Card Container */
+        .job-card {
+            background: var(--card);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px;
+            max-width: 440px;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+            animation: cardEntry 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transform-style: preserve-3d;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 24px rgba(35, 112, 255, 0.08),
+                        0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        @keyframes cardEntry {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .job-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--glow), transparent);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .job-card:hover {
+            transform: rotateX(2deg) rotateY(-2deg) translateZ(10px);
+            box-shadow: 0 20px 40px rgba(35, 112, 255, 0.12),
+                        0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Header Row */
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .company-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .company-logo {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #2370FF, #4d8dff);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            position: relative;
+            animation: logoFloat 3s infinite ease-in-out;
+            box-shadow: 0 4px 20px rgba(35, 112, 255, 0.25);
+        }
+
+        @keyframes logoFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-3px); }
+        }
+
+        .company-logo::after {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border-radius: 14px;
+            padding: 2px;
+            background: linear-gradient(45deg, #2370FF, #4d8dff, #6ba1ff);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0;
+            animation: borderRotate 3s linear infinite;
+        }
+
+        @keyframes borderRotate {
+            0% { opacity: 0; transform: rotate(0deg); }
+            50% { opacity: 1; }
+            100% { opacity: 0; transform: rotate(360deg); }
+        }
+
+        .company-name {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text);
+            letter-spacing: -0.02em;
+        }
+
+        .header-meta {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        /* Enhanced Time Visualization */
+        .time-visual {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .time-bubble {
+            position: relative;
+            padding: 6px 12px;
+            background: linear-gradient(135deg, rgba(35, 112, 255, 0.15), rgba(35, 112, 255, 0.08));
+            border: 1px solid rgba(35, 112, 255, 0.25);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            animation: timePulse 2s infinite;
+        }
+
+        @keyframes timePulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(35, 112, 255, 0.3); }
+            50% { box-shadow: 0 0 0 8px rgba(35, 112, 255, 0); }
+        }
+
+        .time-icon {
+            width: 14px;
+            height: 14px;
+            animation: clockSpin 4s linear infinite;
+        }
+
+        @keyframes clockSpin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .time-text {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        /* Animated Bookmark Button */
+        .bookmark-btn {
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--chip);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .bookmark-btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at center, var(--primary), transparent);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .bookmark-btn:hover {
+            transform: scale(1.1) rotate(-5deg);
+            border-color: var(--primary);
+        }
+
+        .bookmark-btn:hover::before {
+            opacity: 0.2;
+        }
+
+        .bookmark-btn:active {
+            transform: scale(0.95);
+        }
+
+        .bookmark-btn svg {
+            width: 20px;
+            height: 20px;
+            stroke: var(--text);
+            stroke-width: 2;
+            fill: none;
+            transition: all 0.3s;
+            z-index: 1;
+            position: relative;
+        }
+
+        .bookmark-btn.bookmarked svg {
+            fill: var(--primary);
+            stroke: var(--primary);
+            animation: bookmarkBounce 0.5s;
+        }
+
+        @keyframes bookmarkBounce {
+            0%, 100% { transform: scale(1); }
+            25% { transform: scale(1.3) rotate(-10deg); }
+            75% { transform: scale(0.9) rotate(5deg); }
+        }
+
+        /* Title Section with Gradient */
+        .title-row {
+            margin-bottom: 18px;
+        }
+
+        .job-title {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--text);
+            margin-bottom: 8px;
+            line-height: 1.2;
+        }
+
+
+        .title-meta {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .experience-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 5px 12px;
+            background: linear-gradient(135deg, #2370FF, #4d8dff);
+            color: white;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .experience-badge::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: badgeShine 3s infinite;
+        }
+
+        @keyframes badgeShine {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        /* Animated Meta Grid */
+        .meta-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+
+        @media (min-width: 400px) {
+            .meta-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        .meta-item {
+            background: var(--chip);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px;
+            position: relative;
+            overflow: hidden;
+            animation: metaItemEntry 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .meta-item:nth-child(1) { animation-delay: 0.1s; }
+        .meta-item:nth-child(2) { animation-delay: 0.2s; }
+        .meta-item:nth-child(3) { animation-delay: 0.3s; }
+        .meta-item:nth-child(4) { animation-delay: 0.4s; }
+
+        @keyframes metaItemEntry {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .meta-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+            animation: metaScan 4s infinite;
+            animation-delay: var(--scan-delay);
+        }
+
+        .meta-item:nth-child(1) { --scan-delay: 0s; }
+        .meta-item:nth-child(2) { --scan-delay: 1s; }
+        .meta-item:nth-child(3) { --scan-delay: 2s; }
+        .meta-item:nth-child(4) { --scan-delay: 3s; }
+
+        @keyframes metaScan {
+            0% { left: -100%; }
+            50% { left: 100%; }
+            100% { left: 100%; }
+        }
+
+        .meta-label {
+            font-size: 10px;
+            color: var(--muted);
+            font-weight: 600;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            opacity: 0.8;
+        }
+
+        /* Animated Match Bars */
+        .match-bar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .bar-container {
+            flex: 1;
+            height: 6px;
+            background: rgba(35, 112, 255, 0.1);
+            border-radius: 6px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .bar-fill {
+            height: 100%;
+            border-radius: 6px;
+            position: relative;
+            overflow: hidden;
+            animation: barGrow 1s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            transform-origin: left;
+            transform: scaleX(0);
+        }
+
+        @keyframes barGrow {
+            to { transform: scaleX(1); }
+        }
+
+        .bar-fill.high {
+            background: linear-gradient(90deg, #22c55e, #10b981);
+            box-shadow: 0 0 10px rgba(34, 197, 94, 0.5);
+        }
+
+        .bar-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            animation: barShine 2s infinite;
+        }
+
+        @keyframes barShine {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .match-percentage {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text);
+            min-width: 32px;
+            text-align: right;
+        }
+
+        /* Animated Applicants Visual */
+        .applicants-visual {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .applicants-stack {
+            display: flex;
+            position: relative;
+        }
+
+        .applicant-avatar {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 2px solid var(--card);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 9px;
+            font-weight: 700;
+            color: white;
+            margin-left: -8px;
+            animation: avatarPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            opacity: 0;
+            transform: scale(0);
+        }
+
+        .applicant-avatar:first-child {
+            margin-left: 0;
+            animation-delay: 0.5s;
+        }
+
+        .applicant-avatar:nth-child(2) {
+            animation-delay: 0.6s;
+        }
+
+        .applicant-avatar:nth-child(3) {
+            animation-delay: 0.7s;
+        }
+
+        @keyframes avatarPop {
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .applicant-avatar:nth-child(1) {
+            background: linear-gradient(135deg, #2370FF, #4d8dff);
+            z-index: 3;
+        }
+
+        .applicant-avatar:nth-child(2) {
+            background: linear-gradient(135deg, #10b981, #34d399);
+            z-index: 2;
+        }
+
+        .applicant-avatar:nth-child(3) {
+            background: linear-gradient(135deg, #f59e0b, #fbbf24);
+            z-index: 1;
+        }
+
+        .applicants-count {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text);
+            animation: countUp 1s ease-out;
+        }
+
+        @keyframes countUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Distance Visual with Animation */
+        .distance-visual {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: help;
+        }
+
+        .distance-pin {
+            width: 18px;
+            height: 18px;
+            fill: var(--primary);
+            animation: pinBounce 2s infinite;
+        }
+
+        @keyframes pinBounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-3px); }
+        }
+
+        .distance-value {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        /* Salary Row with Gradient Text */
+        .salary-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .salary-amount {
+            font-size: 18px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #2370FF, #4d8dff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: salaryPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes salaryPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        .market-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+            cursor: help;
+        }
+
+        .market-chip.above {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(34, 197, 94, 0.1));
+            color: var(--success);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            animation: chipGlow 2s ease-in-out infinite;
+        }
+
+        @keyframes chipGlow {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4); }
+            50% { box-shadow: 0 0 20px 5px rgba(34, 197, 94, 0.2); }
+        }
+
+        .info-icon {
+            width: 14px;
+            height: 14px;
+            opacity: 0.8;
+            animation: infoRotate 6s linear infinite;
+        }
+
+        @keyframes infoRotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Enhanced Growth Section */
+        .growth-section {
+            margin-bottom: 18px;
+            position: relative;
+        }
+
+        .growth-label {
+            font-size: 10px;
+            color: var(--muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+            opacity: 0.8;
+        }
+
+        .growth-visual {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            height: 40px;
+            background: linear-gradient(135deg, rgba(35, 112, 255, 0.05), rgba(35, 112, 255, 0.02));
+            border-radius: 10px;
+            padding: 8px 12px;
+            border: 1px solid rgba(35, 112, 255, 0.15);
+        }
+
+        .growth-chart {
+            flex: 1;
+            height: 100%;
+            position: relative;
+        }
+
+        .growth-bars {
+            display: flex;
+            align-items: flex-end;
+            gap: 4px;
+            height: 100%;
+        }
+
+        .growth-bar {
+            flex: 1;
+            background: linear-gradient(180deg, var(--primary), rgba(35, 112, 255, 0.3));
+            border-radius: 4px 4px 0 0;
+            position: relative;
+            animation: barRise 1s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            transform-origin: bottom;
+            transform: scaleY(0);
+        }
+
+        .growth-bar:nth-child(1) { height: 30%; animation-delay: 0.8s; }
+        .growth-bar:nth-child(2) { height: 45%; animation-delay: 0.9s; }
+        .growth-bar:nth-child(3) { height: 60%; animation-delay: 1s; }
+        .growth-bar:nth-child(4) { height: 80%; animation-delay: 1.1s; }
+        .growth-bar:nth-child(5) { height: 100%; animation-delay: 1.2s; }
+
+        @keyframes barRise {
+            to { transform: scaleY(1); }
+        }
+
+        .growth-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--primary);
+            border-radius: 2px;
+            box-shadow: 0 0 10px rgba(35, 112, 255, 0.5);
+        }
+
+        .growth-indicator {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .growth-arrow {
+            width: 20px;
+            height: 20px;
+            fill: var(--success);
+            animation: arrowFloat 2s ease-in-out infinite;
+        }
+
+        @keyframes arrowFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-4px); }
+        }
+
+        .growth-text {
+            font-size: 9px;
+            font-weight: 700;
+            color: var(--success);
+            text-transform: uppercase;
+        }
+
+        /* Enhanced CTA Buttons */
+        .cta-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .cta-btn {
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .cta-btn.secondary {
+            background: var(--chip);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .cta-btn.primary {
+            background: linear-gradient(135deg, #2370FF, #4d8dff);
+            color: white;
+            box-shadow: 0 4px 20px rgba(35, 112, 255, 0.25);
+        }
+
+        .cta-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.5s, height 0.5s;
+        }
+
+        .cta-btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .cta-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 30px rgba(35, 112, 255, 0.35);
+        }
+
+        .cta-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Animated Source Tag */
+        .source-tag {
+            position: absolute;
+            bottom: 14px;
+            right: 20px;
+            font-size: 10px;
+            color: var(--muted);
+            background: var(--chip);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-weight: 600;
+            border: 1px solid var(--border);
+            animation: tagFade 1.5s ease-out;
+        }
+
+        @keyframes tagFade {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        /* Enhanced Tooltip */
+        .tooltip {
+            position: absolute;
+            background: var(--text);
+            backdrop-filter: blur(10px);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 11px;
+            white-space: nowrap;
+            pointer-events: none;
+            opacity: 0;
+            transform: translateY(-8px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1000;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%) translateY(-8px);
+            margin-bottom: 6px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .tooltip::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 5px solid transparent;
+            border-top-color: var(--text);
+        }
+
+        .tooltip.active {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .tooltip-trigger {
+            position: relative;
+        }
+
+        /* Loading Animation */
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(0.98); }
+        }
+
+        /* Mobile Optimizations */
+        @media (max-width: 399px) {
+            .job-card {
+                padding: 16px;
+            }
+
+            .job-title {
+                font-size: 18px;
+            }
+
+            .salary-amount {
+                font-size: 16px;
+            }
+
+            .meta-grid {
+                gap: 8px;
+            }
+
+            .meta-item {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="job-card">
+        <!-- Header Row -->
+        <div class="card-header">
+            <div class="company-info">
+                <div class="company-logo">💳</div>
+                <div class="company-name">Razorpay</div>
+            </div>
+            <div class="header-meta">
+                <div class="time-visual">
+                    <div class="time-bubble">
+                        <svg class="time-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>
+                        </svg>
+                        <span class="time-text">5 hours ago</span>
+                    </div>
+                </div>
+                <button class="bookmark-btn" aria-label="Bookmark job">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Title Row -->
+        <div class="title-row">
+            <h2 class="job-title">Senior Frontend Developer</h2>
+            <div class="title-meta">
+                <span class="experience-badge">Senior</span>
+            </div>
+        </div>
+
+        <!-- Meta Grid -->
+        <div class="meta-grid">
+            <div class="meta-item">
+                <div class="meta-label">Skills</div>
+                <div class="match-bar">
+                    <div class="bar-container">
+                        <div class="bar-fill high" style="--fill-width: 91%"></div>
+                    </div>
+                    <span class="match-percentage">91%</span>
+                </div>
+            </div>
+            <div class="meta-item">
+                <div class="meta-label">Experience</div>
+                <div class="match-bar">
+                    <div class="bar-container">
+                        <div class="bar-fill high" style="--fill-width: 84%"></div>
+                    </div>
+                    <span class="match-percentage">84%</span>
+                </div>
+            </div>
+            <div class="meta-item">
+                <div class="meta-label">Applicants</div>
+                <div class="applicants-visual">
+                    <div class="applicants-stack">
+                        <div class="applicant-avatar">A</div>
+                        <div class="applicant-avatar">B</div>
+                        <div class="applicant-avatar">+</div>
+                    </div>
+                    <span class="applicants-count">67</span>
+                </div>
+            </div>
+            <div class="meta-item">
+                <div class="meta-label">Distance</div>
+                <div class="distance-visual tooltip-trigger">
+                    <svg class="distance-pin" viewBox="0 0 24 24">
+                        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                    </svg>
+                    <span class="distance-value">7.2 km</span>
+                    <div class="tooltip">Distance is approximate</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Salary Row -->
+        <div class="salary-row">
+            <span class="salary-amount">₹25–35 LPA</span>
+            <div class="market-chip above tooltip-trigger">
+                <span>Above market</span>
+                <svg class="info-icon" viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                    <path d="M12 16v-4m0-4h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+                <div class="tooltip">Salary is above market average for this role</div>
+            </div>
+        </div>
+
+        <!-- Growth Section -->
+        <div class="growth-section">
+            <div class="growth-label">Growth Trajectory</div>
+            <div class="growth-visual">
+                <div class="growth-chart">
+                    <div class="growth-bars">
+                        <div class="growth-bar"></div>
+                        <div class="growth-bar"></div>
+                        <div class="growth-bar"></div>
+                        <div class="growth-bar"></div>
+                        <div class="growth-bar"></div>
+                    </div>
+                </div>
+                <div class="growth-indicator">
+                    <svg class="growth-arrow" viewBox="0 0 24 24">
+                        <path d="M7 14l5-5 5 5z"/>
+                    </svg>
+                    <span class="growth-text">High</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- CTA Row -->
+        <div class="cta-row">
+            <button class="cta-btn secondary">View details</button>
+            <button class="cta-btn primary">Apply now</button>
+        </div>
+
+        <!-- Source Tag -->
+        <div class="source-tag">Source: LinkedIn</div>
+    </div>
+
+    <script>
+        // Bookmark toggle with enhanced animation
+        const bookmarkBtn = document.querySelector('.bookmark-btn');
+        bookmarkBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            this.classList.toggle('bookmarked');
+
+            // Create particle effect
+            const particles = 8;
+            for (let i = 0; i < particles; i++) {
+                const particle = document.createElement('div');
+                particle.style.position = 'absolute';
+                particle.style.width = '4px';
+                particle.style.height = '4px';
+                particle.style.background = '#2370FF';
+                particle.style.borderRadius = '50%';
+                particle.style.left = '50%';
+                particle.style.top = '50%';
+                particle.style.transform = 'translate(-50%, -50%)';
+                particle.style.pointerEvents = 'none';
+
+                const angle = (Math.PI * 2 * i) / particles;
+                const velocity = 50 + Math.random() * 30;
+
+                particle.style.animation = `particle 0.6s ease-out forwards`;
+                particle.style.setProperty('--tx', Math.cos(angle) * velocity + 'px');
+                particle.style.setProperty('--ty', Math.sin(angle) * velocity + 'px');
+
+                this.appendChild(particle);
+                setTimeout(() => particle.remove(), 600);
+            }
+
+            // Haptic feedback
+            if ('vibrate' in navigator) {
+                navigator.vibrate([10, 20, 10]);
+            }
+        });
+
+        // Add particle animation
+        const particleStyle = document.createElement('style');
+        particleStyle.textContent = `
+            @keyframes particle {
+                to {
+                    transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty)));
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(particleStyle);
+
+        // Enhanced tooltip functionality
+        const tooltipTriggers = document.querySelectorAll('.tooltip-trigger');
+
+        tooltipTriggers.forEach(trigger => {
+            const tooltip = trigger.querySelector('.tooltip');
+            let timeout;
+
+            trigger.addEventListener('mouseenter', () => {
+                if (tooltip) {
+                    clearTimeout(timeout);
+                    tooltip.classList.add('active');
+                }
+            });
+
+            trigger.addEventListener('mouseleave', () => {
+                if (tooltip) {
+                    timeout = setTimeout(() => {
+                        tooltip.classList.remove('active');
+                    }, 100);
+                }
+            });
+
+            // Touch support
+            trigger.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                if (tooltip) {
+                    tooltip.classList.toggle('active');
+                    setTimeout(() => {
+                        tooltip.classList.remove('active');
+                    }, 3000);
+                }
+            });
+        });
+
+        // Animate bar fills with proper width
+        window.addEventListener('load', () => {
+            const bars = document.querySelectorAll('.bar-fill');
+            bars.forEach((bar) => {
+                const width = bar.style.getPropertyValue('--fill-width');
+                setTimeout(() => {
+                    bar.style.width = width;
+                }, 100);
+            });
+        });
+
+        // CTA ripple effect
+        document.querySelectorAll('.cta-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+
+                // Visual feedback
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = '';
+                }, 200);
+
+                console.log(`${this.textContent} clicked`);
+            });
+        });
+
+        // Number count animation
+        const animateCount = (element, target) => {
+            let current = 0;
+            const increment = target / 30;
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    element.textContent = target;
+                    clearInterval(timer);
+                } else {
+                    element.textContent = Math.floor(current);
+                }
+            }, 30);
+        };
+
+        // Animate applicants count on load
+        setTimeout(() => {
+            const countElement = document.querySelector('.applicants-count');
+            animateCount(countElement, 67);
+        }, 800);
+
+        // Parallax effect on mouse move (desktop only)
+        if (window.innerWidth > 768) {
+            document.addEventListener('mousemove', (e) => {
+                const card = document.querySelector('.job-card');
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left - rect.width / 2;
+                const y = e.clientY - rect.top - rect.height / 2;
+
+                const rotateX = (y / rect.height) * 5;
+                const rotateY = -(x / rect.width) * 5;
+
+                card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(10px)`;
+            });
+
+            document.querySelector('.job-card').addEventListener('mouseleave', function() {
+                this.style.transform = '';
+            });
+        }
+    </script>
+</body>
+</html>

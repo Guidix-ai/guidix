@@ -232,820 +232,436 @@ const EnhancedJobCard = ({
   isSaved,
   router,
 }) => {
-  const [isHoveringMatchScore, setIsHoveringMatchScore] = useState(false);
-  const [isHoveringCompanyDetails, setIsHoveringCompanyDetails] =
-    useState(false);
-  const [animated, setAnimated] = useState(false);
+  const [isBookmarked, setIsBookmarked] = useState(isSaved);
 
   useEffect(() => {
-    if (isHoveringMatchScore) {
-      // Reset animation
-      setAnimated(false);
-      // Trigger animation after a brief delay
-      setTimeout(() => setAnimated(true), 50);
-    }
-  }, [isHoveringMatchScore]);
+    setIsBookmarked(isSaved);
+  }, [isSaved]);
 
-  const handleCardClick = (e) => {
-    // Card click disabled - no routing
-  };
-
-  const handleShowLess = (e) => {
+  const handleBookmarkClick = (e) => {
     e.stopPropagation();
-    setIsHoveringMatchScore(false);
+    setIsBookmarked(!isBookmarked);
+    onSave(job.id);
   };
-
-  const totalBlocks = 5;
-
-  const cardRef = useRef(null);
-  const [cardHeight, setCardHeight] = useState(null);
-
-  useEffect(() => {
-    if (cardRef.current && !cardHeight) {
-      // Measure the full card height including sticky buttons
-      const fullHeight = cardRef.current.offsetHeight;
-      setCardHeight(fullHeight);
-    }
-  }, [cardHeight]);
 
   return (
     <div
-      ref={cardRef}
-      className="rounded-lg shadow-sm"
       style={{
-        backgroundColor: "#FFFFFF",
-        border: "1px solid #F1F3F7",
-        boxShadow: shadowBoxStyle,
+        width: "100%",
+        maxWidth: "550px",
+        background: "#ffffff",
+        borderRadius: "16px",
         overflow: "hidden",
+        boxShadow: "0 4px 12px rgba(0, 20, 40, 0.08)",
         position: "relative",
-        minHeight: cardHeight ? `${cardHeight}px` : "auto",
+        transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
       }}
-      onMouseLeave={() => {
-        setIsHoveringMatchScore(false);
-        setIsHoveringCompanyDetails(false);
+      onMouseEnter={(e) => {
+        e.currentTarget.style.transform = "translateY(-4px)";
+        e.currentTarget.style.boxShadow = "0 12px 24px rgba(0, 20, 40, 0.12)";
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.transform = "";
+        e.currentTarget.style.boxShadow = "0 4px 12px rgba(0, 20, 40, 0.08)";
       }}
     >
-      {!isHoveringMatchScore && !isHoveringCompanyDetails ? (
+      {/* Top gradient line */}
+      <div
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          height: "2px",
+          background: "linear-gradient(90deg, #0056b3, #28a745, #0056b3)",
+          backgroundSize: "200% 100%",
+        }}
+      />
+
+      {/* Header Section - Reduced padding */}
+      <div style={{ padding: "16px 20px", position: "relative", overflow: "hidden" }}>
         <div
-          className="px-4 pb-4"
-          style={{ animation: "fadeIn 0.3s ease-out" }}
-        >
-          <div className="flex justify-between items-center py-3 mb-3">
-            <div
-              className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity flex-1"
-              onMouseEnter={() => setIsHoveringCompanyDetails(true)}
-              data-company-details="true"
-            >
-              <div
-                className="w-10 h-10 rounded-lg flex items-center justify-center bg-white"
-                style={{ border: "1px solid #E1E4ED" }}
-              >
-                <Image
-                  src={`https://logo.clearbit.com/${job.company
-                    .toLowerCase()
-                    .replace(/\s+/g, "")}.com`}
-                  alt={job.company}
-                  className="w-full h-full object-contain rounded-lg"
-                  width={40}
-                  height={40}
-                  onError={(e) => {
-                    e.target.style.display = "none";
-                    e.target.nextElementSibling.style.display = "flex";
-                  }}
-                />
-                <div
-                  className="w-full h-full rounded-lg flex items-center justify-center text-white font-semibold text-sm"
-                  style={{ backgroundColor: "#0F2678", display: "none" }}
-                >
-                  {job.company.charAt(0)}
-                </div>
-              </div>
-              <div>
-                <div
-                  className="text-sm font-semibold"
-                  style={{ color: "#002A79" }}
-                >
-                  {job.company}
-                </div>
-                <div className="text-xs" style={{ color: "#6D7586" }}>
-                  {job.companyType.split(" · ")[0]}
-                </div>
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onSave(job.id);
-                }}
-                style={{
-                  ...buttonStyles,
-                  background: "transparent",
-                  padding: "4px",
-                  boxShadow: "none",
-                }}
-                className="transition-all hover:opacity-70"
-                title="Save Job"
-              >
-                <Image
-                  src="/wishlist.svg"
-                  alt="Save"
-                  width={24}
-                  height={24}
-                  style={{ opacity: isSaved ? 1 : 0.6 }}
-                />
-              </button>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onBlock(job.id);
-                }}
-                style={{
-                  ...buttonStyles,
-                  padding: "4px",
-                  background: "transparent",
-                  boxShadow: "none",
-                }}
-                className="hover:opacity-70 transition-all"
-                title="Dismiss"
-              >
-                <Image
-                  src="/dismiss.svg"
-                  alt="Dismiss"
-                  width={24}
-                  height={24}
-                />
-              </button>
-            </div>
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: "linear-gradient(135deg, #e6f2ff 0%, rgba(0, 86, 179, 0.05) 100%)",
+            opacity: 0.5,
+            zIndex: 0,
+          }}
+        />
+
+        <div style={{ position: "relative", zIndex: 1, display: "flex", alignItems: "center", gap: "16px" }}>
+          <div
+            style={{
+              width: "48px",
+              height: "48px",
+              background: "linear-gradient(135deg, #0056b3, #003d82)",
+              borderRadius: "12px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: "20px",
+              color: "white",
+              flexShrink: 0,
+            }}
+          >
+            {job.company.charAt(0)}
           </div>
 
-          <h3
-            className="text-lg font-semibold mb-2"
-            style={{ color: "#000E41" }}
-          >
-            {job.title}
-          </h3>
-
-          <div className="flex items-center gap-4 text-xs mb-2 flex-wrap">
-            <div className="flex items-center gap-1">
-              <Image src="/salary.svg" alt="Salary" width={24} height={24} />
-              <span style={{ fontWeight: "500", color: "#353E5C" }}>
-                {job.salary}
+          <div style={{ flex: 1 }}>
+            <h3 style={{ fontSize: "17px", fontWeight: 700, color: "#2c3e50", marginBottom: "3px" }}>
+              {job.company}
+            </h3>
+            <p style={{ fontSize: "13px", color: "#6c757d", marginBottom: "5px" }}>{job.title}</p>
+            <div style={{ display: "flex", gap: "6px", flexWrap: "wrap" }}>
+              <span
+                style={{
+                  padding: "2px 7px",
+                  background: "#28a745",
+                  color: "white",
+                  borderRadius: "4px",
+                  fontSize: "10px",
+                  fontWeight: 600,
+                }}
+              >
+                {job.level?.split(",")[0] || "Senior"}
               </span>
-            </div>
-            <div className="flex items-center gap-1">
-              <Image src="/jobtype.svg" alt="Job Type" width={24} height={24} />
-              <span style={{ fontWeight: "500", color: "#353E5C" }}>
+              <span
+                style={{
+                  padding: "2px 7px",
+                  background: "#f8f9fa",
+                  borderRadius: "4px",
+                  fontSize: "10px",
+                  fontWeight: 600,
+                  color: "#6c757d",
+                }}
+              >
                 {job.type}
               </span>
-            </div>
-            <div className="flex items-center gap-1">
-              <Image
-                src="/location.svg"
-                alt="Location"
-                width={24}
-                height={24}
-              />
-              <span style={{ fontWeight: "500", color: "#353E5C" }}>
-                {job.location}
+              <span
+                style={{
+                  padding: "2px 7px",
+                  background: "#f8f9fa",
+                  borderRadius: "4px",
+                  fontSize: "10px",
+                  fontWeight: 600,
+                  color: "#6c757d",
+                }}
+              >
+                {job.remote ? "Remote" : "On-site"}
               </span>
             </div>
           </div>
-
-          <div className="flex items-center justify-between text-xs mb-3">
-            <div style={{ fontWeight: "500", color: "#6477b4" }}>
-              {job.posted} • {job.applicants} applicants
-            </div>
-          </div>
-
-          <div
-            className="flex items-center justify-between gap-4 pt-3"
-            style={{ borderTop: "1px solid #F1F3F7" }}
-          >
-            <div
-              className="cursor-pointer text-sm flex items-center gap-2"
-              style={{
-                color: "#353E5C",
-                fontWeight: 500,
-                backgroundColor: "#EBF1FF",
-                padding: "8px 12px",
-                borderRadius: "20px",
-                maxWidth: "fit-content",
-              }}
-              onMouseEnter={() => setIsHoveringMatchScore(true)}
-              data-match-score="true"
-            >
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 20 20"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                style={{ flexShrink: 0 }}
-              >
-                <circle cx="10" cy="10" r="9" fill="#2370FF" opacity="0.15" />
-                <path
-                  d="M6 11L10 7L14 11"
-                  stroke="#2370FF"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-              <span>
-                You match{" "}
-                <span style={{ fontWeight: 700, color: "#64A7FF" }}>
-                  {job.matchScore}%
-                </span>{" "}
-                and success rate is{" "}
-                <span style={{ fontWeight: 700, color: "#74D184" }}>
-                  {job.predictabilityScore}%
-                </span>
-              </span>
-            </div>
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                onApply(job.id);
-              }}
-              disabled={isApplied}
-              style={{
-                ...applyButtonStyles,
-                background: isApplied
-                  ? "linear-gradient(180deg, #4ade80 0%, #22c55e 100%)"
-                  : "linear-gradient(180deg, #679CFF 0%, #2370FF 100%)",
-                cursor: isApplied ? "not-allowed" : "pointer",
-              }}
-              className="transition-all hover:opacity-90"
-            >
-              {isApplied ? "Applied" : "Apply Now"}
-            </button>
-          </div>
         </div>
-      ) : isHoveringMatchScore ? (
-        <div
-          className="hover-overlay-scroll"
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundColor: "#FFFFFF",
-            overflowY: "auto",
-            animation: "slideUpBlur 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)",
-          }}
-        >
-          {/* Sticky Top row with company logo and action icons */}
-          <div
-            className="flex justify-between items-center py-3 px-4 mb-3"
+
+        {/* Header Actions */}
+        <div style={{ position: "absolute", top: "16px", right: "20px", display: "flex", gap: "18px" }}>
+          <button
+            onClick={handleBookmarkClick}
             style={{
-              position: "sticky",
-              top: 0,
-              backgroundColor: "#FFFFFF",
-              zIndex: 10,
-              borderBottom: "1px solid #F1F3F7",
+              width: "30px",
+              height: "30px",
+              borderRadius: "8px",
+              border: "1px solid #e9ecef",
+              background: isBookmarked ? "#0056b3" : "#ffffff",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+              transition: "all 0.3s",
             }}
           >
-            <div
-              className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity flex-1"
-              onMouseEnter={() => setIsHoveringCompanyDetails(true)}
-              data-company-details="true"
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              style={{
+                stroke: isBookmarked ? "white" : "#6c757d",
+                fill: isBookmarked ? "white" : "none",
+                strokeWidth: 2,
+              }}
             >
-              <div
-                className="w-10 h-10 rounded-lg flex items-center justify-center bg-white"
-                style={{ border: "1px solid #E1E4ED" }}
-              >
-                <Image
-                  src={`https://logo.clearbit.com/${job.company
-                    .toLowerCase()
-                    .replace(/\s+/g, "")}.com`}
-                  alt={job.company}
-                  className="w-full h-full object-contain rounded-lg"
-                  width={40}
-                  height={40}
-                  onError={(e) => {
-                    e.target.style.display = "none";
-                    e.target.nextElementSibling.style.display = "flex";
-                  }}
-                />
-                <div
-                  className="w-full h-full rounded-lg flex items-center justify-center text-white font-semibold text-sm"
-                  style={{ backgroundColor: "#0F2678", display: "none" }}
-                >
-                  {job.company.charAt(0)}
-                </div>
-              </div>
-              <div>
-                <div
-                  className="text-sm font-semibold"
-                  style={{ color: "#002A79" }}
-                >
-                  {job.company}
-                </div>
-                <div className="text-xs" style={{ color: "#6D7586" }}>
-                  {job.companyType.split(" · ")[0]}
-                </div>
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onSave(job.id);
-                }}
-                style={{
-                  ...buttonStyles,
-                  background: "transparent",
-                  padding: "4px",
-                  boxShadow: "none",
-                }}
-                className="transition-all hover:opacity-70"
-                title="Save Job"
-              >
-                <Image
-                  src="/wishlist.svg"
-                  alt="Save"
-                  width={24}
-                  height={24}
-                  style={{ opacity: isSaved ? 1 : 0.6 }}
-                />
-              </button>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onBlock(job.id);
-                }}
-                style={{
-                  ...buttonStyles,
-                  padding: "4px",
-                  background: "transparent",
-                  boxShadow: "none",
-                }}
-                className="hover:opacity-70 transition-all"
-                title="Dismiss"
-              >
-                <Image
-                  src="/dismiss.svg"
-                  alt="Dismiss"
-                  width={24}
-                  height={24}
-                />
-              </button>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onApply(job.id);
-                }}
-                disabled={isApplied}
-                style={{
-                  ...applyButtonStyles,
-                  background: isApplied
-                    ? "linear-gradient(180deg, #4ade80 0%, #22c55e 100%)"
-                    : "linear-gradient(180deg, #679CFF 0%, #2370FF 100%)",
-                  cursor: isApplied ? "not-allowed" : "pointer",
-                }}
-                className="transition-all hover:opacity-90"
-              >
-                {isApplied ? "Applied" : "Apply Now"}
-              </button>
-            </div>
-          </div>
-
-          <div className="px-4 pb-4">
-            <div className="flex gap-3 mb-3">
-              <div
-                className="flex-1 rounded-lg p-2.5"
-                style={{
-                  backgroundColor: "#EBF1FF",
-                  border: "1px solid #B2CDFF",
-                }}
-                onMouseLeave={() => setIsHoveringMatchScore(false)}
-                data-match-score="true"
-              >
-                <div
-                  className="text-xs font-semibold mb-1"
-                  style={{ color: "#003598" }}
-                >
-                  Match Score
-                </div>
-                <div
-                  className="text-2xl font-semibold mb-2"
-                  style={{ color: "#2370FF" }}
-                >
-                  {job.matchScore}%
-                </div>
-                <div className="space-y-1.5">
-                  {[
-                    {
-                      label: "Skills",
-                      value: job.skillsMatch,
-                      color: "#2370FF",
-                    },
-                    {
-                      label: "Experience",
-                      value: job.experienceMatch,
-                      color: "#679CFF",
-                    },
-                  ].map((stat, index) => {
-                    const filledBlocks = Math.round(
-                      (stat.value / 100) * totalBlocks
-                    );
-
-                    return (
-                      <div key={stat.label} className="space-y-1">
-                        <div className="flex items-center justify-between">
-                          <span
-                            className="text-xs font-medium"
-                            style={{ color: "#353E5C" }}
-                          >
-                            {stat.label}
-                          </span>
-                          <span
-                            className="text-xs font-semibold"
-                            style={{ color: stat.color }}
-                          >
-                            {stat.value}%
-                          </span>
-                        </div>
-                        <div className="flex gap-1">
-                          {[...Array(totalBlocks)].map((_, blockIndex) => (
-                            <div
-                              key={blockIndex}
-                              className="flex-1 rounded-md"
-                              style={{
-                                height: "8px",
-                                backgroundColor:
-                                  blockIndex < filledBlocks && animated
-                                    ? stat.color
-                                    : "#E5E7EB",
-                                opacity: animated ? 1 : 0.3,
-                                transition:
-                                  "all 400ms cubic-bezier(0.4, 0, 0.2, 1)",
-                                transitionDelay: animated
-                                  ? `${300 + index * 60 + blockIndex * 60}ms`
-                                  : "0ms",
-                                transform: animated
-                                  ? "scaleY(1)"
-                                  : "scaleY(0.3)",
-                                transformOrigin: "bottom",
-                              }}
-                            />
-                          ))}
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-
-              <div
-                className="flex-1 rounded-lg p-2.5"
-                style={{
-                  backgroundColor: "#F8F9FF",
-                  border: "1px solid #E1E4ED",
-                }}
-                onMouseLeave={() => setIsHoveringMatchScore(false)}
-                data-match-score="true"
-              >
-                <div
-                  className="text-xs font-semibold mb-1"
-                  style={{ color: "#003598" }}
-                >
-                  Success Rate
-                </div>
-                <div
-                  className="text-2xl font-semibold mb-2"
-                  style={{ color: "#74D184" }}
-                >
-                  {job.predictabilityScore}%
-                </div>
-                <div className="text-xs mb-2" style={{ color: "#6D7586" }}>
-                  Based on similar profiles
-                </div>
-                <div className="flex gap-1">
-                  {[...Array(totalBlocks)].map((_, blockIndex) => {
-                    const successFilledBlocks = Math.round(
-                      (job.predictabilityScore / 100) * totalBlocks
-                    );
-                    return (
-                      <div
-                        key={blockIndex}
-                        className="flex-1 rounded-md"
-                        style={{
-                          height: "8px",
-                          backgroundColor:
-                            blockIndex < successFilledBlocks && animated
-                              ? "#82A5FF"
-                              : "#E5E7EB",
-                          opacity: animated ? 1 : 0.3,
-                          transition: "all 400ms cubic-bezier(0.4, 0, 0.2, 1)",
-                          transitionDelay: animated
-                            ? `${600 + blockIndex * 60}ms`
-                            : "0ms",
-                          transform: animated ? "scaleY(1)" : "scaleY(0.3)",
-                          transformOrigin: "bottom",
-                        }}
-                      />
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
-          </div>
+              <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
+            </svg>
+          </button>
         </div>
-      ) : (
+      </div>
+
+      {/* Stats Grid - More compact */}
+      <div style={{ padding: "12px 20px", display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "10px" }}>
         <div
-          className="hover-overlay-scroll"
           style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundColor: "#FFFFFF",
-            overflowY: "auto",
-            animation: "slideUpBlur 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)",
+            textAlign: "center",
+            padding: "10px 6px",
+            background: "#f8f9fa",
+            borderRadius: "10px",
+            transition: "all 0.3s",
+            cursor: "default",
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = "#e6f2ff";
+            e.currentTarget.style.transform = "translateY(-4px) scale(1.05)";
+            e.currentTarget.style.boxShadow = "0 4px 12px rgba(0, 20, 40, 0.08)";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = "#f8f9fa";
+            e.currentTarget.style.transform = "";
+            e.currentTarget.style.boxShadow = "";
           }}
         >
-          {/* Sticky Top row with company logo and action icons */}
+          <span style={{ fontSize: "20px", fontWeight: 700, color: "#0056b3", marginBottom: "3px", display: "block" }}>
+            {job.matchScore}%
+          </span>
+          <span style={{ fontSize: "10px", color: "#6c757d", fontWeight: 500 }}>Match Score</span>
+        </div>
+
+        <div
+          style={{
+            textAlign: "center",
+            padding: "10px 6px",
+            background: "#f8f9fa",
+            borderRadius: "10px",
+            transition: "all 0.3s",
+            cursor: "default",
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = "#e6f2ff";
+            e.currentTarget.style.transform = "translateY(-4px) scale(1.05)";
+            e.currentTarget.style.boxShadow = "0 4px 12px rgba(0, 20, 40, 0.08)";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = "#f8f9fa";
+            e.currentTarget.style.transform = "";
+            e.currentTarget.style.boxShadow = "";
+          }}
+        >
+          <span style={{ fontSize: "20px", fontWeight: 700, color: "#0056b3", marginBottom: "3px", display: "block" }}>
+            {job.applicants}
+          </span>
+          <span style={{ fontSize: "10px", color: "#6c757d", fontWeight: 500 }}>Applicants</span>
+        </div>
+
+        <div
+          style={{
+            textAlign: "center",
+            padding: "10px 6px",
+            background: "#f8f9fa",
+            borderRadius: "10px",
+            transition: "all 0.3s",
+            cursor: "default",
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = "#e6f2ff";
+            e.currentTarget.style.transform = "translateY(-4px) scale(1.05)";
+            e.currentTarget.style.boxShadow = "0 4px 12px rgba(0, 20, 40, 0.08)";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = "#f8f9fa";
+            e.currentTarget.style.transform = "";
+            e.currentTarget.style.boxShadow = "";
+          }}
+        >
+          <span style={{ fontSize: "20px", fontWeight: 700, color: "#0056b3", marginBottom: "3px", display: "block" }}>
+            {job.experienceMatch}%
+          </span>
+          <span style={{ fontSize: "10px", color: "#6c757d", fontWeight: 500 }}>Experience</span>
+        </div>
+      </div>
+
+      {/* Match Score Bar - Reduced padding */}
+      <div style={{ padding: "0 20px 12px" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
+          <span style={{ fontSize: "11px", fontWeight: 600, color: "#6c757d" }}>Your Profile Match</span>
+          <span style={{ fontSize: "11px", fontWeight: 700, color: "#0056b3" }}>{job.matchScore}% Match</span>
+        </div>
+        <div style={{ height: "6px", background: "#e9ecef", borderRadius: "6px", overflow: "hidden", position: "relative" }}>
           <div
-            className="flex justify-between items-center py-3 px-4 mb-3"
             style={{
-              position: "sticky",
-              top: 0,
-              backgroundColor: "#FFFFFF",
-              zIndex: 10,
-              borderBottom: "1px solid #F1F3F7",
+              height: "100%",
+              background: "linear-gradient(90deg, #0056b3, #28a745)",
+              borderRadius: "6px",
+              width: `${job.matchScore}%`,
+              position: "relative",
             }}
-            data-company-details="true"
+          />
+        </div>
+      </div>
+
+      {/* Location and Salary Row - Reduced padding */}
+      <div
+        style={{
+          padding: "12px 20px",
+          display: "flex",
+          gap: "12px",
+          borderTop: "1px solid #e9ecef",
+          borderBottom: "1px solid #e9ecef",
+          background: "#f8f9fa",
+        }}
+      >
+        <div style={{ flex: 1, display: "flex", alignItems: "center", gap: "8px" }}>
+          <div
+            style={{
+              width: "28px",
+              height: "28px",
+              background: "#ffffff",
+              borderRadius: "7px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flexShrink: 0,
+              boxShadow: "0 2px 4px rgba(0, 20, 40, 0.04)",
+            }}
           >
-            <div
-              className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity flex-1"
-              onMouseEnter={() => setIsHoveringCompanyDetails(true)}
-              data-company-details="true"
-            >
-              <div
-                className="w-10 h-10 rounded-lg flex items-center justify-center bg-white"
-                style={{ border: "1px solid #E1E4ED" }}
-              >
-                <Image
-                  src={`https://logo.clearbit.com/${job.company
-                    .toLowerCase()
-                    .replace(/\s+/g, "")}.com`}
-                  alt={job.company}
-                  className="w-full h-full object-contain rounded-lg"
-                  width={40}
-                  height={40}
-                  onError={(e) => {
-                    e.target.style.display = "none";
-                    e.target.nextElementSibling.style.display = "flex";
-                  }}
-                />
-                <div
-                  className="w-full h-full rounded-lg flex items-center justify-center text-white font-semibold text-sm"
-                  style={{ backgroundColor: "#0F2678", display: "none" }}
-                >
-                  {job.company.charAt(0)}
-                </div>
-              </div>
-              <div>
-                <div
-                  className="text-sm font-semibold"
-                  style={{ color: "#002A79" }}
-                >
-                  {job.company}
-                </div>
-                <div className="text-xs" style={{ color: "#6D7586" }}>
-                  {job.companyType.split(" · ")[0]}
-                </div>
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onSave(job.id);
-                }}
-                style={{
-                  ...buttonStyles,
-                  background: "transparent",
-                  padding: "4px",
-                  boxShadow: "none",
-                }}
-                className="transition-all hover:opacity-70"
-                title="Save Job"
-              >
-                <Image
-                  src="/wishlist.svg"
-                  alt="Save"
-                  width={24}
-                  height={24}
-                  style={{ opacity: isSaved ? 1 : 0.6 }}
-                />
-              </button>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onBlock(job.id);
-                }}
-                style={{
-                  ...buttonStyles,
-                  padding: "4px",
-                  background: "transparent",
-                  boxShadow: "none",
-                }}
-                className="hover:opacity-70 transition-all"
-                title="Dismiss"
-              >
-                <Image
-                  src="/dismiss.svg"
-                  alt="Dismiss"
-                  width={24}
-                  height={24}
-                />
-              </button>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onApply(job.id);
-                }}
-                disabled={isApplied}
-                style={{
-                  ...applyButtonStyles,
-                  background: isApplied
-                    ? "linear-gradient(180deg, #4ade80 0%, #22c55e 100%)"
-                    : "linear-gradient(180deg, #679CFF 0%, #2370FF 100%)",
-                  cursor: isApplied ? "not-allowed" : "pointer",
-                }}
-                className="transition-all hover:opacity-90"
-              >
-                {isApplied ? "Applied" : "Apply Now"}
-              </button>
-            </div>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="#0056b3">
+              <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
+            </svg>
           </div>
-
-          <div className="px-4 pb-4 space-y-2" data-company-details="true">
-            <h3
-              className="text-base font-semibold mb-1.5"
-              style={{ color: "#000E41" }}
-            >
-              {job.title}
-            </h3>
-            <p
-              className="text-xs mb-2.5 leading-relaxed line-clamp-2"
-              style={{ color: "#6D7586" }}
-            >
-              {job.companyDescription}
-            </p>
-
+          <div style={{ flex: 1 }}>
             <div
-              className="rounded-lg p-2.5"
               style={{
-                backgroundColor: "#F8F9FF",
-                border: "1px solid #EBF1FF",
+                fontSize: "9px",
+                color: "#adb5bd",
+                textTransform: "uppercase",
+                letterSpacing: "0.5px",
               }}
             >
-              <h4
-                className="font-semibold mb-2 text-xs"
-                style={{ color: "#002A79" }}
-              >
-                Company Links
-              </h4>
-              <div className="space-y-1.5">
-                <a
-                  href={job.companyWebsite}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 p-2 rounded-lg transition-all text-xs hover:opacity-80"
-                  style={{ backgroundColor: "#FFFFFF" }}
-                >
-                  <Image
-                    src="/companywebsite.svg"
-                    alt="Website"
-                    width={20}
-                    height={20}
-                  />
-                  <span style={{ fontWeight: "600", color: "#353E5C" }}>
-                    Company Website
-                  </span>
-                </a>
-                <a
-                  href={job.linkedinUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 p-2 rounded-lg transition-all text-xs hover:opacity-80"
-                  style={{ backgroundColor: "#FFFFFF" }}
-                >
-                  <Image
-                    src="/companylinkedin.svg"
-                    alt="Company LinkedIn"
-                    width={20}
-                    height={20}
-                  />
-                  <span style={{ fontWeight: "600", color: "#353E5C" }}>
-                    Company LinkedIn
-                  </span>
-                </a>
-                <a
-                  href={job.hrLinkedinUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 p-2 rounded-lg transition-all text-xs hover:opacity-80"
-                  style={{ backgroundColor: "#FFFFFF" }}
-                >
-                  <Image
-                    src="/hrlinkedin.svg"
-                    alt="HR LinkedIn"
-                    width={20}
-                    height={20}
-                  />
-                  <span style={{ fontWeight: "600", color: "#353E5C" }}>
-                    HR LinkedIn
-                  </span>
-                </a>
-              </div>
+              Location
             </div>
-
-            <div
-              className="rounded-lg p-2.5"
-              style={{
-                backgroundColor: "#EBF1FF",
-                border: "1px solid #B2CDFF",
-              }}
-            >
-              <h4
-                className="font-semibold mb-2 text-xs"
-                style={{ color: "#003598" }}
-              >
-                Company Insights
-              </h4>
-              <div className="grid grid-cols-3 gap-2">
-                <div
-                  className="p-2 rounded-lg"
-                  style={{
-                    backgroundColor: "#FFFFFF",
-                    border: "1px solid #EBF1FF",
-                  }}
-                >
-                  <div
-                    className="text-xs font-medium"
-                    style={{ color: "#6D7586" }}
-                  >
-                    Team
-                  </div>
-                  <div
-                    className="font-semibold text-xs"
-                    style={{ color: "#353E5C" }}
-                  >
-                    {job.teamSize}
-                  </div>
-                </div>
-                <div
-                  className="p-2 rounded-lg"
-                  style={{
-                    backgroundColor: "#FFFFFF",
-                    border: "1px solid #EBF1FF",
-                  }}
-                >
-                  <div
-                    className="text-xs font-medium"
-                    style={{ color: "#6D7586" }}
-                  >
-                    Founded
-                  </div>
-                  <div
-                    className="font-semibold text-xs"
-                    style={{ color: "#353E5C" }}
-                  >
-                    {job.foundedYear}
-                  </div>
-                </div>
-                <div
-                  className="p-2 rounded-lg"
-                  style={{
-                    backgroundColor: "#FFFFFF",
-                    border: "1px solid #EBF1FF",
-                  }}
-                >
-                  <div
-                    className="text-xs font-medium"
-                    style={{ color: "#6D7586" }}
-                  >
-                    Industry
-                  </div>
-                  <div
-                    className="font-semibold text-xs"
-                    style={{ color: "#353E5C" }}
-                  >
-                    {job.companyType.split(" · ")[0]}
-                  </div>
-                </div>
-              </div>
-            </div>
+            <div style={{ fontSize: "12px", fontWeight: 600, color: "#2c3e50" }}>{job.location}</div>
           </div>
         </div>
-      )}
+
+        <div style={{ flex: 1, display: "flex", alignItems: "center", gap: "8px" }}>
+          <div
+            style={{
+              width: "28px",
+              height: "28px",
+              background: "#ffffff",
+              borderRadius: "7px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flexShrink: 0,
+              boxShadow: "0 2px 4px rgba(0, 20, 40, 0.04)",
+            }}
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="#0056b3">
+              <path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z" />
+            </svg>
+          </div>
+          <div style={{ flex: 1 }}>
+            <div
+              style={{
+                fontSize: "9px",
+                color: "#adb5bd",
+                textTransform: "uppercase",
+                letterSpacing: "0.5px",
+              }}
+            >
+              Salary
+            </div>
+            <div style={{ fontSize: "12px", fontWeight: 600, color: "#2c3e50" }}>{job.salary}</div>
+          </div>
+        </div>
+      </div>
+
+      {/* CTA Section - Reduced padding */}
+      <div style={{ padding: "14px 20px", display: "grid", gridTemplateColumns: "2fr 1fr", gap: "10px" }}>
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onApply(job.id);
+          }}
+          disabled={isApplied}
+          style={{
+            padding: "12px",
+            borderRadius: "10px",
+            fontSize: "13px",
+            fontWeight: 600,
+            border: "none",
+            cursor: isApplied ? "not-allowed" : "pointer",
+            background: isApplied ? "#28a745" : "#0056b3",
+            color: "white",
+            transition: "all 0.3s",
+            position: "relative",
+            overflow: "hidden",
+          }}
+          onMouseEnter={(e) => {
+            if (!isApplied) {
+              e.currentTarget.style.background = "#003d82";
+              e.currentTarget.style.transform = "translateY(-2px)";
+              e.currentTarget.style.boxShadow = "0 4px 12px rgba(0, 86, 179, 0.3)";
+            }
+          }}
+          onMouseLeave={(e) => {
+            if (!isApplied) {
+              e.currentTarget.style.background = "#0056b3";
+              e.currentTarget.style.transform = "";
+              e.currentTarget.style.boxShadow = "";
+            }
+          }}
+        >
+          {isApplied ? "Applied" : "Apply Now"}
+        </button>
+
+        <button
+          onClick={() => router.push(`/job-details/${job.id}`)}
+          style={{
+            padding: "12px",
+            borderRadius: "10px",
+            fontSize: "13px",
+            fontWeight: 600,
+            background: "#ffffff",
+            color: "#0056b3",
+            border: "2px solid #0056b3",
+            cursor: "pointer",
+            transition: "all 0.3s",
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = "#e6f2ff";
+            e.currentTarget.style.transform = "translateY(-2px)";
+            e.currentTarget.style.boxShadow = "0 4px 12px rgba(0, 20, 40, 0.08)";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = "#ffffff";
+            e.currentTarget.style.transform = "";
+            e.currentTarget.style.boxShadow = "";
+          }}
+        >
+          Details
+        </button>
+      </div>
+
+      {/* Footer - Reduced padding */}
+      <div
+        style={{
+          padding: "12px 20px",
+          background: "#f8f9fa",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          fontSize: "10px",
+          color: "#adb5bd",
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+          <div
+            style={{
+              width: "5px",
+              height: "5px",
+              background: "#28a745",
+              borderRadius: "50%",
+            }}
+          />
+          <span>Posted {job.posted}</span>
+        </div>
+        <div>
+          Source: <span style={{ color: "#0056b3", fontWeight: 600 }}>LinkedIn</span>
+        </div>
+      </div>
     </div>
   );
 };
@@ -1063,7 +679,7 @@ const JobSearchPage = () => {
   const [typewriterText, setTypewriterText] = useState("");
   const [showCursor, setShowCursor] = useState(true);
   const userName = user?.full_name || "User";
-  const fullText = ` Hey ${userName}, 85+ Matches Across 25 Job Portals!`;
+  const fullText = `85+ Matches, 25 Portals,  5+ Hours Saved`;
   const [jobs, setJobs] = useState(allJobs);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -1154,11 +770,142 @@ const JobSearchPage = () => {
       }
       .hover-overlay-scroll::-webkit-scrollbar-thumb {
         background: linear-gradient(180deg, #679CFF 0%, #2370FF 100%);
-        border-radius: 10px;
+        borderRadius: 10px;
         border: 2px solid #F8F9FF;
       }
       .hover-overlay-scroll::-webkit-scrollbar-thumb:hover {
         background: linear-gradient(180deg, #2370FF 0%, #1a5acc 100%);
+      }
+
+      /* New Job Card Animations */
+      @keyframes cardEntry {
+        from {
+          opacity: 0;
+          transform: translateY(30px) scale(0.95);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+
+      @keyframes shimmer {
+        0% { transform: translateX(-100%); }
+        100% { transform: translateX(100%); }
+      }
+
+      @keyframes logoFloat {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-3px); }
+      }
+
+      @keyframes timePulse {
+        0%, 100% { box-shadow: 0 0 0 0 rgba(35, 112, 255, 0.3); }
+        50% { box-shadow: 0 0 0 8px rgba(35, 112, 255, 0); }
+      }
+
+      @keyframes clockSpin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+      }
+
+      @keyframes metaItemEntry {
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes barGrow {
+        to { transform: scaleX(1); }
+      }
+
+      @keyframes avatarPop {
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      @keyframes countUp {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+
+      @keyframes pinBounce {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-3px); }
+      }
+
+      @keyframes salaryPulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.8; }
+      }
+
+      @keyframes chipGlow {
+        0%, 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4); }
+        50% { box-shadow: 0 0 20px 5px rgba(34, 197, 94, 0.2); }
+      }
+
+      @keyframes infoRotate {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+      }
+
+      @keyframes barRise {
+        to { transform: scaleY(1); }
+      }
+
+      @keyframes arrowFloat {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-4px); }
+      }
+
+      @keyframes tagFade {
+        from { opacity: 0; transform: translateX(20px); }
+        to { opacity: 1; transform: translateX(0); }
+      }
+
+      @keyframes cardEntryStagger {
+        from {
+          opacity: 0;
+          transform: translateY(30px) scale(0.95);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+
+      /* Responsive Grid Improvements */
+      @media (max-width: 480px) {
+        .job-grid {
+          grid-template-columns: 1fr !important;
+          gap: 32px !important;
+          padding: 0 16px !important;
+        }
+      }
+
+      @media (min-width: 481px) and (max-width: 900px) {
+        .job-grid {
+          grid-template-columns: 1fr !important;
+          gap: 40px !important;
+          max-width: 550px !important;
+        }
+      }
+
+      @media (min-width: 901px) and (max-width: 1399px) {
+        .job-grid {
+          grid-template-columns: repeat(2, 550px) !important;
+          gap: 40px !important;
+        }
+      }
+
+      @media (min-width: 1400px) {
+        .job-grid {
+          grid-template-columns: repeat(2, 550px) !important;
+          gap: 48px !important;
+        }
       }
     `;
     document.head.appendChild(style);
@@ -1307,38 +1054,62 @@ const JobSearchPage = () => {
           width: "100%",
         }}
       >
+        {/* Header Banner Container */}
         <div
-          className="relative py-6 px-8 overflow-hidden flex items-center"
           style={{
-            backgroundImage: "url(/header-banner.svg)",
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            backgroundRepeat: "no-repeat",
-            minHeight: "100px",
-            boxShadow: "0 4px 20px 0 #2370FF66",
-            borderRadius: "16px",
+            maxWidth: "1600px",
+            margin: "0 auto",
+            padding: "0 16px",
+            width: "100%"
           }}
         >
-          <div className="relative z-10">
-            <h1
-              className="text-white font-semibold mb-2"
-              style={{
-                textShadow: "0 2px 10px rgba(0, 0, 0, 0.3)",
-                fontSize: "32px",
-                lineHeight: "1.2",
-                maxWidth: "800px",
-              }}
-            >
-              {typewriterText}
-              {showCursor && <span className="animate-pulse">|</span>}
-            </h1>
+          <div
+            className="relative py-8 px-6 sm:px-8 lg:px-12 overflow-hidden flex items-center"
+            style={{
+              backgroundImage: "url(/header-banner.svg)",
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              backgroundRepeat: "no-repeat",
+              minHeight: "120px",
+              boxShadow: "0 4px 20px 0 #2370FF66",
+              borderRadius: "20px",
+              marginBottom: "24px"
+            }}
+          >
+            <div className="relative z-10">
+              <h1
+                className="text-white font-semibold mb-2"
+                style={{
+                  textShadow: "0 2px 10px rgba(0, 0, 0, 0.3)",
+                  fontSize: "clamp(20px, 4vw, 32px)",
+                  lineHeight: "1.2",
+                  maxWidth: "800px",
+                }}
+              >
+                {typewriterText}
+                {showCursor && <span className="animate-pulse">|</span>}
+              </h1>
+            </div>
           </div>
         </div>
 
+        {/* Filters Section */}
         <div
-          className="bg-white px-8 py-5 border-b"
-          style={{ borderColor: "#E1E4ED", backgroundColor: "#FFFFFF" }}
+          className="bg-white border-b sticky top-0 z-30"
+          style={{
+            borderColor: "#E1E4ED",
+            backgroundColor: "#FFFFFF",
+            boxShadow: "0 2px 8px rgba(35, 112, 255, 0.06)"
+          }}
         >
+          <div
+            style={{
+              maxWidth: "1600px",
+              margin: "0 auto",
+              padding: "20px 24px",
+              width: "100%"
+            }}
+          >
           <div className="flex flex-wrap justify-between items-center gap-4">
             <div className="flex gap-3 flex-wrap">
               {[
@@ -1495,14 +1266,27 @@ const JobSearchPage = () => {
             </div>
           </div>
         </div>
+        </div>
 
-        <div className="px-8 py-6" style={{ backgroundColor: "transparent" }}>
+        {/* Job Cards Section */}
+        <div
+          className="py-12"
+          style={{
+            backgroundColor: "transparent",
+            maxWidth: "1400px",
+            margin: "0 auto",
+            width: "100%",
+            padding: "48px 24px"
+          }}
+        >
           {filteredJobs.length === 0 ? (
             <div
               className="text-center py-16 rounded-xl shadow-sm"
               style={{
                 backgroundColor: "#FFFFFF",
                 border: "1px solid #F1F3F7",
+                maxWidth: "600px",
+                margin: "0 auto"
               }}
             >
               <div className="text-6xl mb-6">😞</div>
@@ -1539,18 +1323,38 @@ const JobSearchPage = () => {
               </button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-              {filteredJobs.map((job) => (
-                <EnhancedJobCard
+            <div
+              className="job-grid"
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit, minmax(500px, 550px))",
+                gap: "40px",
+                justifyContent: "center",
+                alignItems: "start",
+                maxWidth: "1200px",
+                margin: "0 auto"
+              }}
+            >
+              {filteredJobs.map((job, index) => (
+                <div
                   key={job.id}
-                  job={job}
-                  onApply={handleApply}
-                  onSave={handleSaveJob}
-                  onBlock={handleBlock}
-                  isApplied={appliedJobs.has(job.id)}
-                  isSaved={savedJobs.has(job.id)}
-                  router={router}
-                />
+                  className="job-card-wrapper"
+                  style={{
+                    animation: `cardEntryStagger 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) ${index * 0.08}s backwards`,
+                    display: "flex",
+                    justifyContent: "center"
+                  }}
+                >
+                  <EnhancedJobCard
+                    job={job}
+                    onApply={handleApply}
+                    onSave={handleSaveJob}
+                    onBlock={handleBlock}
+                    isApplied={appliedJobs.has(job.id)}
+                    isSaved={savedJobs.has(job.id)}
+                    router={router}
+                  />
+                </div>
               ))}
             </div>
           )}

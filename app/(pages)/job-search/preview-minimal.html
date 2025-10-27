@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimal Professional Job Card</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Minimal Color Palette */
+            --black: #000000;
+            --gray-900: #111111;
+            --gray-700: #333333;
+            --gray-500: #666666;
+            --gray-400: #999999;
+            --gray-300: #cccccc;
+            --gray-200: #e5e5e5;
+            --gray-100: #f5f5f5;
+            --white: #ffffff;
+
+            --accent: #0066ff;
+            --accent-light: #e6f0ff;
+            --accent-hover: #0052cc;
+
+            --success: #00c851;
+            --success-light: #e8f8f0;
+
+            /* Spacing */
+            --space-xs: 8px;
+            --space-sm: 12px;
+            --space-md: 16px;
+            --space-lg: 24px;
+            --space-xl: 32px;
+            --space-2xl: 48px;
+
+            /* Animation */
+            --duration: 0.3s;
+            --ease: cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--white);
+            color: var(--gray-900);
+            line-height: 1.6;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Card Container */
+        .job-card {
+            background: var(--white);
+            max-width: 640px;
+            width: 100%;
+            padding: var(--space-2xl);
+            border: 1px solid var(--gray-200);
+            border-radius: 0;
+            position: relative;
+            transition: all var(--duration) var(--ease);
+            cursor: pointer;
+            animation: fadeIn 0.8s var(--ease) backwards;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .job-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--accent);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform var(--duration) var(--ease);
+        }
+
+        .job-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .job-card:hover {
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            transform: translateY(-2px);
+        }
+
+        /* Header */
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: var(--space-xl);
+            animation: slideDown 0.6s var(--ease) 0.1s backwards;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .company-info {
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+        }
+
+        .company-logo {
+            width: 48px;
+            height: 48px;
+            background: var(--gray-100);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 20px;
+            color: var(--gray-700);
+            border: 1px solid var(--gray-200);
+            transition: all var(--duration) var(--ease);
+        }
+
+        .job-card:hover .company-logo {
+            background: var(--black);
+            color: var(--white);
+            border-color: var(--black);
+        }
+
+        .company-details h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--gray-900);
+            margin-bottom: 2px;
+        }
+
+        .company-details p {
+            font-size: 14px;
+            color: var(--gray-500);
+        }
+
+        /* Save Button */
+        .save-btn {
+            width: 40px;
+            height: 40px;
+            border: 1px solid var(--gray-200);
+            background: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all var(--duration) var(--ease);
+            position: relative;
+        }
+
+        .save-btn:hover {
+            border-color: var(--accent);
+            background: var(--accent-light);
+        }
+
+        .save-btn.saved {
+            background: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .save-btn svg {
+            width: 18px;
+            height: 18px;
+            stroke: var(--gray-700);
+            fill: none;
+            stroke-width: 1.5;
+            transition: all var(--duration) var(--ease);
+        }
+
+        .save-btn.saved svg {
+            fill: var(--white);
+            stroke: var(--white);
+        }
+
+        .save-btn::after {
+            content: 'SAVED';
+            position: absolute;
+            right: calc(100% + 8px);
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            color: var(--accent);
+            opacity: 0;
+            transform: translateX(10px);
+            transition: all var(--duration) var(--ease);
+            white-space: nowrap;
+        }
+
+        .save-btn.saved::after {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        /* Title Section */
+        .title-section {
+            margin-bottom: var(--space-xl);
+            animation: slideUp 0.6s var(--ease) 0.2s backwards;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .job-title {
+            font-size: 28px;
+            font-weight: 600;
+            color: var(--gray-900);
+            line-height: 1.2;
+            margin-bottom: var(--space-sm);
+            position: relative;
+            display: inline-block;
+        }
+
+        .job-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent);
+            transition: width var(--duration) var(--ease);
+        }
+
+        .job-card:hover .job-title::after {
+            width: 100%;
+        }
+
+        .job-meta {
+            display: flex;
+            align-items: center;
+            gap: var(--space-lg);
+            font-size: 14px;
+            color: var(--gray-500);
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-xs);
+        }
+
+        .meta-item::before {
+            content: '';
+            width: 4px;
+            height: 4px;
+            background: var(--gray-400);
+            border-radius: 50%;
+        }
+
+        .meta-item:first-child::before {
+            display: none;
+        }
+
+        .seniority-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            background: var(--gray-900);
+            color: var(--white);
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Stats Section */
+        .stats-section {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: var(--space-lg);
+            padding: var(--space-lg) 0;
+            border-top: 1px solid var(--gray-200);
+            border-bottom: 1px solid var(--gray-200);
+            margin-bottom: var(--space-xl);
+            animation: fadeInStats 0.6s var(--ease) 0.3s backwards;
+        }
+
+        @keyframes fadeInStats {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .stat {
+            text-align: center;
+            position: relative;
+        }
+
+        .stat::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 1px;
+            height: 24px;
+            background: var(--gray-200);
+        }
+
+        .stat:last-child::after {
+            display: none;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--gray-900);
+            display: block;
+            transition: all var(--duration) var(--ease);
+        }
+
+        .stat:hover .stat-value {
+            color: var(--accent);
+            transform: scale(1.05);
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--gray-500);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 4px;
+        }
+
+        /* Progress Bars */
+        .progress-item {
+            margin-bottom: var(--space-lg);
+            animation: slideIn 0.6s var(--ease) backwards;
+        }
+
+        .progress-item:nth-child(1) { animation-delay: 0.4s; }
+        .progress-item:nth-child(2) { animation-delay: 0.5s; }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: var(--space-xs);
+            font-size: 14px;
+        }
+
+        .progress-label {
+            color: var(--gray-700);
+        }
+
+        .progress-value {
+            color: var(--gray-900);
+            font-weight: 600;
+        }
+
+        .progress-bar {
+            height: 4px;
+            background: var(--gray-100);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--gray-900);
+            transform-origin: left;
+            animation: fillProgress 1s var(--ease) forwards;
+        }
+
+        @keyframes fillProgress {
+            from {
+                transform: scaleX(0);
+            }
+        }
+
+        .progress-item:nth-child(1) .progress-fill {
+            width: 91%;
+        }
+
+        .progress-item:nth-child(2) .progress-fill {
+            width: 84%;
+        }
+
+        /* Salary Section */
+        .salary-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--space-lg);
+            background: var(--gray-100);
+            margin-bottom: var(--space-xl);
+            animation: fadeIn 0.6s var(--ease) 0.6s backwards;
+        }
+
+        .salary-amount {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--gray-900);
+        }
+
+        .market-badge {
+            padding: var(--space-xs) var(--space-md);
+            background: var(--success-light);
+            color: var(--success);
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: relative;
+        }
+
+        .market-badge::before {
+            content: '↑';
+            margin-right: 4px;
+        }
+
+        /* Actions */
+        .actions {
+            display: flex;
+            gap: var(--space-md);
+            animation: slideUp 0.6s var(--ease) 0.7s backwards;
+        }
+
+        .btn {
+            flex: 1;
+            padding: var(--space-md) var(--space-lg);
+            font-size: 14px;
+            font-weight: 500;
+            border: 1px solid var(--gray-200);
+            background: var(--white);
+            cursor: pointer;
+            transition: all var(--duration) var(--ease);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: var(--gray-900);
+            transition: left var(--duration) var(--ease);
+            z-index: 0;
+        }
+
+        .btn:hover::before {
+            left: 0;
+        }
+
+        .btn span {
+            position: relative;
+            z-index: 1;
+            transition: color var(--duration) var(--ease);
+        }
+
+        .btn:hover span {
+            color: var(--white);
+        }
+
+        .btn-primary {
+            background: var(--gray-900);
+            border-color: var(--gray-900);
+            color: var(--white);
+        }
+
+        .btn-primary::before {
+            background: var(--accent);
+        }
+
+        /* Footer */
+        .card-footer {
+            margin-top: var(--space-xl);
+            padding-top: var(--space-lg);
+            border-top: 1px solid var(--gray-100);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: var(--gray-400);
+            animation: fadeIn 0.6s var(--ease) 0.8s backwards;
+        }
+
+        .source {
+            text-decoration: none;
+            color: var(--gray-500);
+            transition: color var(--duration) var(--ease);
+        }
+
+        .source:hover {
+            color: var(--accent);
+        }
+
+        /* Responsive */
+        @media (max-width: 640px) {
+            .job-card {
+                padding: var(--space-xl);
+            }
+
+            .job-title {
+                font-size: 24px;
+            }
+
+            .stats-section {
+                grid-template-columns: repeat(2, 1fr);
+                gap: var(--space-md);
+            }
+
+            .stat:nth-child(2)::after {
+                display: none;
+            }
+
+            .job-meta {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: var(--space-xs);
+            }
+
+            .salary-section {
+                flex-direction: column;
+                gap: var(--space-md);
+            }
+
+            .actions {
+                flex-direction: column;
+            }
+        }
+
+        /* Focus States */
+        *:focus {
+            outline: none;
+        }
+
+        *:focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 2px;
+        }
+
+        /* Hover Indicator Line */
+        .hover-line {
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--accent);
+            transform: scaleY(0);
+            transition: transform var(--duration) var(--ease);
+        }
+
+        .job-card:hover .hover-line {
+            transform: scaleY(1);
+        }
+
+        /* Accessibility */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0,0,0,0);
+            border: 0;
+        }
+    </style>
+</head>
+<body>
+    <article class="job-card" role="article" tabindex="0">
+        <!-- Hover Indicator -->
+        <div class="hover-line"></div>
+
+        <!-- Header -->
+        <header class="card-header">
+            <div class="company-info">
+                <div class="company-logo">R</div>
+                <div class="company-details">
+                    <h3>Razorpay</h3>
+                    <p>Bangalore, India</p>
+                </div>
+            </div>
+            <button class="save-btn" aria-label="Save job" onclick="toggleSave(this)">
+                <svg viewBox="0 0 24 24">
+                    <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+                </svg>
+            </button>
+        </header>
+
+        <!-- Title -->
+        <section class="title-section">
+            <h1 class="job-title">Senior Frontend Developer</h1>
+            <div class="job-meta">
+                <span class="seniority-badge">Senior</span>
+                <span class="meta-item">Full-time</span>
+                <span class="meta-item">Posted 5h ago</span>
+            </div>
+        </section>
+
+        <!-- Stats -->
+        <div class="stats-section">
+            <div class="stat">
+                <span class="stat-value">67</span>
+                <span class="stat-label">Applicants</span>
+            </div>
+            <div class="stat">
+                <span class="stat-value">7.2km</span>
+                <span class="stat-label">Distance</span>
+            </div>
+            <div class="stat">
+                <span class="stat-value">91%</span>
+                <span class="stat-label">Match</span>
+            </div>
+            <div class="stat">
+                <span class="stat-value">High</span>
+                <span class="stat-label">Growth</span>
+            </div>
+        </div>
+
+        <!-- Progress Bars -->
+        <div class="progress-section">
+            <div class="progress-item">
+                <div class="progress-header">
+                    <span class="progress-label">Skills Match</span>
+                    <span class="progress-value">91%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill"></div>
+                </div>
+            </div>
+            <div class="progress-item">
+                <div class="progress-header">
+                    <span class="progress-label">Experience Match</span>
+                    <span class="progress-value">84%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Salary -->
+        <div class="salary-section">
+            <span class="salary-amount">₹25–35 LPA</span>
+            <span class="market-badge">Above Market</span>
+        </div>
+
+        <!-- Actions -->
+        <div class="actions">
+            <button class="btn" onclick="viewDetails(event)">
+                <span>View Details</span>
+            </button>
+            <button class="btn btn-primary" onclick="applyNow(event)">
+                <span>Apply Now</span>
+            </button>
+        </div>
+
+        <!-- Footer -->
+        <footer class="card-footer">
+            <span>Job ID: RZP-2024-FE-001</span>
+            <a href="#" class="source">Source: LinkedIn</a>
+        </footer>
+    </article>
+
+    <script>
+        // Save functionality
+        function toggleSave(btn) {
+            event.stopPropagation();
+            btn.classList.toggle('saved');
+        }
+
+        // View details
+        function viewDetails(event) {
+            event.stopPropagation();
+            const btn = event.currentTarget;
+            btn.style.transform = 'scale(0.98)';
+            setTimeout(() => {
+                btn.style.transform = '';
+                console.log('View details');
+            }, 150);
+        }
+
+        // Apply now
+        function applyNow(event) {
+            event.stopPropagation();
+            const btn = event.currentTarget;
+            btn.style.transform = 'scale(0.98)';
+            setTimeout(() => {
+                btn.style.transform = '';
+                console.log('Apply now');
+            }, 150);
+        }
+
+        // Card click
+        document.querySelector('.job-card').addEventListener('click', () => {
+            console.log('Navigate to details');
+        });
+
+        // Keyboard support
+        document.querySelector('.job-card').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                console.log('Navigate to details');
+            }
+        });
+
+        // Animate stats on load
+        const animateValue = (element, start, end, duration, suffix = '') => {
+            if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                element.textContent = end + suffix;
+                return;
+            }
+
+            const startTime = performance.now();
+            const isNumber = !isNaN(end);
+
+            function update(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+
+                if (isNumber) {
+                    const current = Math.floor(start + (end - start) * progress);
+                    element.textContent = current + suffix;
+                } else {
+                    element.textContent = end;
+                }
+
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                }
+            }
+
+            if (isNumber) {
+                requestAnimationFrame(update);
+            } else {
+                element.textContent = end;
+            }
+        };
+
+        // Trigger animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    // Animate stats
+                    const stats = entry.target.querySelectorAll('.stat-value');
+                    stats[0] && animateValue(stats[0], 0, 67, 800);
+                    stats[2] && animateValue(stats[2], 0, 91, 800, '%');
+
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        observer.observe(document.querySelector('.stats-section'));
+    </script>
+</body>
+</html>

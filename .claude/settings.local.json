@@ -12,8 +12,7 @@
       "Bash(npm run build:*)",
       "Bash(wc:*)",
       "Bash(if exist .next rmdir /s /q .next)",
-      "Bash(dir:*)",
-      "Bash(git checkout:*)"
+      "Bash(dir:*)"
     ],
     "deny": [],
     "ask": []
