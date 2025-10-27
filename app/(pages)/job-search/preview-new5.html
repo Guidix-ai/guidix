@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Job Card - Seamless Design</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Professional Color System */
+        :root {
+            --primary: #0056b3;
+            --primary-light: #e6f2ff;
+            --primary-dark: #003d82;
+            --success: #28a745;
+            --text: #2c3e50;
+            --text-light: #6c757d;
+            --text-muted: #adb5bd;
+            --bg: #f8f9fa;
+            --card: #ffffff;
+            --border: #e9ecef;
+            --shadow-sm: 0 2px 4px rgba(0, 20, 40, 0.04);
+            --shadow: 0 4px 12px rgba(0, 20, 40, 0.08);
+            --shadow-lg: 0 12px 24px rgba(0, 20, 40, 0.12);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #e3f2fd 0%, #f5f5f5 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Card Container */
+        .job-card {
+            width: 100%;
+            max-width: 400px;
+            background: var(--card);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            position: relative;
+            animation: cardReveal 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+            transition: var(--transition);
+        }
+
+        @keyframes cardReveal {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .job-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary), var(--success), var(--primary));
+            background-size: 200% 100%;
+            animation: gradientFlow 3s linear infinite;
+        }
+
+        @keyframes gradientFlow {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 200% 50%; }
+        }
+
+        .job-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* Header Section */
+        .card-header {
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, var(--primary-light) 0%, rgba(0, 86, 179, 0.05) 100%);
+            opacity: 0.5;
+            z-index: 0;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .company-logo {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            flex-shrink: 0;
+            position: relative;
+            animation: logoFade 1s ease-out;
+        }
+
+        @keyframes logoFade {
+            from {
+                opacity: 0;
+                transform: scale(0.8) rotate(-10deg);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) rotate(0deg);
+            }
+        }
+
+        .company-logo::after {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            border-radius: 12px;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transform: translateX(-100%);
+            animation: logoShine 3s infinite;
+        }
+
+        @keyframes logoShine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .company-info {
+            flex: 1;
+        }
+
+        .company-name {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 4px;
+            animation: fadeInLeft 0.6s ease-out;
+        }
+
+        @keyframes fadeInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .job-title {
+            font-size: 14px;
+            color: var(--text-light);
+            margin-bottom: 6px;
+            animation: fadeInLeft 0.6s ease-out 0.1s both;
+        }
+
+        .tags-row {
+            display: flex;
+            gap: 6px;
+            animation: fadeInLeft 0.6s ease-out 0.2s both;
+        }
+
+        .tag {
+            padding: 3px 8px;
+            background: var(--bg);
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-light);
+            transition: var(--transition);
+        }
+
+        .tag:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .tag.highlight {
+            background: var(--success);
+            color: white;
+        }
+
+        .header-actions {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: var(--card);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            animation: actionBtnSlide 0.5s ease-out backwards;
+        }
+
+        .action-btn:nth-child(1) { animation-delay: 0.3s; }
+        .action-btn:nth-child(2) { animation-delay: 0.4s; }
+
+        @keyframes actionBtnSlide {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .action-btn:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+            transform: scale(1.1);
+        }
+
+        .action-btn svg {
+            width: 16px;
+            height: 16px;
+            stroke: var(--text-light);
+            fill: none;
+            stroke-width: 2;
+            transition: var(--transition);
+        }
+
+        .action-btn:hover svg {
+            stroke: white;
+        }
+
+        .action-btn.bookmarked {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .action-btn.bookmarked svg {
+            fill: white;
+            stroke: white;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            padding: 20px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 12px 8px;
+            background: var(--bg);
+            border-radius: 12px;
+            transition: var(--transition);
+            animation: statFadeUp 0.5s ease-out backwards;
+            cursor: default;
+        }
+
+        .stat-item:nth-child(1) { animation-delay: 0.4s; }
+        .stat-item:nth-child(2) { animation-delay: 0.5s; }
+        .stat-item:nth-child(3) { animation-delay: 0.6s; }
+
+        @keyframes statFadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .stat-item:hover {
+            background: var(--primary-light);
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: var(--shadow);
+        }
+
+        .stat-value {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 4px;
+            display: block;
+            animation: countUp 1s ease-out;
+        }
+
+        @keyframes countUp {
+            from {
+                opacity: 0;
+                transform: scale(0.5);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: var(--text-light);
+            font-weight: 500;
+        }
+
+        /* Match Score Bar */
+        .match-section {
+            padding: 0 20px 20px;
+        }
+
+        .match-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .match-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-light);
+        }
+
+        .match-percentage {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--success));
+            border-radius: 8px;
+            width: 91%;
+            position: relative;
+            animation: progressSlide 1s cubic-bezier(0.65, 0, 0.35, 1);
+            overflow: hidden;
+        }
+
+        @keyframes progressSlide {
+            from {
+                width: 0%;
+            }
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        /* Location and Salary Row */
+        .info-row {
+            padding: 20px;
+            display: flex;
+            gap: 12px;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            background: var(--bg);
+        }
+
+        .info-item {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .info-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--card);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            box-shadow: var(--shadow-sm);
+            animation: iconPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes iconPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .info-icon svg {
+            width: 16px;
+            height: 16px;
+            fill: var(--primary);
+        }
+
+        .info-details {
+            flex: 1;
+        }
+
+        .info-label {
+            font-size: 10px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-value {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        /* CTA Section */
+        .cta-section {
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 14px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            animation: btnSlide 0.6s ease-out 0.8s backwards;
+        }
+
+        @keyframes btnSlide {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            animation: btnShimmer 3s infinite;
+        }
+
+        @keyframes btnShimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 86, 179, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--card);
+            color: var(--primary);
+            border: 2px solid var(--primary);
+            animation: btnSlide 0.6s ease-out 0.9s backwards;
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary-light);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        /* Footer */
+        .card-footer {
+            padding: 16px 20px;
+            background: var(--bg);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .footer-left {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .time-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--success);
+            border-radius: 50%;
+            animation: dotPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes dotPulse {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.5);
+                opacity: 0.5;
+            }
+        }
+
+        .source {
+            color: var(--primary);
+            font-weight: 600;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .source:hover {
+            text-decoration: underline;
+        }
+
+        /* Hover Effects */
+        .job-card:hover .company-logo {
+            animation: logoRotate 0.5s ease-in-out;
+        }
+
+        @keyframes logoRotate {
+            0%, 100% { transform: rotate(0deg); }
+            50% { transform: rotate(5deg); }
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 420px) {
+            .job-card {
+                border-radius: 0;
+                max-width: 100%;
+            }
+
+            .stats-grid {
+                gap: 8px;
+            }
+
+            .cta-section {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Smooth Loading State */
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: loadingSlide 1.5s infinite;
+            pointer-events: none;
+            opacity: 0;
+        }
+
+        @keyframes loadingSlide {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+    </style>
+</head>
+<body>
+    <div class="job-card">
+        <!-- Top gradient line animated automatically -->
+
+        <!-- Header -->
+        <div class="card-header">
+            <div class="header-bg"></div>
+            <div class="header-content">
+                <div class="company-logo">💳</div>
+                <div class="company-info">
+                    <h3 class="company-name">Razorpay</h3>
+                    <p class="job-title">Senior Frontend Developer</p>
+                    <div class="tags-row">
+                        <span class="tag highlight">Senior</span>
+                        <span class="tag">Full-time</span>
+                        <span class="tag">Hybrid</span>
+                    </div>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button class="action-btn bookmark-btn" aria-label="Bookmark">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+                    </svg>
+                </button>
+                <button class="action-btn" aria-label="Share">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-item">
+                <span class="stat-value">91%</span>
+                <span class="stat-label">Match Score</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-value">67</span>
+                <span class="stat-label">Applicants</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-value">84%</span>
+                <span class="stat-label">Experience</span>
+            </div>
+        </div>
+
+        <!-- Match Score Bar -->
+        <div class="match-section">
+            <div class="match-header">
+                <span class="match-title">Your Profile Match</span>
+                <span class="match-percentage">91% Match</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill"></div>
+            </div>
+        </div>
+
+        <!-- Location and Salary -->
+        <div class="info-row">
+            <div class="info-item">
+                <div class="info-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                    </svg>
+                </div>
+                <div class="info-details">
+                    <div class="info-label">Location</div>
+                    <div class="info-value">Bangalore • 7.2 km</div>
+                </div>
+            </div>
+            <div class="info-item">
+                <div class="info-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/>
+                    </svg>
+                </div>
+                <div class="info-details">
+                    <div class="info-label">Salary</div>
+                    <div class="info-value">₹25-35 LPA</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CTA Section -->
+        <div class="cta-section">
+            <button class="btn btn-primary">Apply Now</button>
+            <button class="btn btn-secondary">Details</button>
+        </div>
+
+        <!-- Footer -->
+        <div class="card-footer">
+            <div class="footer-left">
+                <div class="time-dot"></div>
+                <span>Posted 5 hours ago</span>
+            </div>
+            <div class="footer-right">
+                Source: <a href="#" class="source">LinkedIn</a>
+            </div>
+        </div>
+
+        <!-- Loading overlay (hidden by default) -->
+        <div class="loading-overlay"></div>
+    </div>
+
+    <script>
+        // Smooth bookmark animation
+        const bookmarkBtn = document.querySelector('.bookmark-btn');
+        let isBookmarked = false;
+
+        bookmarkBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            isBookmarked = !isBookmarked;
+
+            if (isBookmarked) {
+                this.classList.add('bookmarked');
+
+                // Smooth scale animation
+                this.style.animation = 'bookmarkPop 0.4s ease';
+                setTimeout(() => {
+                    this.style.animation = '';
+                }, 400);
+            } else {
+                this.classList.remove('bookmarked');
+            }
+        });
+
+        // Add bookmark pop animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes bookmarkPop {
+                0% { transform: scale(1); }
+                50% { transform: scale(1.3) rotate(-5deg); }
+                100% { transform: scale(1); }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Smooth number animations
+        const animateValue = (element, start, end, duration) => {
+            const startTimestamp = Date.now();
+            const step = (timestamp) => {
+                const progress = Math.min((Date.now() - startTimestamp) / duration, 1);
+                const value = Math.floor(progress * (end - start) + start);
+                element.textContent = value + (element.dataset.suffix || '');
+                if (progress < 1) {
+                    requestAnimationFrame(step);
+                }
+            };
+            requestAnimationFrame(step);
+        };
+
+        // Animate stats on load
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const statValues = entry.target.querySelectorAll('.stat-value');
+                    statValues.forEach(stat => {
+                        const value = parseInt(stat.textContent);
+                        const suffix = stat.textContent.includes('%') ? '%' : '';
+                        stat.dataset.suffix = suffix;
+                        animateValue(stat, 0, value, 1000);
+                    });
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        const statsGrid = document.querySelector('.stats-grid');
+        observer.observe(statsGrid);
+
+        // Share button functionality
+        const shareBtn = document.querySelectorAll('.action-btn')[1];
+        shareBtn.addEventListener('click', async function() {
+            if (navigator.share) {
+                try {
+                    await navigator.share({
+                        title: 'Senior Frontend Developer at Razorpay',
+                        text: 'Check out this amazing job opportunity!',
+                        url: window.location.href
+                    });
+                } catch (err) {
+                    console.log('Share cancelled');
+                }
+            } else {
+                // Fallback - copy to clipboard
+                navigator.clipboard.writeText(window.location.href);
+
+                // Show feedback
+                this.style.background = 'var(--success)';
+                setTimeout(() => {
+                    this.style.background = '';
+                }, 1000);
+            }
+        });
+
+        // Apply button hover effect
+        const applyBtn = document.querySelector('.btn-primary');
+        applyBtn.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-2px) scale(1.02)';
+        });
+        applyBtn.addEventListener('mouseleave', function() {
+            this.style.transform = '';
+        });
+
+        // Smooth click feedback
+        document.querySelectorAll('.btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                // Create ripple effect
+                const ripple = document.createElement('span');
+                ripple.style.position = 'absolute';
+                ripple.style.width = '100%';
+                ripple.style.height = '100%';
+                ripple.style.top = '0';
+                ripple.style.left = '0';
+                ripple.style.background = 'radial-gradient(circle, rgba(255,255,255,0.5) 0%, transparent 70%)';
+                ripple.style.borderRadius = 'inherit';
+                ripple.style.transform = 'scale(0)';
+                ripple.style.animation = 'rippleExpand 0.6s ease-out';
+
+                this.style.position = 'relative';
+                this.style.overflow = 'hidden';
+                this.appendChild(ripple);
+
+                setTimeout(() => ripple.remove(), 600);
+            });
+        });
+
+        // Add ripple animation
+        const rippleStyle = document.createElement('style');
+        rippleStyle.textContent = `
+            @keyframes rippleExpand {
+                to {
+                    transform: scale(2);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(rippleStyle);
+
+        // Subtle parallax on card hover
+        const card = document.querySelector('.job-card');
+        let isHovering = false;
+
+        card.addEventListener('mouseenter', () => { isHovering = true; });
+        card.addEventListener('mouseleave', () => {
+            isHovering = false;
+            card.style.transform = '';
+        });
+
+        card.addEventListener('mousemove', (e) => {
+            if (!isHovering) return;
+
+            const rect = card.getBoundingClientRect();
+            const x = (e.clientX - rect.left) / rect.width;
+            const y = (e.clientY - rect.top) / rect.height;
+
+            const tiltX = (y - 0.5) * 3;
+            const tiltY = (x - 0.5) * -3;
+
+            card.style.transform = `perspective(1000px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) translateY(-4px)`;
+        });
+
+        // Progressive enhancement - add smooth transitions after load
+        window.addEventListener('load', () => {
+            document.querySelectorAll('.stat-item, .info-item, .btn').forEach(el => {
+                el.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+            });
+        });
+    </script>
+</body>
+</html>

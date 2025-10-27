@@ -12,7 +12,8 @@
       "Bash(npm run build:*)",
       "Bash(wc:*)",
       "Bash(if exist .next rmdir /s /q .next)",
-      "Bash(dir:*)"
+      "Bash(dir:*)",
+      "WebFetch(domain:web.nspire.ai)"
     ],
     "deny": [],
     "ask": []
