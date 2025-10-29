@@ -19,12 +19,13 @@ export default function DashboardPage() {
   const fullText = "Welcome to Guidix";
 
   useEffect(() => {
-    const googleFontsLink = document.createElement('link');
-    googleFontsLink.href = 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap';
-    googleFontsLink.rel = 'stylesheet';
+    const googleFontsLink = document.createElement("link");
+    googleFontsLink.href =
+      "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap";
+    googleFontsLink.rel = "stylesheet";
     document.head.appendChild(googleFontsLink);
 
-    const style = document.createElement('style');
+    const style = document.createElement("style");
     style.innerHTML = `
       * {
         font-family: 'Inter', sans-serif !important;
@@ -59,7 +60,7 @@ export default function DashboardPage() {
       iconSrc: "/resumebuilding.svg",
       route: "/resume-builder",
       color: "#667eea",
-      size: "large"
+      size: "large",
     },
     {
       title: "AI Job Search",
@@ -67,7 +68,7 @@ export default function DashboardPage() {
       iconSrc: "/jobsearching.svg",
       route: "/job-search",
       color: "#f093fb",
-      size: "large"
+      size: "large",
     },
     {
       title: "AI Job Apply",
@@ -75,7 +76,7 @@ export default function DashboardPage() {
       iconSrc: "/jobapplying.svg",
       route: "/apply-job",
       color: "#4facfe",
-      size: "normal"
+      size: "normal",
     },
     {
       title: "AI Job Tracker",
@@ -83,7 +84,7 @@ export default function DashboardPage() {
       iconSrc: "/jobtracking.svg",
       route: "/job-tracker",
       color: "#43e97b",
-      size: "normal"
+      size: "normal",
     },
     {
       title: "AI Mock Interview",
@@ -91,93 +92,129 @@ export default function DashboardPage() {
       iconSrc: "/mockinterviewing.svg",
       route: "/mock-interview",
       color: "#fa709a",
-      size: "normal"
+      size: "normal",
     },
-    {
-      title: "LinkedIn Optimizer",
-      description: "Optimize your profile",
-      iconSrc: "/linkedinoptimising.svg",
-      route: "/linkedin-optimizer",
-      color: "#30cfd0",
-      size: "normal"
-    }
   ];
 
   const insights = {
     recommendedJobs: 12,
     applicationsThisWeek: 5,
     upcomingInterviews: 2,
-    profileViews: 34
+    profileViews: 34,
   };
 
   return (
     <DashboardLayout>
-      <div style={{ minHeight: '100vh', backgroundColor: '#F8F9FF', width: '100%' }}>
-        <div className="relative py-6 px-8 overflow-hidden flex items-center" style={{
-          backgroundImage: 'url(/header-banner.svg)',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat',
-          minHeight: '100px',
-          boxShadow: '0 4px 20px 0 #2370FF66',
-          borderRadius: '16px'
-        }}>
+      <div
+        style={{
+          minHeight: "100vh",
+          backgroundColor: "#F8F9FF",
+          width: "100%",
+        }}
+      >
+        <div
+          className="relative py-6 px-8 overflow-hidden flex items-center"
+          style={{
+            backgroundImage: "url(/header-banner.svg)",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            backgroundRepeat: "no-repeat",
+            minHeight: "100px",
+            boxShadow: "0 4px 20px 0 #2370FF66",
+            borderRadius: "16px",
+          }}
+        >
           <div className="relative z-10">
-            <h1 className="text-white font-bold mb-2" style={{ textShadow: '0 2px 10px rgba(0, 0, 0, 0.3)', fontSize: '32px', lineHeight: '1.2', maxWidth: '800px' }}>
+            <h1
+              className="text-white font-bold mb-2"
+              style={{
+                textShadow: "0 2px 10px rgba(0, 0, 0, 0.3)",
+                fontSize: "32px",
+                lineHeight: "1.2",
+                maxWidth: "800px",
+              }}
+            >
               {typewriterText}
               {showCursor && <span className="animate-pulse">|</span>}
             </h1>
           </div>
         </div>
 
-        <div className="px-8 py-6" style={{ backgroundColor: 'transparent' }}>
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(4, 1fr)',
-            gap: '0.75rem',
-            marginBottom: '1.5rem'
-          }}>
+        <div
+          className="md:px-8 md:py-6 px-6 py-4"
+          style={{ backgroundColor: "transparent" }}
+        >
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
             {features.map((feature, index) => (
               <div
                 key={index}
                 onClick={() => router.push(feature.route)}
-                className="rounded-lg shadow-sm relative transition-all hover:shadow-md cursor-pointer"
+                className={`rounded-lg shadow-sm relative transition-all hover:shadow-md cursor-pointer ${
+                  feature.size === "large"
+                    ? "col-span-2 min-h-[85px]"
+                    : "col-span-1 min-h-[70px]"
+                }`}
                 style={{
-                  backgroundColor: '#FFFFFF',
-                  border: '1px solid #F1F3F7',
+                  backgroundColor: "#FFFFFF",
+                  border: "1px solid #F1F3F7",
                   boxShadow: shadowBoxStyle,
-                  gridColumn: feature.size === 'large' ? 'span 2' : 'span 1',
-                  minHeight: feature.size === 'large' ? '85px' : '70px'
                 }}
               >
                 <div className="p-3 h-full flex flex-col justify-between">
                   <div>
                     <div className="w-12 h-12 rounded-lg flex items-center justify-center mb-2">
                       {feature.iconSrc ? (
-                        <Image src={feature.iconSrc} alt={feature.title} width={32} height={32} />
+                        <Image
+                          src={feature.iconSrc}
+                          alt={feature.title}
+                          width={32}
+                          height={32}
+                        />
                       ) : (
                         feature.icon
                       )}
                     </div>
-                    <h3 className="text-sm font-bold mb-1" style={{
-                      fontFamily: 'Inter',
-                      fontWeight: 500,
-                      lineHeight: '1.2',
-                      letterSpacing: '-0.36px',
-                      verticalAlign: 'middle',
-                      color: '#002A79'
-                    }}>{feature.title}</h3>
-                    <p className="text-xs" style={{
-                      fontFamily: 'Inter',
-                      fontWeight: 400,
-                      fontSize: '11.44px',
-                      lineHeight: '150%',
-                      color: '#6477B4'
-                    }}>{feature.description}</p>
+                    <h3
+                      className="text-sm font-bold mb-1"
+                      style={{
+                        fontFamily: "Inter",
+                        fontWeight: 500,
+                        lineHeight: "1.2",
+                        letterSpacing: "-0.36px",
+                        verticalAlign: "middle",
+                        color: "#002A79",
+                      }}
+                    >
+                      {feature.title}
+                    </h3>
+                    <p
+                      className="text-xs"
+                      style={{
+                        fontFamily: "Inter",
+                        fontWeight: 400,
+                        fontSize: "11.44px",
+                        lineHeight: "150%",
+                        color: "#6477B4",
+                      }}
+                    >
+                      {feature.description}
+                    </p>
                   </div>
                   <div className="flex items-center justify-end pt-2">
-                    <svg width="16" height="16" fill="none" viewBox="0 0 24 24" style={{ color: '#2370FF' }}>
-                      <path d="M9 5l7 7-7 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    <svg
+                      width="16"
+                      height="16"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      style={{ color: "#2370FF" }}
+                    >
+                      <path
+                        d="M9 5l7 7-7 7"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
                     </svg>
                   </div>
                 </div>
@@ -188,50 +225,89 @@ export default function DashboardPage() {
           <div
             className="rounded-lg shadow-sm transition-all hover:shadow-md"
             style={{
-              backgroundColor: '#FFFFFF',
-              border: '1px solid #F1F3F7',
+              backgroundColor: "#FFFFFF",
+              border: "1px solid #F1F3F7",
               boxShadow: shadowBoxStyle,
-              background: 'linear-gradient(180deg, #F4F8FF 0%, #D5E4FF 100%)',
-              color: '#002A79',
-              padding: '1.5rem'
+              background: "linear-gradient(180deg, #F4F8FF 0%, #D5E4FF 100%)",
+              color: "#002A79",
+              padding: "1.5rem",
             }}
           >
             <div className="flex items-center gap-2 mb-4">
-              <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: 'rgba(255, 255, 255, 0.2)' }}>
-                <svg width="16" height="16" fill="none" viewBox="0 0 24 24" style={{ color: 'white' }}>
-                  <path d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <div
+                className="w-8 h-8 rounded-lg flex items-center justify-center"
+                style={{ backgroundColor: "rgba(255, 255, 255, 0.2)" }}
+              >
+                <svg
+                  width="16"
+                  height="16"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  style={{ color: "white" }}
+                >
+                  <path
+                    d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
                 </svg>
               </div>
               <h3 className="text-lg font-bold">Your Insights</h3>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem' }}>
-              <div className="p-3 rounded-lg" style={{
-                backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                boxShadow: 'var(--ShadowPositioningNone) var(--ShadowPositioningNone) var(--ShadowBlur2XSmall) var(--ShadowSpreadNone) var(--ColorsOverlayColorsDark15), var(--ShadowPositioningNone) var(--ShadowPositioningMedium) var(--ShadowBlurExtraSmall) var(--ShadowSpreadNone) var(--ColorsOverlayColorsDark4), var(--ShadowPositioningNone) var(--ShadowPositioningMedium) var(--ShadowBlurMedium) var(--ShadowSpreadNone) var(--ColorsOverlayColorsDark4), var(--ShadowPositioningNone) var(--ShadowPositioningNegativeMedium) var(--ShadowBlurExtraSmall) var(--ShadowBlurNone) var(--ColorsOverlayColorsDark10) inset'
-              }}>
-                <div className="text-2xl font-bold mb-1">{insights.recommendedJobs}</div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div
+                className="p-3 rounded-lg"
+                style={{
+                  backgroundColor: "rgba(255, 255, 255, 0.1)",
+                  boxShadow:
+                    "var(--ShadowPositioningNone) var(--ShadowPositioningNone) var(--ShadowBlur2XSmall) var(--ShadowSpreadNone) var(--ColorsOverlayColorsDark15), var(--ShadowPositioningNone) var(--ShadowPositioningMedium) var(--ShadowBlurExtraSmall) var(--ShadowSpreadNone) var(--ColorsOverlayColorsDark4), var(--ShadowPositioningNone) var(--ShadowPositioningMedium) var(--ShadowBlurMedium) var(--ShadowSpreadNone) var(--ColorsOverlayColorsDark4), var(--ShadowPositioningNone) var(--ShadowPositioningNegativeMedium) var(--ShadowBlurExtraSmall) var(--ShadowBlurNone) var(--ColorsOverlayColorsDark10) inset",
+                }}
+              >
+                <div className="text-2xl font-bold mb-1">
+                  {insights.recommendedJobs}
+                </div>
                 <div className="text-xs opacity-90">Recommended Jobs</div>
               </div>
-              <div className="p-3 rounded-lg" style={{
-                backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                boxShadow: 'var(--ShadowPositioningNone) var(--ShadowPositioningNone) var(--ShadowBlur2XSmall) var(--ShadowSpreadNone) var(--ColorsOverlayColorsDark15), var(--ShadowPositioningNone) var(--ShadowPositioningMedium) var(--ShadowBlurExtraSmall) var(--ShadowSpreadNone) var(--ColorsOverlayColorsDark4), var(--ShadowPositioningNone) var(--ShadowPositioningMedium) var(--ShadowBlurMedium) var(--ShadowSpreadNone) var(--ColorsOverlayColorsDark4), var(--ShadowPositioningNone) var(--ShadowPositioningNegativeMedium) var(--ShadowBlurExtraSmall) var(--ShadowBlurNone) var(--ColorsOverlayColorsDark10) inset'
-              }}>
-                <div className="text-2xl font-bold mb-1">{insights.applicationsThisWeek}</div>
+              <div
+                className="p-3 rounded-lg"
+                style={{
+                  backgroundColor: "rgba(255, 255, 255, 0.1)",
+                  boxShadow:
+                    "var(--ShadowPositioningNone) var(--ShadowPositioningNone) var(--ShadowBlur2XSmall) var(--ShadowSpreadNone) var(--ColorsOverlayColorsDark15), var(--ShadowPositioningNone) var(--ShadowPositioningMedium) var(--ShadowBlurExtraSmall) var(--ShadowSpreadNone) var(--ColorsOverlayColorsDark4), var(--ShadowPositioningNone) var(--ShadowPositioningMedium) var(--ShadowBlurMedium) var(--ShadowSpreadNone) var(--ColorsOverlayColorsDark4), var(--ShadowPositioningNone) var(--ShadowPositioningNegativeMedium) var(--ShadowBlurExtraSmall) var(--ShadowBlurNone) var(--ColorsOverlayColorsDark10) inset",
+                }}
+              >
+                <div className="text-2xl font-bold mb-1">
+                  {insights.applicationsThisWeek}
+                </div>
                 <div className="text-xs opacity-90">Applications This Week</div>
               </div>
-              <div className="p-3 rounded-lg" style={{
-                backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                boxShadow: 'var(--ShadowPositioningNone) var(--ShadowPositioningNone) var(--ShadowBlur2XSmall) var(--ShadowSpreadNone) var(--ColorsOverlayColorsDark15), var(--ShadowPositioningNone) var(--ShadowPositioningMedium) var(--ShadowBlurExtraSmall) var(--ShadowSpreadNone) var(--ColorsOverlayColorsDark4), var(--ShadowPositioningNone) var(--ShadowPositioningMedium) var(--ShadowBlurMedium) var(--ShadowSpreadNone) var(--ColorsOverlayColorsDark4), var(--ShadowPositioningNone) var(--ShadowPositioningNegativeMedium) var(--ShadowBlurExtraSmall) var(--ShadowBlurNone) var(--ColorsOverlayColorsDark10) inset'
-              }}>
-                <div className="text-2xl font-bold mb-1">{insights.upcomingInterviews}</div>
+              <div
+                className="p-3 rounded-lg"
+                style={{
+                  backgroundColor: "rgba(255, 255, 255, 0.1)",
+                  boxShadow:
+                    "var(--ShadowPositioningNone) var(--ShadowPositioningNone) var(--ShadowBlur2XSmall) var(--ShadowSpreadNone) var(--ColorsOverlayColorsDark15), var(--ShadowPositioningNone) var(--ShadowPositioningMedium) var(--ShadowBlurExtraSmall) var(--ShadowSpreadNone) var(--ColorsOverlayColorsDark4), var(--ShadowPositioningNone) var(--ShadowPositioningMedium) var(--ShadowBlurMedium) var(--ShadowSpreadNone) var(--ColorsOverlayColorsDark4), var(--ShadowPositioningNone) var(--ShadowPositioningNegativeMedium) var(--ShadowBlurExtraSmall) var(--ShadowBlurNone) var(--ColorsOverlayColorsDark10) inset",
+                }}
+              >
+                <div className="text-2xl font-bold mb-1">
+                  {insights.upcomingInterviews}
+                </div>
                 <div className="text-xs opacity-90">Upcoming Interviews</div>
               </div>
-              <div className="p-3 rounded-lg" style={{
-                backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                boxShadow: 'var(--ShadowPositioningNone) var(--ShadowPositioningNone) var(--ShadowBlur2XSmall) var(--ShadowSpreadNone) var(--ColorsOverlayColorsDark15), var(--ShadowPositioningNone) var(--ShadowPositioningMedium) var(--ShadowBlurExtraSmall) var(--ShadowSpreadNone) var(--ColorsOverlayColorsDark4), var(--ShadowPositioningNone) var(--ShadowPositioningMedium) var(--ShadowBlurMedium) var(--ShadowSpreadNone) var(--ColorsOverlayColorsDark4), var(--ShadowPositioningNone) var(--ShadowPositioningNegativeMedium) var(--ShadowBlurExtraSmall) var(--ShadowBlurNone) var(--ColorsOverlayColorsDark10) inset'
-              }}>
-                <div className="text-2xl font-bold mb-1">{insights.profileViews}</div>
+              <div
+                className="p-3 rounded-lg"
+                style={{
+                  backgroundColor: "rgba(255, 255, 255, 0.1)",
+                  boxShadow:
+                    "var(--ShadowPositioningNone) var(--ShadowPositioningNone) var(--ShadowBlur2XSmall) var(--ShadowSpreadNone) var(--ColorsOverlayColorsDark15), var(--ShadowPositioningNone) var(--ShadowPositioningMedium) var(--ShadowBlurExtraSmall) var(--ShadowSpreadNone) var(--ColorsOverlayColorsDark4), var(--ShadowPositioningNone) var(--ShadowPositioningMedium) var(--ShadowBlurMedium) var(--ShadowSpreadNone) var(--ColorsOverlayColorsDark4), var(--ShadowPositioningNone) var(--ShadowPositioningNegativeMedium) var(--ShadowBlurExtraSmall) var(--ShadowBlurNone) var(--ColorsOverlayColorsDark10) inset",
+                }}
+              >
+                <div className="text-2xl font-bold mb-1">
+                  {insights.profileViews}
+                </div>
                 <div className="text-xs opacity-90">Profile Views</div>
               </div>
             </div>

@@ -70,7 +70,12 @@ function ResumeCard({ resume, onEdit, onDelete, onDuplicate }) {
                   "linear-gradient(135deg, var(--brand-primary), var(--brand-primary-dark))",
               }}
             >
-              <Image src="/resumebuilding.svg" alt="Resume" width={24} height={24} />
+              <Image
+                src="/resumebuilding.svg"
+                alt="Resume"
+                width={24}
+                height={24}
+              />
             </div>
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-2 flex-wrap mb-1">
@@ -364,10 +369,10 @@ export default function ResumeBuilderPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const fileInputRef = useRef(null);
-  const [typewriterText, setTypewriterText] = useState('');
+  const [typewriterText, setTypewriterText] = useState("");
   const [showCursor, setShowCursor] = useState(true);
 
-  const fullText = 'Flex Your AI Resume';
+  const fullText = "Flex Your AI Resume";
 
   // Fetch resumes from API
   useEffect(() => {
@@ -382,10 +387,12 @@ export default function ResumeBuilderPage() {
             id: resume.resume_id,
             title: resume.name,
             completion: resume.ats_score || 0,
-            previewText: `${resume.name}\nATS Score: ${resume.ats_score || 'N/A'}%\n\nResume preview...`,
+            previewText: `${resume.name}\nATS Score: ${
+              resume.ats_score || "N/A"
+            }%\n\nResume preview...`,
             lastEdited: getRelativeTime(resume.updated_at || resume.created_at),
             createdAt: resume.created_at,
-            status: resume.ats_score >= 90 ? 'completed' : 'draft',
+            status: resume.ats_score >= 90 ? "completed" : "draft",
             gcs_screenshot_path: resume.gcs_screenshot_path,
             template_id: resume.template_id,
           }));
@@ -394,9 +401,9 @@ export default function ResumeBuilderPage() {
       } catch (err) {
         const errorMessage = handleApiError(err);
         setError(errorMessage);
-        logError('ResumeBuilderPage:fetchResumes', err);
+        logError("ResumeBuilderPage:fetchResumes", err);
         // Keep using initial mock data if API fails
-        console.warn('Failed to fetch resumes, using mock data:', errorMessage);
+        console.warn("Failed to fetch resumes, using mock data:", errorMessage);
       } finally {
         setLoading(false);
       }
@@ -432,7 +439,7 @@ export default function ResumeBuilderPage() {
     if (!showCursor) return;
 
     const blinkInterval = setInterval(() => {
-      setShowCursor(prev => !prev);
+      setShowCursor((prev) => !prev);
     }, 500);
 
     return () => clearInterval(blinkInterval);
@@ -446,11 +453,18 @@ export default function ResumeBuilderPage() {
     const diffInHours = Math.floor(diffInMs / (1000 * 60 * 60));
     const diffInDays = Math.floor(diffInHours / 24);
 
-    if (diffInHours < 1) return 'just now';
-    if (diffInHours < 24) return `${diffInHours} hour${diffInHours > 1 ? 's' : ''} ago`;
-    if (diffInDays < 7) return `${diffInDays} day${diffInDays > 1 ? 's' : ''} ago`;
-    if (diffInDays < 30) return `${Math.floor(diffInDays / 7)} week${Math.floor(diffInDays / 7) > 1 ? 's' : ''} ago`;
-    return `${Math.floor(diffInDays / 30)} month${Math.floor(diffInDays / 30) > 1 ? 's' : ''} ago`;
+    if (diffInHours < 1) return "just now";
+    if (diffInHours < 24)
+      return `${diffInHours} hour${diffInHours > 1 ? "s" : ""} ago`;
+    if (diffInDays < 7)
+      return `${diffInDays} day${diffInDays > 1 ? "s" : ""} ago`;
+    if (diffInDays < 30)
+      return `${Math.floor(diffInDays / 7)} week${
+        Math.floor(diffInDays / 7) > 1 ? "s" : ""
+      } ago`;
+    return `${Math.floor(diffInDays / 30)} month${
+      Math.floor(diffInDays / 30) > 1 ? "s" : ""
+    } ago`;
   };
 
   // Filter and sort resumes based on search and filter criteria
@@ -517,28 +531,35 @@ export default function ResumeBuilderPage() {
 
   return (
     <DashboardLayout>
-      <div className="space-y-6" style={{ width: '100%' }}>
+      <div className="space-y-6" style={{ width: "100%" }}>
         {/* Header Section */}
-        <div className="relative py-6 px-8 overflow-hidden" style={{
-          backgroundImage: 'url(/header-banner.svg)',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat',
-          minHeight: '100px',
-          boxShadow: '0 4px 20px 0 #2370FF66',
-          borderRadius: '16px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between'
-        }}>
-          <div style={{ position: 'relative', zIndex: 1 }}>
-            <h1 className="text-white font-bold" style={{ textShadow: '0 2px 10px rgba(0, 0, 0, 0.3)', fontSize: '32px', lineHeight: '1.2' }}>
+        <div
+          className="relative py-[12px] px-[16px] md:py-6 md:px-8 overflow-hidden min-h-[56px] md:min-h-[100px]"
+          style={{
+            backgroundImage: "url(/header-banner.svg)",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            backgroundRepeat: "no-repeat",
+            // minHeight: "100px",
+            boxShadow: "0 4px 20px 0 #2370FF66",
+            borderRadius: "16px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <div style={{ position: "relative", zIndex: 1 }}>
+            <h1
+              className="text-white font-bold text-[24px] md:text-[32px]"
+              style={{
+                textShadow: "0 2px 10px rgba(0, 0, 0, 0.3)",
+                lineHeight: "1.2",
+              }}
+            >
               {typewriterText}
               {showCursor && <span className="animate-pulse">|</span>}
             </h1>
-
           </div>
-         
         </div>
         {/* Main Tabs */}
         <div className="w-full">
@@ -546,26 +567,31 @@ export default function ResumeBuilderPage() {
             className="rounded-xl shadow-sm border p-1"
             style={{
               borderColor: "#E9F1FF",
-              backgroundColor: "#E9F1FF"
+              backgroundColor: "#E9F1FF",
             }}
           >
             <div className="grid w-full grid-cols-3 gap-1">
               <button
                 onClick={() => setActiveTab("ai-prompt")}
-                className="py-3 px-3 lg:px-4 rounded-lg text-xs lg:text-sm font-medium transition-all"
+                className="py-2 px-2 lg:px-4 rounded-lg text-xs lg:text-sm font-medium transition-all"
                 style={{
-                  background: activeTab === "ai-prompt" ? "#FFFFFF" : "transparent",
+                  background:
+                    activeTab === "ai-prompt" ? "#FFFFFF" : "transparent",
                   color: activeTab === "ai-prompt" ? "#002A79" : "#6477B4",
                   borderRadius: "8px",
-                  border: activeTab === "ai-prompt" ? "1px solid #FFF" : "1px solid transparent",
-                  boxShadow: activeTab === "ai-prompt"
-                    ? "2px 2px 8px -2px rgba(0, 19, 88, 0.08)"
-                    : "none",
-                  fontFamily: 'Inter, sans-serif',
-                  fontSize: '14px',
+                  border:
+                    activeTab === "ai-prompt"
+                      ? "1px solid #FFF"
+                      : "1px solid transparent",
+                  boxShadow:
+                    activeTab === "ai-prompt"
+                      ? "2px 2px 8px -2px rgba(0, 19, 88, 0.08)"
+                      : "none",
+                  fontFamily: "Inter, sans-serif",
+                  fontSize: "14px",
                   fontWeight: activeTab === "ai-prompt" ? 600 : 500,
-                  lineHeight: '125%',
-                  letterSpacing: '-0.32px'
+                  lineHeight: "125%",
+                  letterSpacing: "-0.32px",
                 }}
                 onMouseEnter={(e) => {
                   if (activeTab !== "ai-prompt") {
@@ -583,20 +609,24 @@ export default function ResumeBuilderPage() {
               </button>
               <button
                 onClick={() => setActiveTab("all")}
-                className="py-3 px-3 lg:px-4 rounded-lg text-xs lg:text-sm font-medium transition-all"
+                className="py-2 px-2 lg:px-4 rounded-lg text-xs lg:text-sm font-medium transition-all"
                 style={{
                   background: activeTab === "all" ? "#FFFFFF" : "transparent",
                   color: activeTab === "all" ? "#002A79" : "#6477B4",
                   borderRadius: "8px",
-                  border: activeTab === "all" ? "1px solid #FFF" : "1px solid transparent",
-                  boxShadow: activeTab === "all"
-                    ? "2px 2px 8px -2px rgba(0, 19, 88, 0.08)"
-                    : "none",
-                  fontFamily: 'Inter, sans-serif',
-                  fontSize: '14px',
+                  border:
+                    activeTab === "all"
+                      ? "1px solid #FFF"
+                      : "1px solid transparent",
+                  boxShadow:
+                    activeTab === "all"
+                      ? "2px 2px 8px -2px rgba(0, 19, 88, 0.08)"
+                      : "none",
+                  fontFamily: "Inter, sans-serif",
+                  fontSize: "14px",
                   fontWeight: activeTab === "all" ? 600 : 500,
-                  lineHeight: '125%',
-                  letterSpacing: '-0.32px'
+                  lineHeight: "125%",
+                  letterSpacing: "-0.32px",
                 }}
                 onMouseEnter={(e) => {
                   if (activeTab !== "all") {
@@ -614,20 +644,25 @@ export default function ResumeBuilderPage() {
               </button>
               <button
                 onClick={() => setActiveTab("linkedin")}
-                className="py-3 px-3 lg:px-4 rounded-lg text-xs lg:text-sm font-medium transition-all"
+                className="py-2 px-2 lg:px-4 rounded-lg text-xs lg:text-sm font-medium transition-all"
                 style={{
-                  background: activeTab === "linkedin" ? "#FFFFFF" : "transparent",
+                  background:
+                    activeTab === "linkedin" ? "#FFFFFF" : "transparent",
                   color: activeTab === "linkedin" ? "#002A79" : "#6477B4",
                   borderRadius: "8px",
-                  border: activeTab === "linkedin" ? "1px solid #FFF" : "1px solid transparent",
-                  boxShadow: activeTab === "linkedin"
-                    ? "2px 2px 8px -2px rgba(0, 19, 88, 0.08)"
-                    : "none",
-                  fontFamily: 'Inter, sans-serif',
-                  fontSize: '14px',
+                  border:
+                    activeTab === "linkedin"
+                      ? "1px solid #FFF"
+                      : "1px solid transparent",
+                  boxShadow:
+                    activeTab === "linkedin"
+                      ? "2px 2px 8px -2px rgba(0, 19, 88, 0.08)"
+                      : "none",
+                  fontFamily: "Inter, sans-serif",
+                  fontSize: "14px",
                   fontWeight: activeTab === "linkedin" ? 600 : 500,
-                  lineHeight: '125%',
-                  letterSpacing: '-0.32px'
+                  lineHeight: "125%",
+                  letterSpacing: "-0.32px",
                 }}
                 onMouseEnter={(e) => {
                   if (activeTab !== "linkedin") {
@@ -648,7 +683,7 @@ export default function ResumeBuilderPage() {
 
           {/* All Resumes Tab */}
           {activeTab === "all" && (
-            <div className="space-y-6 mt-6">
+            <div className="space-y-6 mt-[16px] md:mt-6">
               {hasResumes && (
                 <div
                   className="bg-white rounded-xl shadow-sm border p-4 lg:p-6"
@@ -782,7 +817,12 @@ export default function ResumeBuilderPage() {
                     style={{ borderColor: "var(--neutral-medium-light)" }}
                   >
                     <div className="mb-4 flex justify-center">
-                      <Image src="/jobsearching.svg" alt="Search" width={64} height={64} />
+                      <Image
+                        src="/jobsearching.svg"
+                        alt="Search"
+                        width={64}
+                        height={64}
+                      />
                     </div>
                     <h3
                       className="text-lg lg:text-xl font-semibold mb-2"
@@ -817,9 +857,9 @@ export default function ResumeBuilderPage() {
 
           {/* Resume Choice Tab */}
           {activeTab === "ai-prompt" && (
-            <div className="space-y-6 mt-6">
+            <div className="space-y-6 mt-[16px] md:mt-6">
               <div
-                className="min-h-[70vh] flex items-center justify-center p-4"
+                className="min-h-[70vh] flex items-center justify-center p-4 rounded-sm"
                 style={{
                   background:
                     "linear-gradient(135deg, var(--brand-secondary-lightest) 0%, #E9F1FF 100%)",
@@ -828,28 +868,28 @@ export default function ResumeBuilderPage() {
                 <div className="max-w-4xl mx-auto w-full relative z-10">
                   {/* Header */}
 
-
                   {/* Options Grid */}
-                  <div className="grid md:grid-cols-2 gap-8 mb-8 max-w-5xl mx-auto">
+                  <div className="grid md:grid-cols-2 gap-4 md:gap-8 mb-0 md:mb-8 max-w-5xl mx-auto">
                     {/* Start from Scratch Option */}
                     <Link href="/resume-confirmation?path=ai">
                       <div
                         className="rounded-lg shadow-sm relative transition-all hover:shadow-md cursor-pointer"
                         style={{
-                          backgroundColor: '#FFFFFF',
-                          border: '1px solid #F1F3F7',
-                          boxShadow: '0 0 6px 0 rgba(0, 0, 0, 0.12), 0 2px 3px 0 rgba(0, 0, 0, 0.04), 0 2px 6px 0 rgba(0, 0, 0, 0.04), inset 0 -2px 3px 0 rgba(0, 0, 0, 0.08)',
+                          backgroundColor: "#FFFFFF",
+                          border: "1px solid #F1F3F7",
+                          boxShadow:
+                            "0 0 6px 0 rgba(0, 0, 0, 0.12), 0 2px 3px 0 rgba(0, 0, 0, 0.04), 0 2px 6px 0 rgba(0, 0, 0, 0.04), inset 0 -2px 3px 0 rgba(0, 0, 0, 0.08)",
                         }}
                       >
-                        <div className="p-8">
+                        <div className="md:p-8 p-6">
                           <div className="text-center pb-4">
                             <h3
-                              className="text-2xl font-semibold mb-2"
-                              style={{ color: '#002A79' }}
+                              className="text-xl md:text-2xl font-semibold mb-2"
+                              style={{ color: "#002A79" }}
                             >
                               Start with AI
                             </h3>
-                            <p style={{ color: '#6477B4', fontSize: '14px' }}>
+                            <p style={{ color: "#6477B4", fontSize: "14px" }}>
                               Let AI create your resume from scratch using
                               intelligent prompts
                             </p>
@@ -857,22 +897,25 @@ export default function ResumeBuilderPage() {
                           <button
                             className="w-full transition-all hover:opacity-90"
                             style={{
-                              display: 'inline-flex',
-                              width: '100%',
-                              padding: '12px 16px',
-                              justifyContent: 'center',
-                              alignItems: 'center',
-                              borderRadius: '8px',
-                              border: '1px solid rgba(35, 112, 255, 0.30)',
-                              background: 'linear-gradient(180deg, #679CFF 0%, #2370FF 100%)',
-                              boxShadow: '0 2px 4px 0 rgba(77, 145, 225, 0.10), 0 1px 0.3px 0 rgba(255, 255, 255, 0.25) inset, 0 -1px 0.3px 0 rgba(0, 19, 88, 0.25) inset',
-                              color: '#FFFFFF',
-                              textAlign: 'center',
-                              textShadow: '0 0.5px 1.5px rgba(0, 19, 88, 0.30), 0 2px 5px rgba(0, 19, 88, 0.10)',
-                              fontFamily: 'Inter, sans-serif',
-                              fontSize: '14px',
+                              display: "inline-flex",
+                              width: "100%",
+                              padding: "12px 16px",
+                              justifyContent: "center",
+                              alignItems: "center",
+                              borderRadius: "8px",
+                              border: "1px solid rgba(35, 112, 255, 0.30)",
+                              background:
+                                "linear-gradient(180deg, #679CFF 0%, #2370FF 100%)",
+                              boxShadow:
+                                "0 2px 4px 0 rgba(77, 145, 225, 0.10), 0 1px 0.3px 0 rgba(255, 255, 255, 0.25) inset, 0 -1px 0.3px 0 rgba(0, 19, 88, 0.25) inset",
+                              color: "#FFFFFF",
+                              textAlign: "center",
+                              textShadow:
+                                "0 0.5px 1.5px rgba(0, 19, 88, 0.30), 0 2px 5px rgba(0, 19, 88, 0.10)",
+                              fontFamily: "Inter, sans-serif",
+                              fontSize: "14px",
                               fontWeight: 500,
-                              lineHeight: '125%'
+                              lineHeight: "125%",
                             }}
                           >
                             AI Create
@@ -886,20 +929,21 @@ export default function ResumeBuilderPage() {
                       <div
                         className="rounded-lg shadow-sm relative transition-all hover:shadow-md cursor-pointer"
                         style={{
-                          backgroundColor: '#FFFFFF',
-                          border: '1px solid #F1F3F7',
-                          boxShadow: '0 0 6px 0 rgba(0, 0, 0, 0.12), 0 2px 3px 0 rgba(0, 0, 0, 0.04), 0 2px 6px 0 rgba(0, 0, 0, 0.04), inset 0 -2px 3px 0 rgba(0, 0, 0, 0.08)',
+                          backgroundColor: "#FFFFFF",
+                          border: "1px solid #F1F3F7",
+                          boxShadow:
+                            "0 0 6px 0 rgba(0, 0, 0, 0.12), 0 2px 3px 0 rgba(0, 0, 0, 0.04), 0 2px 6px 0 rgba(0, 0, 0, 0.04), inset 0 -2px 3px 0 rgba(0, 0, 0, 0.08)",
                         }}
                       >
-                        <div className="p-8">
+                        <div className="md:p-8 p-6">
                           <div className="text-center pb-4">
                             <h3
-                              className="text-2xl font-semibold mb-2"
-                              style={{ color: '#002A79' }}
+                              className="text-xl md:text-2xl font-semibold mb-2"
+                              style={{ color: "#002A79" }}
                             >
                               Upload & Enhance
                             </h3>
-                            <p style={{ color: '#6477B4', fontSize: '14px' }}>
+                            <p style={{ color: "#6477B4", fontSize: "14px" }}>
                               Upload your existing resume and let AI enhance it
                               for better results
                             </p>
@@ -907,22 +951,25 @@ export default function ResumeBuilderPage() {
                           <button
                             className="w-full transition-all hover:opacity-90"
                             style={{
-                              display: 'inline-flex',
-                              width: '100%',
-                              padding: '12px 16px',
-                              justifyContent: 'center',
-                              alignItems: 'center',
-                              borderRadius: '8px',
-                              border: '1px solid rgba(35, 112, 255, 0.30)',
-                              background: 'linear-gradient(180deg, #679CFF 0%, #2370FF 100%)',
-                              boxShadow: '0 2px 4px 0 rgba(77, 145, 225, 0.10), 0 1px 0.3px 0 rgba(255, 255, 255, 0.25) inset, 0 -1px 0.3px 0 rgba(0, 19, 88, 0.25) inset',
-                              color: '#FFFFFF',
-                              textAlign: 'center',
-                              textShadow: '0 0.5px 1.5px rgba(0, 19, 88, 0.30), 0 2px 5px rgba(0, 19, 88, 0.10)',
-                              fontFamily: 'Inter, sans-serif',
-                              fontSize: '14px',
+                              display: "inline-flex",
+                              width: "100%",
+                              padding: "12px 16px",
+                              justifyContent: "center",
+                              alignItems: "center",
+                              borderRadius: "8px",
+                              border: "1px solid rgba(35, 112, 255, 0.30)",
+                              background:
+                                "linear-gradient(180deg, #679CFF 0%, #2370FF 100%)",
+                              boxShadow:
+                                "0 2px 4px 0 rgba(77, 145, 225, 0.10), 0 1px 0.3px 0 rgba(255, 255, 255, 0.25) inset, 0 -1px 0.3px 0 rgba(0, 19, 88, 0.25) inset",
+                              color: "#FFFFFF",
+                              textAlign: "center",
+                              textShadow:
+                                "0 0.5px 1.5px rgba(0, 19, 88, 0.30), 0 2px 5px rgba(0, 19, 88, 0.10)",
+                              fontFamily: "Inter, sans-serif",
+                              fontSize: "14px",
                               fontWeight: 500,
-                              lineHeight: '125%'
+                              lineHeight: "125%",
                             }}
                           >
                             Upload Resume
@@ -987,7 +1034,7 @@ export default function ResumeBuilderPage() {
 
           {/* Build Using LinkedIn Tab */}
           {activeTab === "linkedin" && (
-            <div className="space-y-6 mt-6">
+            <div className="space-y-6 mt-[16px] md:mt-6">
               <div
                 className="bg-white rounded-xl border shadow-sm"
                 style={{ borderColor: "var(--neutral-medium-light)" }}
@@ -999,7 +1046,12 @@ export default function ResumeBuilderPage() {
                       background: "linear-gradient(135deg, #0355BE, #002A79)",
                     }}
                   >
-                    <Image src="/linkedinoptimising.svg" alt="LinkedIn" width={28} height={28} />
+                    <Image
+                      src="/linkedinoptimising.svg"
+                      alt="LinkedIn"
+                      width={28}
+                      height={28}
+                    />
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex flex-col lg:flex-row lg:items-center gap-3">
@@ -1036,7 +1088,12 @@ export default function ResumeBuilderPage() {
                     }}
                   >
                     <div className="mb-4 flex justify-center">
-                      <Image src="/linkedinoptimising.svg" alt="LinkedIn" width={48} height={48} />
+                      <Image
+                        src="/linkedinoptimising.svg"
+                        alt="LinkedIn"
+                        width={48}
+                        height={48}
+                      />
                     </div>
                     <h3
                       className="text-lg font-semibold mb-2"
