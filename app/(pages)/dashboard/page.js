@@ -144,7 +144,7 @@ export default function DashboardPage() {
           className="md:px-8 md:py-6 px-6 py-4"
           style={{ backgroundColor: "transparent" }}
         >
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+          <div className="grid grid-cols-2 md:grid-cols-[repeat(4,1fr)] gap-4 mb-4">
             {features.map((feature, index) => (
               <div
                 key={index}
@@ -152,12 +152,14 @@ export default function DashboardPage() {
                 className={`rounded-lg shadow-sm relative transition-all hover:shadow-md cursor-pointer ${
                   feature.size === "large"
                     ? "col-span-2 min-h-[85px]"
-                    : "col-span-1 min-h-[70px]"
+                    : "md:col-auto col-span-2 min-h-[70px]"
                 }`}
                 style={{
                   backgroundColor: "#FFFFFF",
                   border: "1px solid #F1F3F7",
                   boxShadow: shadowBoxStyle,
+                  // gridColumn: feature.size === "large" ? "span 2" : "span 1",
+                  // minHeight: feature.size === "large" ? "85px" : "70px",
                 }}
               >
                 <div className="p-3 h-full flex flex-col justify-between">
