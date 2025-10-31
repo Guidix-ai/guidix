@@ -270,7 +270,8 @@ const EnhancedJobCard = ({
 
   // Measure both views and lock to max height
   useEffect(() => {
-    if (!containerRef.current || !summaryRef.current || !detailsRef.current) return;
+    if (!containerRef.current || !summaryRef.current || !detailsRef.current)
+      return;
 
     const measureHeights = () => {
       const prevSummaryVis = summaryRef.current.style.visibility;
@@ -282,16 +283,16 @@ const EnhancedJobCard = ({
       detailsRef.current.style.visibility = "hidden";
       summaryRef.current.style.position = "static";
       detailsRef.current.style.position = "static";
-      
+
       const summaryH = summaryRef.current.offsetHeight;
       const detailsH = detailsRef.current.offsetHeight;
       const maxH = Math.max(summaryH, detailsH);
-      
+
       summaryRef.current.style.visibility = prevSummaryVis;
       detailsRef.current.style.visibility = prevDetailsVis;
       summaryRef.current.style.position = prevSummaryPos;
       detailsRef.current.style.position = prevDetailsPos;
-      
+
       setLockedHeight(maxH);
     };
 
@@ -379,7 +380,13 @@ const EnhancedJobCard = ({
         }}
       >
         {/* Header Section */}
-        <div style={{ padding: "16px 20px", position: "relative", overflow: "hidden" }}>
+        <div
+          style={{
+            padding: "16px 20px",
+            position: "relative",
+            overflow: "hidden",
+          }}
+        >
           <div
             style={{
               position: "absolute",
@@ -387,13 +394,22 @@ const EnhancedJobCard = ({
               left: 0,
               right: 0,
               bottom: 0,
-              background: "linear-gradient(135deg, #e6f2ff 0%, rgba(0, 86, 179, 0.05) 100%)",
+              background:
+                "linear-gradient(135deg, #e6f2ff 0%, rgba(0, 86, 179, 0.05) 100%)",
               opacity: 0.5,
               zIndex: 0,
             }}
           />
 
-          <div style={{ position: "relative", zIndex: 1, display: "flex", alignItems: "center", gap: "16px" }}>
+          <div
+            style={{
+              position: "relative",
+              zIndex: 1,
+              display: "flex",
+              alignItems: "center",
+              gap: "16px",
+            }}
+          >
             <div
               style={{
                 position: "relative",
@@ -408,8 +424,10 @@ const EnhancedJobCard = ({
                   inset: "-2px",
                   borderRadius: "10px",
                   padding: "2px",
-                  background: "linear-gradient(45deg, #2370FF, #4d8dff, #6ba1ff, #2370FF)",
-                  WebkitMask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
+                  background:
+                    "linear-gradient(45deg, #2370FF, #4d8dff, #6ba1ff, #2370FF)",
+                  WebkitMask:
+                    "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
                   WebkitMaskComposite: "xor",
                   maskComposite: "exclude",
                   animation: "borderRotate 3s linear infinite",
@@ -459,8 +477,24 @@ const EnhancedJobCard = ({
             </div>
 
             <div style={{ flex: 1 }}>
-              <p style={{ fontSize: "clamp(14px, 3.5vw, 18px)", color: "rgb(0, 42, 121)", marginBottom: "5px", fontWeight: 700 }}>{job.company}</p>
-              <h3 style={{ fontSize: "clamp(12px, 3vw, 16px)", fontWeight: 600, color: "#6477B4", marginBottom: "3px" }}>
+              <p
+                style={{
+                  fontSize: "clamp(14px, 3.5vw, 18px)",
+                  color: "rgb(0, 42, 121)",
+                  marginBottom: "5px",
+                  fontWeight: 700,
+                }}
+              >
+                {job.company}
+              </p>
+              <h3
+                style={{
+                  fontSize: "clamp(12px, 3vw, 16px)",
+                  fontWeight: 600,
+                  color: "#6477B4",
+                  marginBottom: "3px",
+                }}
+              >
                 {job.title}
               </h3>
               <div style={{ display: "flex", gap: "6px", flexWrap: "wrap" }}>
@@ -505,9 +539,20 @@ const EnhancedJobCard = ({
           </div>
 
           {/* Header Actions */}
-          <div style={{ position: "absolute", top: "16px", right: "20px", display: "flex", gap: "12px" }}>
+          <div
+            style={{
+              position: "absolute",
+              top: "16px",
+              right: "20px",
+              display: "flex",
+              gap: "12px",
+            }}
+          >
             <button
-              onClick={(e) => { e.stopPropagation(); handleBookmarkClick(e); }}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleBookmarkClick(e);
+              }}
               style={{
                 background: "transparent",
                 border: "none",
@@ -522,7 +567,10 @@ const EnhancedJobCard = ({
               <Image src="/wishlist.svg" alt="Save" width={24} height={24} />
             </button>
             <button
-              onClick={(e) => { e.stopPropagation(); onBlock(job.id); }}
+              onClick={(e) => {
+                e.stopPropagation();
+                onBlock(job.id);
+              }}
               style={{
                 background: "transparent",
                 border: "none",
@@ -541,13 +589,13 @@ const EnhancedJobCard = ({
 
         {/* Meta Grid - Enhanced Stats */}
         <div style={{ padding: "12px 20px" }}>
-          <div 
+          <div
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))",
               gap: "12px",
-              marginBottom: "12px"
+              marginBottom: "12px",
             }}
+            className="grid-cols-1 md:grid-cols-3 "
           >
             {/* Skills Match */}
             <div
@@ -560,43 +608,54 @@ const EnhancedJobCard = ({
                 overflow: "hidden",
               }}
             >
-              <div style={{ 
-                fontSize: "10px", 
-                color: "#0F172A", 
-                fontWeight: 600, 
-                marginBottom: "6px", 
-                textTransform: "uppercase",
-                letterSpacing: "0.5px",
-                opacity: 0.8
-              }}>
+              <div
+                style={{
+                  fontSize: "10px",
+                  color: "#0F172A",
+                  fontWeight: 600,
+                  marginBottom: "6px",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.5px",
+                  opacity: 0.8,
+                }}
+              >
                 Skills
               </div>
-              <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                <div style={{
-                  flex: 1,
-                  height: "6px",
-                  background: "rgba(35, 112, 255, 0.1)",
-                  borderRadius: "6px",
-                  overflow: "hidden",
-                  position: "relative"
-                }}>
-                  <div style={{
-                    height: "100%",
-                    width: `${job.skillsMatch || job.matchScore}%`,
-                    background: "#74D184",
+              <div
+                style={{ display: "flex", alignItems: "center", gap: "8px" }}
+              >
+                <div
+                  style={{
+                    flex: 1,
+                    height: "6px",
+                    background: "rgba(35, 112, 255, 0.1)",
                     borderRadius: "6px",
+                    overflow: "hidden",
                     position: "relative",
-                    boxShadow: "0 0 6px rgba(116, 209, 132, 0.25)",
-                    transition: "width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1)"
-                  }} />
+                  }}
+                >
+                  <div
+                    style={{
+                      height: "100%",
+                      width: `${job.skillsMatch || job.matchScore}%`,
+                      background: "#74D184",
+                      borderRadius: "6px",
+                      position: "relative",
+                      boxShadow: "0 0 6px rgba(116, 209, 132, 0.25)",
+                      transition:
+                        "width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1)",
+                    }}
+                  />
                 </div>
-                <span style={{
-                  fontSize: "13px",
-                  fontWeight: 700,
-                  color: "#0F172A",
-                  minWidth: "32px",
-                  textAlign: "right"
-                }}>
+                <span
+                  style={{
+                    fontSize: "13px",
+                    fontWeight: 700,
+                    color: "#0F172A",
+                    minWidth: "32px",
+                    textAlign: "right",
+                  }}
+                >
                   {job.skillsMatch || job.matchScore}%
                 </span>
               </div>
@@ -613,43 +672,54 @@ const EnhancedJobCard = ({
                 overflow: "hidden",
               }}
             >
-              <div style={{ 
-                fontSize: "10px", 
-                color: "#0F172A", 
-                fontWeight: 600, 
-                marginBottom: "6px", 
-                textTransform: "uppercase",
-                letterSpacing: "0.5px",
-                opacity: 0.8
-              }}>
+              <div
+                style={{
+                  fontSize: "10px",
+                  color: "#0F172A",
+                  fontWeight: 600,
+                  marginBottom: "6px",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.5px",
+                  opacity: 0.8,
+                }}
+              >
                 Experience
               </div>
-              <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                <div style={{
-                  flex: 1,
-                  height: "6px",
-                  background: "rgba(35, 112, 255, 0.1)",
-                  borderRadius: "6px",
-                  overflow: "hidden",
-                  position: "relative"
-                }}>
-                  <div style={{
-                    height: "100%",
-                    width: `${job.experienceMatch || 85}%`,
-                    background: "#74D184",
+              <div
+                style={{ display: "flex", alignItems: "center", gap: "8px" }}
+              >
+                <div
+                  style={{
+                    flex: 1,
+                    height: "6px",
+                    background: "rgba(35, 112, 255, 0.1)",
                     borderRadius: "6px",
+                    overflow: "hidden",
                     position: "relative",
-                    boxShadow: "0 0 6px rgba(116, 209, 132, 0.25)",
-                    transition: "width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s"
-                  }} />
+                  }}
+                >
+                  <div
+                    style={{
+                      height: "100%",
+                      width: `${job.experienceMatch || 85}%`,
+                      background: "#74D184",
+                      borderRadius: "6px",
+                      position: "relative",
+                      boxShadow: "0 0 6px rgba(116, 209, 132, 0.25)",
+                      transition:
+                        "width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s",
+                    }}
+                  />
                 </div>
-                <span style={{
-                  fontSize: "13px",
-                  fontWeight: 700,
-                  color: "#0F172A",
-                  minWidth: "32px",
-                  textAlign: "right"
-                }}>
+                <span
+                  style={{
+                    fontSize: "13px",
+                    fontWeight: 700,
+                    color: "#0F172A",
+                    minWidth: "32px",
+                    textAlign: "right",
+                  }}
+                >
                   {job.experienceMatch || 85}%
                 </span>
               </div>
@@ -666,75 +736,87 @@ const EnhancedJobCard = ({
                 overflow: "hidden",
               }}
             >
-              <div style={{ 
-                fontSize: "10px", 
-                color: "#0F172A", 
-                fontWeight: 600, 
-                marginBottom: "6px", 
-                textTransform: "uppercase",
-                letterSpacing: "0.5px",
-                opacity: 0.8
-              }}>
+              <div
+                style={{
+                  fontSize: "10px",
+                  color: "#0F172A",
+                  fontWeight: 600,
+                  marginBottom: "6px",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.5px",
+                  opacity: 0.8,
+                }}
+              >
                 Applicants
               </div>
-              <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+              <div
+                style={{ display: "flex", alignItems: "center", gap: "8px" }}
+              >
                 <div style={{ display: "flex", position: "relative" }}>
-                  <div style={{
-                    width: "24px",
-                    height: "24px",
-                    borderRadius: "50%",
-                    border: "2px solid #ffffff",
-                    background: "linear-gradient(135deg, #2370FF, #4d8dff)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontSize: "9px",
-                    fontWeight: 700,
-                    color: "white",
-                    zIndex: 3
-                  }}>
+                  <div
+                    style={{
+                      width: "24px",
+                      height: "24px",
+                      borderRadius: "50%",
+                      border: "2px solid #ffffff",
+                      background: "linear-gradient(135deg, #2370FF, #4d8dff)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: "9px",
+                      fontWeight: 700,
+                      color: "white",
+                      zIndex: 3,
+                    }}
+                  >
                     A
                   </div>
-                  <div style={{
-                    width: "24px",
-                    height: "24px",
-                    borderRadius: "50%",
-                    border: "2px solid #ffffff",
-                    background: "linear-gradient(135deg, #10b981, #34d399)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontSize: "9px",
-                    fontWeight: 700,
-                    color: "white",
-                    marginLeft: "-8px",
-                    zIndex: 2
-                  }}>
+                  <div
+                    style={{
+                      width: "24px",
+                      height: "24px",
+                      borderRadius: "50%",
+                      border: "2px solid #ffffff",
+                      background: "linear-gradient(135deg, #10b981, #34d399)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: "9px",
+                      fontWeight: 700,
+                      color: "white",
+                      marginLeft: "-8px",
+                      zIndex: 2,
+                    }}
+                  >
                     B
                   </div>
-                  <div style={{
-                    width: "24px",
-                    height: "24px",
-                    borderRadius: "50%",
-                    border: "2px solid #ffffff",
-                    background: "linear-gradient(135deg, #f59e0b, #fbbf24)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontSize: "9px",
-                    fontWeight: 700,
-                    color: "white",
-                    marginLeft: "-8px",
-                    zIndex: 1
-                  }}>
+                  <div
+                    style={{
+                      width: "24px",
+                      height: "24px",
+                      borderRadius: "50%",
+                      border: "2px solid #ffffff",
+                      background: "linear-gradient(135deg, #f59e0b, #fbbf24)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: "9px",
+                      fontWeight: 700,
+                      color: "white",
+                      marginLeft: "-8px",
+                      zIndex: 1,
+                    }}
+                  >
                     +
                   </div>
                 </div>
-                <span style={{
-                  fontSize: "13px",
-                  fontWeight: 700,
-                  color: "#1a1a1a"
-                }}>
+                <span
+                  style={{
+                    fontSize: "13px",
+                    fontWeight: 700,
+                    color: "#1a1a1a",
+                  }}
+                >
                   {job.applicants}
                 </span>
               </div>
@@ -744,11 +826,38 @@ const EnhancedJobCard = ({
 
         {/* Match Score Bar */}
         <div style={{ padding: "0 20px 12px" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
-            <span style={{ fontSize: "11px", fontWeight: 600, color: "#6477B4" }}>Your Profile Match</span>
-            <span style={{ fontSize: "11px", fontWeight: 700, color: "rgb(0, 42, 121)" }}>{job.matchScore}% Match</span>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              marginBottom: "6px",
+            }}
+          >
+            <span
+              style={{ fontSize: "11px", fontWeight: 600, color: "#6477B4" }}
+            >
+              Your Profile Match
+            </span>
+            <span
+              style={{
+                fontSize: "11px",
+                fontWeight: 700,
+                color: "rgb(0, 42, 121)",
+              }}
+            >
+              {job.matchScore}% Match
+            </span>
           </div>
-          <div style={{ height: "6px", background: "#e9ecef", borderRadius: "6px", overflow: "hidden", position: "relative" }}>
+          <div
+            style={{
+              height: "6px",
+              background: "#e9ecef",
+              borderRadius: "6px",
+              overflow: "hidden",
+              position: "relative",
+            }}
+          >
             <div
               style={{
                 height: "100%",
@@ -772,7 +881,14 @@ const EnhancedJobCard = ({
             background: "#f8f9fa",
           }}
         >
-          <div style={{ flex: 1, display: "flex", alignItems: "center", gap: "8px" }}>
+          <div
+            style={{
+              flex: 1,
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+            }}
+          >
             <div
               style={{
                 width: "32px",
@@ -786,14 +902,34 @@ const EnhancedJobCard = ({
                 boxShadow: "0 2px 4px rgba(0, 20, 40, 0.04)",
               }}
             >
-              <Image src="/location.svg" alt="Location" width={20} height={20} />
+              <Image
+                src="/location.svg"
+                alt="Location"
+                width={20}
+                height={20}
+              />
             </div>
             <div style={{ flex: 1 }}>
-              <div style={{ fontSize: "12px", fontWeight: 600, color: "rgb(0, 42, 121)" }}>{job.location}</div>
+              <div
+                style={{
+                  fontSize: "12px",
+                  fontWeight: 600,
+                  color: "rgb(0, 42, 121)",
+                }}
+              >
+                {job.location}
+              </div>
             </div>
           </div>
 
-          <div style={{ flex: 1, display: "flex", alignItems: "center", gap: "8px" }}>
+          <div
+            style={{
+              flex: 1,
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+            }}
+          >
             <div
               style={{
                 width: "32px",
@@ -810,13 +946,28 @@ const EnhancedJobCard = ({
               <Image src="/salary.svg" alt="Salary" width={20} height={20} />
             </div>
             <div style={{ flex: 1 }}>
-              <div style={{ fontSize: "12px", fontWeight: 600, color: "rgb(0, 42, 121)" }}>{job.salary}</div>
+              <div
+                style={{
+                  fontSize: "12px",
+                  fontWeight: 600,
+                  color: "rgb(0, 42, 121)",
+                }}
+              >
+                {job.salary}
+              </div>
             </div>
           </div>
         </div>
 
         {/* CTA Section */}
-        <div style={{ padding: "14px 20px", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", gap: "10px" }}>
+        <div
+          style={{
+            padding: "14px 20px",
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))",
+            gap: "10px",
+          }}
+        >
           <button
             className="w-full transition-all hover:opacity-90"
             onClick={(e) => {
@@ -825,49 +976,52 @@ const EnhancedJobCard = ({
             }}
             disabled={isApplied}
             style={{
-              display: 'inline-flex',
-              width: '100%',
-              padding: '12px 16px',
-              justifyContent: 'center',
-              alignItems: 'center',
-              borderRadius: '8px',
-              border: '1px solid rgba(35, 112, 255, 0.30)',
-              background: 'linear-gradient(180deg, #679CFF 0%, #2370FF 100%)',
-              boxShadow: '0 2px 4px 0 rgba(77, 145, 225, 0.10), 0 1px 0.3px 0 rgba(255, 255, 255, 0.25) inset, 0 -1px 0.3px 0 rgba(0, 19, 88, 0.25) inset',
-              color: '#FFFFFF',
-              textAlign: 'center',
-              textShadow: '0 0.5px 1.5px rgba(0, 19, 88, 0.30), 0 2px 5px rgba(0, 19, 88, 0.10)',
-              fontFamily: 'Inter, sans-serif',
-              fontSize: '14px',
+              display: "inline-flex",
+              width: "100%",
+              padding: "12px 16px",
+              justifyContent: "center",
+              alignItems: "center",
+              borderRadius: "8px",
+              border: "1px solid rgba(35, 112, 255, 0.30)",
+              background: "linear-gradient(180deg, #679CFF 0%, #2370FF 100%)",
+              boxShadow:
+                "0 2px 4px 0 rgba(77, 145, 225, 0.10), 0 1px 0.3px 0 rgba(255, 255, 255, 0.25) inset, 0 -1px 0.3px 0 rgba(0, 19, 88, 0.25) inset",
+              color: "#FFFFFF",
+              textAlign: "center",
+              textShadow:
+                "0 0.5px 1.5px rgba(0, 19, 88, 0.30), 0 2px 5px rgba(0, 19, 88, 0.10)",
+              fontFamily: "Inter, sans-serif",
+              fontSize: "14px",
               fontWeight: 500,
-              lineHeight: '125%',
-              cursor: isApplied ? 'not-allowed' : 'pointer',
+              lineHeight: "125%",
+              cursor: isApplied ? "not-allowed" : "pointer",
               opacity: isApplied ? 0.7 : 1,
             }}
           >
-            {isApplied ? 'Applied' : 'Apply Now'}
+            {isApplied ? "Applied" : "Apply Now"}
           </button>
 
           <button
             className="w-full transition-all hover:opacity-90"
             onClick={handleDetailsClick}
             style={{
-              display: 'inline-flex',
-              width: '100%',
-              padding: '12px 16px',
-              justifyContent: 'center',
-              alignItems: 'center',
-              borderRadius: '8px',
-              background: 'linear-gradient(180deg, #F4F8FF 0%, #E9F1FF 100%)',
-              borderTop: '1px solid #D5E4FF',
-              boxShadow: '2px var(--ShadowPositioningSmall) var(--ShadowBlurSmall) var(--ShadowSpreadExtraSmall) var(--ColorsOverlayColorsDark8)',
-              color: '#0F172A',
-              textAlign: 'center',
-              fontFamily: 'Inter, sans-serif',
-              fontSize: '14px',
+              display: "inline-flex",
+              width: "100%",
+              padding: "12px 16px",
+              justifyContent: "center",
+              alignItems: "center",
+              borderRadius: "8px",
+              background: "linear-gradient(180deg, #F4F8FF 0%, #E9F1FF 100%)",
+              borderTop: "1px solid #D5E4FF",
+              boxShadow:
+                "2px var(--ShadowPositioningSmall) var(--ShadowBlurSmall) var(--ShadowSpreadExtraSmall) var(--ColorsOverlayColorsDark8)",
+              color: "#0F172A",
+              textAlign: "center",
+              fontFamily: "Inter, sans-serif",
+              fontSize: "14px",
               fontWeight: 500,
-              lineHeight: '125%',
-              cursor: 'pointer',
+              lineHeight: "125%",
+              cursor: "pointer",
             }}
           >
             Details
@@ -898,7 +1052,10 @@ const EnhancedJobCard = ({
             <span>Posted {job.posted}</span>
           </div>
           <div>
-            Source: <span style={{ color: "rgb(0, 42, 121)", fontWeight: 600 }}>LinkedIn</span>
+            Source:{" "}
+            <span style={{ color: "rgb(0, 42, 121)", fontWeight: 600 }}>
+              LinkedIn
+            </span>
           </div>
         </div>
       </div>
@@ -921,7 +1078,14 @@ const EnhancedJobCard = ({
       >
         {/* Details Header */}
         <div style={{ marginBottom: "16px" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "12px" }}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "12px",
+              marginBottom: "12px",
+            }}
+          >
             <div
               style={{
                 width: "40px",
@@ -939,8 +1103,19 @@ const EnhancedJobCard = ({
               {job.company.charAt(0)}
             </div>
             <div>
-              <p style={{ fontSize: "14px", color: "#6477B4", fontWeight: 500, marginBottom: "2px" }}>{job.title}</p>
-              <h3 style={{ fontSize: "18px", fontWeight: 700, color: "#0F172A" }}>
+              <p
+                style={{
+                  fontSize: "14px",
+                  color: "#6477B4",
+                  fontWeight: 500,
+                  marginBottom: "2px",
+                }}
+              >
+                {job.title}
+              </p>
+              <h3
+                style={{ fontSize: "18px", fontWeight: 700, color: "#0F172A" }}
+              >
                 {job.company}
               </h3>
             </div>
@@ -949,20 +1124,29 @@ const EnhancedJobCard = ({
 
         {/* Job Description */}
         <div style={{ marginBottom: "16px", flex: 1, overflow: "auto" }}>
-          <div style={{ fontSize: "12px", fontWeight: 700, color: "#2c3e50", marginBottom: "8px", textTransform: "uppercase", letterSpacing: "0.5px" }}>
+          <div
+            style={{
+              fontSize: "12px",
+              fontWeight: 700,
+              color: "#2c3e50",
+              marginBottom: "8px",
+              textTransform: "uppercase",
+              letterSpacing: "0.5px",
+            }}
+          >
             Job Description
           </div>
-          <div 
-            style={{ 
-              fontSize: "13px", 
-              color: "#374151", 
+          <div
+            style={{
+              fontSize: "13px",
+              color: "#374151",
               lineHeight: 1.6,
               maxHeight: "200px",
               overflow: "auto",
               padding: "12px",
               background: "#f8f9fa",
               borderRadius: "8px",
-              whiteSpace: "pre-wrap"
+              whiteSpace: "pre-wrap",
             }}
             className="hover-overlay-scroll"
           >
@@ -972,14 +1156,23 @@ const EnhancedJobCard = ({
 
         {/* Links Section */}
         <div style={{ marginBottom: "16px" }}>
-          <div style={{ fontSize: "12px", fontWeight: 700, color: "#2c3e50", marginBottom: "10px", textTransform: "uppercase", letterSpacing: "0.5px" }}>
+          <div
+            style={{
+              fontSize: "12px",
+              fontWeight: 700,
+              color: "#2c3e50",
+              marginBottom: "10px",
+              textTransform: "uppercase",
+              letterSpacing: "0.5px",
+            }}
+          >
             Quick Links
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
             {job.companyWebsite && (
-              <a 
-                href={job.companyWebsite} 
-                target="_blank" 
+              <a
+                href={job.companyWebsite}
+                target="_blank"
                 rel="noopener noreferrer"
                 style={{
                   display: "flex",
@@ -993,7 +1186,7 @@ const EnhancedJobCard = ({
                   fontWeight: 600,
                   textDecoration: "none",
                   transition: "all 0.2s",
-                  border: "1px solid #e5e9f2"
+                  border: "1px solid #e5e9f2",
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.background = "#e6f2ff";
@@ -1004,17 +1197,24 @@ const EnhancedJobCard = ({
                   e.currentTarget.style.borderColor = "#e5e9f2";
                 }}
               >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
-                  <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+                  <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
                 </svg>
                 Company Website
               </a>
             )}
             {job.linkedinUrl && (
-              <a 
-                href={job.linkedinUrl} 
-                target="_blank" 
+              <a
+                href={job.linkedinUrl}
+                target="_blank"
                 rel="noopener noreferrer"
                 style={{
                   display: "flex",
@@ -1028,7 +1228,7 @@ const EnhancedJobCard = ({
                   fontWeight: 600,
                   textDecoration: "none",
                   transition: "all 0.2s",
-                  border: "1px solid #e5e9f2"
+                  border: "1px solid #e5e9f2",
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.background = "#e6f2ff";
@@ -1039,16 +1239,21 @@ const EnhancedJobCard = ({
                   e.currentTarget.style.borderColor = "#e5e9f2";
                 }}
               >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                >
+                  <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
                 </svg>
                 Company LinkedIn
               </a>
             )}
             {job.hrLinkedinUrl && (
-              <a 
-                href={job.hrLinkedinUrl} 
-                target="_blank" 
+              <a
+                href={job.hrLinkedinUrl}
+                target="_blank"
                 rel="noopener noreferrer"
                 style={{
                   display: "flex",
@@ -1062,7 +1267,7 @@ const EnhancedJobCard = ({
                   fontWeight: 600,
                   textDecoration: "none",
                   transition: "all 0.2s",
-                  border: "1px solid #e5e9f2"
+                  border: "1px solid #e5e9f2",
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.background = "#e6f2ff";
@@ -1073,8 +1278,13 @@ const EnhancedJobCard = ({
                   e.currentTarget.style.borderColor = "#e5e9f2";
                 }}
               >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                >
+                  <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
                 </svg>
                 HR LinkedIn
               </a>
@@ -1083,7 +1293,13 @@ const EnhancedJobCard = ({
         </div>
 
         {/* Back Button */}
-        <div style={{ marginTop: "auto", paddingTop: "16px", borderTop: "1px solid #e9ecef" }}>
+        <div
+          style={{
+            marginTop: "auto",
+            paddingTop: "16px",
+            borderTop: "1px solid #e9ecef",
+          }}
+        >
           <button
             onClick={handleBackClick}
             style={{
@@ -1101,7 +1317,8 @@ const EnhancedJobCard = ({
             onMouseEnter={(e) => {
               e.currentTarget.style.background = "#e6f2ff";
               e.currentTarget.style.transform = "translateY(-2px)";
-              e.currentTarget.style.boxShadow = "0 4px 12px rgba(0, 20, 40, 0.08)";
+              e.currentTarget.style.boxShadow =
+                "0 4px 12px rgba(0, 20, 40, 0.08)";
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.background = "#ffffff";
@@ -1116,7 +1333,6 @@ const EnhancedJobCard = ({
     </div>
   );
 };
-
 
 // const EnhancedJobCard = ({
 //   job,
@@ -1315,7 +1531,7 @@ const EnhancedJobCard = ({
 
 //             {/* Meta Grid - Enhanced Stats */}
 //       <div style={{ padding: "12px 20px" }}>
-//         <div 
+//         <div
 //           style={{
 //             display: "grid",
 //             gridTemplateColumns: "repeat(3, 1fr)",
@@ -1334,11 +1550,11 @@ const EnhancedJobCard = ({
 //               overflow: "hidden",
 //             }}
 //           >
-//             <div style={{ 
-//               fontSize: "10px", 
-//               color: "#6b7280", 
-//               fontWeight: 600, 
-//               marginBottom: "6px", 
+//             <div style={{
+//               fontSize: "10px",
+//               color: "#6b7280",
+//               fontWeight: 600,
+//               marginBottom: "6px",
 //               textTransform: "uppercase",
 //               letterSpacing: "0.5px",
 //               opacity: 0.8
@@ -1357,13 +1573,13 @@ const EnhancedJobCard = ({
 //                 <div style={{
 //                   height: "100%",
 //                   width: `${job.skillsMatch || job.matchScore}%`,
-//                   background: (job.skillsMatch || job.matchScore) >= 80 
-//                     ? "linear-gradient(90deg, #22c55e, #10b981)" 
+//                   background: (job.skillsMatch || job.matchScore) >= 80
+//                     ? "linear-gradient(90deg, #22c55e, #10b981)"
 //                     : "linear-gradient(90deg, #f59e0b, #fbbf24)",
 //                   borderRadius: "6px",
 //                   position: "relative",
-//                   boxShadow: (job.skillsMatch || job.matchScore) >= 80 
-//                     ? "0 0 10px rgba(34, 197, 94, 0.5)" 
+//                   boxShadow: (job.skillsMatch || job.matchScore) >= 80
+//                     ? "0 0 10px rgba(34, 197, 94, 0.5)"
 //                     : "0 0 10px rgba(245, 158, 11, 0.5)",
 //                   transition: "width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1)"
 //                 }} />
@@ -1391,11 +1607,11 @@ const EnhancedJobCard = ({
 //               overflow: "hidden",
 //             }}
 //           >
-//             <div style={{ 
-//               fontSize: "10px", 
-//               color: "#6b7280", 
-//               fontWeight: 600, 
-//               marginBottom: "6px", 
+//             <div style={{
+//               fontSize: "10px",
+//               color: "#6b7280",
+//               fontWeight: 600,
+//               marginBottom: "6px",
 //               textTransform: "uppercase",
 //               letterSpacing: "0.5px",
 //               opacity: 0.8
@@ -1414,13 +1630,13 @@ const EnhancedJobCard = ({
 //                 <div style={{
 //                   height: "100%",
 //                   width: `${job.experienceMatch || 85}%`,
-//                   background: (job.experienceMatch || 85) >= 80 
-//                     ? "linear-gradient(90deg, #22c55e, #10b981)" 
+//                   background: (job.experienceMatch || 85) >= 80
+//                     ? "linear-gradient(90deg, #22c55e, #10b981)"
 //                     : "linear-gradient(90deg, #f59e0b, #fbbf24)",
 //                   borderRadius: "6px",
 //                   position: "relative",
-//                   boxShadow: (job.experienceMatch || 85) >= 80 
-//                     ? "0 0 10px rgba(34, 197, 94, 0.5)" 
+//                   boxShadow: (job.experienceMatch || 85) >= 80
+//                     ? "0 0 10px rgba(34, 197, 94, 0.5)"
 //                     : "0 0 10px rgba(245, 158, 11, 0.5)",
 //                   transition: "width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s"
 //                 }} />
@@ -1448,11 +1664,11 @@ const EnhancedJobCard = ({
 //               overflow: "hidden",
 //             }}
 //           >
-//             <div style={{ 
-//               fontSize: "10px", 
-//               color: "#6b7280", 
-//               fontWeight: 600, 
-//               marginBottom: "6px", 
+//             <div style={{
+//               fontSize: "10px",
+//               color: "#6b7280",
+//               fontWeight: 600,
+//               marginBottom: "6px",
 //               textTransform: "uppercase",
 //               letterSpacing: "0.5px",
 //               opacity: 0.8
@@ -2127,7 +2343,7 @@ const JobSearchPage = () => {
             maxWidth: "1600px",
             margin: "0 auto",
             padding: "0 16px",
-            width: "100%"
+            width: "100%",
           }}
         >
           <div
@@ -2140,7 +2356,7 @@ const JobSearchPage = () => {
               minHeight: "120px",
               boxShadow: "0 4px 20px 0 #2370FF66",
               borderRadius: "20px",
-              marginBottom: "24px"
+              marginBottom: "24px",
             }}
           >
             <div className="relative z-10">
@@ -2162,12 +2378,12 @@ const JobSearchPage = () => {
 
         {/* Filters Section */}
         <div
-          className="bg-white border-b sticky top-0 z-30"
+          className="bg-white border-b  top-0 z-30"
           style={{
             borderColor: "#E1E4ED",
             backgroundColor: "#FFFFFF",
             boxShadow: "0 2px 8px rgba(35, 112, 255, 0.06)",
-            zIndex: 200,
+            zIndex: 1,
           }}
         >
           <div
@@ -2175,176 +2391,176 @@ const JobSearchPage = () => {
               maxWidth: "1600px",
               margin: "0 auto",
               padding: "20px 24px",
-              width: "100%"
+              width: "100%",
             }}
           >
-          <div className="flex flex-wrap justify-between items-center gap-4">
-            <div className="flex gap-3 flex-wrap">
-              {[
-                { key: "all", label: "All Jobs" },
-                { key: "high-match", label: "85+ Match" },
-                { key: "remote", label: "Remote" },
-                { key: "urgent", label: "Urgent" },
-                { key: "internships", label: "Internships" },
-              ].map((filter) => (
-                <button
-                  key={filter.key}
-                  onClick={() => setFilterBy(filter.key)}
-                  style={
-                    filterBy === filter.key
-                      ? {
-                          display: "inline-flex",
-                          padding: "8px 12px",
-                          justifyContent: "center",
-                          alignItems: "center",
-                          borderRadius: "10px",
-                          background:
-                            "linear-gradient(180deg, #0349cc 0%, #073b9c 100%)",
-                          boxShadow:
-                            "0 -1.5px 1px 0 rgba(6, 51, 165, 0.37) inset, 0 1.5px 1px 0 rgba(255, 255, 255, 0.24) inset",
-                          color: "#FFFFFF",
-                          textShadow:
-                            "0 0.5px 1.5px rgba(0, 19, 88, 0.30), 0 2px 5px rgba(0, 19, 88, 0.10)",
-                          fontFamily: "Inter, sans-serif",
-                          fontSize: "14px",
-                          fontWeight: 500,
-                          lineHeight: "125%",
-                          letterSpacing: "-0.36px",
-                          whiteSpace: "nowrap",
-                        }
-                      : {
-                          display: "inline-flex",
-                          padding: "8px 12px",
-                          gap: "8px",
-                          justifyContent: "center",
-                          alignItems: "center",
-                          borderRadius: "10px",
-                          borderWidth: "1px",
-                          borderStyle: "solid",
-                          borderColor: "#D5E4FF",
-                          borderTop: "1px solid #D5E4FF",
-                          background:
-                            "linear-gradient(180deg, #F4F8FF 0%, #E9F1FF 100%)",
-                          boxShadow: "0 4px 8px -2px rgba(0, 19, 88, 0.10)",
-                          opacity: 1,
-                          color: "#474FA3",
-                          fontFamily: "Inter, sans-serif",
-                          fontSize: "14px",
-                          fontWeight: 500,
-                          lineHeight: "125%",
-                          letterSpacing: "-0.32px",
-                          whiteSpace: "nowrap",
-                        }
-                  }
-                  className="transition-all hover:opacity-90"
-                >
-                  {filter.label}
-                </button>
-              ))}
-            </div>
-            <div className="flex items-center gap-3">
-              <label
-                className="text-sm font-semibold"
-                style={{ color: "#000E41" }}
-              >
-                Sort by:
-              </label>
-              <div
-                style={{ position: "relative", minWidth: "160px" }}
-                data-dropdown-container
-              >
-                <div
-                  onClick={() => setShowSortDropdown(!showSortDropdown)}
-                  className="w-full text-sm font-medium cursor-pointer focus:outline-none flex items-center justify-between"
-                  style={{
-                    padding: "8px 12px",
-                    borderRadius: "8px",
-                    border: "1px solid #F0F4FA",
-                    background: "#FFF",
-                    boxShadow:
-                      "0 -4px 4px 0 rgba(0, 19, 88, 0.10) inset, 0 4px 16px 0 rgba(0, 19, 88, 0.04), 0 4px 4px 0 rgba(0, 19, 88, 0.04), 0 0 2px 0 rgba(0, 19, 88, 0.15)",
-                    color: "#000E41",
-                  }}
-                >
-                  <span>
-                    {sortOptions.find((opt) => opt.value === sortBy)?.label}
-                  </span>
-                  <svg
-                    width="16"
-                    height="16"
-                    fill="none"
-                    viewBox="0 0 20 20"
-                    style={{
-                      transform: showSortDropdown
-                        ? "rotate(180deg)"
-                        : "rotate(0deg)",
-                      transition: "transform 0.2s ease",
-                    }}
+            <div className="flex flex-wrap justify-between items-center gap-4">
+              <div className="flex gap-3 flex-wrap">
+                {[
+                  { key: "all", label: "All Jobs" },
+                  { key: "high-match", label: "85+ Match" },
+                  { key: "remote", label: "Remote" },
+                  { key: "urgent", label: "Urgent" },
+                  { key: "internships", label: "Internships" },
+                ].map((filter) => (
+                  <button
+                    key={filter.key}
+                    onClick={() => setFilterBy(filter.key)}
+                    style={
+                      filterBy === filter.key
+                        ? {
+                            display: "inline-flex",
+                            padding: "8px 12px",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            borderRadius: "10px",
+                            background:
+                              "linear-gradient(180deg, #0349cc 0%, #073b9c 100%)",
+                            boxShadow:
+                              "0 -1.5px 1px 0 rgba(6, 51, 165, 0.37) inset, 0 1.5px 1px 0 rgba(255, 255, 255, 0.24) inset",
+                            color: "#FFFFFF",
+                            textShadow:
+                              "0 0.5px 1.5px rgba(0, 19, 88, 0.30), 0 2px 5px rgba(0, 19, 88, 0.10)",
+                            fontFamily: "Inter, sans-serif",
+                            fontSize: "14px",
+                            fontWeight: 500,
+                            lineHeight: "125%",
+                            letterSpacing: "-0.36px",
+                            whiteSpace: "nowrap",
+                          }
+                        : {
+                            display: "inline-flex",
+                            padding: "8px 12px",
+                            gap: "8px",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            borderRadius: "10px",
+                            borderWidth: "1px",
+                            borderStyle: "solid",
+                            borderColor: "#D5E4FF",
+                            borderTop: "1px solid #D5E4FF",
+                            background:
+                              "linear-gradient(180deg, #F4F8FF 0%, #E9F1FF 100%)",
+                            boxShadow: "0 4px 8px -2px rgba(0, 19, 88, 0.10)",
+                            opacity: 1,
+                            color: "#474FA3",
+                            fontFamily: "Inter, sans-serif",
+                            fontSize: "14px",
+                            fontWeight: 500,
+                            lineHeight: "125%",
+                            letterSpacing: "-0.32px",
+                            whiteSpace: "nowrap",
+                          }
+                    }
+                    className="transition-all hover:opacity-90"
                   >
-                    <path
-                      d="M5 7.5L10 12.5L15 7.5"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </div>
-
-                {showSortDropdown && (
+                    {filter.label}
+                  </button>
+                ))}
+              </div>
+              <div className="flex items-center gap-3">
+                <label
+                  className="text-sm font-semibold"
+                  style={{ color: "#000E41" }}
+                >
+                  Sort by:
+                </label>
+                <div
+                  style={{ position: "relative", minWidth: "160px" }}
+                  data-dropdown-container
+                >
                   <div
+                    onClick={() => setShowSortDropdown(!showSortDropdown)}
+                    className="w-full text-sm font-medium cursor-pointer focus:outline-none flex items-center justify-between"
                     style={{
-                      display: "flex",
-                      minWidth: "200px",
-                      padding: "16px",
-                      flexDirection: "column",
-                      alignItems: "flex-start",
-                      gap: "4px",
-                      borderRadius: "12px",
+                      padding: "8px 12px",
+                      borderRadius: "8px",
                       border: "1px solid #F0F4FA",
                       background: "#FFF",
                       boxShadow:
-                        "0 -4px 2px 0 rgba(17, 35, 89, 0.08) inset, 0 1.5px 1.5px 0 rgba(17, 35, 89, 0.17), 0 2px 5px 0 rgba(17, 35, 89, 0.03), 0 12px 45px 0 rgba(13, 57, 170, 0.15)",
-                      position: "absolute",
-                      top: "60px",
-                      right: "0",
-                      zIndex: 200,
+                        "0 -4px 4px 0 rgba(0, 19, 88, 0.10) inset, 0 4px 16px 0 rgba(0, 19, 88, 0.04), 0 4px 4px 0 rgba(0, 19, 88, 0.04), 0 0 2px 0 rgba(0, 19, 88, 0.15)",
+                      color: "#000E41",
                     }}
                   >
-                    {sortOptions.map((option) => (
-                      <div
-                        key={option.value}
-                        onClick={() => handleSortChange(option.value)}
-                        className="w-full px-3 py-2.5 rounded-lg cursor-pointer transition-all hover:bg-gray-50 text-sm font-medium"
-                        style={{
-                          backgroundColor:
-                            sortBy === option.value
-                              ? "rgba(35, 112, 255, 0.08)"
-                              : "transparent",
-                          color:
-                            sortBy === option.value ? "#000E41" : "#374151",
-                        }}
-                      >
-                        {option.label}
-                      </div>
-                    ))}
+                    <span>
+                      {sortOptions.find((opt) => opt.value === sortBy)?.label}
+                    </span>
+                    <svg
+                      width="16"
+                      height="16"
+                      fill="none"
+                      viewBox="0 0 20 20"
+                      style={{
+                        transform: showSortDropdown
+                          ? "rotate(180deg)"
+                          : "rotate(0deg)",
+                        transition: "transform 0.2s ease",
+                      }}
+                    >
+                      <path
+                        d="M5 7.5L10 12.5L15 7.5"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
                   </div>
-                )}
+
+                  {showSortDropdown && (
+                    <div
+                      style={{
+                        display: "flex",
+                        minWidth: "200px",
+                        padding: "16px",
+                        flexDirection: "column",
+                        alignItems: "flex-start",
+                        gap: "4px",
+                        borderRadius: "12px",
+                        border: "1px solid #F0F4FA",
+                        background: "#FFF",
+                        boxShadow:
+                          "0 -4px 2px 0 rgba(17, 35, 89, 0.08) inset, 0 1.5px 1.5px 0 rgba(17, 35, 89, 0.17), 0 2px 5px 0 rgba(17, 35, 89, 0.03), 0 12px 45px 0 rgba(13, 57, 170, 0.15)",
+                        position: "absolute",
+                        top: "60px",
+                        right: "0",
+                        zIndex: 200,
+                      }}
+                    >
+                      {sortOptions.map((option) => (
+                        <div
+                          key={option.value}
+                          onClick={() => handleSortChange(option.value)}
+                          className="w-full px-3 py-2.5 rounded-lg cursor-pointer transition-all hover:bg-gray-50 text-sm font-medium"
+                          style={{
+                            backgroundColor:
+                              sortBy === option.value
+                                ? "rgba(35, 112, 255, 0.08)"
+                                : "transparent",
+                            color:
+                              sortBy === option.value ? "#000E41" : "#374151",
+                          }}
+                        >
+                          {option.label}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           </div>
         </div>
-        </div>
 
         {/* Job Cards Section */}
         <div
-          className="py-12"
+          className="py-[24px] px-[16px] md:py-[48px] md:px-[24px]"
           style={{
             backgroundColor: "transparent",
             maxWidth: "1400px",
             margin: "0 auto",
             width: "100%",
-            padding: "48px 24px"
+            // padding: "48px 24px",
           }}
         >
           {filteredJobs.length === 0 ? (
@@ -2354,7 +2570,7 @@ const JobSearchPage = () => {
                 backgroundColor: "#FFFFFF",
                 border: "1px solid #F1F3F7",
                 maxWidth: "600px",
-                margin: "0 auto"
+                margin: "0 auto",
               }}
             >
               <div className="text-6xl mb-6">😞</div>
@@ -2392,25 +2608,27 @@ const JobSearchPage = () => {
             </div>
           ) : (
             <div
-              className="job-grid"
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-                gap: "40px",
-                justifyContent: "center",
-                alignItems: "start",
-                maxWidth: "1200px",
-                margin: "0 auto"
-              }}
+              className="col-span-1 grid grid-cols-1 md:grid-cols-2 gap-10 justify-center items-start max-w-[1200px] mx-auto"
+              // style={{
+              //   display: "grid",
+              //   gridTemplateColumns: "repeat(2, 1fr)",
+              //   gap: "40px",
+              //   justifyContent: "center",
+              //   alignItems: "start",
+              //   maxWidth: "1200px",
+              //   margin: "0 auto",
+              // }}
             >
               {filteredJobs.map((job, index) => (
                 <div
                   key={job.id}
                   className="job-card-wrapper"
                   style={{
-                    animation: `cardEntryStagger 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) ${index * 0.08}s backwards`,
+                    animation: `cardEntryStagger 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) ${
+                      index * 0.08
+                    }s backwards`,
                     display: "flex",
-                    justifyContent: "center"
+                    justifyContent: "center",
                   }}
                 >
                   <EnhancedJobCard
