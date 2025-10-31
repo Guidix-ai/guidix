@@ -276,6 +276,7 @@ const SignupPage = () => {
         >
           {/* Image Container on left */}
           <div
+            className="hidden lg:flex"
             style={{
               flex: "1",
               maxWidth: "600px",
@@ -285,7 +286,7 @@ const SignupPage = () => {
                 "0px 12px 32px -4px rgba(35,112,255,0.4), 0px 2px 2px 0 rgba(0,19,88,0.1), 0px 4px 8px -2px rgba(0,19,88,0.4)",
               minHeight: "600px",
               position: "relative",
-              display: "flex",
+              // display: "flex",
               alignItems: "center",
               justifyContent: "center",
             }}
@@ -365,7 +366,7 @@ const SignupPage = () => {
             <div>
               <h1
                 style={{
-                  width: 580,
+                  // width: 580,
                   color: colorTokens.title,
                   fontSize: 48,
                   fontWeight: 500,
@@ -379,7 +380,7 @@ const SignupPage = () => {
               <p
                 style={{
                   marginTop: 12,
-                  width: 580,
+                  // width: 580,
                   color: colorTokens.paragraph,
                   fontSize: 16,
                   fontWeight: 400,
@@ -397,11 +398,11 @@ const SignupPage = () => {
                 display: "flex",
                 flexDirection: "column",
                 gap: 16,
-                width: 580,
+                // width: 580,
               }}
             >
               {/* Row 1 */}
-              <div style={{ display: "flex", gap: 16 }}>
+              <div style={{ display: "flex", gap: 16,flexDirection:"column" }}>
                 <FormField
                   name="fullName"
                   label="Full name"
@@ -421,7 +422,7 @@ const SignupPage = () => {
                 />
               </div>
               {/* Row 2 */}
-              <div style={{ display: "flex", gap: 16 }}>
+              <div style={{ display: "flex", gap: 16,flexDirection:"row" }}>
                 <FormField
                   name="phoneNumber"
                   label="Phone number"
@@ -440,7 +441,7 @@ const SignupPage = () => {
                 />
               </div>
               {/* Row 3 */}
-              <div style={{ display: "flex", gap: 16 }}>
+              <div style={{ display: "flex", gap: 16,flexDirection:"row" }}>
                 <FormField
                   name="password"
                   label="Password"
@@ -463,7 +464,9 @@ const SignupPage = () => {
                   styleProps={{ flex: 1 }}
                   showPasswordToggle={true}
                   isPasswordVisible={showConfirmPassword}
-                  onTogglePassword={() => setShowConfirmPassword(!showConfirmPassword)}
+                  onTogglePassword={() =>
+                    setShowConfirmPassword(!showConfirmPassword)
+                  }
                 />
               </div>
               {/* Submit Button */}
