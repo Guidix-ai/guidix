@@ -94,6 +94,14 @@ export default function DashboardPage() {
       color: "#fa709a",
       size: "normal",
     },
+    {
+      title: "LinkedIn Optimizer",
+      description: "Optimize your profile",
+      iconSrc: "/linkedinoptimising.svg",
+      route: "/linkedin-optimizer",
+      color: "#30cfd0",
+      size: "normal",
+    },
   ];
 
   const insights = {

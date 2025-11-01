@@ -2,13 +2,13 @@
 
 import { useState, useEffect, Suspense } from "react";
 import Image from "next/image";
-import {
-  ArrowRight,
-  ArrowLeft,
-} from "lucide-react";
+import { ArrowRight, ArrowLeft } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useSelector } from "react-redux";
-import { DashboardLayout, useSidebar } from "@/components/layout/dashboard-layout";
+import {
+  DashboardLayout,
+  useSidebar,
+} from "@/components/layout/dashboard-layout";
 import ResumeBreadcrumbs from "@/components/ResumeBreadcrumbs";
 
 const colorTokens = {
@@ -25,10 +25,10 @@ function AIPromptInputContent() {
   const [userFields, setUserFields] = useState([]);
   const [userEducation, setUserEducation] = useState("");
   const [userCareer, setUserCareer] = useState("");
-  const [typewriterText, setTypewriterText] = useState('');
+  const [typewriterText, setTypewriterText] = useState("");
   const [showCursor, setShowCursor] = useState(true);
   const [isClient, setIsClient] = useState(false);
-  const fullText = 'Tell Us About Yourself';
+  const fullText = "Tell Us About Yourself";
 
   // Get user data from Redux
   const user = useSelector((state) => state.auth.user);
@@ -37,18 +37,20 @@ function AIPromptInputContent() {
   const { collapsed } = useSidebar();
 
   // State for user data to prevent hydration mismatch
-  const [userName, setUserName] = useState('[Your Name]');
-  const [userEmail, setUserEmail] = useState('[Email]');
-  const [userPhone, setUserPhone] = useState('[Phone]');
+  const [userName, setUserName] = useState("[Your Name]");
+  const [userEmail, setUserEmail] = useState("[Email]");
+  const [userPhone, setUserPhone] = useState("[Phone]");
 
   // Set client-side data after hydration
   useEffect(() => {
     setIsClient(true);
 
     // Get user data from Redux or localStorage
-    const name = user?.full_name || localStorage.getItem('userName') || '[Your Name]';
-    const email = user?.email || localStorage.getItem('userEmail') || '[Email]';
-    const phone = user?.phone_number || localStorage.getItem('userPhone') || '[Phone]';
+    const name =
+      user?.full_name || localStorage.getItem("userName") || "[Your Name]";
+    const email = user?.email || localStorage.getItem("userEmail") || "[Email]";
+    const phone =
+      user?.phone_number || localStorage.getItem("userPhone") || "[Phone]";
 
     setUserName(name);
     setUserEmail(email);
@@ -95,7 +97,9 @@ function AIPromptInputContent() {
       }
     };
     typeWriter();
-    return () => { index = fullText.length; };
+    return () => {
+      index = fullText.length;
+    };
   }, []);
 
   const getFieldData = (fieldId) => {
@@ -261,7 +265,7 @@ function AIPromptInputContent() {
 
     // Handle field ID aliases and mismatches
     const fieldAliases = {
-      "biotech": "biotechnology",
+      biotech: "biotechnology",
       "prod-eng": "prod-eng", // Already defined above
     };
 
@@ -337,7 +341,7 @@ My experience? [Key Project] from [Year], and an internship [Role/Company] with 
   const handleNext = () => {
     if (prompt.trim() && wordCount <= MAX_WORDS) {
       // Store the prompt in sessionStorage for API call
-      sessionStorage.setItem('userPrompt', prompt);
+      sessionStorage.setItem("userPrompt", prompt);
 
       // Include all necessary parameters in the route
       const fieldsParam = userFields.join(",");
@@ -363,7 +367,7 @@ My experience? [Key Project] from [Year], and an internship [Role/Company] with 
     <>
       <style jsx>{`
         textarea::placeholder {
-          color: #6477B4;
+          color: #6477b4;
           font-family: Inter, sans-serif;
           font-size: 14px;
           font-weight: 400;
@@ -371,7 +375,7 @@ My experience? [Key Project] from [Year], and an internship [Role/Company] with 
           letter-spacing: -0.32px;
         }
         textarea::-webkit-input-placeholder {
-          color: #6477B4;
+          color: #6477b4;
           font-family: Inter, sans-serif;
           font-size: 14px;
           font-weight: 400;
@@ -379,7 +383,7 @@ My experience? [Key Project] from [Year], and an internship [Role/Company] with 
           letter-spacing: -0.32px;
         }
         textarea::-moz-placeholder {
-          color: #6477B4;
+          color: #6477b4;
           font-family: Inter, sans-serif;
           font-size: 14px;
           font-weight: 400;
@@ -387,7 +391,7 @@ My experience? [Key Project] from [Year], and an internship [Role/Company] with 
           letter-spacing: -0.32px;
         }
         textarea:-ms-input-placeholder {
-          color: #6477B4;
+          color: #6477b4;
           font-family: Inter, sans-serif;
           font-size: 14px;
           font-weight: 400;
@@ -396,234 +400,344 @@ My experience? [Key Project] from [Year], and an internship [Role/Company] with 
         }
       `}</style>
       <DashboardLayout
-        progressBar={<ResumeBreadcrumbs currentStep={2} totalSteps={4} inNavbar={true} />}
+        progressBar={
+          <ResumeBreadcrumbs currentStep={2} totalSteps={4} inNavbar={true} />
+        }
       >
-        <div style={{ minHeight: '100vh', backgroundColor: '#F8F9FF', width: '100%' }}>
-        {/* Banner */}
-        <div className="relative py-6 px-8 overflow-hidden flex items-center" style={{
-          backgroundImage: 'url(/header-banner.svg)',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat',
-          minHeight: '100px',
-          boxShadow: '0 4px 20px 0 #2370FF66',
-          borderRadius: '16px'
-        }}>
-          <div className="relative z-10">
-            <h1 className="text-white font-bold" style={{ textShadow: '0 2px 10px rgba(0, 0, 0, 0.3)', fontSize: '32px', lineHeight: '1.2' }}>
-              {typewriterText}
-              {showCursor && <span className="animate-pulse">|</span>}
-            </h1>
-          </div>
-        </div>
-
-        {/* Info Section */}
-        {userFields.length > 0 && userEducation && (
-          <div className="bg-white px-8 py-4 border-b" style={{ borderColor: '#E1E4ED', backgroundColor: '#FFFFFF' }}>
-            <div className="flex items-center justify-center gap-3 flex-wrap">
-              <span className="px-3 py-1.5 rounded-lg text-sm font-medium flex items-center gap-2" style={{
-                backgroundColor: '#E9F1FF',
-                color: colorTokens.title
-              }}>
-                {userEducation === "first" ? "1st Year" : userEducation === "second" ? "2nd Year" : userEducation === "third" ? "3rd Year" : "4th Year"}
-              </span>
-              {userFields.map((fieldId) => (
-                <span key={fieldId} className="px-3 py-1.5 rounded-lg text-sm font-medium flex items-center gap-2" style={{
-                  backgroundColor: '#E9F1FF',
-                  color: colorTokens.title
-                }}>
-                  {getFieldData(fieldId).name}
-                </span>
-              ))}
-              {userCareer && (
-                <span className="px-3 py-1.5 rounded-lg text-sm font-medium" style={{
-                  backgroundColor: '#E9F1FF',
-                  color: colorTokens.title
-                }}>
-                  {userCareer === "internship" ? "Seeking Internship" : "Seeking Full-time"}
-                </span>
-              )}
+        <div
+          style={{
+            minHeight: "100vh",
+            backgroundColor: "#F8F9FF",
+            width: "100%",
+          }}
+        >
+          {/* Banner */}
+          <div
+            className="relative py-[12px] px-[16px] md:py-6 md:px-8 overflow-hidden min-h-[56px] md:min-h-[100px]"
+            style={{
+              backgroundImage: "url(/header-banner.svg)",
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              backgroundRepeat: "no-repeat",
+              // minHeight: "100px",
+              boxShadow: "0 4px 20px 0 #2370FF66",
+              borderRadius: "16px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            <div className="relative z-10">
+              <h1
+                className="text-white font-bold text-[24px] md:text-[32px]"
+                style={{
+                  textShadow: "0 2px 10px rgba(0, 0, 0, 0.3)",
+                  // fontSize: "32px",
+                  lineHeight: "1.2",
+                }}
+              >
+                {typewriterText}
+                {showCursor && <span className="animate-pulse">|</span>}
+              </h1>
             </div>
           </div>
-        )}
 
-        {/* Main Content */}
-        <div className="px-8 py-6"  style={{ backgroundColor: '#F8F9FF' }}>
-          {/* Row Layout: Examples on Left, Prompt on Right */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-            {/* Examples Section - Left */}
-            <div className="bg-white rounded-lg p-6" style={{
-              border: '1px solid #F1F3F7',
-              boxShadow: '0 0 6px 0 rgba(0, 0, 0, 0.12), 0 2px 3px 0 rgba(0, 0, 0, 0.04), 0 2px 6px 0 rgba(0, 0, 0, 0.04), inset 0 -2px 3px 0 rgba(0, 0, 0, 0.08)'
-            }}>
-              <div className="flex items-center gap-2 mb-4">
-                <h3 className="font-semibold" style={{ color: colorTokens.title, fontSize: '16px' }}>
-                  Quick Examples
-                </h3>
-              </div>
-              <p className="text-sm mb-4" style={{ color: colorTokens.paragraph }}>
-                Click any example to use it as a starting point
-              </p>
+          {/* Info Section */}
+          {userFields.length > 0 && userEducation && (
+            <div
+              className="bg-white px-3 py-4 md:px-8 md:py-4 border-b"
+              style={{ borderColor: "#E1E4ED", backgroundColor: "#FFFFFF" }}
+            >
+              <div
+                className="flex items-center justify-start gap-3 overflow-x-auto scrollbar-hide"
+                style={{
+                  whiteSpace: "nowrap",
+                  scrollBehavior: "smooth",
+                  WebkitOverflowScrolling: "touch",
+                  msOverflowStyle: "none", // IE & Edge
+                  scrollbarWidth: "none", // Firefox
+                }}
+              >
+                <span
+                  className="px-3 py-1.5 rounded-lg text-sm font-medium flex items-center gap-2 flex-shrink-0"
+                  style={{
+                    backgroundColor: "#E9F1FF",
+                    color: colorTokens.title,
+                  }}
+                >
+                  {userEducation === "first"
+                    ? "1st Year"
+                    : userEducation === "second"
+                    ? "2nd Year"
+                    : userEducation === "third"
+                    ? "3rd Year"
+                    : "4th Year"}
+                </span>
 
-              <div className="grid gap-3">
-                {dynamicPrompts.map((example, index) => (
-                  <div
-                    key={index}
-                    onClick={() => handleSamplePrompt(example.prompt)}
-                    className="p-4 cursor-pointer transition-all"
+                {userFields.map((fieldId) => (
+                  <span
+                    key={fieldId}
+                    className="px-3 py-1.5 rounded-lg text-sm font-medium flex items-center gap-2 flex-shrink-0"
                     style={{
-                      border: '1px solid #D5E4FF',
-                      borderRadius: 16,
-                      backgroundColor: colorTokens.bgLight,
-                      boxShadow: '0px 0px 2px 0px rgba(0,19,88,0.10), 0px 2px 2px 0px rgba(0,19,88,0.02)'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.borderColor = colorTokens.secondary600;
-                      e.currentTarget.style.backgroundColor = "#E9F1FF";
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.borderColor = "#D5E4FF";
-                      e.currentTarget.style.backgroundColor = colorTokens.bgLight;
+                      backgroundColor: "#E9F1FF",
+                      color: colorTokens.title,
                     }}
                   >
-                    <div className="flex items-start gap-3">
-                      <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0" style={{
-                        background: 'linear-gradient(180deg, #679CFF 0%, #2370FF 100%)',
-                        boxShadow: '0 1px 6px rgba(35, 112, 255, 0.2)'
-                      }}>
-                        <span className="text-white text-xs font-bold">{index + 1}</span>
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="font-medium text-sm mb-1" style={{ color: colorTokens.title }}>
-                          {example.title}
+                    {getFieldData(fieldId).name}
+                  </span>
+                ))}
+
+                {userCareer && (
+                  <span
+                    className="px-3 py-1.5 rounded-lg text-sm font-medium flex-shrink-0"
+                    style={{
+                      backgroundColor: "#E9F1FF",
+                      color: colorTokens.title,
+                    }}
+                  >
+                    {userCareer === "internship"
+                      ? "Seeking Internship"
+                      : "Seeking Full-time"}
+                  </span>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Main Content */}
+          <div
+            className="py-3 px-4 md:py-6 md:px-8"
+            style={{ backgroundColor: "#F8F9FF" }}
+          >
+            {/* Row Layout: Examples on Left, Prompt on Right */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+              {/* Examples Section - Left */}
+              <div
+                className="bg-white rounded-lg p-6"
+                style={{
+                  border: "1px solid #F1F3F7",
+                  boxShadow:
+                    "0 0 6px 0 rgba(0, 0, 0, 0.12), 0 2px 3px 0 rgba(0, 0, 0, 0.04), 0 2px 6px 0 rgba(0, 0, 0, 0.04), inset 0 -2px 3px 0 rgba(0, 0, 0, 0.08)",
+                }}
+              >
+                <div className="flex items-center gap-2 mb-4">
+                  <h3
+                    className="font-semibold"
+                    style={{ color: colorTokens.title, fontSize: "16px" }}
+                  >
+                    Quick Examples
+                  </h3>
+                </div>
+                <p
+                  className="text-sm mb-4"
+                  style={{ color: colorTokens.paragraph }}
+                >
+                  Click any example to use it as a starting point
+                </p>
+
+                <div className="grid grid-cols-1 gap-3">
+                  {dynamicPrompts.map((example, index) => (
+                    <div
+                      key={index}
+                      onClick={() => handleSamplePrompt(example.prompt)}
+                      className="p-4 cursor-pointer transition-all"
+                      style={{
+                        border: "1px solid #D5E4FF",
+                        borderRadius: 16,
+                        backgroundColor: colorTokens.bgLight,
+                        boxShadow:
+                          "0px 0px 2px 0px rgba(0,19,88,0.10), 0px 2px 2px 0px rgba(0,19,88,0.02)",
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.borderColor =
+                          colorTokens.secondary600;
+                        e.currentTarget.style.backgroundColor = "#E9F1FF";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.borderColor = "#D5E4FF";
+                        e.currentTarget.style.backgroundColor =
+                          colorTokens.bgLight;
+                      }}
+                    >
+                      <div className="flex flex-col md:flex-row items-start gap-3">
+                        <div
+                          className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0"
+                          style={{
+                            background:
+                              "linear-gradient(180deg, #679CFF 0%, #2370FF 100%)",
+                            boxShadow: "0 1px 6px rgba(35, 112, 255, 0.2)",
+                          }}
+                        >
+                          <span className="text-white text-xs font-bold">
+                            {index + 1}
+                          </span>
                         </div>
-                        <div className="text-xs" style={{ color: colorTokens.paragraph }}>
-                          {example.type === "fillable"
-                            ? "Template with placeholders for your personal details"
-                            : clampToWords(example.prompt, 25) + "..."}
+                        <div className="flex-1 min-w-0">
+                          <div
+                            className="font-medium text-sm mb-1"
+                            style={{ color: colorTokens.title }}
+                          >
+                            {example.title}
+                          </div>
+                          <div
+                            className="text-xs"
+                            style={{ color: colorTokens.paragraph }}
+                          >
+                            {example.type === "fillable"
+                              ? "Template with placeholders for your personal details"
+                              : clampToWords(example.prompt, 25) + "..."}
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Text Input Section - Right */}
-            <div className="bg-white rounded-lg p-6" style={{
-              border: '1px solid #F1F3F7',
-              boxShadow: '0 0 6px 0 rgba(0, 0, 0, 0.12), 0 2px 3px 0 rgba(0, 0, 0, 0.04), 0 2px 6px 0 rgba(0, 0, 0, 0.04), inset 0 -2px 3px 0 rgba(0, 0, 0, 0.08)'
-            }}>
-              <div className="flex items-center gap-2 mb-4">
-                <h2 className="font-semibold" style={{ color: colorTokens.title, fontSize: '16px' }}>
-                  Your Information
-                </h2>
-              </div>
-              <p className="text-sm mb-4" style={{ color: colorTokens.paragraph }}>
-                Write a brief description about yourself
-              </p>
-
-              <div className="relative">
-                <textarea
-                  placeholder={`Example: I'm ${userName.split(' ')[0] || 'Advika'}, a 3rd year Computer Science student from Mumbai. I'm skilled in React, Node.js, and Python. I've built web applications and am looking for internship opportunities.`}
-                  value={prompt}
-                  onChange={(e) => setPrompt(e.target.value)}
-                  rows={12}
-                  className="resize-none"
-                  style={{
-                    width: "100%",
-                    minHeight: 320,
-                    paddingLeft: 16,
-                    paddingRight: 16,
-                    paddingTop: 12,
-                    paddingBottom: 12,
-                    backgroundColor: '#FFFFFF',
-                    borderRadius: 12,
-                    border: wordCount > MAX_WORDS ? "1px solid #EF4444" : "1px solid #E1E4ED",
-                    boxShadow: "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
-                    fontSize: 14,
-                    color: colorTokens.title,
-                    fontFamily: "Inter, sans-serif",
-                    fontWeight: 400,
-                    lineHeight: "150%",
-                    letterSpacing: "-0.01em",
-                  }}
-                />
-                <div className="absolute bottom-4 right-4">
-                  <span className={`text-xs px-2.5 py-1 rounded-md font-medium ${
-                    wordCount > MAX_WORDS
-                      ? "bg-red-50 text-red-600 border border-red-200"
-                      : "bg-blue-50 text-blue-600 border border-blue-200"
-                  }`}>
-                    {wordCount}/{MAX_WORDS}
-                  </span>
+                  ))}
                 </div>
               </div>
 
-              {wordCount > MAX_WORDS && (
-                <p className="text-red-600 text-sm mt-3 flex items-center gap-2 px-3 py-2 bg-red-50 rounded-lg border border-red-200">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
-                    <line x1="12" y1="9" x2="12" y2="13"/>
-                    <line x1="12" y1="17" x2="12.01" y2="17"/>
-                  </svg>
-                  Please keep it under {MAX_WORDS} words
+              {/* Text Input Section - Right */}
+              <div
+                className="bg-white rounded-lg p-6"
+                style={{
+                  border: "1px solid #F1F3F7",
+                  boxShadow:
+                    "0 0 6px 0 rgba(0, 0, 0, 0.12), 0 2px 3px 0 rgba(0, 0, 0, 0.04), 0 2px 6px 0 rgba(0, 0, 0, 0.04), inset 0 -2px 3px 0 rgba(0, 0, 0, 0.08)",
+                }}
+              >
+                <div className="flex items-center gap-2 mb-4">
+                  <h2
+                    className="font-semibold"
+                    style={{ color: colorTokens.title, fontSize: "16px" }}
+                  >
+                    Your Information
+                  </h2>
+                </div>
+                <p
+                  className="text-sm mb-4"
+                  style={{ color: colorTokens.paragraph }}
+                >
+                  Write a brief description about yourself
                 </p>
-              )}
+
+                <div className="relative">
+                  <textarea
+                    placeholder={`Example: I'm ${
+                      userName.split(" ")[0] || "Advika"
+                    }, a 3rd year Computer Science student from Mumbai. I'm skilled in React, Node.js, and Python. I've built web applications and am looking for internship opportunities.`}
+                    value={prompt}
+                    onChange={(e) => setPrompt(e.target.value)}
+                    rows={12}
+                    className="resize-none min-h-screen-[320px] min-h-screen-[200px]"
+                    style={{
+                      width: "100%",
+                      // minHeight: 320,
+                      paddingLeft: 16,
+                      paddingRight: 16,
+                      paddingTop: 12,
+                      paddingBottom: 12,
+                      backgroundColor: "#FFFFFF",
+                      borderRadius: 12,
+                      border:
+                        wordCount > MAX_WORDS
+                          ? "1px solid #EF4444"
+                          : "1px solid #E1E4ED",
+                      boxShadow: "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
+                      fontSize: 14,
+                      color: colorTokens.title,
+                      fontFamily: "Inter, sans-serif",
+                      fontWeight: 400,
+                      lineHeight: "150%",
+                      letterSpacing: "-0.01em",
+                    }}
+                  />
+                  <div className="absolute bottom-4 right-4">
+                    <span
+                      className={`text-xs px-2.5 py-1 rounded-md font-medium ${
+                        wordCount > MAX_WORDS
+                          ? "bg-red-50 text-red-600 border border-red-200"
+                          : "bg-blue-50 text-blue-600 border border-blue-200"
+                      }`}
+                    >
+                      {wordCount}/{MAX_WORDS}
+                    </span>
+                  </div>
+                </div>
+
+                {wordCount > MAX_WORDS && (
+                  <p className="text-red-600 text-sm mt-3 flex items-center gap-2 px-3 py-2 bg-red-50 rounded-lg border border-red-200">
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    >
+                      <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+                      <line x1="12" y1="9" x2="12" y2="13" />
+                      <line x1="12" y1="17" x2="12.01" y2="17" />
+                    </svg>
+                    Please keep it under {MAX_WORDS} words
+                  </p>
+                )}
+              </div>
             </div>
           </div>
-
         </div>
-      </div>
 
-      {/* Floating Generate Button */}
-      <div style={{
-        position: 'fixed',
-        bottom: '2rem',
-        left: typeof window !== 'undefined' && window.innerWidth >= 1024
-          ? collapsed
-            ? 'calc((100vw - 96px) / 2 + 96px)'  // Collapsed: center of (viewport - sidebar)
-            : 'calc((100vw - 272px) / 2 + 272px)' // Expanded: center of (viewport - sidebar)
-          : '50%',
-        transform: 'translateX(-50%)',
-        zIndex: 50,
-        transition: 'left 0.3s ease'
-      }}>
-        <button
-          onClick={handleNext}
-          disabled={!prompt.trim() || wordCount > MAX_WORDS}
-          className={`flex items-center gap-2 ${
-            !prompt.trim() || wordCount > MAX_WORDS
-              ? "opacity-50 cursor-not-allowed"
-              : ""
-          }`}
+        {/* Floating Generate Button */}
+        <div
           style={{
-            display: "inline-flex",
-            padding: "12px 20px",
-            alignItems: "center",
-            borderRadius: "8px",
-            background: !prompt.trim() || wordCount > MAX_WORDS
-              ? '#9CA3AF'
-              : "linear-gradient(180deg, #679CFF 0%, #2370FF 100%)",
-            boxShadow: !prompt.trim() || wordCount > MAX_WORDS
-              ? 'none'
-              : "0 2px 4px 0 rgba(77, 145, 225, 0.10), 0 1px 0.3px 0 rgba(255, 255, 255, 0.25) inset, 0 -1px 0.3px 0 rgba(0, 19, 88, 0.25) inset",
-            color: "#FFFFFF",
-            textAlign: "center",
-            textShadow: "0 0.5px 1.5px rgba(0, 19, 88, 0.30), 0 2px 5px rgba(0, 19, 88, 0.10)",
-            fontFamily: "Inter, sans-serif",
-            fontSize: "15px",
-            fontWeight: 600,
-            lineHeight: "125%",
-            letterSpacing: "-0.36px",
-            transition: "all 0.3s ease"
+            position: "fixed",
+            bottom: "2rem",
+            left:
+              typeof window !== "undefined" && window.innerWidth >= 1024
+                ? collapsed
+                  ? "calc((100vw - 96px) / 2 + 96px)" // Collapsed: center of (viewport - sidebar)
+                  : "calc((100vw - 272px) / 2 + 272px)" // Expanded: center of (viewport - sidebar)
+                : "50%",
+            transform: "translateX(-50%)",
+            zIndex: 50,
+            transition: "left 0.3s ease",
           }}
         >
-          Generate Resume
-          <ArrowRight className="h-4 w-4" />
-        </button>
-      </div>
-    </DashboardLayout>
+          <button
+            onClick={handleNext}
+            disabled={!prompt.trim() || wordCount > MAX_WORDS}
+            className={`flex items-center gap-2 ${
+              !prompt.trim() || wordCount > MAX_WORDS
+                ? "opacity-50 cursor-not-allowed"
+                : ""
+            }`}
+            style={{
+              display: "inline-flex",
+              padding: "12px 20px",
+              alignItems: "center",
+              borderRadius: "8px",
+              background:
+                !prompt.trim() || wordCount > MAX_WORDS
+                  ? "#9CA3AF"
+                  : "linear-gradient(180deg, #679CFF 0%, #2370FF 100%)",
+              boxShadow:
+                !prompt.trim() || wordCount > MAX_WORDS
+                  ? "none"
+                  : "0 2px 4px 0 rgba(77, 145, 225, 0.10), 0 1px 0.3px 0 rgba(255, 255, 255, 0.25) inset, 0 -1px 0.3px 0 rgba(0, 19, 88, 0.25) inset",
+              color: "#FFFFFF",
+              textAlign: "center",
+              textShadow:
+                "0 0.5px 1.5px rgba(0, 19, 88, 0.30), 0 2px 5px rgba(0, 19, 88, 0.10)",
+              fontFamily: "Inter, sans-serif",
+              fontSize: "15px",
+              fontWeight: 600,
+              lineHeight: "125%",
+              letterSpacing: "-0.36px",
+              transition: "all 0.3s ease",
+            }}
+          >
+            Generate Resume
+            <ArrowRight className="h-4 w-4" />
+          </button>
+        </div>
+      </DashboardLayout>
     </>
   );
 }

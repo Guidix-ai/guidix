@@ -913,7 +913,7 @@ export default function ResumeBuilderPage() {
                               textShadow:
                                 "0 0.5px 1.5px rgba(0, 19, 88, 0.30), 0 2px 5px rgba(0, 19, 88, 0.10)",
                               fontFamily: "Inter, sans-serif",
-                              fontSize: "14px",
+                              fontSize: "16px",
                               fontWeight: 500,
                               lineHeight: "125%",
                             }}
@@ -967,7 +967,7 @@ export default function ResumeBuilderPage() {
                               textShadow:
                                 "0 0.5px 1.5px rgba(0, 19, 88, 0.30), 0 2px 5px rgba(0, 19, 88, 0.10)",
                               fontFamily: "Inter, sans-serif",
-                              fontSize: "14px",
+                              fontSize: "16px",
                               fontWeight: 500,
                               lineHeight: "125%",
                             }}

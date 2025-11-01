@@ -4,17 +4,17 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { ArrowRight, ArrowLeft, Star, User, Briefcase } from "lucide-react";
 import {
-  ArrowRight,
-  ArrowLeft,
-  Star,
-  User,
-  Briefcase,
-} from "lucide-react";
-import { DashboardLayout, useSidebar } from "@/components/layout/dashboard-layout";
+  DashboardLayout,
+  useSidebar,
+} from "@/components/layout/dashboard-layout";
 import { allTemplates } from "@/components/pdf-templates";
-import dynamic from 'next/dynamic';
-import { enhanceResume, createResumeFromPrompt } from "@/services/resumeService";
+import dynamic from "next/dynamic";
+import {
+  enhanceResume,
+  createResumeFromPrompt,
+} from "@/services/resumeService";
 import { handleApiError, logError } from "@/utils/errorHandler";
 import ResumeBreadcrumbs from "@/components/ResumeBreadcrumbs";
 
@@ -27,7 +27,7 @@ const colorTokens = {
 };
 
 // Dynamically import PDFPreview to avoid SSR issues
-const PDFPreview = dynamic(() => import('@/components/PDFPreview'), {
+const PDFPreview = dynamic(() => import("@/components/PDFPreview"), {
   ssr: false,
   loading: () => (
     <div className="w-full h-full bg-gray-100 rounded flex items-center justify-center">
@@ -37,7 +37,9 @@ const PDFPreview = dynamic(() => import('@/components/PDFPreview'), {
 });
 
 function TemplateSelectionContent() {
-  const [selectedTemplate, setSelectedTemplate] = useState("aa97e710-4457-46fb-ac6f-1765ad3a6d43");
+  const [selectedTemplate, setSelectedTemplate] = useState(
+    "aa97e710-4457-46fb-ac6f-1765ad3a6d43"
+  );
   const router = useRouter();
   const searchParams = useSearchParams();
   const [userName, setUserName] = useState("there");
@@ -65,18 +67,18 @@ function TemplateSelectionContent() {
   const templates = allTemplates.map((template, index) => ({
     ...template,
     isRecommended: index < 4,
-    style: template.category === 'internship' ? 'modern' : 'professional',
+    style: template.category === "internship" ? "modern" : "professional",
   }));
 
   const handleTemplateSelect = (templateId) => {
-    console.log('✅ Template Selected - UUID:', templateId);
+    console.log("✅ Template Selected - UUID:", templateId);
     setSelectedTemplate(templateId);
 
     // Scroll to the selected template in the carousel
     setTimeout(() => {
       const element = document.getElementById(`template-${templateId}`);
       if (element) {
-        element.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        element.scrollIntoView({ behavior: "smooth", block: "nearest" });
       }
     }, 100);
   };
@@ -85,7 +87,7 @@ function TemplateSelectionContent() {
     setFilters((prev) => {
       const currentArray = prev[filterType];
       const newArray = currentArray.includes(value)
-        ? currentArray.filter(item => item !== value)
+        ? currentArray.filter((item) => item !== value)
         : [...currentArray, value];
       return {
         ...prev,
@@ -103,15 +105,24 @@ function TemplateSelectionContent() {
 
   const filteredTemplates = templates.filter((template) => {
     // Category filter
-    if (filters.categories.length > 0 && !filters.categories.includes(template.category)) {
+    if (
+      filters.categories.length > 0 &&
+      !filters.categories.includes(template.category)
+    ) {
       return false;
     }
     // Headshot filter
     if (filters.headshots.length > 0) {
-      if (filters.headshots.includes("with") && !template.hasPhoto) return false;
-      if (filters.headshots.includes("without") && template.hasPhoto) return false;
+      if (filters.headshots.includes("with") && !template.hasPhoto)
+        return false;
+      if (filters.headshots.includes("without") && template.hasPhoto)
+        return false;
       // If both are selected, show all
-      if (filters.headshots.includes("with") && filters.headshots.includes("without")) return true;
+      if (
+        filters.headshots.includes("with") &&
+        filters.headshots.includes("without")
+      )
+        return true;
     }
     return true;
   });
@@ -123,65 +134,82 @@ function TemplateSelectionContent() {
     setError(null);
 
     try {
-      console.log('🚀 Sending template UUID to backend:', selectedTemplate);
+      console.log("🚀 Sending template UUID to backend:", selectedTemplate);
 
       const isFromUpload = searchParams.get("from") === "upload";
 
       if (isFromUpload) {
         // If from upload flow, call enhance API with selected template
-        const resumeId = sessionStorage.getItem('uploadedResumeId');
+        const resumeId = sessionStorage.getItem("uploadedResumeId");
         if (!resumeId) {
-          throw new Error('Resume ID not found. Please upload your resume again.');
+          throw new Error(
+            "Resume ID not found. Please upload your resume again."
+          );
         }
 
-        console.log('📤 Calling enhanceResume API with UUID:', selectedTemplate);
+        console.log(
+          "📤 Calling enhanceResume API with UUID:",
+          selectedTemplate
+        );
         const response = await enhanceResume(resumeId, selectedTemplate); // Pass template ID
 
         if (response.success) {
           // Store the enhanced data and navigate
-          sessionStorage.setItem('enhancedResumeData', JSON.stringify(response.data));
-          sessionStorage.setItem('selectedTemplateId', selectedTemplate); // Store template ID
+          sessionStorage.setItem(
+            "enhancedResumeData",
+            JSON.stringify(response.data)
+          );
+          sessionStorage.setItem("selectedTemplateId", selectedTemplate); // Store template ID
           const params = new URLSearchParams(searchParams);
           params.set("template", selectedTemplate);
           params.set("resumeId", resumeId);
           params.set("from", "upload");
           router.push(`/enhanced-resume?${params.toString()}`);
         } else {
-          setError(response.message || 'Failed to enhance resume');
+          setError(response.message || "Failed to enhance resume");
           setLoading(false);
         }
       } else {
         // If from AI prompt flow, call createResumeFromPrompt API with selected template
-        const userPrompt = sessionStorage.getItem('userPrompt') || searchParams.get("prompt");
+        const userPrompt =
+          sessionStorage.getItem("userPrompt") || searchParams.get("prompt");
         if (!userPrompt) {
-          throw new Error('Prompt not found. Please go back and enter your details.');
+          throw new Error(
+            "Prompt not found. Please go back and enter your details."
+          );
         }
 
-        console.log('📤 Calling createResumeFromPrompt API with UUID:', selectedTemplate);
+        console.log(
+          "📤 Calling createResumeFromPrompt API with UUID:",
+          selectedTemplate
+        );
         const response = await createResumeFromPrompt(
           userPrompt,
-          'My Resume',
+          "My Resume",
           selectedTemplate // Pass the selected template ID
         );
 
         if (response.success) {
           // Store the resume data and navigate
-          sessionStorage.setItem('createdResumeId', response.data.resume_id);
-          sessionStorage.setItem('createdResumeData', JSON.stringify(response.data));
-          sessionStorage.setItem('selectedTemplateId', selectedTemplate); // Store template ID
+          sessionStorage.setItem("createdResumeId", response.data.resume_id);
+          sessionStorage.setItem(
+            "createdResumeData",
+            JSON.stringify(response.data)
+          );
+          sessionStorage.setItem("selectedTemplateId", selectedTemplate); // Store template ID
           const params = new URLSearchParams(searchParams);
           params.set("template", selectedTemplate);
           params.set("resumeId", response.data.resume_id);
           params.set("from", "ai");
           router.push(`/enhanced-resume?${params.toString()}`);
         } else {
-          setError(response.message || 'Failed to create resume');
+          setError(response.message || "Failed to create resume");
           setLoading(false);
         }
       }
     } catch (err) {
       const errorMessage = handleApiError(err);
-      logError('TemplateSelectionPage', err);
+      logError("TemplateSelectionPage", err);
       setError(errorMessage);
       setLoading(false);
     }
@@ -196,7 +224,9 @@ function TemplateSelectionContent() {
     }
   };
 
-  const selectedTemplateData = filteredTemplates.find(t => t.id === selectedTemplate);
+  const selectedTemplateData = filteredTemplates.find(
+    (t) => t.id === selectedTemplate
+  );
 
   // Determine step based on flow
   const isFromUpload = searchParams.get("from") === "upload";
@@ -234,7 +264,7 @@ function TemplateSelectionContent() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           {/* Banner */}
           <div
-            className="relative py-6 px-8 overflow-hidden flex items-center mb-6"
+            className="mb-6 relative py-[12px] px-[16px] md:py-6 md:px-8 overflow-hidden min-h-[56px] md:min-h-[100px]"
             style={{
               backgroundImage: "url(/header-banner.svg)",
               backgroundSize: "cover",
@@ -243,14 +273,17 @@ function TemplateSelectionContent() {
               minHeight: "100px",
               boxShadow: "0 4px 20px 0 #2370FF66",
               borderRadius: "16px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
             }}
           >
             <div className="relative z-10">
               <h1
-                className="text-white font-bold"
+                className="text-white font-bold text-[24px] md:text-[32px]"
                 style={{
                   textShadow: "0 2px 10px rgba(0, 0, 0, 0.3)",
-                  fontSize: "32px",
+                  // fontSize: "32px",
                   lineHeight: "1.2",
                 }}
               >
@@ -260,12 +293,15 @@ function TemplateSelectionContent() {
           </div>
 
           {/* Main Layout: Filters Left, Templates Right */}
-          <div className="flex gap-6" style={{ position: "relative" }}>
+          <div
+            className="flex flex-col md:flex-row gap-6"
+            style={{ position: "relative" }}
+          >
             {/* Left Sidebar - Sticky Filters */}
-            <div style={{ width: "280px", flexShrink: 0 }}>
+            <div style={{ flexShrink: 0 }} className="md:w-[280px] w-full">
               <div style={{ position: "sticky", top: "80px", zIndex: 10 }}>
                 <div
-                  className="bg-white rounded-xl p-5"
+                  className="bg-white rounded-xl p-[16px] md:p-[24px]"
                   style={{
                     border: "1px solid #F1F3F7",
                     boxShadow:
@@ -274,7 +310,7 @@ function TemplateSelectionContent() {
                     overflowY: "auto",
                   }}
                 >
-                  <div className="flex items-center justify-between mb-5">
+                  <div className="flex items-center justify-between mb-3 md:mb-5">
                     <h2
                       className="font-semibold"
                       style={{
@@ -293,243 +329,245 @@ function TemplateSelectionContent() {
                     </button>
                   </div>
 
-                  {/* Category Filter */}
-                  <div className="mb-5">
-                    <label
-                      className="text-sm font-semibold mb-3 block"
-                      style={{ color: "#0F2678", fontSize: "14px" }}
-                    >
-                      Category
-                    </label>
-                    <div className="flex flex-col gap-3">
-                      <label className="flex items-center gap-3 cursor-pointer">
-                        <svg
-                          width="20"
-                          height="20"
-                          viewBox="0 0 20 20"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <rect
-                            x="1"
-                            y="1"
-                            width="18"
-                            height="18"
-                            rx="5"
-                            fill={
-                              filters.categories.includes("internship")
-                                ? "#2370FF"
-                                : "#FFFFFF"
-                            }
-                            stroke={
-                              filters.categories.includes("internship")
-                                ? "#2370FF"
-                                : "#C0CCDE"
-                            }
-                            strokeWidth="2"
-                          />
-                          {filters.categories.includes("internship") && (
-                            <path
-                              d="M14 7L8.5 12.5L6 10"
-                              stroke="white"
-                              strokeWidth="1.5"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                          )}
-                        </svg>
-                        <input
-                          type="checkbox"
-                          className="sr-only"
-                          checked={filters.categories.includes("internship")}
-                          onChange={() =>
-                            handleFilterChange("categories", "internship")
-                          }
-                        />
-                        <span
-                          style={{
-                            color: "#6477B4",
-                            fontSize: "12px",
-                            fontWeight: 400,
-                          }}
-                        >
-                          Internship
-                        </span>
+                  <div className="flex flex-row md:flex-col items-center md:items-start gap-6 md:gap-0">
+                    {/* Category Filter */}
+                    <div className="">
+                      <label
+                        className="text-sm font-semibold mb-3 block"
+                        style={{ color: "#0F2678", fontSize: "14px" }}
+                      >
+                        Category
                       </label>
-                      <label className="flex items-center gap-3 cursor-pointer">
-                        <svg
-                          width="20"
-                          height="20"
-                          viewBox="0 0 20 20"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <rect
-                            x="1"
-                            y="1"
-                            width="18"
-                            height="18"
-                            rx="5"
-                            fill={
-                              filters.categories.includes("job")
-                                ? "#2370FF"
-                                : "#FFFFFF"
-                            }
-                            stroke={
-                              filters.categories.includes("job")
-                                ? "#2370FF"
-                                : "#C0CCDE"
-                            }
-                            strokeWidth="2"
-                          />
-                          {filters.categories.includes("job") && (
-                            <path
-                              d="M14 7L8.5 12.5L6 10"
-                              stroke="white"
-                              strokeWidth="1.5"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
+                      <div className="flex flex-col gap-3">
+                        <label className="flex items-center gap-3 cursor-pointer">
+                          <svg
+                            width="20"
+                            height="20"
+                            viewBox="0 0 20 20"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <rect
+                              x="1"
+                              y="1"
+                              width="18"
+                              height="18"
+                              rx="5"
+                              fill={
+                                filters.categories.includes("internship")
+                                  ? "#2370FF"
+                                  : "#FFFFFF"
+                              }
+                              stroke={
+                                filters.categories.includes("internship")
+                                  ? "#2370FF"
+                                  : "#C0CCDE"
+                              }
+                              strokeWidth="2"
                             />
-                          )}
-                        </svg>
-                        <input
-                          type="checkbox"
-                          className="sr-only"
-                          checked={filters.categories.includes("job")}
-                          onChange={() =>
-                            handleFilterChange("categories", "job")
-                          }
-                        />
-                        <span
-                          style={{
-                            color: "#6477B4",
-                            fontSize: "12px",
-                            fontWeight: 400,
-                          }}
-                        >
-                          Professional
-                        </span>
-                      </label>
+                            {filters.categories.includes("internship") && (
+                              <path
+                                d="M14 7L8.5 12.5L6 10"
+                                stroke="white"
+                                strokeWidth="1.5"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              />
+                            )}
+                          </svg>
+                          <input
+                            type="checkbox"
+                            className="sr-only"
+                            checked={filters.categories.includes("internship")}
+                            onChange={() =>
+                              handleFilterChange("categories", "internship")
+                            }
+                          />
+                          <span
+                            style={{
+                              color: "#6477B4",
+                              fontSize: "12px",
+                              fontWeight: 400,
+                            }}
+                          >
+                            Internship
+                          </span>
+                        </label>
+                        <label className="flex items-center gap-3 cursor-pointer">
+                          <svg
+                            width="20"
+                            height="20"
+                            viewBox="0 0 20 20"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <rect
+                              x="1"
+                              y="1"
+                              width="18"
+                              height="18"
+                              rx="5"
+                              fill={
+                                filters.categories.includes("job")
+                                  ? "#2370FF"
+                                  : "#FFFFFF"
+                              }
+                              stroke={
+                                filters.categories.includes("job")
+                                  ? "#2370FF"
+                                  : "#C0CCDE"
+                              }
+                              strokeWidth="2"
+                            />
+                            {filters.categories.includes("job") && (
+                              <path
+                                d="M14 7L8.5 12.5L6 10"
+                                stroke="white"
+                                strokeWidth="1.5"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              />
+                            )}
+                          </svg>
+                          <input
+                            type="checkbox"
+                            className="sr-only"
+                            checked={filters.categories.includes("job")}
+                            onChange={() =>
+                              handleFilterChange("categories", "job")
+                            }
+                          />
+                          <span
+                            style={{
+                              color: "#6477B4",
+                              fontSize: "12px",
+                              fontWeight: 400,
+                            }}
+                          >
+                            Professional
+                          </span>
+                        </label>
+                      </div>
                     </div>
-                  </div>
 
-                  {/* Photo Filter */}
-                  <div>
-                    <label
-                      className="text-sm font-semibold mb-3 block"
-                      style={{ color: "#0F2678", fontSize: "14px" }}
-                    >
-                      Photo
-                    </label>
-                    <div className="flex flex-col gap-3">
-                      <label className="flex items-center gap-3 cursor-pointer">
-                        <svg
-                          width="20"
-                          height="20"
-                          viewBox="0 0 20 20"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <rect
-                            x="1"
-                            y="1"
-                            width="18"
-                            height="18"
-                            rx="5"
-                            fill={
-                              filters.headshots.includes("with")
-                                ? "#2370FF"
-                                : "#FFFFFF"
-                            }
-                            stroke={
-                              filters.headshots.includes("with")
-                                ? "#2370FF"
-                                : "#C0CCDE"
-                            }
-                            strokeWidth="2"
-                          />
-                          {filters.headshots.includes("with") && (
-                            <path
-                              d="M14 7L8.5 12.5L6 10"
-                              stroke="white"
-                              strokeWidth="1.5"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                          )}
-                        </svg>
-                        <input
-                          type="checkbox"
-                          className="sr-only"
-                          checked={filters.headshots.includes("with")}
-                          onChange={() =>
-                            handleFilterChange("headshots", "with")
-                          }
-                        />
-                        <span
-                          style={{
-                            color: "#6477B4",
-                            fontSize: "12px",
-                            fontWeight: 400,
-                          }}
-                        >
-                          With Photo
-                        </span>
+                    {/* Photo Filter */}
+                    <div>
+                      <label
+                        className="text-sm font-semibold mb-3 block"
+                        style={{ color: "#0F2678", fontSize: "14px" }}
+                      >
+                        Photo
                       </label>
-                      <label className="flex items-center gap-3 cursor-pointer">
-                        <svg
-                          width="20"
-                          height="20"
-                          viewBox="0 0 20 20"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <rect
-                            x="1"
-                            y="1"
-                            width="18"
-                            height="18"
-                            rx="5"
-                            fill={
-                              filters.headshots.includes("without")
-                                ? "#2370FF"
-                                : "#FFFFFF"
-                            }
-                            stroke={
-                              filters.headshots.includes("without")
-                                ? "#2370FF"
-                                : "#C0CCDE"
-                            }
-                            strokeWidth="2"
-                          />
-                          {filters.headshots.includes("without") && (
-                            <path
-                              d="M14 7L8.5 12.5L6 10"
-                              stroke="white"
-                              strokeWidth="1.5"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
+                      <div className="flex flex-col gap-3">
+                        <label className="flex items-center gap-3 cursor-pointer">
+                          <svg
+                            width="20"
+                            height="20"
+                            viewBox="0 0 20 20"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <rect
+                              x="1"
+                              y="1"
+                              width="18"
+                              height="18"
+                              rx="5"
+                              fill={
+                                filters.headshots.includes("with")
+                                  ? "#2370FF"
+                                  : "#FFFFFF"
+                              }
+                              stroke={
+                                filters.headshots.includes("with")
+                                  ? "#2370FF"
+                                  : "#C0CCDE"
+                              }
+                              strokeWidth="2"
                             />
-                          )}
-                        </svg>
-                        <input
-                          type="checkbox"
-                          className="sr-only"
-                          checked={filters.headshots.includes("without")}
-                          onChange={() =>
-                            handleFilterChange("headshots", "without")
-                          }
-                        />
-                        <span
-                          style={{
-                            color: "#6477B4",
-                            fontSize: "12px",
-                            fontWeight: 400,
-                          }}
-                        >
-                          Without Photo
-                        </span>
-                      </label>
+                            {filters.headshots.includes("with") && (
+                              <path
+                                d="M14 7L8.5 12.5L6 10"
+                                stroke="white"
+                                strokeWidth="1.5"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              />
+                            )}
+                          </svg>
+                          <input
+                            type="checkbox"
+                            className="sr-only"
+                            checked={filters.headshots.includes("with")}
+                            onChange={() =>
+                              handleFilterChange("headshots", "with")
+                            }
+                          />
+                          <span
+                            style={{
+                              color: "#6477B4",
+                              fontSize: "12px",
+                              fontWeight: 400,
+                            }}
+                          >
+                            With Photo
+                          </span>
+                        </label>
+                        <label className="flex items-center gap-3 cursor-pointer">
+                          <svg
+                            width="20"
+                            height="20"
+                            viewBox="0 0 20 20"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <rect
+                              x="1"
+                              y="1"
+                              width="18"
+                              height="18"
+                              rx="5"
+                              fill={
+                                filters.headshots.includes("without")
+                                  ? "#2370FF"
+                                  : "#FFFFFF"
+                              }
+                              stroke={
+                                filters.headshots.includes("without")
+                                  ? "#2370FF"
+                                  : "#C0CCDE"
+                              }
+                              strokeWidth="2"
+                            />
+                            {filters.headshots.includes("without") && (
+                              <path
+                                d="M14 7L8.5 12.5L6 10"
+                                stroke="white"
+                                strokeWidth="1.5"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              />
+                            )}
+                          </svg>
+                          <input
+                            type="checkbox"
+                            className="sr-only"
+                            checked={filters.headshots.includes("without")}
+                            onChange={() =>
+                              handleFilterChange("headshots", "without")
+                            }
+                          />
+                          <span
+                            style={{
+                              color: "#6477B4",
+                              fontSize: "12px",
+                              fontWeight: 400,
+                            }}
+                          >
+                            Without Photo
+                          </span>
+                        </label>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -539,7 +577,7 @@ function TemplateSelectionContent() {
             {/* Right Content - Templates Grid */}
             <div style={{ flex: 1 }}>
               {/* Templates Grid - 2 columns */}
-              <div className="grid grid-cols-2 gap-6 mb-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                 {filteredTemplates.map((template) => (
                   <div
                     key={template.id}
@@ -585,18 +623,21 @@ function TemplateSelectionContent() {
                           <div
                             className="absolute bottom-0 left-0 right-0"
                             style={{
-                              height: '60%',
-                              backdropFilter: 'blur(12px)',
-                              WebkitBackdropFilter: 'blur(12px)',
-                              maskImage: 'linear-gradient(to top, black 0%, black 40%, transparent 100%)',
-                              WebkitMaskImage: 'linear-gradient(to top, black 0%, black 40%, transparent 100%)',
+                              height: "60%",
+                              backdropFilter: "blur(12px)",
+                              WebkitBackdropFilter: "blur(12px)",
+                              maskImage:
+                                "linear-gradient(to top, black 0%, black 40%, transparent 100%)",
+                              WebkitMaskImage:
+                                "linear-gradient(to top, black 0%, black 40%, transparent 100%)",
                             }}
                           ></div>
                           {/* Dark gradient overlay - entire card */}
                           <div
                             className="absolute bottom-0 left-0 right-0 top-0"
                             style={{
-                              background: 'linear-gradient(to top, rgba(0,0,0,0.90) 0%, rgba(0,0,0,0.85) 10%, rgba(0,0,0,0.75) 20%, rgba(0,0,0,0.62) 30%, rgba(0,0,0,0.48) 40%, rgba(0,0,0,0.35) 50%, rgba(0,0,0,0.22) 60%, rgba(0,0,0,0.12) 70%, rgba(0,0,0,0.05) 80%, rgba(0,0,0,0.02) 90%, rgba(0,0,0,0) 100%)',
+                              background:
+                                "linear-gradient(to top, rgba(0,0,0,0.90) 0%, rgba(0,0,0,0.85) 10%, rgba(0,0,0,0.75) 20%, rgba(0,0,0,0.62) 30%, rgba(0,0,0,0.48) 40%, rgba(0,0,0,0.35) 50%, rgba(0,0,0,0.22) 60%, rgba(0,0,0,0.12) 70%, rgba(0,0,0,0.05) 80%, rgba(0,0,0,0.02) 90%, rgba(0,0,0,0) 100%)",
                             }}
                           ></div>
                           <div className="relative z-10">
@@ -725,14 +766,15 @@ function TemplateSelectionContent() {
         style={{
           position: "fixed",
           bottom: "2rem",
-          left: typeof window !== 'undefined' && window.innerWidth >= 1024
-            ? collapsed
-              ? 'calc((100vw - 96px) / 2 + 96px)'  // Collapsed: center of (viewport - sidebar)
-              : 'calc((100vw - 272px) / 2 + 272px)' // Expanded: center of (viewport - sidebar)
-            : '50%',
+          left:
+            typeof window !== "undefined" && window.innerWidth >= 1024
+              ? collapsed
+                ? "calc((100vw - 96px) / 2 + 96px)" // Collapsed: center of (viewport - sidebar)
+                : "calc((100vw - 272px) / 2 + 272px)" // Expanded: center of (viewport - sidebar)
+              : "50%",
           transform: "translateX(-50%)",
           zIndex: 50,
-          transition: 'left 0.3s ease'
+          transition: "left 0.3s ease",
         }}
       >
         <button

@@ -949,11 +949,9 @@ export function DashboardLayout({ children, progressBar }) {
         {/* Main Content */}
         <div
           style={{
-            paddingTop: "16px",
-            paddingRight: "16px",
-            paddingBottom: "16px",
+            
           }}
-          className="p-[16px] md:p-[0px]"
+          className="p-[0px] md:pl-[0px] md:pr-[16px] md:pt-[16px] md:pb-[16px]"
         >
           <style
             dangerouslySetInnerHTML={{
@@ -974,12 +972,12 @@ export function DashboardLayout({ children, progressBar }) {
                 flexDirection: "column",
                 alignItems: "stretch",
                 gap: "24px",
-                borderRadius: "12px",
+                // borderRadius: "12px",
                 background: "#FFF",
                 boxShadow: "0 4px 8px -2px rgba(0, 19, 88, 0.10)",
                 width: "100%",
               }}
-              className="p-[16px] md:p-[24px]"
+              className="p-[16px] md:p-[24px] rounded-0 md:rounded-[12px]"
             >
               {children}
             </main>
