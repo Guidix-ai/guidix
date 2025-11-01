@@ -281,23 +281,24 @@ function ResumeConfirmationPageContent() {
     }, 300);
   };
 
-  const progressBarElement = (path === "ai" || !path) ? (
-    <ResumeBreadcrumbs currentStep={1} totalSteps={4} inNavbar={true} />
-  ) : (
-    <ResumeBreadcrumbs
-      currentStep={1}
-      totalSteps={6}
-      inNavbar={true}
-      steps={[
-        { id: 1, label: "Info", route: "/resume-confirmation?path=upload" },
-        { id: 2, label: "Upload", route: "#" },
-        { id: 3, label: "Analyzing", route: "#" },
-        { id: 4, label: "Review", route: "#" },
-        { id: 5, label: "Template", route: "#" },
-        { id: 6, label: "Editor", route: "#" },
-      ]}
-    />
-  );
+  const progressBarElement =
+    path === "ai" || !path ? (
+      <ResumeBreadcrumbs currentStep={1} totalSteps={4} inNavbar={true} />
+    ) : (
+      <ResumeBreadcrumbs
+        currentStep={1}
+        totalSteps={6}
+        inNavbar={true}
+        steps={[
+          { id: 1, label: "Info", route: "/resume-confirmation?path=upload" },
+          { id: 2, label: "Upload", route: "#" },
+          { id: 3, label: "Analyzing", route: "#" },
+          { id: 4, label: "Review", route: "#" },
+          { id: 5, label: "Template", route: "#" },
+          { id: 6, label: "Editor", route: "#" },
+        ]}
+      />
+    );
 
   return (
     <DashboardLayout progressBar={progressBarElement}>
@@ -312,7 +313,7 @@ function ResumeConfirmationPageContent() {
       >
         {/* Blue Banner */}
         <div
-          className="relative py-6 px-8 overflow-hidden flex items-center"
+          className="relative py-[12px] px-[16px] md:py-6 md:px-8 overflow-hidden min-h-[56px] md:min-h-[100px]"
           style={{
             backgroundImage: "url(/header-banner.svg)",
             backgroundSize: "cover",
@@ -321,14 +322,17 @@ function ResumeConfirmationPageContent() {
             minHeight: "100px",
             boxShadow: "0 4px 20px 0 #2370FF66",
             borderRadius: "16px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
           }}
         >
           <div className="relative z-10">
             <h1
-              className="text-white font-semibold"
+              className="text-white font-bold text-[24px] md:text-[32px]"
               style={{
                 textShadow: "0 2px 10px rgba(0, 0, 0, 0.3)",
-                fontSize: "32px",
+                // fontSize: "32px",
                 lineHeight: "1.2",
               }}
             >
@@ -365,10 +369,11 @@ function ResumeConfirmationPageContent() {
                 border: "1px solid #F1F3F7",
                 boxShadow: shadowBoxStyle,
                 borderRadius: "16px",
-                padding: "2rem",
+                // padding: "2rem",
                 display: "flex",
                 flexDirection: "column",
               }}
+              className="p-[24px] md:p-[32px]"
             >
               {/* Step 1: Academic Year */}
               {currentStep === 1 && (
@@ -390,7 +395,7 @@ function ResumeConfirmationPageContent() {
                   <p
                     style={{
                       fontSize: "14px",
-                      color: "#6D7586",
+                      color: "#6477b4",
                       textAlign: "center",
                       marginBottom: "2rem",
                     }}
@@ -401,9 +406,9 @@ function ResumeConfirmationPageContent() {
                   <div
                     style={{
                       display: "grid",
-                      gridTemplateColumns: "1fr 1fr",
                       gap: "10px",
                     }}
+                    className="grid-cols-1 md:grid-cols-2"
                   >
                     {[
                       { value: "first", label: "1st Year" },
@@ -458,7 +463,7 @@ function ResumeConfirmationPageContent() {
                   <p
                     style={{
                       fontSize: "14px",
-                      color: "#6D7586",
+                      color: "#6477b4",
                       textAlign: "center",
                       marginBottom: "2rem",
                     }}
@@ -469,9 +474,9 @@ function ResumeConfirmationPageContent() {
                   <div
                     style={{
                       display: "grid",
-                      gridTemplateColumns: "repeat(3, 1fr)",
                       gap: "10px",
                     }}
+                    className="grid-cols-2 md:grid-cols-3"
                   >
                     {engineeringBranches.map((branchItem) => {
                       const IconComponent = branchItem.icon;

@@ -80,7 +80,7 @@ function ResumeCard({ resume, onEdit, onDelete, onDuplicate }) {
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-2 flex-wrap mb-1">
                 <h3
-                  className="font-semibold truncate text-sm lg:text-base"
+                  className="font-semibold truncate text-[16px] lg:text-base"
                   style={{ color: "var(--neutral-darkest)" }}
                 >
                   {title}
@@ -686,7 +686,7 @@ export default function ResumeBuilderPage() {
             <div className="space-y-6 mt-[16px] md:mt-6">
               {hasResumes && (
                 <div
-                  className="bg-white rounded-xl shadow-sm border p-4 lg:p-6"
+                  className="bg-white rounded-xl shadow-sm border p-4 lg:p-6 "
                   style={{ borderColor: "var(--neutral-medium-light)" }}
                 >
                   <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
@@ -913,7 +913,7 @@ export default function ResumeBuilderPage() {
                               textShadow:
                                 "0 0.5px 1.5px rgba(0, 19, 88, 0.30), 0 2px 5px rgba(0, 19, 88, 0.10)",
                               fontFamily: "Inter, sans-serif",
-                              fontSize: "14px",
+                              fontSize: "16px",
                               fontWeight: 500,
                               lineHeight: "125%",
                             }}
@@ -967,7 +967,7 @@ export default function ResumeBuilderPage() {
                               textShadow:
                                 "0 0.5px 1.5px rgba(0, 19, 88, 0.30), 0 2px 5px rgba(0, 19, 88, 0.10)",
                               fontFamily: "Inter, sans-serif",
-                              fontSize: "14px",
+                              fontSize: "16px",
                               fontWeight: 500,
                               lineHeight: "125%",
                             }}
@@ -1039,48 +1039,50 @@ export default function ResumeBuilderPage() {
                 className="bg-white rounded-xl border shadow-sm"
                 style={{ borderColor: "var(--neutral-medium-light)" }}
               >
-                <div className="flex flex-col lg:flex-row items-start lg:items-center space-y-4 lg:space-y-0 lg:space-x-4 p-6">
-                  <div
-                    className="w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0 shadow-sm"
-                    style={{
-                      background: "linear-gradient(135deg, #0355BE, #002A79)",
-                    }}
-                  >
-                    <Image
-                      src="/linkedinoptimising.svg"
-                      alt="LinkedIn"
-                      width={28}
-                      height={28}
-                    />
-                  </div>
+                <div className="flex gap-2 md:gap-[0.1px] flex-row items-start lg:items-center space-y-4 lg:space-y-0 lg:space-x-4 p-6 md:pb-0">
+                  <Image
+                    src="/linkedin-resume-optimizer.svg"
+                    alt="LinkedIn"
+                    width={32}
+                    height={32}
+                    className="mb-0 md:w-[48px] md:h-[48px]"
+                  />
+
                   <div className="flex-1 min-w-0">
-                    <div className="flex flex-col lg:flex-row lg:items-center gap-3">
+                    <div className="flex flex-col lg:flex-row lg:items-center gap-1 md:gap-2">
                       <h2
-                        className="text-xl font-semibold"
+                        className="text-[16px] font-semibold"
                         style={{ color: "var(--neutral-darkest)" }}
                       >
                         LinkedIn Import
                       </h2>
                       <span
-                        className="text-xs px-3 py-1 rounded-full font-medium self-start"
+                        className="text-[10px] md:text-xs px-3 py-1 rounded-full font-medium self-start"
                         style={{ backgroundColor: "#FEF3C7", color: "#92400E" }}
                       >
                         🚧 Coming Soon
                       </span>
                     </div>
-                    <p
-                      className="mt-1"
+                    {/* <p
+                      className="mt-1 text-[14px] hidden md:block"
                       style={{ color: "var(--neutral-medium-dark)" }}
                     >
                       Import your LinkedIn profile to automatically generate a
                       professional resume
-                    </p>
+                    </p> */}
                   </div>
                 </div>
+                <p
+                  className="mt-[-5px] mb-[24px] ml-[88px] text-[14px] hidden lg:block"
+                  style={{ color: "var(--neutral-medium-dark)" }}
+                >
+                  Import your LinkedIn profile to automatically generate a
+                  professional resume
+                </p>
 
                 <div className="p-6 pt-0">
                   <div
-                    className="rounded-xl border p-8 text-center"
+                    className="rounded-xl border p-4 text-center"
                     style={{
                       background:
                         "linear-gradient(135deg, var(--brand-secondary-lightest), #E9F1FF)",
@@ -1096,13 +1098,13 @@ export default function ResumeBuilderPage() {
                       />
                     </div>
                     <h3
-                      className="text-lg font-semibold mb-2"
+                      className="text-[16px] font-semibold mb-2"
                       style={{ color: "var(--neutral-darkest)" }}
                     >
                       LinkedIn Integration
                     </h3>
                     <p
-                      className="mb-6 max-w-md mx-auto"
+                      className="mb-6 max-w-md mx-auto text-[14px]"
                       style={{ color: "var(--neutral-medium-dark)" }}
                     >
                       We&apos;re working on seamless LinkedIn integration to
@@ -1111,10 +1113,10 @@ export default function ResumeBuilderPage() {
                     <div className="flex flex-col lg:flex-row items-center justify-center gap-3">
                       <button
                         disabled
-                        className="px-6 py-3 rounded-lg cursor-not-allowed font-medium"
+                        className="px-6 py-3 rounded-lg cursor-not-allowed font-medium text-[14px]"
                         style={{
-                          backgroundColor: "#C4C9D6",
                           color: "var(--neutral-medium-dark)",
+                          border: "solid rgb(213, 228, 255) 1px",
                         }}
                       >
                         Connect LinkedIn Profile
@@ -1123,7 +1125,7 @@ export default function ResumeBuilderPage() {
                         className="text-sm"
                         style={{ color: "var(--neutral-medium-dark)" }}
                       >
-                        Expected: Q2 2024
+                        Expected: Q1 2026
                       </span>
                     </div>
                   </div>
