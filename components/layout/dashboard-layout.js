@@ -948,9 +948,7 @@ export function DashboardLayout({ children, progressBar }) {
 
         {/* Main Content */}
         <div
-          style={{
-            
-          }}
+          style={{}}
           className="p-[0px] md:pl-[0px] md:pr-[16px] md:pt-[16px] md:pb-[16px]"
         >
           <style

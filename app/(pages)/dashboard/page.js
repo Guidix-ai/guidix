@@ -244,7 +244,7 @@ export default function DashboardPage() {
             }}
           >
             <div className="flex items-center gap-2 mb-4">
-              <div
+              {/* <div
                 className="w-8 h-8 rounded-lg flex items-center justify-center"
                 style={{ backgroundColor: "rgba(255, 255, 255, 0.2)" }}
               >
@@ -263,8 +263,8 @@ export default function DashboardPage() {
                     strokeLinejoin="round"
                   />
                 </svg>
-              </div>
-              <h3 className="text-lg font-bold">Your Insights</h3>
+              </div> */}
+              <h3 className="text-[20px] font-bold">Your Insights</h3>
             </div>
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -277,9 +277,20 @@ export default function DashboardPage() {
                 }}
               >
                 <div className="text-2xl font-bold mb-1">
-                  {insights.recommendedJobs}
+                  <div className="flex items-center gap-1">
+                    <img
+                      src="/jobapplying.svg"
+                      className="w-[32px] h-[32px] object-cover"
+                    />
+                    <div>
+                      {insights.recommendedJobs}
+                      <span style={{ color: "#2370FF", fontWeight: 700 }}>
+                        %
+                      </span>
+                    </div>
+                  </div>
                 </div>
-                <div className="text-xs opacity-90">Recommended Jobs</div>
+                <div className="text-[14px] opacity-90">Recommended Jobs</div>
               </div>
               <div
                 className="p-3 rounded-lg"
@@ -290,9 +301,22 @@ export default function DashboardPage() {
                 }}
               >
                 <div className="text-2xl font-bold mb-1">
-                  {insights.applicationsThisWeek}
+                  <div className="flex items-center gap-1">
+                    <img
+                      src="/jobapplying.svg"
+                      className="w-[32px] h-[32px] object-cover"
+                    />
+                    <div>
+                      {insights.applicationsThisWeek}
+                      <span style={{ color: "#2370FF", fontWeight: 700 }}>
+                        %
+                      </span>
+                    </div>
+                  </div>
                 </div>
-                <div className="text-xs opacity-90">Applications This Week</div>
+                <div className="text-[14px] opacity-90">
+                  Applications This Week
+                </div>
               </div>
               <div
                 className="p-3 rounded-lg"
@@ -303,9 +327,22 @@ export default function DashboardPage() {
                 }}
               >
                 <div className="text-2xl font-bold mb-1">
-                  {insights.upcomingInterviews}
+                  <div className="flex items-center gap-1">
+                    <img
+                      src="/jobapplying.svg"
+                      className="w-[32px] h-[32px] object-cover"
+                    />
+                    <div>
+                      {insights.upcomingInterviews}
+                      <span style={{ color: "#2370FF", fontWeight: 700 }}>
+                        %
+                      </span>
+                    </div>
+                  </div>
                 </div>
-                <div className="text-xs opacity-90">Upcoming Interviews</div>
+                <div className="text-[14px] opacity-90">
+                  Upcoming Interviews
+                </div>
               </div>
               <div
                 className="p-3 rounded-lg"
@@ -316,9 +353,20 @@ export default function DashboardPage() {
                 }}
               >
                 <div className="text-2xl font-bold mb-1">
-                  {insights.profileViews}
+                  <div className="flex items-center gap-1">
+                    <img
+                      src="/jobapplying.svg"
+                      className="w-[32px] h-[32px] object-cover"
+                    />
+                    <div>
+                      {insights.profileViews}
+                      <span style={{ color: "#2370FF", fontWeight: 700 }}>
+                        %
+                      </span>
+                    </div>
+                  </div>
                 </div>
-                <div className="text-xs opacity-90">Profile Views</div>
+                <div className="text-[14px] opacity-90">Profile Views</div>
               </div>
             </div>
           </div>
