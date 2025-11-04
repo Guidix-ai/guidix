@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import {
   MapPin,
@@ -37,6 +38,7 @@ interface Job {
   companyLinkedin?: string;
   hrName?: string;
   hrLinkedin?: string;
+  applyUrl?: string;
 }
 
 const sampleJobs: Job[] = [
@@ -56,6 +58,7 @@ const sampleJobs: Job[] = [
     skillsMatch: 91,
     experienceMatch: 90,
     companyWebsite: "https://www.zomato.com/careers",
+    applyUrl: "https://www.zomato.com/careers/job/react-engineer",
     companyLinkedin: "https://linkedin.com/company/zomato",
     hrName: "Rahul Sharma",
     hrLinkedin: "https://linkedin.com/in/rahulsharma",
@@ -77,6 +80,7 @@ const sampleJobs: Job[] = [
     experienceMatch: 85,
     isRemote: true,
     companyWebsite: "https://www.swiggy.com/careers",
+    applyUrl: "https://www.swiggy.com/careers/job/full-stack-engineer",
     companyLinkedin: "https://linkedin.com/company/swiggy",
     hrName: "Priya Reddy",
     hrLinkedin: "https://linkedin.com/in/priyareddy",
@@ -98,6 +102,7 @@ const sampleJobs: Job[] = [
     experienceMatch: 100,
     isUrgent: true,
     companyWebsite: "https://razorpay.com/jobs",
+    applyUrl: "https://razorpay.com/jobs/senior-frontend-developer",
     companyLinkedin: "https://linkedin.com/company/razorpay",
     hrName: "Anjali Desai",
     hrLinkedin: "https://linkedin.com/in/anjalidesai",
@@ -119,6 +124,7 @@ const sampleJobs: Job[] = [
     experienceMatch: 70,
     isRemote: true,
     companyWebsite: "https://www.phonepe.com/careers",
+    applyUrl: "https://www.phonepe.com/careers/job/frontend-developer",
     companyLinkedin: "https://linkedin.com/company/phonepe",
     hrName: "Vikram Patel",
     hrLinkedin: "https://linkedin.com/in/vikrampatel",
@@ -143,16 +149,43 @@ const JobCard = ({ job }: { job: Job }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
   const [progressValue, setProgressValue] = useState(0);
+  const [showApplyOverlay, setShowApplyOverlay] = useState(false);
+  const [hasApplied, setHasApplied] = useState(false);
 
   useEffect(() => {
     // Animate progress circle on mount
     setTimeout(() => setProgressValue(job.matchScore), 100);
-  }, [job.matchScore]);
+
+    // Check if user has applied to this job before
+    const appliedStatus = localStorage.getItem(`job_applied_${job.id}`);
+    if (appliedStatus === 'true') {
+      setHasApplied(true);
+    }
+  }, [job.id, job.matchScore]);
 
   const getMatchColor = (score: number) => {
     if (score >= 85) return "#10B981";
     if (score >= 70) return "#3B82F6";
     return "#F59E0B";
+  };
+
+  const handleApplyClick = (applyUrl: string) => {
+    // Open the external URL
+    window.open(applyUrl, '_blank');
+    // Show the overlay immediately
+    setShowApplyOverlay(true);
+  };
+
+  const handleConfirmApplied = () => {
+    // User confirmed they applied
+    localStorage.setItem(`job_applied_${job.id}`, 'true');
+    setHasApplied(true);
+    setShowApplyOverlay(false);
+  };
+
+  const handleDenyApplied = () => {
+    // User didn't apply, just close the overlay
+    setShowApplyOverlay(false);
   };
 
   const circumference = 2 * Math.PI * 36;
@@ -304,10 +337,20 @@ const JobCard = ({ job }: { job: Job }) => {
                 Details →
               </button>
               <button
-                style={applyButtonStyle}
-                className="flex-1 py-2 px-3 text-white text-sm font-semibold rounded-lg transition-all hover:opacity-90"
+                onClick={() => !hasApplied && handleApplyClick(job.applyUrl || job.companyWebsite || '#')}
+                disabled={hasApplied}
+                style={{
+                  ...applyButtonStyle,
+                  ...(hasApplied && {
+                    background: "linear-gradient(180deg, #10B981 0%, #059669 100%)",
+                    border: "1px solid rgba(5, 150, 105, 0.30)",
+                    cursor: "not-allowed",
+                    opacity: 0.8
+                  })
+                }}
+                className="flex-1 py-2 px-3 text-white text-sm font-semibold rounded-lg transition-all hover:opacity-90 disabled:hover:opacity-80"
               >
-                Apply Now
+                {hasApplied ? "Applied ✓" : "Apply Now"}
               </button>
             </div>
           </div>
@@ -568,6 +611,147 @@ const JobCard = ({ job }: { job: Job }) => {
           </div>
         </div>
       </div>
+
+      {/* Glass Overlay with Confirmation Dialog */}
+      {showApplyOverlay && (
+        <div
+          className="absolute inset-0 flex items-center justify-center z-50 rounded-2xl"
+          style={{
+            backgroundColor: "rgba(255, 255, 255, 0.25)",
+            backdropFilter: "blur(8px)",
+            WebkitBackdropFilter: "blur(8px)",
+            animation: "fadeIn 0.3s ease-out",
+            padding: "24px",
+          }}
+        >
+          <div
+            className="relative flex flex-col items-center rounded-2xl"
+            style={{
+              gap: "20px",
+              padding: "32px 24px",
+              backgroundColor: "rgba(255, 255, 255, 0.9)",
+              backdropFilter: "blur(12px)",
+              WebkitBackdropFilter: "blur(12px)",
+              border: "1px solid rgba(255, 255, 255, 0.6)",
+              boxShadow: "0 8px 32px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04)",
+              minWidth: "300px",
+              animation: "scaleIn 0.3s ease-out",
+            }}
+          >
+            {/* Icon */}
+            <Image
+              src="/V3.png"
+              alt="Application Icon"
+              width={64}
+              height={64}
+              style={{
+                animation: "scaleIn 0.3s ease-out",
+              }}
+            />
+
+            {/* Title */}
+            <h3
+              className="text-lg font-bold text-center"
+              style={{
+                color: "#353E5C",
+                fontFamily: "Inter, sans-serif",
+                fontWeight: 700,
+                animation: "fadeIn 0.4s ease-out",
+                margin: 0,
+              }}
+            >
+              Have you applied?
+            </h3>
+
+            {/* Description */}
+            <p
+              className="text-sm text-center"
+              style={{
+                color: "#6B7280",
+                fontFamily: "Inter, sans-serif",
+                fontWeight: 500,
+                animation: "fadeIn 0.5s ease-out",
+                margin: 0,
+              }}
+            >
+              Let us know if you've submitted your application
+            </p>
+
+            {/* Buttons */}
+            <div
+              className="flex gap-3 w-full"
+              style={{
+                animation: "fadeIn 0.6s ease-out"
+              }}
+            >
+              <button
+                onClick={handleDenyApplied}
+                className="flex-1 py-3 px-4 rounded-lg text-sm transition-all"
+                style={{
+                  backgroundColor: "#F9FAFB",
+                  color: "#374151",
+                  border: "1px solid #E5E7EB",
+                  fontFamily: "Inter, sans-serif",
+                  fontWeight: 500,
+                  cursor: "pointer",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = "#F3F4F6";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = "#F9FAFB";
+                }}
+              >
+                No
+              </button>
+              <button
+                onClick={handleConfirmApplied}
+                className="flex-1 py-3 px-4 rounded-lg text-white text-sm transition-all"
+                style={{
+                  background: "linear-gradient(180deg, #679CFF 0%, #2370FF 100%)",
+                  border: "1px solid rgba(35, 112, 255, 0.30)",
+                  boxShadow: "0 2px 4px 0 rgba(77, 145, 225, 0.10), 0 1px 0.3px 0 rgba(255, 255, 255, 0.25) inset, 0 -1px 0.3px 0 rgba(0, 19, 88, 0.25) inset",
+                  textShadow: "0 0.5px 1.5px rgba(0, 19, 88, 0.30), 0 2px 5px rgba(0, 19, 88, 0.10)",
+                  fontFamily: "Inter, sans-serif",
+                  fontWeight: 500,
+                  cursor: "pointer",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.opacity = "0.9";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.opacity = "1";
+                }}
+              >
+                Yes
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* CSS Animations */}
+      <style jsx>{`
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+          }
+          to {
+            opacity: 1;
+          }
+        }
+
+        @keyframes scaleIn {
+          from {
+            opacity: 0;
+            transform: scale(0.9);
+          }
+          to {
+            opacity: 1;
+            transform: scale(1);
+          }
+        }
+      `}</style>
     </div>
   );
 };

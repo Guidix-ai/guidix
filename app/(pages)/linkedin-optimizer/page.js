@@ -54,7 +54,7 @@ export default function LinkedInOptimiserPage() {
   }, []);
 
   const [profile] = useState({
-    photoUrl: "/avatar-placeholder.png",
+    photoUrl: "/V3.png",
     headline: "Software Developer • AI & Job-Tech • React • Next.js • Building fast",
     about:
       "Full-stack developer focused on AI-powered job platforms and resume enhancement. Led frontend at Collzy, improved conversions by 18%. Expertise in React, Next.js, TypeScript, WebRTC, and Gemini Live API integration.",
@@ -99,7 +99,7 @@ export default function LinkedInOptimiserPage() {
   const recommendations = [
     {
       category: "Headline",
-      icon: "🎯",
+      id: "headline",
       suggestions: [
         "Add 2-3 power keywords: React, Next.js, AI, WebRTC",
         "Include 1 quantified outcome: '+18% apply CTR' or 'shipped to 100k users'",
@@ -112,7 +112,7 @@ export default function LinkedInOptimiserPage() {
     },
     {
       category: "About Section",
-      icon: "📝",
+      id: "about-section",
       suggestions: [
         "Open with what you build & who benefits (not job titles)",
         "Add 2-3 quantified wins with context and tech used",
@@ -126,7 +126,7 @@ export default function LinkedInOptimiserPage() {
     },
     {
       category: "Experience Bullets",
-      icon: "💼",
+      id: "experience-bullets",
       suggestions: [
         "Use formula: Action + Scope + Tech + Metric",
         "Lead with verb (Led, Shipped, Reduced, Improved, Built)",
@@ -140,7 +140,7 @@ export default function LinkedInOptimiserPage() {
     },
     {
       category: "Skills Section",
-      icon: "🛠️",
+      id: "skills-section",
       suggestions: [
         "Prioritize 8-12 core skills aligned to your target roles",
         "Order by relevance to JD keywords, not reverse chronological",
@@ -153,7 +153,7 @@ export default function LinkedInOptimiserPage() {
     },
     {
       category: "Featured Section",
-      icon: "⭐",
+      id: "featured-section",
       suggestions: [
         "Pin 3-5 standout assets: live demo, case study, repo, talk, post",
         "Lead with most visually impressive or highest-impact first",
@@ -166,7 +166,7 @@ export default function LinkedInOptimiserPage() {
     },
     {
       category: "Recommendations & Social Proof",
-      icon: "👥",
+      id: "recommendations-proof",
       suggestions: [
         "Request 3 strong recommendations: 1 manager, 1 peer, 1 stakeholder",
         "Ask for specific recommendations tied to metrics or outcomes",
@@ -180,67 +180,9 @@ export default function LinkedInOptimiserPage() {
     },
   ];
 
-  const actionCards = [
-    {
-      title: "Headline Optimizer",
-      description: "Make your headline value-led with keywords and impact",
-      route: "#headline",
-      color: "#667eea",
-    },
-    {
-      title: "About Section",
-      description: "Craft a narrative that highlights proof and clear CTA",
-      route: "#about",
-      color: "#f093fb",
-    },
-    {
-      title: "Experience Bullets",
-      description: "Quantify impact with metrics, tech, and scope",
-      route: "#experience",
-      color: "#4facfe",
-    },
-    {
-      title: "Skills Alignment",
-      description: "Align with target roles and JD keywords",
-      route: "#skills",
-      color: "#43e97b",
-    },
-    {
-      title: "Featured Assets",
-      description: "Pin portfolio links, demos, and case studies",
-      route: "#featured",
-      color: "#fa709a",
-    },
-    {
-      title: "Recommendations",
-      description: "Request outcome-based social proof",
-      route: "#recommendations",
-      color: "#ffa502",
-    },
-  ];
-
-  const scrollToSection = (route) => {
-    if (route.startsWith("#")) {
-      const element = document.querySelector(route);
-      element?.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
-  };
-
-  const getColorForIcon = (icon) => {
-    switch (icon) {
-      case "🎯":
-        return "#667eea";
-      case "📝":
-        return "#f093fb";
-      case "💼":
-        return "#4facfe";
-      case "🛠️":
-        return "#43e97b";
-      case "⭐":
-        return "#fa709a";
-      default:
-        return "#ffa502";
-    }
+  const scrollToSection = (sectionId) => {
+    const element = document.querySelector(`#${sectionId}`);
+    element?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
   return (
@@ -267,8 +209,9 @@ export default function LinkedInOptimiserPage() {
         >
           <div className="relative z-10">
             <h1
-              className="text-white font-bold mb-2"
+              className="text-white mb-2"
               style={{
+                fontWeight: 700,
                 textShadow: "0 2px 10px rgba(0, 0, 0, 0.3)",
                 fontSize: "32px",
                 lineHeight: "1.2",
@@ -278,93 +221,12 @@ export default function LinkedInOptimiserPage() {
               {typewriterText}
               {showCursor && <span className="animate-pulse">|</span>}
             </h1>
-            <p
-              className="text-white/90"
-              style={{
-                maxWidth: "800px",
-                fontSize: "14px",
-                lineHeight: "1.5",
-              }}
-            >
-              AI-powered recommendations to optimize your LinkedIn profile and get noticed
-            </p>
           </div>
         </div>
 
         {/* Main Content */}
         <div className="md:px-8 md:py-6 px-6 py-4" style={{ backgroundColor: "transparent" }}>
-          {/* Quick Action Cards */}
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
-            {actionCards.map((action, index) => (
-              <div
-                key={index}
-                onClick={() => scrollToSection(action.route)}
-                className="rounded-lg shadow-sm relative transition-all hover:shadow-md cursor-pointer col-span-1 min-h-[70px]"
-                style={{
-                  backgroundColor: "#FFFFFF",
-                  border: "1px solid #F1F3F7",
-                  boxShadow: shadowBoxStyle,
-                }}
-              >
-                <div className="p-3 h-full flex items-center gap-3">
-                  <div
-                    className="w-10 h-10 rounded-lg flex items-center justify-center text-lg flex-shrink-0"
-                    style={{ backgroundColor: `${action.color}20` }}
-                  >
-                    {action.title === "Headline Optimizer" && "🎯"}
-                    {action.title === "About Section" && "📝"}
-                    {action.title === "Experience Bullets" && "💼"}
-                    {action.title === "Skills Alignment" && "🛠️"}
-                    {action.title === "Featured Assets" && "⭐"}
-                    {action.title === "Recommendations" && "👥"}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <h3
-                      className="text-sm font-bold mb-0.5 truncate"
-                      style={{
-                        fontFamily: "Inter",
-                        fontWeight: 500,
-                        lineHeight: "1.2",
-                        letterSpacing: "-0.36px",
-                        color: "#002A79",
-                      }}
-                    >
-                      {action.title}
-                    </h3>
-                    <p
-                      className="text-xs line-clamp-1"
-                      style={{
-                        fontFamily: "Inter",
-                        fontWeight: 400,
-                        fontSize: "11.44px",
-                        lineHeight: "150%",
-                        color: "#6477B4",
-                      }}
-                    >
-                      {action.description}
-                    </p>
-                  </div>
-                  <svg
-                    width="16"
-                    height="16"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    style={{ color: "#2370FF", flexShrink: 0 }}
-                  >
-                    <path
-                      d="M9 5l7 7-7 7"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Profile Optimization Scores - Full Width */}
+          {/* Profile Optimization Scores - Top Section */}
           <div
             className="rounded-lg shadow-sm transition-all hover:shadow-md mb-6 w-full"
             style={{
@@ -372,45 +234,30 @@ export default function LinkedInOptimiserPage() {
               border: "1px solid #F1F3F7",
               boxShadow: shadowBoxStyle,
               background: "linear-gradient(180deg, #F4F8FF 0%, #D5E4FF 100%)",
-              color: "#002A79",
+              color: "rgb(0, 42, 121)",
               padding: "1.5rem",
             }}
           >
             <div className="flex items-center gap-2 mb-4">
-              <div
-                className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
-                style={{ backgroundColor: "rgba(255, 255, 255, 0.2)" }}
-              >
-                <svg
-                  width="16"
-                  height="16"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  style={{ color: "white" }}
-                >
-                  <path
-                    d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </div>
-              <h3 className="text-lg font-bold">Profile Optimization Scores</h3>
+              <h3 className="text-lg" style={{ fontWeight: 700 }}>
+                Profile Optimization Scores
+              </h3>
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
               {recommendations.map((rec, i) => (
                 <div
                   key={i}
-                  className="p-3 rounded-lg"
+                  onClick={() => scrollToSection(rec.id)}
+                  className="p-3 rounded-lg cursor-pointer transition-all hover:scale-105 hover:shadow-md"
                   style={{
                     backgroundColor: "rgba(255, 255, 255, 0.15)",
                     border: "1px solid rgba(255, 255, 255, 0.2)",
                   }}
                 >
-                  <div className="text-2xl font-bold mb-1 text-center">{rec.currentScore}%</div>
+                  <div className="text-2xl mb-1 text-center" style={{ fontWeight: 700 }}>
+                    {rec.currentScore}%
+                  </div>
                   <div className="text-xs opacity-90 text-center" style={{ wordBreak: "break-word" }}>
                     {rec.category}
                   </div>
@@ -419,233 +266,270 @@ export default function LinkedInOptimiserPage() {
             </div>
           </div>
 
-          {/* Two Column Layout: Profile Preview + Recommendations */}
+          {/* Two Column Layout: Sticky Profile Preview + Scrollable Recommendations */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Left Column: Profile Preview */}
-            <div
-              className="rounded-lg shadow-sm h-fit"
-              style={{
-                backgroundColor: "#FFFFFF",
-                border: "1px solid #F1F3F7",
-                boxShadow: shadowBoxStyle,
-              }}
-            >
-              <div className="p-6">
-                {/* Profile Header */}
-                <div className="flex items-start gap-4 mb-6">
-                  <div className="w-16 h-16 rounded-lg overflow-hidden bg-gradient-to-br from-[#667eea] to-[#764ba2] flex-shrink-0">
-                    {profile.photoUrl ? (
-                      <Image
-                        src={profile.photoUrl}
-                        alt="Profile"
-                        width={64}
-                        height={64}
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center text-2xl text-white">
-                        👤
-                      </div>
-                    )}
-                  </div>
-                  <div className="flex-1">
-                    <h2
-                      className="text-sm font-bold mb-1"
-                      style={{
-                        color: "#002A79",
-                        letterSpacing: "-0.36px",
-                        lineHeight: "1.3",
-                      }}
-                    >
-                      {profile.headline || "Your headline here"}
-                    </h2>
-                    <p className="text-xs mb-2" style={{ color: "#6477B4" }}>
-                      {profile.location || "Location"}
-                    </p>
-                    {profile.openToWork && (
-                      <div
-                        className="inline-flex items-center gap-1.5 px-2 py-1 rounded"
+            {/* Left Column: Sticky Profile Preview - NO SCROLLBAR */}
+            <div className="lg:sticky lg:top-6 lg:self-start">
+              <div
+                className="rounded-lg shadow-sm"
+                style={{
+                  backgroundColor: "#FFFFFF",
+                  border: "1px solid #F1F3F7",
+                  boxShadow: shadowBoxStyle,
+                }}
+              >
+                <div className="p-6">
+                  {/* Profile Header */}
+                  <div className="flex items-start gap-4 mb-6">
+                    <div className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 border border-gray-200">
+                      {profile.photoUrl ? (
+                        <Image
+                          src={profile.photoUrl}
+                          alt="Profile"
+                          width={64}
+                          height={64}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-2xl text-white">
+                          👤
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex-1">
+                      <h2
+                        className="text-sm mb-1"
                         style={{
-                          backgroundColor: "#E7F0FF",
-                          border: "1px solid #2370FF40",
+                          color: "rgb(0, 42, 121)",
+                          fontWeight: 700,
+                          letterSpacing: "-0.36px",
+                          lineHeight: "1.3",
                         }}
                       >
-                        <span style={{ fontSize: "10px", color: "#2370FF", fontWeight: 500 }}>
-                          ✓ Open to Work
-                        </span>
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                {/* About */}
-                <div id="about" className="mb-4 pb-4" style={{ borderBottom: "1px solid #F1F3F7" }}>
-                  <h3
-                    className="text-xs font-bold mb-2"
-                    style={{ color: "#002A79", textTransform: "uppercase", letterSpacing: "0.5px" }}
-                  >
-                    About
-                  </h3>
-                  <p
-                    className="text-xs"
-                    style={{ color: "#3B4E89", lineHeight: "1.6" }}
-                  >
-                    {profile.about || "Add a compelling about section"}
-                  </p>
-                </div>
-
-                {/* Experience */}
-                <div id="experience" className="mb-4 pb-4" style={{ borderBottom: "1px solid #F1F3F7" }}>
-                  <h3
-                    className="text-xs font-bold mb-2"
-                    style={{ color: "#002A79", textTransform: "uppercase", letterSpacing: "0.5px" }}
-                  >
-                    Experience
-                  </h3>
-                  <div className="space-y-3">
-                    {profile.experiences && profile.experiences.length > 0 ? (
-                      profile.experiences.map((exp, idx) => (
+                        {profile.headline || "Your headline here"}
+                      </h2>
+                      <p className="text-xs mb-2" style={{ color: "#6477B4" }}>
+                        {profile.location || "Location"}
+                      </p>
+                      {profile.openToWork && (
                         <div
-                          key={idx}
-                          className="p-2 rounded"
-                          style={{ backgroundColor: "#F8FAFF", border: "1px solid #F1F3F7" }}
+                          className="inline-flex items-center gap-1.5 px-2 py-1 rounded"
+                          style={{
+                            backgroundColor: "#E7F0FF",
+                            border: "1px solid #2370FF40",
+                          }}
                         >
-                          <div className="text-xs font-bold mb-0.5" style={{ color: "#002A79" }}>
-                            {exp.title}
-                          </div>
-                          <div className="text-[11px] mb-1" style={{ color: "#6477B4" }}>
-                            {exp.company} • {exp.duration}
-                          </div>
-                          {exp.description && (
-                            <div className="text-[11px]" style={{ color: "#3B4E89", lineHeight: "1.5" }}>
-                              {exp.description}
+                          <span style={{ fontSize: "10px", color: "#2370FF", fontWeight: 500 }}>
+                            ✓ Open to Work
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* About */}
+                  <div id="about" className="mb-4 pb-4" style={{ borderBottom: "1px solid #F1F3F7" }}>
+                    <h3
+                      className="text-xs mb-2"
+                      style={{
+                        color: "rgb(0, 42, 121)",
+                        fontWeight: 700,
+                        textTransform: "uppercase",
+                        letterSpacing: "0.5px",
+                      }}
+                    >
+                      About
+                    </h3>
+                    <p className="text-xs" style={{ color: "#3B4E89", lineHeight: "1.6" }}>
+                      {profile.about || "Add a compelling about section"}
+                    </p>
+                  </div>
+
+                  {/* Experience */}
+                  <div id="experience" className="mb-4 pb-4" style={{ borderBottom: "1px solid #F1F3F7" }}>
+                    <h3
+                      className="text-xs mb-2"
+                      style={{
+                        color: "rgb(0, 42, 121)",
+                        fontWeight: 700,
+                        textTransform: "uppercase",
+                        letterSpacing: "0.5px",
+                      }}
+                    >
+                      Experience
+                    </h3>
+                    <div className="space-y-3">
+                      {profile.experiences && profile.experiences.length > 0 ? (
+                        profile.experiences.map((exp, idx) => (
+                          <div
+                            key={idx}
+                            className="p-2 rounded"
+                            style={{ backgroundColor: "#F8FAFF", border: "1px solid #F1F3F7" }}
+                          >
+                            <div
+                              className="text-xs mb-0.5"
+                              style={{ color: "rgb(0, 42, 121)", fontWeight: 700 }}
+                            >
+                              {exp.title}
                             </div>
-                          )}
-                        </div>
-                      ))
-                    ) : (
-                      <div className="text-xs" style={{ color: "#6477B4" }}>
-                        Add work experience
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                {/* Skills */}
-                <div id="skills" className="mb-4 pb-4" style={{ borderBottom: "1px solid #F1F3F7" }}>
-                  <h3
-                    className="text-xs font-bold mb-2"
-                    style={{ color: "#002A79", textTransform: "uppercase", letterSpacing: "0.5px" }}
-                  >
-                    Skills
-                  </h3>
-                  <div className="flex flex-wrap gap-2">
-                    {profile.skills && profile.skills.length > 0 ? (
-                      profile.skills.map((skill) => (
-                        <span
-                          key={skill}
-                          className="px-2.5 py-1 rounded-full text-xs font-500"
-                          style={{
-                            backgroundColor: "#F0F4FF",
-                            border: "1px solid #2370FF40",
-                            color: "#2370FF",
-                          }}
-                        >
-                          {skill}
-                        </span>
-                      ))
-                    ) : (
-                      <div className="text-xs" style={{ color: "#6477B4" }}>
-                        Add skills
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                {/* Featured */}
-                <div id="featured" className="mb-4 pb-4" style={{ borderBottom: "1px solid #F1F3F7" }}>
-                  <h3
-                    className="text-xs font-bold mb-2"
-                    style={{ color: "#002A79", textTransform: "uppercase", letterSpacing: "0.5px" }}
-                  >
-                    Featured
-                  </h3>
-                  <div className="space-y-2">
-                    {profile.featured && profile.featured.length > 0 ? (
-                      profile.featured.map((item, idx) => (
-                        <a
-                          key={idx}
-                          href={item.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="block p-2 rounded"
-                          style={{
-                            backgroundColor: "#F8FAFF",
-                            border: "1px solid #2370FF40",
-                            color: "#2370FF",
-                            fontSize: "12px",
-                            fontWeight: 500,
-                            textDecoration: "none",
-                            transition: "all 0.2s",
-                          }}
-                          onMouseEnter={(e) => {
-                            e.currentTarget.style.backgroundColor = "#F0F4FF";
-                          }}
-                          onMouseLeave={(e) => {
-                            e.currentTarget.style.backgroundColor = "#F8FAFF";
-                          }}
-                        >
-                          {item.title} ↗
-                        </a>
-                      ))
-                    ) : (
-                      <div className="text-xs" style={{ color: "#6477B4" }}>
-                        Add featured content
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                {/* Recommendations */}
-                <div id="recommendations">
-                  <h3
-                    className="text-xs font-bold mb-2"
-                    style={{ color: "#002A79", textTransform: "uppercase", letterSpacing: "0.5px" }}
-                  >
-                    Recommendations
-                  </h3>
-                  <div className="space-y-2">
-                    {profile.recommendations && profile.recommendations.length > 0 ? (
-                      profile.recommendations.map((rec, idx) => (
-                        <div
-                          key={idx}
-                          className="p-2 rounded"
-                          style={{ backgroundColor: "#F8FAFF", border: "1px solid #F1F3F7" }}
-                        >
-                          <div className="text-xs font-bold mb-1" style={{ color: "#002A79" }}>
-                            {rec.from}
+                            <div className="text-[11px] mb-1" style={{ color: "#6477B4" }}>
+                              {exp.company} • {exp.duration}
+                            </div>
+                            {exp.description && (
+                              <div
+                                className="text-[11px]"
+                                style={{ color: "#3B4E89", lineHeight: "1.5" }}
+                              >
+                                {exp.description}
+                              </div>
+                            )}
                           </div>
-                          <div className="text-[11px]" style={{ color: "#3B4E89", lineHeight: "1.5" }}>
-                            "{rec.text}"
-                          </div>
+                        ))
+                      ) : (
+                        <div className="text-xs" style={{ color: "#6477B4" }}>
+                          Add work experience
                         </div>
-                      ))
-                    ) : (
-                      <div className="text-xs" style={{ color: "#6477B4" }}>
-                        Get recommendations from colleagues
-                      </div>
-                    )}
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Skills */}
+                  <div id="skills" className="mb-4 pb-4" style={{ borderBottom: "1px solid #F1F3F7" }}>
+                    <h3
+                      className="text-xs mb-2"
+                      style={{
+                        color: "rgb(0, 42, 121)",
+                        fontWeight: 700,
+                        textTransform: "uppercase",
+                        letterSpacing: "0.5px",
+                      }}
+                    >
+                      Skills
+                    </h3>
+                    <div className="flex flex-wrap gap-2">
+                      {profile.skills && profile.skills.length > 0 ? (
+                        profile.skills.map((skill) => (
+                          <span
+                            key={skill}
+                            className="px-2.5 py-1 rounded-full text-xs font-500"
+                            style={{
+                              backgroundColor: "#F0F4FF",
+                              border: "1px solid #2370FF40",
+                              color: "#2370FF",
+                            }}
+                          >
+                            {skill}
+                          </span>
+                        ))
+                      ) : (
+                        <div className="text-xs" style={{ color: "#6477B4" }}>
+                          Add skills
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Featured */}
+                  <div id="featured" className="mb-4 pb-4" style={{ borderBottom: "1px solid #F1F3F7" }}>
+                    <h3
+                      className="text-xs mb-2"
+                      style={{
+                        color: "rgb(0, 42, 121)",
+                        fontWeight: 700,
+                        textTransform: "uppercase",
+                        letterSpacing: "0.5px",
+                      }}
+                    >
+                      Featured
+                    </h3>
+                    <div className="space-y-2">
+                      {profile.featured && profile.featured.length > 0 ? (
+                        profile.featured.map((item, idx) => (
+                          <a
+                            key={idx}
+                            href={item.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="block p-2 rounded"
+                            style={{
+                              backgroundColor: "#F8FAFF",
+                              border: "1px solid #2370FF40",
+                              color: "#2370FF",
+                              fontSize: "12px",
+                              fontWeight: 500,
+                              textDecoration: "none",
+                              transition: "all 0.2s",
+                            }}
+                            onMouseEnter={(e) => {
+                              e.currentTarget.style.backgroundColor = "#F0F4FF";
+                            }}
+                            onMouseLeave={(e) => {
+                              e.currentTarget.style.backgroundColor = "#F8FAFF";
+                            }}
+                          >
+                            {item.title} ↗
+                          </a>
+                        ))
+                      ) : (
+                        <div className="text-xs" style={{ color: "#6477B4" }}>
+                          Add featured content
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Recommendations */}
+                  <div id="recommendations">
+                    <h3
+                      className="text-xs mb-2"
+                      style={{
+                        color: "rgb(0, 42, 121)",
+                        fontWeight: 700,
+                        textTransform: "uppercase",
+                        letterSpacing: "0.5px",
+                      }}
+                    >
+                      Recommendations
+                    </h3>
+                    <div className="space-y-2">
+                      {profile.recommendations && profile.recommendations.length > 0 ? (
+                        profile.recommendations.map((rec, idx) => (
+                          <div
+                            key={idx}
+                            className="p-2 rounded"
+                            style={{ backgroundColor: "#F8FAFF", border: "1px solid #F1F3F7" }}
+                          >
+                            <div
+                              className="text-xs mb-1"
+                              style={{ color: "rgb(0, 42, 121)", fontWeight: 700 }}
+                            >
+                              {rec.from}
+                            </div>
+                            <div
+                              className="text-[11px]"
+                              style={{ color: "#3B4E89", lineHeight: "1.5" }}
+                            >
+                              "{rec.text}"
+                            </div>
+                          </div>
+                        ))
+                      ) : (
+                        <div className="text-xs" style={{ color: "#6477B4" }}>
+                          Get recommendations from colleagues
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Right Column: Recommendations Engine */}
+            {/* Right Column: Scrollable Recommendations Engine */}
             <div className="lg:col-span-2 space-y-4">
               {recommendations.map((rec, index) => (
                 <div
                   key={index}
-                  id={rec.category.toLowerCase().replace(" ", "-")}
+                  id={rec.id}
                   className="rounded-lg shadow-sm transition-all hover:shadow-md"
                   style={{
                     backgroundColor: "#FFFFFF",
@@ -656,33 +540,46 @@ export default function LinkedInOptimiserPage() {
                   <div className="p-4">
                     {/* Card Header */}
                     <div className="flex items-start justify-between mb-3 gap-3">
-                      <div className="flex items-center gap-2 flex-1">
-                        <span className="text-xl flex-shrink-0">{rec.icon}</span>
-                        <div className="min-w-0">
-                          <h3 className="text-sm font-bold" style={{ color: "#002A79" }}>
-                            {rec.category}
-                          </h3>
-                          <div
-                            className="text-xs font-semibold"
-                            style={{ color: "#2370FF", marginTop: "2px" }}
-                          >
-                            Score: {rec.currentScore}%
-                          </div>
-                        </div>
+                      <div className="flex-1">
+                        <h3
+                          className="text-sm"
+                          style={{ color: "rgb(0, 42, 121)", fontWeight: 700 }}
+                        >
+                          {rec.category}
+                        </h3>
                       </div>
-                      <div
-                        className="w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0"
-                        style={{
-                          backgroundColor: `${getColorForIcon(rec.icon)}20`,
-                        }}
-                      >
+                      <div className="flex items-center gap-2 flex-shrink-0">
                         <div
-                          className="text-center text-xs font-bold"
+                          className="flex flex-col items-center justify-center flex-shrink-0"
                           style={{
-                            color: getColorForIcon(rec.icon),
+                            backgroundColor: "#f0f5ff",
+                            border: "1px solid #e5e9f2",
+                            borderRadius: "12px",
+                            padding: "8px 12px",
                           }}
                         >
-                          {rec.currentScore}%
+                          <div
+                            className="text-center"
+                            style={{
+                              fontSize: "18px",
+                              fontWeight: 700,
+                              color: "rgb(0, 42, 121)",
+                            }}
+                          >
+                            {rec.currentScore}%
+                          </div>
+                          <div
+                            className="text-center"
+                            style={{
+                              fontSize: "8px",
+                              fontWeight: 600,
+                              color: "#6477B4",
+                              textTransform: "uppercase",
+                              letterSpacing: "0.5px",
+                            }}
+                          >
+                            Score
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -690,21 +587,20 @@ export default function LinkedInOptimiserPage() {
                     {/* Suggestions List */}
                     <div className="mb-3 pb-3" style={{ borderBottom: "1px solid #F1F3F7" }}>
                       <h4
-                        className="text-xs font-bold mb-2"
-                        style={{ color: "#002A79", textTransform: "uppercase", letterSpacing: "0.5px" }}
+                        className="text-xs mb-2"
+                        style={{
+                          color: "rgb(0, 42, 121)",
+                          fontWeight: 700,
+                          textTransform: "uppercase",
+                          letterSpacing: "0.5px",
+                        }}
                       >
                         Recommendations
                       </h4>
                       <ul className="space-y-1.5">
                         {rec.suggestions.map((suggestion, idx) => (
-                          <li key={idx} className="flex gap-2">
-                            <span className="text-green-500 font-bold text-xs mt-0.5 flex-shrink-0">✓</span>
-                            <span
-                              className="text-xs"
-                              style={{ color: "#3B4E89", lineHeight: "1.5" }}
-                            >
-                              {suggestion}
-                            </span>
+                          <li key={idx} className="text-xs" style={{ color: "#3B4E89", lineHeight: "1.5" }}>
+                            • {suggestion}
                           </li>
                         ))}
                       </ul>
@@ -713,8 +609,13 @@ export default function LinkedInOptimiserPage() {
                     {/* Example Box */}
                     <div>
                       <h4
-                        className="text-xs font-bold mb-2"
-                        style={{ color: "#002A79", textTransform: "uppercase", letterSpacing: "0.5px" }}
+                        className="text-xs mb-2"
+                        style={{
+                          color: "rgb(0, 42, 121)",
+                          fontWeight: 700,
+                          textTransform: "uppercase",
+                          letterSpacing: "0.5px",
+                        }}
                       >
                         Example
                       </h4>
