@@ -259,6 +259,8 @@ const EnhancedJobCard = ({
   const [isBookmarked, setIsBookmarked] = useState(isSaved);
   const [showDetails, setShowDetails] = useState(false);
   const [lockedHeight, setLockedHeight] = useState(null);
+  const [showApplyOverlay, setShowApplyOverlay] = useState(false);
+  const [hasApplied, setHasApplied] = useState(isApplied);
   const containerRef = useRef(null);
   const summaryRef = useRef(null);
   const detailsRef = useRef(null);
@@ -267,6 +269,18 @@ const EnhancedJobCard = ({
   useEffect(() => {
     setIsBookmarked(isSaved);
   }, [isSaved]);
+
+  useEffect(() => {
+    setHasApplied(isApplied);
+  }, [isApplied]);
+
+  // Check if job was previously marked as applied
+  useEffect(() => {
+    const appliedStatus = localStorage.getItem(`job_applied_${job.id}`);
+    if (appliedStatus === 'true' && !isApplied) {
+      setHasApplied(true);
+    }
+  }, [job.id, isApplied]);
 
   // Measure both views and lock to max height
   useEffect(() => {
@@ -315,6 +329,31 @@ const EnhancedJobCard = ({
   const handleBackClick = (e) => {
     e.stopPropagation();
     setShowDetails(false);
+  };
+
+  const handleApplyClick = (e, applyUrl) => {
+    e.stopPropagation();
+    // Open the external URL
+    if (applyUrl) {
+      window.open(applyUrl, '_blank');
+    }
+    // Show the overlay immediately
+    setShowApplyOverlay(true);
+  };
+
+  const handleConfirmApplied = () => {
+    // User confirmed they applied
+    setHasApplied(true);
+    setShowApplyOverlay(false);
+    // Persist to localStorage
+    localStorage.setItem(`job_applied_${job.id}`, 'true');
+    // Call the parent's onApply to update the main state
+    onApply(job.id);
+  };
+
+  const handleDenyApplied = () => {
+    // User didn't apply, just close the overlay
+    setShowApplyOverlay(false);
   };
 
   return (
@@ -971,10 +1010,11 @@ const EnhancedJobCard = ({
           <button
             className="w-full transition-all hover:opacity-90"
             onClick={(e) => {
-              e.stopPropagation();
-              onApply(job.id);
+              if (!hasApplied) {
+                handleApplyClick(e, job.applyUrl || job.companyWebsite || job.company_website);
+              }
             }}
-            disabled={isApplied}
+            disabled={hasApplied}
             style={{
               display: "inline-flex",
               width: "100%",
@@ -982,8 +1022,8 @@ const EnhancedJobCard = ({
               justifyContent: "center",
               alignItems: "center",
               borderRadius: "8px",
-              border: "1px solid rgba(35, 112, 255, 0.30)",
-              background: "linear-gradient(180deg, #679CFF 0%, #2370FF 100%)",
+              border: hasApplied ? "1px solid rgba(16, 185, 129, 0.30)" : "1px solid rgba(35, 112, 255, 0.30)",
+              background: hasApplied ? "linear-gradient(180deg, #10B981 0%, #059669 100%)" : "linear-gradient(180deg, #679CFF 0%, #2370FF 100%)",
               boxShadow:
                 "0 2px 4px 0 rgba(77, 145, 225, 0.10), 0 1px 0.3px 0 rgba(255, 255, 255, 0.25) inset, 0 -1px 0.3px 0 rgba(0, 19, 88, 0.25) inset",
               color: "#FFFFFF",
@@ -994,11 +1034,11 @@ const EnhancedJobCard = ({
               fontSize: "14px",
               fontWeight: 500,
               lineHeight: "125%",
-              cursor: isApplied ? "not-allowed" : "pointer",
-              opacity: isApplied ? 0.7 : 1,
+              cursor: hasApplied ? "not-allowed" : "pointer",
+              opacity: hasApplied ? 0.8 : 1,
             }}
           >
-            {isApplied ? "Applied" : "Apply Now"}
+            {hasApplied ? "Applied ✓" : "Apply Now"}
           </button>
 
           <button
@@ -1330,6 +1370,175 @@ const EnhancedJobCard = ({
           </button>
         </div>
       </div>
+
+      {/* Glass Overlay with Confirmation Dialog */}
+      {showApplyOverlay && (
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 50,
+            backgroundColor: "rgba(255, 255, 255, 0.25)",
+            backdropFilter: "blur(8px)",
+            WebkitBackdropFilter: "blur(8px)",
+            animation: "fadeIn 0.3s ease-out",
+            borderRadius: "16px",
+            padding: "24px",
+          }}
+        >
+          <div
+            style={{
+              position: "relative",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: "20px",
+              padding: "32px 24px",
+              borderRadius: "16px",
+              backgroundColor: "rgba(255, 255, 255, 0.9)",
+              backdropFilter: "blur(12px)",
+              WebkitBackdropFilter: "blur(12px)",
+              border: "1px solid rgba(255, 255, 255, 0.6)",
+              boxShadow: "0 8px 32px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04)",
+              minWidth: "300px",
+              animation: "scaleIn 0.3s ease-out",
+            }}
+          >
+            {/* Icon */}
+            <Image
+              src="/V1.svg"
+              alt="Application Icon"
+              width={64}
+              height={64}
+              style={{
+                animation: "scaleIn 0.3s ease-out",
+              }}
+            />
+
+            {/* Title */}
+            <h3
+              style={{
+                fontSize: "18px",
+                fontWeight: 700,
+                textAlign: "center",
+                margin: 0,
+                color: "#353E5C",
+                fontFamily: "Inter, sans-serif",
+                animation: "fadeIn 0.4s ease-out",
+              }}
+            >
+              Have you applied?
+            </h3>
+
+            {/* Description */}
+            <p
+              style={{
+                fontSize: "14px",
+                fontWeight: 500,
+                textAlign: "center",
+                margin: 0,
+                color: "#6B7280",
+                fontFamily: "Inter, sans-serif",
+                animation: "fadeIn 0.5s ease-out",
+              }}
+            >
+              Let us know if you've submitted your application
+            </p>
+
+            {/* Buttons */}
+            <div style={{ display: "flex", gap: "12px", width: "100%", animation: "fadeIn 0.6s ease-out" }}>
+              <button
+                onClick={handleDenyApplied}
+                style={{
+                  flex: 1,
+                  display: "inline-flex",
+                  padding: "12px 16px",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  borderRadius: "8px",
+                  backgroundColor: "#F9FAFB",
+                  color: "#374151",
+                  border: "1px solid #E5E7EB",
+                  textAlign: "center",
+                  fontFamily: "Inter, sans-serif",
+                  fontSize: "14px",
+                  fontWeight: 500,
+                  lineHeight: "125%",
+                  cursor: "pointer",
+                  transition: "all 0.2s ease",
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.backgroundColor = "#F3F4F6";
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.backgroundColor = "#F9FAFB";
+                }}
+              >
+                No
+              </button>
+              <button
+                onClick={handleConfirmApplied}
+                style={{
+                  flex: 1,
+                  display: "inline-flex",
+                  padding: "12px 16px",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  borderRadius: "8px",
+                  border: "1px solid rgba(35, 112, 255, 0.30)",
+                  background: "linear-gradient(180deg, #679CFF 0%, #2370FF 100%)",
+                  boxShadow:
+                    "0 2px 4px 0 rgba(77, 145, 225, 0.10), 0 1px 0.3px 0 rgba(255, 255, 255, 0.25) inset, 0 -1px 0.3px 0 rgba(0, 19, 88, 0.25) inset",
+                  color: "#FFFFFF",
+                  textAlign: "center",
+                  textShadow:
+                    "0 0.5px 1.5px rgba(0, 19, 88, 0.30), 0 2px 5px rgba(0, 19, 88, 0.10)",
+                  fontFamily: "Inter, sans-serif",
+                  fontSize: "14px",
+                  fontWeight: 500,
+                  lineHeight: "125%",
+                  cursor: "pointer",
+                  transition: "all 0.2s ease",
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.opacity = "0.9";
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.opacity = "1";
+                }}
+              >
+                Yes
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* CSS Animations */}
+      <style jsx>{`
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+          }
+          to {
+            opacity: 1;
+          }
+        }
+
+        @keyframes scaleIn {
+          from {
+            opacity: 0;
+            transform: scale(0.9);
+          }
+          to {
+            opacity: 1;
+            transform: scale(1);
+          }
+        }
+      `}</style>
     </div>
   );
 };
