@@ -338,55 +338,110 @@ export function JobTracker() {
   return (
     <div className="space-y-6">
 
-      {/* Minimal Search and Filter Bar */}
-      <div className="bg-white rounded-xl border border-gray-100 p-6 shadow-sm">
-        <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+      {/* Search and Filter Bar */}
+      <div className="bg-white rounded-xl border border-gray-100 p-4 md:p-6 shadow-sm">
+        <div className="flex flex-col md:flex-row gap-3 md:gap-4 items-stretch md:items-center justify-between">
           {/* Search Input */}
-          <div className="relative flex-1 max-w-md">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-            <Input
+          <div
+            className="relative flex items-center"
+            style={{
+              width: '320px',
+              height: '54px',
+              minHeight: '54px',
+              justifyContent: 'space-between',
+              paddingTop: '8px',
+              paddingRight: '8px',
+              paddingBottom: '8px',
+              paddingLeft: '12px',
+              borderRadius: '8px',
+              borderWidth: '1px',
+              borderStyle: 'solid',
+              borderColor: '#E5E7EB',
+              backgroundColor: '#FFFFFF',
+              boxShadow: `
+                var(--ShadowPositioningNone) var(--ShadowPositioningNone) var(--ShadowBlur2XSmall) var(--ShadowSpreadNone) var(--ColorsOverlayColorsDark15),
+                var(--ShadowPositioningNone) var(--ShadowPositioningMedium) var(--ShadowBlurExtraSmall) var(--ShadowSpreadNone) var(--ColorsOverlayColorsDark4),
+                var(--ShadowPositioningNone) var(--ShadowPositioningMedium) var(--ShadowBlurMedium) var(--ShadowSpreadNone) var(--ColorsOverlayColorsDark4),
+                var(--ShadowPositioningNone) var(--ShadowPositioningNegativeMedium) var(--ShadowBlurExtraSmall) var(--ShadowBlurNone) var(--ColorsOverlayColorsDark10) inset
+              `.replace(/\s+/g, ' ').trim()
+            }}
+          >
+            <Search className="text-gray-400 w-5 h-5 flex-shrink-0" style={{ marginRight: '8px' }} />
+            <input
               type="text"
-              placeholder="Search jobs..."
-              className="pl-10 border-gray-200 focus:border-gray-300 rounded-lg"
+              placeholder="Search Jobs..."
+              className="flex-1 outline-none border-none bg-transparent"
+              style={{
+                color: '#6B7280',
+                fontFamily: "Inter, sans-serif",
+                fontSize: "14px",
+                padding: '0',
+              }}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
 
           {/* Filter Controls */}
-          <div className="flex items-center gap-3">
-            <Button
-              variant="outline"
-              size="sm"
+          <div className="flex items-center gap-2 md:gap-3">
+            <button
               onClick={() => setShowFilters(!showFilters)}
-              className="border-gray-200 hover:bg-gray-50 text-gray-600"
+              className="flex-1 md:flex-none flex items-center justify-center gap-2 transition-all hover:opacity-90"
+              style={{
+                display: "inline-flex",
+                padding: "8px 12px",
+                justifyContent: "center",
+                alignItems: "center",
+                borderRadius: "10px",
+                background: "linear-gradient(180deg, #0349cc 0%, #073b9c 100%)",
+                boxShadow: "0 -1.5px 1px 0 rgba(6, 51, 165, 0.37) inset, 0 1.5px 1px 0 rgba(255, 255, 255, 0.24) inset",
+                color: "#FFFFFF",
+                textAlign: "center",
+                textShadow: "0 0.5px 1.5px rgba(0, 19, 88, 0.30), 0 2px 5px rgba(0, 19, 88, 0.10)",
+                fontFamily: "Inter, sans-serif",
+                fontSize: "14px",
+                fontWeight: 500,
+                lineHeight: "125%",
+              }}
             >
-              <Filter className="w-4 h-4 mr-2" />
-              Filters
+              <Filter className="w-4 h-4" />
+              <span className="hidden sm:inline">Filters</span>
               {activeFilters.length > 0 && (
-                <Badge
-                  variant="secondary"
-                  className="ml-2 text-xs"
-                  style={{backgroundColor: 'var(--brand-secondary)', color: 'var(--brand-primary)'}}
+                <span
+                  className="ml-1 px-2 py-0.5 rounded-full text-xs font-medium"
+                  style={{
+                    backgroundColor: "rgba(255, 255, 255, 0.3)",
+                    color: "#FFFFFF",
+                  }}
                 >
                   {activeFilters.length}
-                </Badge>
+                </span>
               )}
-            </Button>
+            </button>
 
             {/* Clear All */}
             {(searchQuery || activeFilters.length > 0) && (
-              <Button
-                variant="ghost"
-                size="sm"
+              <button
                 onClick={() => {
                   setSearchQuery("");
                   setActiveFilters([]);
                 }}
-                className="text-gray-400 hover:text-gray-600"
+                className="p-2.5 rounded-lg transition-colors"
+                style={{
+                  backgroundColor: "#F3F4F6",
+                  color: "#6B7280",
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.backgroundColor = "#E5E7EB";
+                  e.target.style.color = "#374151";
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.backgroundColor = "#F3F4F6";
+                  e.target.style.color = "#6B7280";
+                }}
               >
                 <X className="w-4 h-4" />
-              </Button>
+              </button>
             )}
           </div>
         </div>
@@ -396,36 +451,67 @@ export function JobTracker() {
           <div className="mt-4 pt-4 border-t border-gray-100">
             <div className="flex flex-wrap gap-2">
               {availableFilters.map((filter) => (
-                <Button
+                <button
                   key={filter}
-                  variant={activeFilters.includes(filter) ? "default" : "outline"}
-                  size="sm"
                   onClick={() => toggleFilter(filter)}
-                  className={`text-xs ${
-                    activeFilters.includes(filter)
-                      ? 'text-white border-0'
-                      : 'border-gray-200 text-gray-600 hover:bg-gray-50'
-                  }`}
+                  className="transition-all hover:opacity-90"
                   style={activeFilters.includes(filter)
-                    ? {background: 'linear-gradient(135deg, var(--brand-primary), var(--brand-primary-dark))'}
-                    : {}}
+                    ? {
+                        display: "inline-flex",
+                        padding: "8px 12px",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        borderRadius: "10px",
+                        background: "linear-gradient(180deg, #0349cc 0%, #073b9c 100%)",
+                        boxShadow: "0 -1.5px 1px 0 rgba(6, 51, 165, 0.37) inset, 0 1.5px 1px 0 rgba(255, 255, 255, 0.24) inset",
+                        color: "#FFFFFF",
+                        textAlign: "center",
+                        textShadow: "0 0.5px 1.5px rgba(0, 19, 88, 0.30), 0 2px 5px rgba(0, 19, 88, 0.10)",
+                        fontFamily: "Inter, sans-serif",
+                        fontSize: "14px",
+                        fontWeight: 500,
+                        lineHeight: "125%",
+                      }
+                    : {
+                        display: "inline-flex",
+                        padding: "8px 12px",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        borderRadius: "10px",
+                        border: "1px solid #E5E7EB",
+                        background: "#FFFFFF",
+                        color: "#6B7280",
+                        textAlign: "center",
+                        fontFamily: "Inter, sans-serif",
+                        fontSize: "14px",
+                        fontWeight: 500,
+                        lineHeight: "125%",
+                      }
+                  }
                 >
                   {filter}
-                </Button>
+                </button>
               ))}
             </div>
           </div>
         )}
       </div>
 
-      {/* Minimal Results Summary */}
+      {/* Results Summary */}
       {(searchQuery || activeFilters.length > 0) && (
-        <div className="bg-blue-50 border border-blue-100 rounded-lg px-4 py-3">
-          <p className="text-sm text-blue-700">
-            <span className="font-medium">
+        <div
+          className="rounded-lg px-4 py-3 border"
+          style={{
+            backgroundColor: "#EFF6FF",
+            borderColor: "#DBEAFE",
+          }}
+        >
+          <p className="text-xs md:text-sm" style={{ color: "#1E40AF" }}>
+            <span className="font-semibold">
               {filteredColumns.reduce((total, col) => total + col.jobs.length, 0)} jobs
             </span>
-            {searchQuery && ` matching "${searchQuery}"`}
+            {searchQuery && <span className="hidden sm:inline"> matching "{searchQuery}"</span>}
+            {searchQuery && <span className="sm:hidden"> found</span>}
             {activeFilters.length > 0 && ` with ${activeFilters.length} filter${activeFilters.length > 1 ? 's' : ''}`}
           </p>
         </div>
@@ -434,46 +520,46 @@ export function JobTracker() {
       {/* Kanban Board */}
       {isMobile ? (
         // Mobile View: Clean and minimal
-        <div className="space-y-5">
+        <div className="space-y-4 md:space-y-5">
           {filteredColumns.map((column) => {
             const columnColors = {
               shortlist: {
                 border: 'border-blue-200',
-                bg: 'bg-blue-50/50',
-                accent: 'var(--brand-primary)'
+                bg: '#E3EFFF',
+                accent: '#64A7FF'
               },
               'auto-apply': {
                 border: 'border-purple-200',
-                bg: 'bg-purple-50/50',
+                bg: '#E5E3FF',
                 accent: '#8B5CF6'
               },
               applied: {
                 border: 'border-amber-200',
-                bg: 'bg-amber-50/50',
-                accent: '#F59E0B'
+                bg: '#FFFAE9',
+                accent: '#EFC42C'
               },
               interview: {
                 border: 'border-green-200',
-                bg: 'bg-green-50/50',
-                accent: '#10B981'
+                bg: '#EEF9F5',
+                accent: '#74D184'
               },
               rejected: {
                 border: 'border-red-200',
-                bg: 'bg-red-50/50',
-                accent: '#EF4444'
+                bg: '#FFF5F6',
+                accent: '#FE566B'
               }
             };
 
             return (
               <Card key={column.id} className={`border ${columnColors[column.id]?.border} shadow-sm`}>
-                <CardHeader className={`pb-4 ${columnColors[column.id]?.bg}`}>
+                <CardHeader className="pb-3 md:pb-4 px-4 pt-4" style={{backgroundColor: columnColors[column.id]?.bg}}>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <div
                         className="w-3 h-3 rounded-full"
                         style={{backgroundColor: columnColors[column.id]?.accent}}
                       ></div>
-                      <CardTitle className="text-lg font-semibold text-gray-800">
+                      <CardTitle className="text-base md:text-lg font-semibold" style={{color: '#002A79'}}>
                         {column.title}
                       </CardTitle>
                     </div>
@@ -484,15 +570,30 @@ export function JobTracker() {
                       {column.jobs.length}
                     </Badge>
                   </div>
-                  <Button
-                    size="sm"
-                    variant="outline"
+                  <button
                     onClick={() => handleAddJob(column.id)}
-                    className="w-full mt-3 border-dashed border-gray-300 text-gray-600 hover:bg-white hover:border-gray-400 transition-all"
+                    className="w-full mt-3 transition-all hover:opacity-90 flex items-center justify-center gap-2"
+                    style={{
+                      display: "inline-flex",
+                      padding: "10px 16px",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      borderRadius: "8px",
+                      border: "1px solid rgba(35, 112, 255, 0.30)",
+                      background: "linear-gradient(180deg, #679CFF 0%, #2370FF 100%)",
+                      boxShadow: "0 2px 4px 0 rgba(77, 145, 225, 0.10), 0 1px 0.3px 0 rgba(255, 255, 255, 0.25) inset, 0 -1px 0.3px 0 rgba(0, 19, 88, 0.25) inset",
+                      color: "#FFFFFF",
+                      textAlign: "center",
+                      textShadow: "0 0.5px 1.5px rgba(0, 19, 88, 0.30), 0 2px 5px rgba(0, 19, 88, 0.10)",
+                      fontFamily: "Inter, sans-serif",
+                      fontSize: "14px",
+                      fontWeight: 500,
+                      lineHeight: "125%",
+                    }}
                   >
-                    <Plus className="h-4 w-4 mr-2" />
-                    Add job
-                  </Button>
+                    <Plus className="h-4 w-4" />
+                    Add Job
+                  </button>
                 </CardHeader>
 
                 <CardContent className="space-y-3 min-h-[120px] p-4">
@@ -523,43 +624,43 @@ export function JobTracker() {
       ) : (
         // Desktop/Tablet View: Elegant drag and drop
         <DragDropContext onDragEnd={handleDragEnd}>
-          <div className="overflow-x-auto">
-            <div className="flex gap-6 min-w-max pb-4">
+          <div className="overflow-x-auto -mx-2 px-2">
+            <div className="flex gap-4 lg:gap-6 min-w-max pb-4">
               {filteredColumns.map((column) => {
                 const columnStyles = {
                   shortlist: {
-                    accent: 'var(--brand-primary)',
-                    bg: 'var(--brand-secondary-lightest)',
+                    accent: '#64A7FF',
+                    bg: '#E3EFFF',
                     border: 'border-blue-100'
                   },
                   'auto-apply': {
                     accent: '#8B5CF6',
-                    bg: '#F3F4F6',
+                    bg: '#E5E3FF',
                     border: 'border-purple-100'
                   },
                   applied: {
-                    accent: '#F59E0B',
-                    bg: '#FFFBEB',
+                    accent: '#EFC42C',
+                    bg: '#FFFAE9',
                     border: 'border-amber-100'
                   },
                   interview: {
-                    accent: '#10B981',
-                    bg: '#ECFDF5',
+                    accent: '#74D184',
+                    bg: '#EEF9F5',
                     border: 'border-green-100'
                   },
                   rejected: {
-                    accent: '#EF4444',
-                    bg: '#FEF2F2',
+                    accent: '#FE566B',
+                    bg: '#FFF5F6',
                     border: 'border-red-100'
                   }
                 };
 
                 return (
-                  <div key={column.id} className="w-80 flex-shrink-0">
+                  <div key={column.id} className="w-72 lg:w-80 flex-shrink-0">
                     <Card className={`h-full border ${columnStyles[column.id]?.border} shadow-sm hover:shadow-md transition-shadow`}>
                       {/* Column Header */}
                       <CardHeader
-                        className="pb-4 border-b"
+                        className="pb-3 md:pb-4 px-4 pt-4 border-b"
                         style={{backgroundColor: columnStyles[column.id]?.bg}}
                       >
                         <div className="flex items-center justify-between">
@@ -568,7 +669,7 @@ export function JobTracker() {
                               className="w-4 h-4 rounded-full shadow-sm"
                               style={{backgroundColor: columnStyles[column.id]?.accent}}
                             ></div>
-                            <CardTitle className="text-lg font-semibold text-gray-800">
+                            <CardTitle className="text-base lg:text-lg font-semibold" style={{color: '#002A79'}}>
                               {column.title}
                             </CardTitle>
                           </div>
@@ -579,15 +680,30 @@ export function JobTracker() {
                             {column.jobs.length}
                           </Badge>
                         </div>
-                        <Button
-                          size="sm"
-                          variant="outline"
+                        <button
                           onClick={() => handleAddJob(column.id)}
-                          className="w-full mt-3 border-dashed border-gray-300 text-gray-600 hover:bg-white hover:border-gray-400 transition-all duration-200"
+                          className="w-full mt-3 transition-all hover:opacity-90 flex items-center justify-center gap-2"
+                          style={{
+                            display: "inline-flex",
+                            padding: "10px 16px",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            borderRadius: "8px",
+                            border: "1px solid rgba(35, 112, 255, 0.30)",
+                            background: "linear-gradient(180deg, #679CFF 0%, #2370FF 100%)",
+                            boxShadow: "0 2px 4px 0 rgba(77, 145, 225, 0.10), 0 1px 0.3px 0 rgba(255, 255, 255, 0.25) inset, 0 -1px 0.3px 0 rgba(0, 19, 88, 0.25) inset",
+                            color: "#FFFFFF",
+                            textAlign: "center",
+                            textShadow: "0 0.5px 1.5px rgba(0, 19, 88, 0.30), 0 2px 5px rgba(0, 19, 88, 0.10)",
+                            fontFamily: "Inter, sans-serif",
+                            fontSize: "14px",
+                            fontWeight: 500,
+                            lineHeight: "125%",
+                          }}
                         >
-                          <Plus className="h-4 w-4 mr-2" />
-                          Add job
-                        </Button>
+                          <Plus className="h-4 w-4" />
+                          Add Job
+                        </button>
                       </CardHeader>
 
                       <Droppable droppableId={column.id}>

@@ -162,10 +162,10 @@ export function JobCard({ job, onUpdate, onDelete, onMove, isMobile }) {
           {/* Header */}
           <div className="flex items-start justify-between">
             <div className="flex-1 min-w-0">
-              <h3 className="font-medium text-gray-900 truncate">
+              <h3 className="font-medium truncate" style={{ color: '#002A79' }}>
                 {job.title || "Untitled"}
               </h3>
-              <p className="text-sm text-gray-600 truncate mt-0.5">
+              <p className="text-sm truncate mt-0.5" style={{ color: '#6477B4' }}>
                 {job.location || "No location"}
               </p>
             </div>
@@ -227,7 +227,10 @@ export function JobCard({ job, onUpdate, onDelete, onMove, isMobile }) {
                 variant="ghost"
                 size="sm"
                 onClick={() => window.open(job.url, '_blank')}
-                className="h-7 px-2 text-xs text-gray-600 hover:text-gray-900"
+                className="h-7 px-2 text-xs"
+                style={{ color: '#6477B4' }}
+                onMouseEnter={(e) => e.currentTarget.style.color = '#002A79'}
+                onMouseLeave={(e) => e.currentTarget.style.color = '#6477B4'}
               >
                 <ExternalLink className="h-3 w-3 mr-1" />
                 View
