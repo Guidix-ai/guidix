@@ -7,7 +7,7 @@ import styles from "@/app/styles/pages/job-tracker.module.css";
 export default function JobTrackerPage() {
   const [typewriterText, setTypewriterText] = useState("");
   const [showCursor, setShowCursor] = useState(true);
-  const fullText = "Track Your Journey";
+  const fullText = "Track Your Jobs";
 
   // Typewriter effect
   useEffect(() => {

@@ -167,6 +167,18 @@ export function DashboardLayout({ children, progressBar }) {
 
   return (
     <SidebarContext.Provider value={{ collapsed }}>
+      <style jsx global>{`
+        /* Hide scrollbar for Chrome, Safari and Opera */
+        *::-webkit-scrollbar {
+          display: none;
+        }
+
+        /* Hide scrollbar for IE, Edge and Firefox */
+        * {
+          -ms-overflow-style: none;  /* IE and Edge */
+          scrollbar-width: none;  /* Firefox */
+        }
+      `}</style>
       <div className="min-h-screen" style={{ backgroundColor: "#E9F1FF" }}>
         {/* Header - Full Width */}
         <header
@@ -948,9 +960,7 @@ export function DashboardLayout({ children, progressBar }) {
 
         {/* Main Content */}
         <div
-          style={{
-            
-          }}
+          style={{}}
           className="p-[0px] md:pl-[0px] md:pr-[16px] md:pt-[16px] md:pb-[16px]"
         >
           <style

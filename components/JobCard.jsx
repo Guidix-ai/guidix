@@ -31,7 +31,7 @@ import {
   Move,
 } from "lucide-react";
 
-export function JobCard({ job, onUpdate, onDelete, onMove, isMobile }) {
+export function JobCard({ job, onUpdate, onDelete, onMove, isMobile, accentColor }) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editedJob, setEditedJob] = useState(job);
@@ -178,16 +178,16 @@ export function JobCard({ job, onUpdate, onDelete, onMove, isMobile }) {
                 className="h-8 w-8 p-0"
               >
                 {isExpanded ? (
-                  <ChevronUp className="h-4 w-4 text-gray-500" />
+                  <ChevronUp className="h-4 w-4" style={{ color: '#6477B4' }} />
                 ) : (
-                  <ChevronDown className="h-4 w-4 text-gray-500" />
+                  <ChevronDown className="h-4 w-4" style={{ color: '#6477B4' }} />
                 )}
               </Button>
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                    <MoreHorizontal className="h-4 w-4 text-gray-500" />
+                    <MoreHorizontal className="h-4 w-4" style={{ color: '#6477B4' }} />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-32">
@@ -243,22 +243,22 @@ export function JobCard({ job, onUpdate, onDelete, onMove, isMobile }) {
             <div className="space-y-3 pt-3 border-t border-gray-100">
               {job.salary && (
                 <div>
-                  <Label className="text-xs text-gray-600 font-medium">Salary</Label>
-                  <p className="text-sm text-gray-900 mt-1">{job.salary}</p>
+                  <Label className="text-xs font-medium" style={{ color: '#002A79' }}>Salary</Label>
+                  <p className="text-sm mt-1" style={{ color: '#6477B4' }}>{job.salary}</p>
                 </div>
               )}
 
               {job.notes && (
                 <div>
-                  <Label className="text-xs text-gray-600 font-medium">Notes</Label>
-                  <p className="text-sm text-gray-900 mt-1 whitespace-pre-wrap">{job.notes}</p>
+                  <Label className="text-xs font-medium" style={{ color: '#002A79' }}>Notes</Label>
+                  <p className="text-sm mt-1 whitespace-pre-wrap" style={{ color: '#6477B4' }}>{job.notes}</p>
                 </div>
               )}
 
               {job.jobDescription && (
                 <div>
-                  <Label className="text-xs text-gray-600 font-medium">Description</Label>
-                  <p className="text-sm text-gray-900 mt-1 whitespace-pre-wrap line-clamp-3">
+                  <Label className="text-xs font-medium" style={{ color: '#002A79' }}>Description</Label>
+                  <p className="text-sm mt-1 whitespace-pre-wrap line-clamp-3" style={{ color: '#6477B4' }}>
                     {job.jobDescription}
                   </p>
                 </div>
