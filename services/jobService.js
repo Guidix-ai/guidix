@@ -3,51 +3,52 @@ import { jobApiClient } from '@/lib/api/jobClient';
 /**
  * Get jobs with AI match scores using resume upload
  * This is called when the job search page loads
- * @param {File} file - Resume file (PDF, DOCX, or TXT)
- * @param {number} limit - Number of jobs to fetch (default: 20)
+ * @param {File} file - Resume file (PDF, DOCX, or TXT, max 10MB)
+ * @param {number} limit - Number of jobs to fetch (default: 20, max: 100)
  * @param {number} offset - Offset for pagination (default: 0)
+ * @param {boolean} forceRefresh - Force fresh fetch from TheirStack API (default: false)
  * @returns {Promise} Jobs with AI match scores
  */
-export const getJobsWithResumeUpload = async (file, limit = 20, offset = 0) => {
+export const getJobsWithResumeUpload = async (file, limit = 20, offset = 0, forceRefresh = false) => {
   const formData = new FormData();
   formData.append('resume_file', file);
 
-  const response = await jobApiClient.post('/api/v1/integrated-jobs/with-resume-upload', formData, {
+  const response = await jobApiClient.post('/api/v1/auto-apply/integrated-jobs/with-resume-upload', formData, {
     headers: { 'Content-Type': 'multipart/form-data' },
-    params: { limit, offset }
+    params: { limit, offset, force_refresh: forceRefresh }
   });
   return response.data;
 };
 
 /**
  * Get job details by job ID
- * @param {number} jobId - The job ID
+ * @param {string} jobId - The job UUID
  * @returns {Promise} Job details
  */
 export const getJobDetails = async (jobId) => {
-  const response = await jobApiClient.get(`/api/v1/integrated-jobs/${jobId}`);
+  const response = await jobApiClient.get(`/api/v1/auto-apply/integrated-jobs/${jobId}`);
   return response.data;
 };
 
 /**
  * Add job to wishlist
- * @param {number} jobId - The job ID
+ * @param {string} jobId - The job UUID
  * @returns {Promise} Wishlist response
  */
 export const addToWishlist = async (jobId) => {
-  const response = await jobApiClient.post(`/api/v1/integrated-jobs/${jobId}/wishlist`);
+  const response = await jobApiClient.post(`/api/v1/auto-apply/integrated-jobs/${jobId}/wishlist`);
   return response.data;
 };
 
 /**
  * Remove job from wishlist
- * @param {number} jobId - The job ID
+ * @param {string} jobId - The job UUID
  * @returns {Promise} Response
  */
 export const removeFromWishlist = async (jobId) => {
   // Backend extracts user_id from access_token cookie
   const response = await jobApiClient.patch(
-    `/api/v1/integrated-jobs/job/${jobId}/status`, // No user_id in path
+    `/api/v1/auto-apply/integrated-jobs/job/${jobId}/status`, // No user_id in path
     { status: 'viewed' } // Change status from wishlist to viewed
   );
   return response.data;
@@ -55,17 +56,17 @@ export const removeFromWishlist = async (jobId) => {
 
 /**
  * Mark job as not interested (dismiss/block)
- * @param {number} jobId - The job ID
+ * @param {string} jobId - The job UUID
  * @returns {Promise} Response
  */
 export const markNotInterested = async (jobId) => {
-  const response = await jobApiClient.post(`/api/v1/integrated-jobs/${jobId}/not-interested`);
+  const response = await jobApiClient.post(`/api/v1/auto-apply/integrated-jobs/${jobId}/not-interested`);
   return response.data;
 };
 
 /**
  * Set job status (applied, wishlist, etc.)
- * @param {number} jobId - The job ID
+ * @param {string} jobId - The job UUID
  * @param {string} status - Status enum (viewed, wishlist, applied, etc.)
  * @param {Object} statusData - Optional metadata
  * @returns {Promise} Status response
@@ -73,7 +74,7 @@ export const markNotInterested = async (jobId) => {
 export const setJobStatus = async (jobId, status, statusData = {}) => {
   // Backend extracts user_id from access_token cookie
   const response = await jobApiClient.patch(
-    `/api/v1/integrated-jobs/job/${jobId}/status`, // No user_id in path
+    `/api/v1/auto-apply/integrated-jobs/job/${jobId}/status`, // No user_id in path
     { status, status_data: statusData }
   );
   return response.data;
@@ -91,7 +92,7 @@ export const getUserJobStatuses = async (status = null, limit = 50, offset = 0) 
   const params = { limit, offset };
   if (status) params.status = status;
 
-  const response = await jobApiClient.get('/api/v1/integrated-jobs/job-statuses', { // No user_id in path
+  const response = await jobApiClient.get('/api/v1/auto-apply/integrated-jobs/job-statuses', { // No user_id in path
     params
   });
   return response.data;
@@ -104,7 +105,7 @@ export const getUserJobStatuses = async (status = null, limit = 50, offset = 0) 
  * @returns {Promise} Wishlist jobs
  */
 export const getWishlist = async (limit = 50, offset = 0) => {
-  const response = await jobApiClient.get('/api/v1/integrated-jobs/wishlist', {
+  const response = await jobApiClient.get('/api/v1/auto-apply/integrated-jobs/wishlist', {
     params: { limit, offset }
   });
   return response.data;
@@ -112,12 +113,12 @@ export const getWishlist = async (limit = 50, offset = 0) => {
 
 /**
  * Get similar jobs
- * @param {number} jobId - The job ID
+ * @param {string} jobId - The job UUID
  * @param {number} limit - Number of results (default: 10)
  * @returns {Promise} Similar jobs
  */
 export const getSimilarJobs = async (jobId, limit = 10) => {
-  const response = await jobApiClient.get(`/api/v1/integrated-jobs/${jobId}/similar`, {
+  const response = await jobApiClient.get(`/api/v1/auto-apply/integrated-jobs/${jobId}/similar`, {
     params: { limit }
   });
   return response.data;
@@ -142,7 +143,7 @@ export const searchJobs = async (query, filters = {}, pageToken = null) => {
     requestBody.page_token = pageToken;
   }
 
-  const response = await jobApiClient.post('/api/v1/integrated-jobs/search', requestBody);
+  const response = await jobApiClient.post('/api/v1/auto-apply/integrated-jobs/search', requestBody);
   return response.data;
 };
 
@@ -161,7 +162,7 @@ export const getJobsWithAIScoring = async (resumeId, limit = 20, offset = 0, for
 };
 
 /**
- * Get jobs with AI-powered match scores using resume_id (POST endpoint)
+ * Get jobs with AI-powered match scores using resume_id (GET endpoint - Recommended)
  * @param {string} resumeId - Resume UUID from resume service (e.g., "a1b2c3d4-e5f6-7890-abcd-ef1234567890")
  * @param {number} limit - Number of jobs to fetch (default: 20, max: 100)
  * @param {number} offset - Offset for pagination (default: 0)
@@ -169,8 +170,31 @@ export const getJobsWithAIScoring = async (resumeId, limit = 20, offset = 0, for
  * @returns {Promise} Jobs with AI match scores
  */
 export const getJobsWithResumeId = async (resumeId, limit = 20, offset = 0, forceRefresh = false) => {
+  const response = await jobApiClient.get(
+    '/api/v1/auto-apply/integrated-jobs',
+    {
+      params: {
+        resume_id: resumeId,
+        limit: limit,
+        offset: offset,
+        force_refresh: forceRefresh
+      }
+    }
+  );
+  return response.data;
+};
+
+/**
+ * Get jobs with AI-powered match scores using resume_id (POST endpoint - Alternative)
+ * @param {string} resumeId - Resume UUID from resume service
+ * @param {number} limit - Number of jobs to fetch (default: 20, max: 100)
+ * @param {number} offset - Offset for pagination (default: 0)
+ * @param {boolean} forceRefresh - Force refresh from external API (default: false)
+ * @returns {Promise} Jobs with AI match scores
+ */
+export const getJobsWithResumeIdPost = async (resumeId, limit = 20, offset = 0, forceRefresh = false) => {
   const response = await jobApiClient.post(
-    '/api/v1/integrated-jobs/with-resume-id',
+    '/api/v1/auto-apply/integrated-jobs/with-resume-id',
     null, // No request body
     {
       params: {
@@ -190,7 +214,7 @@ export const getJobsWithResumeId = async (resumeId, limit = 20, offset = 0, forc
  * @returns {Promise} Recommended jobs
  */
 export const getRecommendations = async (limit = 10) => {
-  const response = await jobApiClient.get('/api/v1/integrated-jobs/recommendations', {
+  const response = await jobApiClient.get('/api/v1/auto-apply/integrated-jobs/recommendations', {
     params: { limit }
   });
   return response.data;
@@ -209,7 +233,7 @@ export const getTrendingJobs = async (timePeriod = 'week', location = null, indu
   if (location) params.location = location;
   if (industry) params.industry = industry;
 
-  const response = await jobApiClient.get('/api/v1/integrated-jobs/trending', { params });
+  const response = await jobApiClient.get('/api/v1/auto-apply/integrated-jobs/trending', { params });
   return response.data;
 };
 

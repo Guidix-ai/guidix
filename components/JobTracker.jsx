@@ -7,6 +7,7 @@ import { JobCard } from "@/components/JobCard";
 import { AddJobDialog } from "@/components/AddJobDialog";
 import { MoveJobDialog } from "@/components/MoveJobDialog";
 import styles from "@/app/styles/components/JobTracker.module.css";
+import { getUserJobStatuses, setJobStatus } from "@/services/jobService";
 
 /* ---------------- data ---------------- */
 const initialColumns = [
@@ -17,48 +18,28 @@ const initialColumns = [
   { id: "rejected", title: "Rejected", jobs: [] },
 ];
 
-const sampleJobs = [
-  {
-    id: "1",
-    title: "Senior Frontend Developer",
-    location: "San Francisco, CA",
-    status: "shortlist",
-    url: "https://example.com/job1",
-    notes: "Interesting role with React and TypeScript",
-    documents: [],
-    jobDescription: "We are looking for a senior frontend developer...",
-    salary: "$120,000 - $150,000",
-  },
-  {
-    id: "2",
-    title: "Full Stack Engineer",
-    location: "Remote",
-    status: "applied",
-    url: "https://example.com/job2",
-    notes: "Applied through company website",
-    documents: [],
-    jobDescription: "Full stack position with Node.js and React...",
-    salary: "$100,000 - $130,000",
-  },
-  {
-    id: "3",
-    title: "Software Engineer",
-    location: "New York, NY",
-    status: "interview",
-    url: "https://example.com/job3",
-    notes: "Phone interview scheduled for Friday",
-    documents: [],
-    jobDescription: "Software engineer role at a growing startup...",
-    salary: "$90,000 - $120,000",
-  },
-];
+// Status mapping from API to local column IDs
+const statusMapping = {
+  'wishlist': 'shortlist',
+  'viewed': 'shortlist',
+  'applied': 'applied',
+  'interviewed': 'interview',
+  'interviewing': 'interview',
+  'accepted': 'interview',
+  'rejected': 'rejected',
+  'uninterested': 'rejected',
+};
+
+// Map column IDs back to API status
+const apiStatusMap = {
+  'shortlist': 'wishlist',
+  'auto-apply': 'wishlist',
+  'applied': 'applied',
+  'interview': 'interviewing',
+  'rejected': 'rejected',
+};
 
 /* ---------- corner background under header (glow + dots) ---------- */
-/* Tuned to match your reference image:
-   - slightly inset from the top-left
-   - compact height
-   - horizontal fade to the right
-*/
 function CornerBG() {
   return (
     <>
@@ -84,12 +65,9 @@ function CornerBG() {
 }
 
 export function JobTracker() {
-  const [columns, setColumns] = useState(() =>
-    initialColumns.map((column) => ({
-      ...column,
-      jobs: sampleJobs.filter((job) => job.status === column.id),
-    }))
-  );
+  const [columns, setColumns] = useState(initialColumns);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const [isAddJobOpen, setIsAddJobOpen] = useState(false);
   const [selectedColumn, setSelectedColumn] = useState("shortlist");
@@ -100,6 +78,71 @@ export function JobTracker() {
   const [jobToMove, setJobToMove] = useState(null);
   const [isMobile, setIsMobile] = useState(true);
   const [isClient, setIsClient] = useState(false);
+
+  // Fetch job data from API
+  useEffect(() => {
+    const fetchJobs = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        // Fetch all job statuses for the user
+        const response = await getUserJobStatuses(null, 100, 0);
+
+        if (response.success && response.data) {
+          // Initialize columns
+          const jobsByStatus = initialColumns.map((column) => ({
+            ...column,
+            jobs: []
+          }));
+
+          // Map jobs to columns based on their status
+          response.data.forEach((jobStatus) => {
+            const job = jobStatus.job;
+            const localStatus = statusMapping[jobStatus.status] || 'shortlist';
+
+            const transformedJob = {
+              id: job.id,
+              title: job.title || "Untitled",
+              location: job.location || "No location",
+              status: localStatus,
+              url: job.application_url || "",
+              notes: "",
+              documents: [],
+              jobDescription: job.description || "",
+              salary: job.salary_min && job.salary_max
+                ? `$${job.salary_min.toLocaleString()} - $${job.salary_max.toLocaleString()}`
+                : job.salary_min
+                ? `$${job.salary_min.toLocaleString()}+`
+                : "Not specified",
+              company: job.company || "Unknown",
+              jobType: job.job_type || "Full-time",
+              experienceLevel: job.experience_level || "Mid-level",
+              matchScore: job.match_score || null,
+              isWishlisted: jobStatus.status === 'wishlist',
+              isNotInterested: jobStatus.status === 'uninterested',
+            };
+
+            const columnIndex = jobsByStatus.findIndex(col => col.id === localStatus);
+            if (columnIndex !== -1) {
+              jobsByStatus[columnIndex].jobs.push(transformedJob);
+            }
+          });
+
+          setColumns(jobsByStatus);
+        }
+      } catch (err) {
+        console.error('Error fetching jobs:', err);
+        setError(err.message || 'Failed to load jobs');
+        // Keep showing empty columns on error
+        setColumns(initialColumns);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchJobs();
+  }, []);
 
   // Detect mobile/tablet
   useEffect(() => {
@@ -167,7 +210,7 @@ export function JobTracker() {
   }, [columns, searchQuery, activeFilters]);
 
   const handleDragEnd = useCallback(
-    (result) => {
+    async (result) => {
       const { destination, source, draggableId } = result || {};
       if (!destination) return;
       if (
@@ -184,6 +227,8 @@ export function JobTracker() {
 
       const updated = { ...moved, status: destination.droppableId };
 
+      // Optimistically update UI
+      const prevColumns = columns;
       setColumns((prev) =>
         prev.map((c) => {
           if (c.id === source.droppableId) {
@@ -197,6 +242,16 @@ export function JobTracker() {
           return c;
         })
       );
+
+      // Update backend
+      try {
+        const apiStatus = apiStatusMap[destination.droppableId] || 'wishlist';
+        await setJobStatus(draggableId, apiStatus);
+      } catch (err) {
+        console.error('Error updating job status:', err);
+        // Revert on error
+        setColumns(prevColumns);
+      }
     },
     [columns]
   );
@@ -207,7 +262,12 @@ export function JobTracker() {
   };
 
   const handleSaveJob = (newJob) => {
-    const job = { ...newJob, id: Date.now().toString() };
+    const job = {
+      ...newJob,
+      id: Date.now().toString(),
+      company: "Manual Entry",
+      matchScore: null,
+    };
     setColumns((prev) =>
       prev.map((c) => (c.id === job.status ? { ...c, jobs: [...c.jobs, job] } : c))
     );
@@ -244,7 +304,7 @@ export function JobTracker() {
     setIsMoveDialogOpen(true);
   };
 
-  const handleMoveJob = (id, status) => {
+  const handleMoveJob = async (id, status) => {
     const col = columns.find((c) => c.jobs.some((j) => j.id === id));
     if (!col) return;
     const job = col.jobs.find((j) => j.id === id);
@@ -252,6 +312,8 @@ export function JobTracker() {
 
     const updated = { ...job, status };
 
+    // Optimistically update UI
+    const prevColumns = columns;
     setColumns((prev) =>
       prev.map((c) =>
         c.id === status
@@ -262,6 +324,16 @@ export function JobTracker() {
 
     setIsMoveDialogOpen(false);
     setJobToMove(null);
+
+    // Update backend
+    try {
+      const apiStatus = apiStatusMap[status] || 'wishlist';
+      await setJobStatus(id, apiStatus);
+    } catch (err) {
+      console.error('Error updating job status:', err);
+      // Revert on error
+      setColumns(prevColumns);
+    }
   };
 
   if (!isClient) {
@@ -273,6 +345,45 @@ export function JobTracker() {
         </div>
         <div className={styles.loadingContainer}>
           <div className={styles.loadingText}>Loading…</div>
+        </div>
+      </div>
+    );
+  }
+
+  // Show loading state
+  if (loading) {
+    return (
+      <div className="space-y-6">
+        <div className="bg-white rounded-xl border border-gray-100 p-4 md:p-6 shadow-sm">
+          <div className="animate-pulse space-y-4">
+            <div className="h-12 bg-gray-200 rounded"></div>
+            <div className="h-8 bg-gray-200 rounded w-3/4"></div>
+          </div>
+        </div>
+        <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-5">
+          {[1, 2, 3, 4, 5].map((i) => (
+            <div key={i} className="animate-pulse">
+              <div className="h-32 bg-gray-200 rounded-lg"></div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  // Show error state
+  if (error) {
+    return (
+      <div className="space-y-6">
+        <div className="bg-red-50 border border-red-200 rounded-xl p-6 text-center">
+          <p className="text-red-800 font-medium mb-2">Failed to load jobs</p>
+          <p className="text-red-600 text-sm">{error}</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="mt-4 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+          >
+            Retry
+          </button>
         </div>
       </div>
     );
@@ -297,21 +408,40 @@ export function JobTracker() {
             <Search className="text-gray-400 w-5 h-5 mr-2" />
             <input
               placeholder="Search Jobs..."
-              className="flex-1 outline-none bg-transparent"
+              className="flex-1 outline-none bg-transparent text-gray-600 text-sm"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 md:gap-3">
             <button
               onClick={() => setShowFilters(!showFilters)}
-              className="px-3 py-2 rounded-md bg-blue-600 text-white text-sm"
+              style={{
+                display: "inline-flex",
+                padding: "8px 12px",
+                justifyContent: "center",
+                alignItems: "center",
+                borderRadius: "10px",
+                background: "linear-gradient(180deg, #0349cc 0%, #073b9c 100%)",
+                boxShadow:
+                  "0 -1.5px 1px 0 rgba(6, 51, 165, 0.37) inset, 0 1.5px 1px 0 rgba(255, 255, 255, 0.24) inset",
+                color: "#FFFFFF",
+                textShadow:
+                  "0 0.5px 1.5px rgba(0, 19, 88, 0.30), 0 2px 5px rgba(0, 19, 88, 0.10)",
+                fontFamily: "Inter, sans-serif",
+                fontSize: "14px",
+                fontWeight: 500,
+                lineHeight: "125%",
+                border: "none",
+                cursor: "pointer",
+              }}
+              className="transition-all hover:opacity-90"
             >
-              <Filter className="inline w-4 h-4 mr-1" />
-              Filters
+              <Filter className="w-4 h-4 mr-2" />
+              <span className="hidden sm:inline">Filters</span>
               {activeFilters.length > 0 && (
-                <span className="ml-1 bg-white/30 px-2 py-0.5 rounded-full text-xs">
+                <span className="ml-1 px-2 py-0.5 rounded-full text-xs bg-white/30">
                   {activeFilters.length}
                 </span>
               )}
@@ -319,10 +449,29 @@ export function JobTracker() {
 
             <button
               onClick={() => handleAddJob("shortlist")}
-              className="px-3 py-2 rounded-md bg-blue-600 text-white text-sm"
+              style={{
+                display: "inline-flex",
+                padding: "8px 12px",
+                justifyContent: "center",
+                alignItems: "center",
+                borderRadius: "10px",
+                background: "linear-gradient(180deg, #0349cc 0%, #073b9c 100%)",
+                boxShadow:
+                  "0 -1.5px 1px 0 rgba(6, 51, 165, 0.37) inset, 0 1.5px 1px 0 rgba(255, 255, 255, 0.24) inset",
+                color: "#FFFFFF",
+                textShadow:
+                  "0 0.5px 1.5px rgba(0, 19, 88, 0.30), 0 2px 5px rgba(0, 19, 88, 0.10)",
+                fontFamily: "Inter, sans-serif",
+                fontSize: "14px",
+                fontWeight: 500,
+                lineHeight: "125%",
+                border: "none",
+                cursor: "pointer",
+              }}
+              className="transition-all hover:opacity-90"
             >
-              <Plus className="inline w-4 h-4 mr-1" />
-              Add Job
+              <Plus className="w-4 h-4 mr-2" />
+              <span className="hidden sm:inline">Add Job</span>
             </button>
 
             {(searchQuery || activeFilters.length > 0) && (
@@ -331,9 +480,10 @@ export function JobTracker() {
                   setSearchQuery("");
                   setActiveFilters([]);
                 }}
-                className="px-2 py-2 rounded-md bg-gray-100"
+                className="p-2 rounded-lg hover:bg-gray-100"
+                style={{ color: "#6B7280" }}
               >
-                <X className="w-4 h-4 text-gray-500" />
+                <X className="w-4 h-4" />
               </button>
             )}
           </div>
@@ -346,11 +496,32 @@ export function JobTracker() {
                 <button
                   key={f}
                   onClick={() => toggleFilter(f)}
-                  className={
+                  style={
                     activeFilters.includes(f)
-                      ? "px-3 py-1 rounded-md text-white bg-blue-600 text-sm"
-                      : "px-3 py-1 rounded-md border text-gray-600 text-sm"
+                      ? {
+                          padding: "8px 12px",
+                          borderRadius: "10px",
+                          background: "linear-gradient(180deg, #0349cc 0%, #073b9c 100%)",
+                          color: "#FFFFFF",
+                          fontFamily: "Inter, sans-serif",
+                          fontSize: "14px",
+                          fontWeight: 500,
+                          border: "none",
+                          cursor: "pointer",
+                        }
+                      : {
+                          padding: "8px 12px",
+                          borderRadius: "10px",
+                          border: "1px solid #E5E7EB",
+                          background: "#FFFFFF",
+                          color: "#6B7280",
+                          fontFamily: "Inter, sans-serif",
+                          fontSize: "14px",
+                          fontWeight: 500,
+                          cursor: "pointer",
+                        }
                   }
+                  className="transition-all hover:opacity-90"
                 >
                   {f}
                 </button>
@@ -360,44 +531,60 @@ export function JobTracker() {
         )}
       </div>
 
-      {/* Kanban */}
+      {(searchQuery || activeFilters.length > 0) && (
+        <div className="rounded-lg px-4 py-3 border" style={{ backgroundColor: "#EFF6FF", borderColor: "#DBEAFE" }}>
+          <p className="text-sm" style={{ color: "#1E40AF" }}>
+            <span className="font-semibold">
+              {filteredColumns.reduce((t, c) => t + c.jobs.length, 0)} jobs
+            </span>
+            {searchQuery && ` matching "${searchQuery}"`}
+            {activeFilters.length > 0 &&
+              ` with ${activeFilters.length} filter${activeFilters.length > 1 ? "s" : ""}`}
+          </p>
+        </div>
+      )}
+
+      {/* Job Board */}
       {isMobile ? (
+        /* Mobile */
         <div className="space-y-4">
           {filteredColumns.map((col) => (
-            <Card
-              key={col.id}
-              className="relative isolate overflow-hidden border shadow-sm bg-white"
-            >
-              {/* Corner graphics inside card at z-0; content sits at z-10 */}
-              <div className="relative">
-                <CornerBG />
-                <CardHeader className="px-4 pt-4 pb-3 relative z-10">
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="text-base font-semibold text-blue-900">
-                      {col.title}
-                    </CardTitle>
-                    <Badge className="bg-white/80 border text-xs">{col.jobs.length}</Badge>
-                  </div>
-                </CardHeader>
-              </div>
-
-              <CardContent className="space-y-3 p-4 relative z-10">
+            <Card key={col.id} className="border border-blue-200 shadow-sm">
+              <CardHeader
+                className="pb-3 px-4 pt-4"
+                style={{
+                  backgroundImage: "url(/jobtrackerheader.svg)",
+                  backgroundPosition: "0 center",
+                  backgroundRepeat: "no-repeat",
+                  backgroundSize: "auto 150%",
+                }}
+              >
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-base font-semibold" style={{ color: "#002A79" }}>
+                    {col.title}
+                  </CardTitle>
+                  <Badge variant="secondary" className="bg-white/80 text-xs px-2 py-1" style={{ color: "#64A7FF" }}>
+                    {col.jobs.length}
+                  </Badge>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-3 min-h-[120px] p-4">
                 {col.jobs.length === 0 ? (
-                  <p className="text-center text-gray-400 text-sm">No jobs</p>
+                  <div className="flex flex-col items-center justify-center py-8 text-gray-400">
+                    <div className="text-3xl mb-3 opacity-60">📋</div>
+                    <p className="text-sm font-medium text-gray-500">No jobs yet</p>
+                  </div>
                 ) : (
                   col.jobs.map((job) => (
-                    <div
+                    <JobCard
                       key={job.id}
-                      className="bg-white rounded-lg shadow-sm border border-gray-200"
-                    >
-                      <JobCard
-                        job={job}
-                        isMobile={true}
-                        onUpdate={handleUpdateJob}
-                        onDelete={handleDeleteJob}
-                        onMove={() => openMoveDialog(job)}
-                      />
-                    </div>
+                      job={job}
+                      onUpdate={handleUpdateJob}
+                      onDelete={handleDeleteJob}
+                      onMove={() => openMoveDialog(job)}
+                      isMobile={true}
+                      accentColor="#64A7FF"
+                    />
                   ))
                 )}
               </CardContent>
@@ -405,66 +592,77 @@ export function JobTracker() {
           ))}
         </div>
       ) : (
+        /* Desktop */
         <DragDropContext onDragEnd={handleDragEnd}>
-          <div className="flex gap-4 overflow-x-auto pb-4">
-            {filteredColumns.map((col) => (
-              <div key={col.id} className="w-72 flex-shrink-0">
-                <Card className="relative isolate overflow-hidden border shadow-sm bg-white hover:shadow-md transition-shadow">
-                  <div className="relative">
-                    <CornerBG />
-                    <CardHeader className="px-4 pt-4 pb-3 relative z-10">
+          <div className="overflow-x-auto -mx-2 px-2">
+            <div className="flex gap-4 lg:gap-6 min-w-max pb-4">
+              {filteredColumns.map((col) => (
+                <div key={col.id} className="w-72 lg:w-80 flex-shrink-0">
+                  <Card className="h-full border border-blue-100 shadow-sm hover:shadow-md transition-shadow">
+                    <CardHeader
+                      className="pb-3 px-4 pt-4"
+                      style={{
+                        backgroundImage: "url(/jobtrackerheader.svg)",
+                        backgroundPosition: "0 center",
+                        backgroundRepeat: "no-repeat",
+                        backgroundSize: "auto 150%",
+                      }}
+                    >
                       <div className="flex items-center justify-between">
-                        <CardTitle className="text-blue-900 font-semibold">
+                        <CardTitle className="text-base font-semibold" style={{ color: "#002A79" }}>
                           {col.title}
                         </CardTitle>
-                        <Badge className="bg-white/80 border text-xs">
+                        <Badge variant="secondary" className="bg-white/80 text-xs px-3 py-1 border" style={{ color: "#64A7FF" }}>
                           {col.jobs.length}
                         </Badge>
                       </div>
                     </CardHeader>
-                  </div>
 
-                  <Droppable droppableId={col.id}>
-                    {(provided, snapshot) => (
-                      <CardContent
-                        ref={provided.innerRef}
-                        {...provided.droppableProps}
-                        className={`p-4 space-y-3 min-h-[400px] relative z-10 transition-colors ${
-                          snapshot.isDraggingOver ? "bg-blue-50/40" : ""
-                        }`}
-                      >
-                        {col.jobs.length === 0 ? (
-                          <p className="text-center text-gray-400 text-sm">No jobs</p>
-                        ) : (
-                          col.jobs.map((job, index) => (
-                            <Draggable key={job.id} draggableId={job.id} index={index}>
-                              {(providedDrag, snapshotDrag) => (
-                                <div
-                                  ref={providedDrag.innerRef}
-                                  {...providedDrag.draggableProps}
-                                  {...providedDrag.dragHandleProps}
-                                  className={`bg-white rounded-lg shadow-sm border border-gray-200 ${
-                                    snapshotDrag.isDragging ? "z-[60] scale-[1.02]" : ""
-                                  }`}
-                                >
-                                  <JobCard
-                                    job={job}
-                                    onUpdate={handleUpdateJob}
-                                    onDelete={handleDeleteJob}
-                                    isMobile={false}
-                                  />
-                                </div>
-                              )}
-                            </Draggable>
-                          ))
-                        )}
-                        {provided.placeholder}
-                      </CardContent>
-                    )}
-                  </Droppable>
-                </Card>
-              </div>
-            ))}
+                    <Droppable droppableId={col.id}>
+                      {(provided, snapshot) => (
+                        <CardContent
+                          {...provided.droppableProps}
+                          ref={provided.innerRef}
+                          className={`space-y-3 min-h-[500px] p-4 ${
+                            snapshot.isDraggingOver ? "bg-blue-50/50 border-2 border-dashed border-blue-300" : ""
+                          }`}
+                        >
+                          {col.jobs.length === 0 ? (
+                            <div className="flex flex-col items-center justify-center py-16 text-gray-400">
+                              <div className="text-5xl mb-4 opacity-40">📋</div>
+                              <p className="text-sm font-medium text-gray-500">No jobs yet</p>
+                              <p className="text-xs text-gray-400 mt-2">Drag jobs here</p>
+                            </div>
+                          ) : (
+                            col.jobs.map((job, idx) => (
+                              <Draggable key={job.id} draggableId={job.id} index={idx}>
+                                {(provided, snapshot) => (
+                                  <div
+                                    ref={provided.innerRef}
+                                    {...provided.draggableProps}
+                                    {...provided.dragHandleProps}
+                                    className={snapshot.isDragging ? "opacity-90 rotate-1 scale-105 shadow-xl" : ""}
+                                  >
+                                    <JobCard
+                                      job={job}
+                                      onUpdate={handleUpdateJob}
+                                      onDelete={handleDeleteJob}
+                                      isMobile={false}
+                                      accentColor="#64A7FF"
+                                    />
+                                  </div>
+                                )}
+                              </Draggable>
+                            ))
+                          )}
+                          {provided.placeholder}
+                        </CardContent>
+                      )}
+                    </Droppable>
+                  </Card>
+                </div>
+              ))}
+            </div>
           </div>
         </DragDropContext>
       )}
