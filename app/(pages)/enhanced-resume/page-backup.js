@@ -405,12 +405,12 @@ export default function EnhancedResume() {
       });
     }
     setEditingField(null);
-    setEditingValue(");
+    setEditingValue("");
   };
 
   const handleCancelEdit = () => {
     setEditingField(null);
-    setEditingValue(");
+    setEditingValue("");
   };
 
   const handlePhotoUpload = (event) => {
