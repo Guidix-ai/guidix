@@ -674,7 +674,7 @@ const JobCard = ({ job }: { job: Job }) => {
                 margin: 0,
               }}
             >
-              Let us know if you've submitted your application
+              Let us know if you&apos;ve submitted your application
             </p>
 
             {/* Buttons */}

@@ -40,6 +40,7 @@ function AIPromptInputContent() {
   const [userName, setUserName] = useState("[Your Name]");
   const [userEmail, setUserEmail] = useState("[Email]");
   const [userPhone, setUserPhone] = useState("[Phone]");
+  const [isDesktop, setIsDesktop] = useState(false); // Track desktop viewport
 
   // Set client-side data after hydration
   useEffect(() => {
@@ -55,6 +56,12 @@ function AIPromptInputContent() {
     setUserName(name);
     setUserEmail(email);
     setUserPhone(phone);
+
+    // Check viewport size
+    const checkDesktop = () => setIsDesktop(window.innerWidth >= 1024);
+    checkDesktop();
+    window.addEventListener('resize', checkDesktop);
+    return () => window.removeEventListener('resize', checkDesktop);
   }, [user]);
 
   const MAX_WORDS = 100;
@@ -689,12 +696,11 @@ My experience? [Key Project] from [Year], and an internship [Role/Company] with 
           style={{
             position: "fixed",
             bottom: "2rem",
-            left:
-              typeof window !== "undefined" && window.innerWidth >= 1024
-                ? collapsed
-                  ? "calc((100vw - 96px) / 2 + 96px)" // Collapsed: center of (viewport - sidebar)
-                  : "calc((100vw - 272px) / 2 + 272px)" // Expanded: center of (viewport - sidebar)
-                : "50%",
+            left: isDesktop
+              ? collapsed
+                ? "calc((100vw - 96px) / 2 + 96px)" // Collapsed: center of (viewport - sidebar)
+                : "calc((100vw - 272px) / 2 + 272px)" // Expanded: center of (viewport - sidebar)
+              : "50%",
             transform: "translateX(-50%)",
             zIndex: 50,
             transition: "left 0.3s ease",

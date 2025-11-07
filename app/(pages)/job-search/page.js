@@ -1445,7 +1445,7 @@ const EnhancedJobCard = ({
                 animation: "fadeIn 0.5s ease-out",
               }}
             >
-              Let us know if you've submitted your application
+              Let us know if you&apos;ve submitted your application
             </p>
 
             {/* Buttons */}

@@ -1,32 +1,56 @@
 import { NextResponse } from "next/server";
 
+/**
+ * DEPRECATED: This Next.js API route proxy is no longer needed
+ *
+ * With cookie-based authentication, the frontend should call the backend directly.
+ * The backend handles cookie refresh directly.
+ */
+
 // Use runtime environment variable from Docker/Cloud Run
 const API_BASE_URL = process.env.API_BASE_URL || "https://api.guidix.ai";
 
 export async function POST(request) {
   try {
-    const refreshToken = request.cookies.get("refresh_token")?.value;
+    // Get ALL cookies from request header to forward to backend
+    const cookieHeader = request.headers.get("cookie");
 
-    if (!refreshToken) {
+    if (!cookieHeader || !cookieHeader.includes("refresh_token")) {
       return NextResponse.json(
         { success: false, message: "No refresh token found" },
         { status: 401 }
       );
     }
 
-    // Call backend refresh API
+    // Call backend refresh API with ALL cookies
     const response = await fetch(`${API_BASE_URL}/api/v1/auth/refresh`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "Cookie": cookieHeader,  // Forward ALL cookies
       },
-      body: JSON.stringify({ refresh_token: refreshToken }),
     });
 
     const data = await response.json();
 
+    // NEW: Handle cookie-based authentication
+    // Backend sets new cookies directly
+    if (response.ok && data.success) {
+      const res = NextResponse.json(data, { status: response.status });
+
+      // Forward cookies from backend to client
+      const setCookieHeader = response.headers.get('set-cookie');
+      if (setCookieHeader) {
+        res.headers.set('set-cookie', setCookieHeader);
+      }
+
+      return res;
+    }
+
+    // OLD: Token-based authentication (DEPRECATED)
     if (response.ok && data.data?.tokens) {
-      // Create response with data
+      console.warn('⚠️ Backend returned tokens in response body. This is deprecated. Use cookie-based auth instead.');
+
       const res = NextResponse.json(data, { status: response.status });
 
       const isProduction = process.env.NODE_ENV === "production";
@@ -40,14 +64,16 @@ export async function POST(request) {
         path: "/",
       });
 
-      // Update refresh token
-      res.cookies.set("refresh_token", data.data.tokens.refresh_token, {
-        httpOnly: true,
-        secure: isProduction,
-        sameSite: "lax",
-        maxAge: 60 * 60 * 24 * 7, // 7 days
-        path: "/",
-      });
+      // Update refresh token if provided
+      if (data.data.tokens.refresh_token) {
+        res.cookies.set("refresh_token", data.data.tokens.refresh_token, {
+          httpOnly: true,
+          secure: isProduction,
+          sameSite: "lax",
+          maxAge: 60 * 60 * 24 * 7, // 7 days
+          path: "/",
+        });
+      }
 
       // Update token expiry
       if (data.data.tokens.expires_at) {

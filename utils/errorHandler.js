@@ -1,105 +1,135 @@
 /**
- * Handle API errors and return exact backend error messages
- * @param {Error} error - The error object
- * @returns {string} Exact error message from backend or fallback
+ * Standardized API Error Handler
+ * Returns structured error information
  */
-export const handleApiError = (error) => {
+export function handleApiError(error) {
+  console.error('API Error:', error);
+
+  // Structure to return
+  const errorInfo = {
+    message: '',
+    type: 'error',
+    shouldRedirect: false,
+    redirectUrl: null,
+    fieldErrors: null,
+    statusCode: null
+  };
+
+  // Axios error with response
   if (error.response) {
-    // The request was made and the server responded with a status code
-    const errorData = error.response.data;
+    const status = error.response.status;
+    const data = error.response.data;
+    errorInfo.statusCode = status;
 
-    // Try to extract error message from various possible fields (backend may use different formats)
-    // Check detail field (FastAPI/Python backends)
-    if (errorData?.detail) {
-      // Handle both string and object detail
-      if (typeof errorData.detail === 'string') {
-        return errorData.detail;
-      }
-      if (typeof errorData.detail === 'object' && errorData.detail.message) {
-        return errorData.detail.message;
-      }
+    switch (status) {
+      case 400:
+        errorInfo.message = data.detail || data.message || 'Invalid request';
+        errorInfo.type = 'validation';
+        break;
+
+      case 401:
+        errorInfo.message = 'Session expired. Please log in again';
+        errorInfo.type = 'auth';
+        errorInfo.shouldRedirect = true;
+        errorInfo.redirectUrl = '/login?message=session_expired';
+        // Clear localStorage
+        if (typeof window !== 'undefined') {
+          localStorage.clear();
+        }
+        break;
+
+      case 403:
+        errorInfo.message = data.detail || data.message || 'You do not have permission';
+        errorInfo.type = 'permission';
+        break;
+
+      case 404:
+        errorInfo.message = data.detail || data.message || 'Resource not found';
+        errorInfo.type = 'not_found';
+        break;
+
+      case 413:
+        errorInfo.message = 'File is too large. Please upload a smaller file';
+        errorInfo.type = 'validation';
+        break;
+
+      case 422:
+        // Validation error with field details
+        errorInfo.type = 'validation';
+
+        if (data.detail && Array.isArray(data.detail)) {
+          // FastAPI validation error format
+          errorInfo.fieldErrors = data.detail.map(err => ({
+            field: err.loc?.[err.loc.length - 1] || 'unknown',
+            message: err.msg
+          }));
+          errorInfo.message = 'Please check your input';
+        } else if (data.errors && Array.isArray(data.errors)) {
+          // Custom validation error format
+          errorInfo.fieldErrors = data.errors;
+          errorInfo.message = data.errors.map(e => e.message).join(', ');
+        } else {
+          errorInfo.message = data.detail || data.message || 'Validation failed';
+        }
+        break;
+
+      case 429:
+        errorInfo.message = 'Too many requests. Please try again in a moment';
+        errorInfo.type = 'rate_limit';
+        break;
+
+      case 500:
+      case 502:
+      case 503:
+        errorInfo.message = 'Server error. Please try again later';
+        errorInfo.type = 'server';
+        break;
+
+      default:
+        errorInfo.message = data.detail || data.message || `Error: ${status}`;
+        errorInfo.type = 'unknown';
     }
-
-    // Check message field (Node/Express backends)
-    if (errorData?.message) {
-      return errorData.message;
-    }
-
-    // Check error field
-    if (errorData?.error) {
-      if (typeof errorData.error === 'string') {
-        return errorData.error;
-      }
-      if (typeof errorData.error === 'object' && errorData.error.message) {
-        return errorData.error.message;
-      }
-    }
-
-    // Check errors array (validation errors)
-    if (errorData?.errors && Array.isArray(errorData.errors) && errorData.errors.length > 0) {
-      // Handle array of error objects
-      if (typeof errorData.errors[0] === 'object') {
-        const errorMessages = errorData.errors
-          .map(err => err.message || err.msg || err.detail || JSON.stringify(err))
-          .filter(Boolean);
-        return errorMessages.join(', ');
-      }
-      // Handle array of strings
-      return errorData.errors.join(', ');
-    }
-
-    // If we have the full error data as a string, use it
-    if (typeof errorData === 'string') {
-      return errorData;
-    }
-
-    // Log the full error response for debugging
-    console.error('🔴 Backend Error Response:', errorData);
-    console.error('🔴 Status Code:', error.response.status);
-
-    // Default HTTP error messages (only as last resort)
-    const statusMessages = {
-      400: 'Bad request. Please check your input.',
-      401: 'Unauthorized. Please log in again.',
-      403: 'Forbidden. You do not have permission to perform this action.',
-      404: 'Resource not found.',
-      500: 'Internal server error. Please try again later.',
-      503: 'Service unavailable. Please try again later.',
-    };
-
-    return statusMessages[error.response.status] || `Error: ${error.response.status}`;
-  } else if (error.request) {
-    // The request was made but no response was received
-    return 'No response from server. Please check your internet connection.';
-  } else {
-    // Something happened in setting up the request
-    return error.message || 'An unexpected error occurred';
   }
-};
+  // Network error
+  else if (error.request) {
+    errorInfo.message = 'Network error. Please check your connection';
+    errorInfo.type = 'network';
+  }
+  // Other errors
+  else {
+    errorInfo.message = error.message || 'An unexpected error occurred';
+    errorInfo.type = 'unknown';
+  }
+
+  return errorInfo;
+}
 
 /**
- * Log error for debugging with full details
- * @param {string} context - Where the error occurred
- * @param {Error} error - The error object
+ * Show error to user (use in components)
+ * @param {Object} errorInfo - Error info from handleApiError
+ * @param {Function} setError - State setter for error message
  */
-export const logError = (context, error) => {
-  console.group(`🔴 Error in ${context}`);
-  console.error('Message:', error.message);
-  console.error('Status:', error.response?.status);
-  console.error('Status Text:', error.response?.statusText);
+export function showError(errorInfo, setError) {
+  setError(errorInfo.message);
 
-  // Log the full error response data
-  if (error.response?.data) {
-    console.error('Backend Response:', error.response.data);
-
-    // Specifically highlight common error fields
-    const data = error.response.data;
-    if (data.detail) console.error('  ↳ detail:', data.detail);
-    if (data.message) console.error('  ↳ message:', data.message);
-    if (data.error) console.error('  ↳ error:', data.error);
-    if (data.errors) console.error('  ↳ errors:', data.errors);
+  // Handle redirect if needed
+  if (errorInfo.shouldRedirect && errorInfo.redirectUrl) {
+    setTimeout(() => {
+      window.location.href = errorInfo.redirectUrl;
+    }, 1000);
   }
+}
 
-  console.error('Full Error Object:', error);
-  console.groupEnd();
-};
+/**
+ * Log error for debugging
+ * @param {string} context - Context where error occurred
+ * @param {Error} error - Error object
+ */
+export function logError(context, error) {
+  console.error(`[${context}]`, {
+    message: error.message,
+    response: error.response?.data,
+    status: error.response?.status,
+    stack: error.stack
+  });
+}

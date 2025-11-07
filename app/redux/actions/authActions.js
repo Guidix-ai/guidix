@@ -3,17 +3,15 @@ import axios from "axios";
 
 /**
  * =============================================================================
- * AXIOS INSTANCE WITH INTERCEPTORS
+ * AXIOS INSTANCE WITH COOKIE AUTHENTICATION
  * =============================================================================
- * This axios instance automatically:
- * 1. Attaches access token to all requests (except auth endpoints)
- * 2. Handles 401 errors by refreshing the token
- * 3. Retries the original request with new token
+ * This axios instance uses cookies for authentication (withCredentials: true)
+ * NO localStorage token management
+ * NO Authorization headers
  */
 
-// Base API URL - uses your actual backend URL
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL || "https://api.guidix.ai";
+// Base API URL
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://api.guidix.ai";
 
 // Create axios instance
 export const axiosInstance = axios.create({
@@ -21,84 +19,16 @@ export const axiosInstance = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
-  withCredentials: true, // Important for cookies
+  withCredentials: true,  // CRITICAL: Send cookies automatically
 });
 
 /**
- * List of endpoints that don't require authentication
- * These are the actual endpoints from your backend based on the documentation
- */
-const PUBLIC_ENDPOINTS = [
-  "/api/v1/auth/signin", // Login endpoint
-  "/api/v1/auth/signup", // Register endpoint (signup, not register!)
-  "/api/v1/auth/forgot-password", // Forgot password
-  "/api/v1/auth/reset-password", // Reset password
-  "/api/v1/auth/refresh", // Token refresh
-  "/api/v1/auth/verify-email", // Email verification
-];
-
-/**
- * Check if endpoint requires authentication
- */
-const requiresAuth = (url) => {
-  return !PUBLIC_ENDPOINTS.some((endpoint) => url.includes(endpoint));
-};
-
-/**
  * REQUEST INTERCEPTOR
- * Attaches access token to all authenticated requests
- * NOTE: Passwords in request payload are normal and expected for authentication.
- * The browser DevTools will show them in Network tab, but they are encrypted in transit via HTTPS.
+ * No Authorization header needed - cookies handle everything
  */
 axiosInstance.interceptors.request.use(
   (config) => {
-    // Only add token for authenticated endpoints
-    if (requiresAuth(config.url)) {
-      const accessToken =
-        typeof window !== "undefined"
-          ? localStorage.getItem("access_token")
-          : null;
-
-      if (accessToken) {
-        config.headers.Authorization = `Bearer ${accessToken}`;
-      }
-    }
-
-    // Prevent accidental logging of sensitive data
-    // Override console methods during request to filter out passwords
-    if (process.env.NODE_ENV === "development") {
-      const originalLog = console.log;
-      const originalError = console.error;
-      const originalWarn = console.warn;
-
-      // Temporarily override console methods to filter passwords
-      const sanitize = (args) => {
-        return args.map((arg) => {
-          if (typeof arg === "object" && arg !== null) {
-            const sanitized = { ...arg };
-            if (sanitized.password) sanitized.password = "***REDACTED***";
-            if (sanitized.new_password)
-              sanitized.new_password = "***REDACTED***";
-            if (sanitized.confirmPassword)
-              sanitized.confirmPassword = "***REDACTED***";
-            return sanitized;
-          }
-          return arg;
-        });
-      };
-
-      console.log = (...args) => originalLog(...sanitize(args));
-      console.error = (...args) => originalError(...sanitize(args));
-      console.warn = (...args) => originalWarn(...sanitize(args));
-
-      // Restore after a short delay
-      setTimeout(() => {
-        console.log = originalLog;
-        console.error = originalError;
-        console.warn = originalWarn;
-      }, 100);
-    }
-
+    // Just return config - cookies sent automatically
     return config;
   },
   (error) => {
@@ -108,121 +38,26 @@ axiosInstance.interceptors.request.use(
 
 /**
  * RESPONSE INTERCEPTOR
- * Handles 401 errors by refreshing token and retrying request
+ * Handle 401 errors by redirecting to login
  */
-let isRefreshing = false;
-let failedQueue = [];
-
-const processQueue = (error, token = null) => {
-  failedQueue.forEach((prom) => {
-    if (error) {
-      prom.reject(error);
-    } else {
-      prom.resolve(token);
-    }
-  });
-
-  failedQueue = [];
-};
-
 axiosInstance.interceptors.response.use(
   (response) => {
     // If response is successful, return it
     return response;
   },
   async (error) => {
-    const originalRequest = error.config;
-
-    // If error is not 401 or is from a public endpoint, reject immediately
-    if (
-      error.response?.status !== 401 ||
-      !requiresAuth(originalRequest.url) ||
-      originalRequest._retry
-    ) {
-      return Promise.reject(error);
-    }
-
-    // If already refreshing, queue this request
-    if (isRefreshing) {
-      return new Promise((resolve, reject) => {
-        failedQueue.push({ resolve, reject });
-      })
-        .then((token) => {
-          originalRequest.headers.Authorization = `Bearer ${token}`;
-          return axiosInstance(originalRequest);
-        })
-        .catch((err) => {
-          return Promise.reject(err);
-        });
-    }
-
-    // Mark that we're refreshing
-    originalRequest._retry = true;
-    isRefreshing = true;
-
-    // Try to refresh the token using localStorage
-    try {
-      const refreshToken =
-        typeof window !== "undefined"
-          ? localStorage.getItem("refresh_token")
-          : null;
-
-      if (!refreshToken) {
-        throw new Error("No refresh token available");
-      }
-
-      // Call backend refresh endpoint directly
-      const response = await axios.post(`${API_BASE_URL}/api/v1/auth/refresh`, {
-        refresh_token: refreshToken,
-      });
-
-      if (response.data && response.data.data?.tokens) {
-        const { access_token, refresh_token, token_expiry } =
-          response.data.data.tokens;
-
-        // Store new tokens in localStorage
-        if (typeof window !== "undefined") {
-          localStorage.setItem("access_token", access_token);
-          if (refresh_token) {
-            localStorage.setItem("refresh_token", refresh_token);
-          }
-          if (token_expiry) {
-            localStorage.setItem("token_expiry", token_expiry.toString());
-          }
-        }
-
-        // Update authorization header
-        axiosInstance.defaults.headers.common.Authorization = `Bearer ${access_token}`;
-        originalRequest.headers.Authorization = `Bearer ${access_token}`;
-
-        // Process queued requests
-        processQueue(null, access_token);
-
-        // Retry original request
-        return axiosInstance(originalRequest);
-      }
-    } catch (refreshError) {
-      // Refresh failed - clear tokens and redirect to login
-      processQueue(refreshError, null);
-
-      // Clear localStorage
+    // If 401, session expired - redirect to login
+    if (error.response?.status === 401) {
       if (typeof window !== "undefined") {
-        localStorage.removeItem("access_token");
-        localStorage.removeItem("refresh_token");
-        localStorage.removeItem("token_expiry");
-        localStorage.removeItem("user");
-        localStorage.removeItem("isAuthenticated");
-      }
+        // Clear localStorage (cleanup)
+        localStorage.clear();
 
-      // Redirect to login page
-      if (typeof window !== "undefined") {
-        window.location.href = "/login?session=expired";
+        // Redirect to login
+        window.location.href = "/login?message=session_expired";
       }
-
-      return Promise.reject(refreshError);
-    } finally {
-      isRefreshing = false;
     }
+
+    return Promise.reject(error);
   }
 );
 
@@ -234,95 +69,58 @@ axiosInstance.interceptors.response.use(
 
 /**
  * LOGIN USER (SIGNIN)
- * Endpoint: POST /api/v1/auth/signin
- * @param {Object} credentials - { email, password, remember_me }
+ * Uses Next.js API route which handles cookie setting
+ * @param {Object} credentials - { email, password }
  */
 export const loginUser = createAsyncThunk(
   "auth/login",
   async (credentials, { rejectWithValue }) => {
     try {
-      // Call backend signin endpoint directly
-      const response = await axios.post(
-        `${API_BASE_URL}/api/v1/auth/signin`,
-        credentials
-      );
+      // Call Next.js API route (NOT backend directly!)
+      const response = await fetch('/api/v1/auth/signin', {
+        method: 'POST',
+        credentials: 'include',  // CRITICAL!
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(credentials)
+      });
 
-      if (response.data && response.data.data) {
-        const { user, tokens } = response.data.data;
-
-        // Store tokens and all user data in localStorage
-        if (typeof window !== "undefined") {
-          // Store tokens
-          localStorage.setItem("access_token", tokens.access_token);
-          localStorage.setItem("refresh_token", tokens.refresh_token);
-          if (tokens.expires_at) {
-            localStorage.setItem("token_expiry", tokens.expires_at.toString());
-          }
-
-          // Store user data
-          localStorage.setItem("user", JSON.stringify(user));
-          localStorage.setItem("isAuthenticated", "true");
-
-          // Store individual user fields for easy access
-          if (user.email) localStorage.setItem("userEmail", user.email);
-          if (user.full_name) localStorage.setItem("userName", user.full_name);
-          if (user.phone_number)
-            localStorage.setItem("userPhone", user.phone_number);
-          if (user.university_domain)
-            localStorage.setItem("userUniversity", user.university_domain);
-          if (user.id) localStorage.setItem("userId", user.id);
-        }
-
-        return { user, tokens };
+      if (!response.ok) {
+        const error = await response.json();
+        return rejectWithValue(error.message || error.detail || 'Login failed');
       }
 
-      return rejectWithValue("Invalid response format");
-    } catch (error) {
-      // Extract exact error message from backend
-      const errorData = error.response?.data;
-      const message =
-        errorData?.detail || // FastAPI/Python style
-        errorData?.message || // Node/Express style
-        errorData?.error || // Generic error field
-        error.message || // JavaScript error message
-        "Login failed"; // Fallback
+      const data = await response.json();
 
-      console.error("🔴 Login Error:", errorData || error.message);
-      return rejectWithValue(message);
+      // Cookies are set automatically by Next.js API route
+      // Store only user data in Redux (NOT tokens!)
+      return data.data;
+    } catch (error) {
+      console.error("🔴 Login Error:", error);
+      return rejectWithValue(error.message || "Login failed");
     }
   }
 );
 
 /**
  * REGISTER USER (SIGNUP)
- * Endpoint: POST /api/v1/auth/signup
  * @param {Object} userData - { email, password, full_name, phone_number?, university_domain? }
  */
 export const registerUser = createAsyncThunk(
   "auth/register",
   async (userData, { rejectWithValue }) => {
     try {
-      // Call backend directly for signup (no token needed)
-      const response = await axiosInstance.post(
-        "/api/v1/auth/signup",
-        userData
-      );
+      // Call backend signup endpoint directly (no auth needed)
+      const response = await axiosInstance.post("/api/v1/auth/signup", userData);
 
       if (response.data && response.data.data) {
         const { user } = response.data.data;
-
-        // Note: Signup doesn't return tokens - user needs to verify email first
-        // Store user info temporarily
-        if (typeof window !== "undefined") {
-          localStorage.setItem("pendingUser", JSON.stringify(user));
-        }
-
         return { user, message: response.data.message };
       }
 
       return rejectWithValue("Invalid response format");
     } catch (error) {
-      // Extract exact error message from backend
       const errorData = error.response?.data;
       const message =
         errorData?.detail ||
@@ -339,106 +137,57 @@ export const registerUser = createAsyncThunk(
 
 /**
  * LOGOUT USER
- * Endpoint: POST /api/v1/auth/logout
+ * Uses Next.js API route which clears cookies
  */
 export const logoutUser = createAsyncThunk(
   "auth/logout",
   async (_, { rejectWithValue }) => {
     try {
-      // Call backend logout endpoint
-      await axios.post(
-        `${API_BASE_URL}/api/v1/auth/logout`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${
-              typeof window !== "undefined"
-                ? localStorage.getItem("access_token")
-                : ""
-            }`,
-          },
-        }
-      );
+      // Call Next.js API route (NOT backend directly!)
+      await fetch('/api/v1/auth/logout', {
+        method: 'POST',
+        credentials: 'include',  // CRITICAL!
+      });
 
-      // Clear all localStorage items
+      // Clear localStorage (cleanup)
       if (typeof window !== "undefined") {
-        localStorage.removeItem("access_token");
-        localStorage.removeItem("refresh_token");
-        localStorage.removeItem("token_expiry");
-        localStorage.removeItem("user");
-        localStorage.removeItem("isAuthenticated");
-        localStorage.removeItem("userEmail");
-        localStorage.removeItem("userName");
-        localStorage.removeItem("userPhone");
-        localStorage.removeItem("userUniversity");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("pendingUser");
+        localStorage.clear();
       }
 
       return true;
     } catch (error) {
-      // Even if API call fails, clear all local data
+      // Even if API call fails, clear local data
       if (typeof window !== "undefined") {
-        localStorage.removeItem("access_token");
-        localStorage.removeItem("refresh_token");
-        localStorage.removeItem("token_expiry");
-        localStorage.removeItem("user");
-        localStorage.removeItem("isAuthenticated");
-        localStorage.removeItem("userEmail");
-        localStorage.removeItem("userName");
-        localStorage.removeItem("userPhone");
-        localStorage.removeItem("userUniversity");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("pendingUser");
+        localStorage.clear();
       }
 
-      // Extract exact error message from backend
-      const errorData = error.response?.data;
-      const message =
-        errorData?.detail ||
-        errorData?.message ||
-        errorData?.error ||
-        error.message ||
-        "Logout failed";
-
-      console.error("🔴 Logout Error:", errorData || error.message);
-      return rejectWithValue(message);
+      console.error("🔴 Logout Error:", error);
+      return rejectWithValue(error.message || "Logout failed");
     }
   }
 );
 
 /**
  * GET USER PROFILE
- * Example of a protected API call that uses automatic token handling
- * Endpoint: GET /api/v1/auth/profile (or whatever your backend uses)
+ * Verifies authentication by fetching current user
  */
 export const getUserProfile = createAsyncThunk(
   "auth/getProfile",
   async (_, { rejectWithValue }) => {
     try {
-      // This request will automatically include the access token
-      // If token is expired, it will automatically refresh and retry
-      const response = await axiosInstance.get("/api/v1/auth/profile");
+      // Call /users/me endpoint - cookie sent automatically
+      const response = await axiosInstance.get("/api/v1/users/me");
 
       if (response.data && response.data.data) {
-        const user = response.data.data.user;
-
-        // Update user in localStorage
-        if (typeof window !== "undefined") {
-          localStorage.setItem("user", JSON.stringify(user));
-        }
-
-        return user;
+        return response.data.data;
       }
 
       return rejectWithValue("Invalid response format");
     } catch (error) {
-      // Extract exact error message from backend
       const errorData = error.response?.data;
       const message =
         errorData?.detail ||
         errorData?.message ||
-        errorData?.error ||
         error.message ||
         "Failed to fetch profile";
 
@@ -457,29 +206,20 @@ export const updateUserProfile = createAsyncThunk(
   async (profileData, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.put(
-        "/api/v1/auth/profile",
+        "/api/v1/user-management/me/profile",
         profileData
       );
 
       if (response.data && response.data.data) {
-        const user = response.data.data.user;
-
-        // Update user in localStorage
-        if (typeof window !== "undefined") {
-          localStorage.setItem("user", JSON.stringify(user));
-        }
-
-        return user;
+        return response.data.data;
       }
 
       return rejectWithValue("Invalid response format");
     } catch (error) {
-      // Extract exact error message from backend
       const errorData = error.response?.data;
       const message =
         errorData?.detail ||
         errorData?.message ||
-        errorData?.error ||
         error.message ||
         "Failed to update profile";
 
@@ -490,68 +230,7 @@ export const updateUserProfile = createAsyncThunk(
 );
 
 /**
- * FORGOT PASSWORD
- * Endpoint: POST /api/v1/auth/forgot-password
- * @param {string} email - User email
- */
-export const forgotPassword = createAsyncThunk(
-  "auth/forgotPassword",
-  async (email, { rejectWithValue }) => {
-    try {
-      const response = await axiosInstance.post(
-        "/api/v1/auth/forgot-password",
-        { email }
-      );
-      return response.data.message || "Password reset email sent";
-    } catch (error) {
-      // Extract exact error message from backend
-      const errorData = error.response?.data;
-      const message =
-        errorData?.detail ||
-        errorData?.message ||
-        errorData?.error ||
-        error.message ||
-        "Failed to send reset email";
-
-      console.error("🔴 Forgot Password Error:", errorData || error.message);
-      return rejectWithValue(message);
-    }
-  }
-);
-
-/**
- * RESET PASSWORD
- * Endpoint: POST /api/v1/auth/reset-password
- * @param {Object} data - { token, new_password }
- */
-export const resetPassword = createAsyncThunk(
-  "auth/resetPassword",
-  async (data, { rejectWithValue }) => {
-    try {
-      const response = await axiosInstance.post(
-        "/api/v1/auth/reset-password",
-        data
-      );
-      return response.data.message || "Password reset successful";
-    } catch (error) {
-      // Extract exact error message from backend
-      const errorData = error.response?.data;
-      const message =
-        errorData?.detail ||
-        errorData?.message ||
-        errorData?.error ||
-        error.message ||
-        "Failed to reset password";
-
-      console.error("🔴 Reset Password Error:", errorData || error.message);
-      return rejectWithValue(message);
-    }
-  }
-);
-
-/**
  * VERIFY EMAIL
- * Endpoint: POST /api/v1/auth/verify-email
  * @param {string} token - Verification token
  */
 export const verifyEmail = createAsyncThunk(
@@ -563,12 +242,10 @@ export const verifyEmail = createAsyncThunk(
       });
       return response.data.message || "Email verified successfully";
     } catch (error) {
-      // Extract exact error message from backend
       const errorData = error.response?.data;
       const message =
         errorData?.detail ||
         errorData?.message ||
-        errorData?.error ||
         error.message ||
         "Email verification failed";
 
@@ -579,19 +256,61 @@ export const verifyEmail = createAsyncThunk(
 );
 
 /**
+ * FORGOT PASSWORD
+ * @param {string} email - User's email address
+ */
+export const forgotPassword = createAsyncThunk(
+  "auth/forgotPassword",
+  async (email, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.post("/api/v1/auth/forgot-password", {
+        email,
+      });
+      return response.data.message || "Password reset email sent successfully";
+    } catch (error) {
+      const errorData = error.response?.data;
+      const message =
+        errorData?.detail ||
+        errorData?.message ||
+        error.message ||
+        "Failed to send reset email";
+
+      console.error("🔴 Forgot Password Error:", errorData || error.message);
+      return rejectWithValue(message);
+    }
+  }
+);
+
+/**
+ * RESET PASSWORD
+ * @param {Object} resetData - { token, new_password }
+ */
+export const resetPassword = createAsyncThunk(
+  "auth/resetPassword",
+  async (resetData, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.post("/api/v1/auth/reset-password", resetData);
+      return response.data.message || "Password reset successfully";
+    } catch (error) {
+      const errorData = error.response?.data;
+      const message =
+        errorData?.detail ||
+        errorData?.message ||
+        error.message ||
+        "Password reset failed";
+
+      console.error("🔴 Reset Password Error:", errorData || error.message);
+      return rejectWithValue(message);
+    }
+  }
+);
+
+/**
  * =============================================================================
  * EXPORT AXIOS INSTANCE FOR OTHER API CALLS
  * =============================================================================
  * Use this instance in your other API services to get automatic:
- * - Token injection
- * - Token refresh on 401
- * - Request retry
- *
- * Example:
- * import { axiosInstance } from '@/app/redux/actions/authActions';
- *
- * export const fetchResumes = () => {
- *   return axiosInstance.get('/api/v1/resumes/resume-list');
- * };
+ * - Cookie authentication
+ * - 401 handling with redirect
  */
 export default axiosInstance;

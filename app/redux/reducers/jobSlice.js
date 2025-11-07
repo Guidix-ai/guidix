@@ -7,7 +7,7 @@ import {
   addToWishlist,
   removeFromWishlist,
   fetchMyApplications,
-} from '../actions/jobAction';
+} from '../actions/jobActions';
 
 const initialState = {
   jobs: [],

@@ -105,7 +105,7 @@ export default function DashboardPage() {
   ];
 
   const insights = {
-    recommendedJobs: 12,
+    recommendedJobs: 300,
     applicationsThisWeek: 5,
     upcomingInterviews: 2,
     profileViews: 34,
@@ -152,14 +152,14 @@ export default function DashboardPage() {
           className="md:px-8 md:py-6 px-6 py-4"
           style={{ backgroundColor: "transparent" }}
         >
-          <div className="grid grid-cols-2 md:grid-cols-[repeat(4,1fr)] gap-4 mb-4">
+          <div className="grid grid-cols-2 md:grid-cols-[repeat(3,1fr)] gap-4 mb-4">
             {features.map((feature, index) => (
               <div
                 key={index}
                 onClick={() => router.push(feature.route)}
                 className={`rounded-lg shadow-sm relative transition-all hover:shadow-md cursor-pointer ${
                   feature.size === "large"
-                    ? "col-span-2 min-h-[85px]"
+                    ? "col-span-1 min-h-[85px]"
                     : "md:col-auto col-span-2 min-h-[70px]"
                 }`}
                 style={{
@@ -233,14 +233,14 @@ export default function DashboardPage() {
           </div>
 
           <div
-            className="rounded-lg shadow-sm transition-all hover:shadow-md"
+            className=" transition-all "
             style={{
-              backgroundColor: "#FFFFFF",
-              border: "1px solid #F1F3F7",
-              boxShadow: shadowBoxStyle,
-              background: "linear-gradient(180deg, #F4F8FF 0%, #D5E4FF 100%)",
+              // backgroundColor: "#FFFFFF",
+              // border: "1px solid #F1F3F7",
+              // boxShadow: shadowBoxStyle,
+              // background: "#fff",
               color: "#002A79",
-              padding: "1.5rem",
+              // padding: "1.5rem",
             }}
           >
             <div className="flex items-center gap-2 mb-4">
@@ -271,7 +271,7 @@ export default function DashboardPage() {
               <div
                 className="p-3 rounded-lg"
                 style={{
-                  backgroundColor: "rgba(255, 255, 255, 0.1)",
+                  backgroundColor: "rgba(255, 255, 255, 1)",
                   boxShadow:
                     "var(--ShadowPositioningNone) var(--ShadowPositioningNone) var(--ShadowBlur2XSmall) var(--ShadowSpreadNone) var(--ColorsOverlayColorsDark15), var(--ShadowPositioningNone) var(--ShadowPositioningMedium) var(--ShadowBlurExtraSmall) var(--ShadowSpreadNone) var(--ColorsOverlayColorsDark4), var(--ShadowPositioningNone) var(--ShadowPositioningMedium) var(--ShadowBlurMedium) var(--ShadowSpreadNone) var(--ColorsOverlayColorsDark4), var(--ShadowPositioningNone) var(--ShadowPositioningNegativeMedium) var(--ShadowBlurExtraSmall) var(--ShadowBlurNone) var(--ColorsOverlayColorsDark10) inset",
                 }}
@@ -279,14 +279,12 @@ export default function DashboardPage() {
                 <div className="text-2xl font-bold mb-1">
                   <div className="flex items-center gap-1">
                     <img
-                      src="/jobapplying.svg"
-                      className="w-[32px] h-[32px] object-cover"
+                      src="social-connect.svg"
+                      className="w-[32px] h-[32px]"
                     />
-                    <div>
-                      {insights.recommendedJobs}
-                      <span style={{ color: "#2370FF", fontWeight: 700 }}>
-                        %
-                      </span>
+                    <div className="text-[32px] font-medium">
+                      <span className="">{insights.recommendedJobs}</span>
+                      <span style={{ color: "#2370FF" }}>+</span>
                     </div>
                   </div>
                 </div>
@@ -295,7 +293,7 @@ export default function DashboardPage() {
               <div
                 className="p-3 rounded-lg"
                 style={{
-                  backgroundColor: "rgba(255, 255, 255, 0.1)",
+                  backgroundColor: "rgba(255, 255, 255, 1)",
                   boxShadow:
                     "var(--ShadowPositioningNone) var(--ShadowPositioningNone) var(--ShadowBlur2XSmall) var(--ShadowSpreadNone) var(--ColorsOverlayColorsDark15), var(--ShadowPositioningNone) var(--ShadowPositioningMedium) var(--ShadowBlurExtraSmall) var(--ShadowSpreadNone) var(--ColorsOverlayColorsDark4), var(--ShadowPositioningNone) var(--ShadowPositioningMedium) var(--ShadowBlurMedium) var(--ShadowSpreadNone) var(--ColorsOverlayColorsDark4), var(--ShadowPositioningNone) var(--ShadowPositioningNegativeMedium) var(--ShadowBlurExtraSmall) var(--ShadowBlurNone) var(--ColorsOverlayColorsDark10) inset",
                 }}
@@ -303,10 +301,10 @@ export default function DashboardPage() {
                 <div className="text-2xl font-bold mb-1">
                   <div className="flex items-center gap-1">
                     <img
-                      src="/jobapplying.svg"
+                      src="/application-this-week.svg"
                       className="w-[32px] h-[32px] object-cover"
                     />
-                    <div>
+                    <div className="text-[32px] font-medium">
                       {insights.applicationsThisWeek}
                       <span style={{ color: "#2370FF", fontWeight: 700 }}>
                         %
@@ -321,7 +319,7 @@ export default function DashboardPage() {
               <div
                 className="p-3 rounded-lg"
                 style={{
-                  backgroundColor: "rgba(255, 255, 255, 0.1)",
+                  backgroundColor: "rgba(255, 255, 255, 1)",
                   boxShadow:
                     "var(--ShadowPositioningNone) var(--ShadowPositioningNone) var(--ShadowBlur2XSmall) var(--ShadowSpreadNone) var(--ColorsOverlayColorsDark15), var(--ShadowPositioningNone) var(--ShadowPositioningMedium) var(--ShadowBlurExtraSmall) var(--ShadowSpreadNone) var(--ColorsOverlayColorsDark4), var(--ShadowPositioningNone) var(--ShadowPositioningMedium) var(--ShadowBlurMedium) var(--ShadowSpreadNone) var(--ColorsOverlayColorsDark4), var(--ShadowPositioningNone) var(--ShadowPositioningNegativeMedium) var(--ShadowBlurExtraSmall) var(--ShadowBlurNone) var(--ColorsOverlayColorsDark10) inset",
                 }}
@@ -329,14 +327,12 @@ export default function DashboardPage() {
                 <div className="text-2xl font-bold mb-1">
                   <div className="flex items-center gap-1">
                     <img
-                      src="/jobapplying.svg"
+                      src="/upcoming-interviews.svg"
                       className="w-[32px] h-[32px] object-cover"
                     />
-                    <div>
+                    <div className="text-[32px] font-medium">
                       {insights.upcomingInterviews}
-                      <span style={{ color: "#2370FF", fontWeight: 700 }}>
-                        %
-                      </span>
+                      <span style={{ color: "#2370FF" }}>%</span>
                     </div>
                   </div>
                 </div>
@@ -347,7 +343,7 @@ export default function DashboardPage() {
               <div
                 className="p-3 rounded-lg"
                 style={{
-                  backgroundColor: "rgba(255, 255, 255, 0.1)",
+                  backgroundColor: "rgba(255, 255, 255, 1)",
                   boxShadow:
                     "var(--ShadowPositioningNone) var(--ShadowPositioningNone) var(--ShadowBlur2XSmall) var(--ShadowSpreadNone) var(--ColorsOverlayColorsDark15), var(--ShadowPositioningNone) var(--ShadowPositioningMedium) var(--ShadowBlurExtraSmall) var(--ShadowSpreadNone) var(--ColorsOverlayColorsDark4), var(--ShadowPositioningNone) var(--ShadowPositioningMedium) var(--ShadowBlurMedium) var(--ShadowSpreadNone) var(--ColorsOverlayColorsDark4), var(--ShadowPositioningNone) var(--ShadowPositioningNegativeMedium) var(--ShadowBlurExtraSmall) var(--ShadowBlurNone) var(--ColorsOverlayColorsDark10) inset",
                 }}
@@ -358,7 +354,7 @@ export default function DashboardPage() {
                       src="/jobapplying.svg"
                       className="w-[32px] h-[32px] object-cover"
                     />
-                    <div>
+                    <div className="text-[32px] font-medium">
                       {insights.profileViews}
                       <span style={{ color: "#2370FF", fontWeight: 700 }}>
                         %

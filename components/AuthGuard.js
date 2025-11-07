@@ -1,39 +1,50 @@
-'use client'
+'use client';
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 
-import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.guidix.ai';
 
 /**
- * AuthGuard Component - Client-side authentication protection
- * Wraps protected pages to ensure user is authenticated
+ * AuthGuard Component
+ * Protects routes by verifying authentication via API call
+ * Uses cookies automatically - no localStorage checks
  */
 export default function AuthGuard({ children }) {
-  const router = useRouter()
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
-  const [isLoading, setIsLoading] = useState(true)
+  const router = useRouter();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const checkAuth = () => {
-      // Check authentication flag and user data
-      // Actual token is in HTTP-only cookie (not accessible from JS)
-      const isAuth = localStorage.getItem('isAuthenticated') === 'true'
-      const user = localStorage.getItem('user')
+    async function checkAuth() {
+      try {
+        // Verify authentication by calling /users/me
+        // Cookies are sent automatically
+        const response = await fetch(`${API_BASE_URL}/api/v1/users/me`, {
+          method: 'GET',
+          credentials: 'include',  // Send cookies
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
 
-      if (!isAuth || !user) {
-        // Not authenticated - redirect to login
-        const currentPath = window.location.pathname
-        router.push(`/login?message=auth_required&redirect=${encodeURIComponent(currentPath)}`)
-      } else {
-        setIsAuthenticated(true)
+        if (response.ok) {
+          setIsAuthenticated(true);
+        } else {
+          // Not authenticated - redirect to login
+          router.push('/login?message=auth_required');
+        }
+      } catch (error) {
+        console.error('Auth check failed:', error);
+        router.push('/login?message=auth_required');
+      } finally {
+        setIsLoading(false);
       }
-
-      setIsLoading(false)
     }
 
-    checkAuth()
+    checkAuth();
   }, [router])
 
-  // Show loading state while checking authentication
+  // Show loading state while validating
   if (isLoading) {
     return (
       <div style={{
@@ -43,9 +54,7 @@ export default function AuthGuard({ children }) {
         justifyContent: 'center',
         backgroundColor: '#F8F9FF'
       }}>
-        <div style={{
-          textAlign: 'center'
-        }}>
+        <div style={{ textAlign: 'center' }}>
           <div style={{
             width: '48px',
             height: '48px',
@@ -60,7 +69,7 @@ export default function AuthGuard({ children }) {
               to { transform: rotate(360deg); }
             }
           `}</style>
-          <p style={{ color: '#6B7280', fontSize: '14px' }}>Loading...</p>
+          <p style={{ color: '#6B7280', fontSize: '14px' }}>Validating session...</p>
         </div>
       </div>
     )

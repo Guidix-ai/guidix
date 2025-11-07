@@ -171,32 +171,32 @@ function EnhancedResumeContent() {
   const isFromUpload = searchParams.get("from") === "upload";
   const isFromAI = searchParams.get("from") === "ai";
   const selectedTemplate = searchParams.get("template") || "internship-1-with-photo";
-  const resumeId = searchParams.get("resumeId") ||
-                   (typeof window !== 'undefined' ? sessionStorage.getItem('createdResumeId') : null) ||
-                   (typeof window !== 'undefined' ? sessionStorage.getItem('uploadedResumeId') : null) ||
-                   (typeof window !== 'undefined' ? sessionStorage.getItem('resumeIdUsedForJobs') : null);
+
+  // State for resumeId to prevent hydration mismatch
+  const [resumeId, setResumeId] = useState(searchParams.get("resumeId"));
 
   // Get template metadata
   const currentTemplate = getTemplateById(selectedTemplate);
 
-  // Store resumeId in sessionStorage when component loads
+  // Load resumeId from sessionStorage or URL after hydration
   useEffect(() => {
     const urlResumeId = searchParams.get("resumeId");
 
     if (urlResumeId) {
       console.log('📋 Resume ID from URL params:', urlResumeId);
+      setResumeId(urlResumeId);
       // Store in sessionStorage for later use
       sessionStorage.setItem('resumeIdUsedForJobs', urlResumeId);
       sessionStorage.setItem('createdResumeId', urlResumeId);
       sessionStorage.setItem('uploadedResumeId', urlResumeId);
     } else {
-      // Check if it exists in sessionStorage
-      const storedResumeId = sessionStorage.getItem('resumeIdUsedForJobs') ||
-                             sessionStorage.getItem('createdResumeId') ||
-                             sessionStorage.getItem('uploadedResumeId');
-
-      if (storedResumeId) {
-        console.log('📋 Resume ID from sessionStorage:', storedResumeId);
+      // Fallback to sessionStorage after hydration
+      const storedId = sessionStorage.getItem('createdResumeId') ||
+                      sessionStorage.getItem('uploadedResumeId') ||
+                      sessionStorage.getItem('resumeIdUsedForJobs');
+      if (storedId) {
+        console.log('📋 Resume ID from sessionStorage:', storedId);
+        setResumeId(storedId);
       } else {
         console.warn('⚠️ No resume ID found in URL or sessionStorage');
       }

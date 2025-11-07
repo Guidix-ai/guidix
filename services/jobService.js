@@ -45,9 +45,9 @@ export const addToWishlist = async (jobId) => {
  * @returns {Promise} Response
  */
 export const removeFromWishlist = async (jobId) => {
-  // The API uses the same endpoint for toggle, but we'll use the status endpoint
+  // Backend extracts user_id from access_token cookie
   const response = await jobApiClient.patch(
-    `/api/v1/integrated-jobs/user/0/job/${jobId}/status`,
+    `/api/v1/integrated-jobs/job/${jobId}/status`, // No user_id in path
     { status: 'viewed' } // Change status from wishlist to viewed
   );
   return response.data;
@@ -71,9 +71,9 @@ export const markNotInterested = async (jobId) => {
  * @returns {Promise} Status response
  */
 export const setJobStatus = async (jobId, status, statusData = {}) => {
-  const userId = 0; // Will be extracted from token by backend
+  // Backend extracts user_id from access_token cookie
   const response = await jobApiClient.patch(
-    `/api/v1/integrated-jobs/user/${userId}/job/${jobId}/status`,
+    `/api/v1/integrated-jobs/job/${jobId}/status`, // No user_id in path
     { status, status_data: statusData }
   );
   return response.data;
@@ -87,11 +87,11 @@ export const setJobStatus = async (jobId, status, statusData = {}) => {
  * @returns {Promise} User job statuses
  */
 export const getUserJobStatuses = async (status = null, limit = 50, offset = 0) => {
-  const userId = 0; // Will be extracted from token by backend
+  // Backend extracts user_id from cookie
   const params = { limit, offset };
   if (status) params.status = status;
 
-  const response = await jobApiClient.get(`/api/v1/integrated-jobs/user/${userId}/job-statuses`, {
+  const response = await jobApiClient.get('/api/v1/integrated-jobs/job-statuses', { // No user_id in path
     params
   });
   return response.data;
@@ -132,7 +132,7 @@ export const getSimilarJobs = async (jobId, limit = 10) => {
  */
 export const searchJobs = async (query, filters = {}, pageToken = null) => {
   const requestBody = {
-    user_id: 0, // Will be extracted from token by backend
+    // No user_id - backend extracts from cookie
     query,
     page_size: 20,
     ...filters
@@ -147,18 +147,17 @@ export const searchJobs = async (query, filters = {}, pageToken = null) => {
 };
 
 /**
- * Get jobs with AI scoring using saved resume ID (Old endpoint - GET)
+ * Get jobs with AI scoring using saved resume ID (DEPRECATED - use getJobsWithResumeId instead)
  * @param {number} resumeId - Resume ID from resume service
  * @param {number} limit - Number of jobs (default: 20)
  * @param {number} offset - Offset for pagination (default: 0)
  * @param {boolean} forceRefresh - Force API call to TheirStack (default: false)
  * @returns {Promise} Jobs with AI match scores
+ * @deprecated Use getJobsWithResumeId instead
  */
 export const getJobsWithAIScoring = async (resumeId, limit = 20, offset = 0, forceRefresh = false) => {
-  const response = await jobApiClient.get('/api/v1/integrated-jobs/', {
-    params: { resume_id: resumeId, limit, offset, force_refresh: forceRefresh }
-  });
-  return response.data;
+  console.warn('⚠️ getJobsWithAIScoring is deprecated. Use getJobsWithResumeId instead.');
+  return getJobsWithResumeId(resumeId, limit, offset, forceRefresh);
 };
 
 /**
@@ -215,33 +214,17 @@ export const getTrendingJobs = async (timePeriod = 'week', location = null, indu
 };
 
 /**
- * Get integrated jobs with existing resume ID (New API endpoint)
- * Fetches AI-matched jobs using an existing resume from the database
- * @param {string} resumeId - UUID of existing resume in database
- * @returns {Promise} Integrated jobs with AI match scores
+ * BACKWARD COMPATIBILITY - Export alias for getJobsWithResumeId
+ * Old name: getIntegratedJobsWithResumeId
+ * New name: getJobsWithResumeId (correct endpoint path)
  */
-export const getIntegratedJobsWithResumeId = async (resumeId) => {
-  const response = await jobApiClient.post('/auto-apply/integrated-jobs', {
-    resume_id: resumeId
-  });
-  return response.data;
-};
+export const getIntegratedJobsWithResumeId = getJobsWithResumeId;
 
 /**
- * Get integrated jobs with uploaded resume file (New API endpoint)
- * Fetches AI-matched jobs by uploading a resume file without saving to database
- * @param {File} file - Resume file (PDF, DOCX, or TXT)
- * @returns {Promise} Integrated jobs with AI match scores
+ * REMOVED - getIntegratedJobsWithUpload
+ * This function used the wrong endpoint path: /auto-apply/integrated-jobs/upload
+ * Use getJobsWithResumeUpload instead, which uses the correct path: /api/v1/integrated-jobs/with-resume-upload
  */
-export const getIntegratedJobsWithUpload = async (file) => {
-  const formData = new FormData();
-  formData.append('resume_file', file);
-
-  const response = await jobApiClient.post('/auto-apply/integrated-jobs/upload', formData, {
-    headers: { 'Content-Type': 'multipart/form-data' }
-  });
-  return response.data;
-};
 
 /**
  * Job status enum

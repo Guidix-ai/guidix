@@ -509,7 +509,7 @@ export default function LinkedInOptimiserPage() {
                               className="text-[11px]"
                               style={{ color: "#3B4E89", lineHeight: "1.5" }}
                             >
-                              "{rec.text}"
+                              &quot;{rec.text}&quot;
                             </div>
                           </div>
                         ))

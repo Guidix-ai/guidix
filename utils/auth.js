@@ -1,200 +1,91 @@
-// Authentication utility functions
+/**
+ * Authentication Utilities
+ * Cookie-based authentication - no localStorage token management
+ */
+
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://api.guidix.ai";
 
 /**
- * Refresh access token using refresh token from HTTP-only cookie
- * @returns {Promise<boolean>} True if refresh successful, false otherwise
+ * Check if user is authenticated
+ * We can't check cookies from JavaScript (HttpOnly)
+ * So we make a test API call to verify authentication
+ * @returns {Promise<boolean>}
  */
-export async function refreshAccessToken() {
+export async function isAuthenticated() {
   try {
-    // Call Next.js API route which reads refresh token from HTTP-only cookie
-    const response = await fetch("/api/v1/auth/refresh", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+    const response = await fetch(`${API_BASE_URL}/api/v1/users/me`, {
+      method: 'GET',
+      credentials: 'include',  // Send cookies
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+    return response.ok;
+  } catch (error) {
+    return false;
+  }
+}
+
+/**
+ * Get current user data
+ * @returns {Promise<Object|null>}
+ */
+export async function getCurrentUser() {
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/v1/users/me`, {
+      method: 'GET',
+      credentials: 'include',  // Send cookies
+      headers: {
+        'Content-Type': 'application/json'
+      }
     });
 
+    if (!response.ok) {
+      return null;
+    }
+
     const data = await response.json();
-
-    if (response.ok && data.data?.tokens) {
-      // Tokens are automatically updated in HTTP-only cookies by the API route
-      return true;
-    }
-
-    return false;
+    return data.data || data;  // Handle both response formats
   } catch (error) {
-    console.error("Token refresh failed:", error);
-    return false;
-  }
-}
-
-/**
- * Setup automatic token refresh before expiry
- */
-export function setupTokenRefresh() {
-  const checkAndRefresh = async () => {
-    const expiry = localStorage.getItem("token_expiry");
-    if (!expiry) return;
-
-    const expiryTime = parseInt(expiry) * 1000; // Convert to milliseconds
-    const now = Date.now();
-    const timeUntilExpiry = expiryTime - now;
-
-    // Refresh 5 minutes before expiry
-    if (timeUntilExpiry < 5 * 60 * 1000 && timeUntilExpiry > 0) {
-      const success = await refreshAccessToken();
-      if (!success) {
-        // Token refresh failed - clear auth and redirect
-        await handleAuthFailure("session_expired");
-      }
-    }
-  };
-
-  // Check every minute
-  const interval = setInterval(checkAndRefresh, 60 * 1000);
-
-  // Check immediately
-  checkAndRefresh();
-
-  // Return cleanup function
-  return () => clearInterval(interval);
-}
-
-/**
- * Make authenticated API request with automatic token refresh
- * @param {string} url - API endpoint URL
- * @param {RequestInit} options - Fetch options
- * @returns {Promise<Response>}
- */
-export async function authenticatedFetch(url, options = {}) {
-  const accessToken = localStorage.getItem("access_token");
-
-  const response = await fetch(url, {
-    ...options,
-    headers: {
-      ...options.headers,
-      Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
-    },
-  });
-
-  // If unauthorized, try refreshing token
-  if (response.status === 401) {
-    console.log("401 Unauthorized - Attempting token refresh");
-    const refreshed = await refreshAccessToken();
-
-    if (refreshed) {
-      // Retry request with new token
-      const newToken = localStorage.getItem("access_token");
-      const retryResponse = await fetch(url, {
-        ...options,
-        headers: {
-          ...options.headers,
-          Authorization: `Bearer ${newToken}`,
-          "Content-Type": "application/json",
-        },
-      });
-
-      // If still unauthorized after refresh, session is invalid
-      if (retryResponse.status === 401) {
-        console.error("Token refresh failed - Session invalid");
-        await handleAuthFailure("session_expired");
-        throw new Error("Session expired");
-      }
-
-      return retryResponse;
-    } else {
-      // Refresh failed, clear auth and redirect
-      console.error("Token refresh failed - Clearing auth data");
-      await handleAuthFailure("session_expired");
-      throw new Error("Session expired");
-    }
-  }
-
-  return response;
-}
-
-/**
- * Get current user from localStorage
- * @returns {Object|null} User object or null
- */
-export function getCurrentUser() {
-  try {
-    const userStr = localStorage.getItem("user");
-    return userStr ? JSON.parse(userStr) : null;
-  } catch (error) {
-    console.error("Error parsing user data:", error);
+    console.error('Error getting current user:', error);
     return null;
   }
 }
 
 /**
- * Check if user is authenticated by checking access_token in localStorage
- * @returns {boolean}
+ * Logout user
+ * Calls Next.js API route which clears cookies
  */
-export function isAuthenticated() {
-  const accessToken = localStorage.getItem("access_token");
-  return !!accessToken;
-}
-
-/**
- * Clear all authentication data from localStorage
- */
-function clearAuthData() {
-  localStorage.removeItem("access_token");
-  localStorage.removeItem("refresh_token");
-  localStorage.removeItem("token_expiry");
-  localStorage.removeItem("user");
-  localStorage.removeItem("isAuthenticated");
-  localStorage.removeItem("userEmail");
-  localStorage.removeItem("userName");
-  localStorage.removeItem("userPhone");
-  localStorage.removeItem("userUniversity");
-  localStorage.removeItem("userId");
-  localStorage.removeItem("pendingUser");
-}
-
-/**
- * Handle authentication failure (401 errors, expired tokens, etc.)
- * Clears all auth data, calls logout API, and redirects to login
- * Use this instead of direct redirect to avoid infinite loops
- */
-export async function handleAuthFailure(reason = "session_expired") {
-  console.log("Authentication failure detected:", reason);
-
+export async function logout() {
   try {
-    const accessToken = localStorage.getItem("access_token");
-
-    // Try to call backend logout endpoint
-    if (accessToken) {
-      await fetch(
-        `${
-          process.env.NEXT_PUBLIC_API_BASE_URL || "https://api.guidix.ai"
-        }/api/v1/auth/logout`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      ).catch(() => {
-        // Ignore errors from logout API
-        console.log("Logout API call failed, continuing with cleanup");
-      });
-    }
+    await fetch('/api/v1/auth/logout', {
+      method: 'POST',
+      credentials: 'include',  // Send cookies
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
   } catch (error) {
-    console.error("Error during logout:", error);
+    console.error('Logout error:', error);
   } finally {
-    // Always clear auth data regardless of API success
-    clearAuthData();
+    // Clear localStorage (cleanup any old data)
+    localStorage.clear();
 
-    // Redirect to login with appropriate message
-    window.location.href = `/login?message=${reason}`;
+    // Redirect to login
+    window.location.href = '/login?message=logged_out';
   }
 }
 
 /**
- * Logout user and clear all auth data from localStorage
+ * Handle authentication failure
+ * Called when 401 errors occur
  */
-export async function logout() {
-  await handleAuthFailure("logged_out");
+export async function handleAuthFailure(reason = 'session_expired') {
+  console.log('Authentication failure:', reason);
+
+  // Clear localStorage
+  localStorage.clear();
+
+  // Redirect to login with message
+  window.location.href = `/login?message=${reason}`;
 }

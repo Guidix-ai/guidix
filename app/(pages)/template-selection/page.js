@@ -45,9 +45,27 @@ function TemplateSelectionContent() {
   const [userName, setUserName] = useState("there");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [isDesktop, setIsDesktop] = useState(false); // Start as false for SSR
+  const [isMounted, setIsMounted] = useState(false); // Track if component is mounted
 
   // Get sidebar collapsed state
   const { collapsed } = useSidebar();
+
+  // Handle responsive layout after hydration
+  useEffect(() => {
+    setIsMounted(true);
+
+    // Check if desktop on mount
+    const checkDesktop = () => {
+      setIsDesktop(window.innerWidth >= 1024);
+    };
+
+    checkDesktop();
+
+    // Listen for resize
+    window.addEventListener('resize', checkDesktop);
+    return () => window.removeEventListener('resize', checkDesktop);
+  }, []);
 
   // Enhanced filter states - using arrays for multi-select
   const [filters, setFilters] = useState({
@@ -766,12 +784,11 @@ function TemplateSelectionContent() {
         style={{
           position: "fixed",
           bottom: "2rem",
-          left:
-            typeof window !== "undefined" && window.innerWidth >= 1024
-              ? collapsed
-                ? "calc((100vw - 96px) / 2 + 96px)" // Collapsed: center of (viewport - sidebar)
-                : "calc((100vw - 272px) / 2 + 272px)" // Expanded: center of (viewport - sidebar)
-              : "50%",
+          left: isDesktop
+            ? collapsed
+              ? "calc((100vw - 96px) / 2 + 96px)" // Collapsed: center of (viewport - sidebar)
+              : "calc((100vw - 272px) / 2 + 272px)" // Expanded: center of (viewport - sidebar)
+            : "50%",
           transform: "translateX(-50%)",
           zIndex: 50,
           transition: "left 0.3s ease",

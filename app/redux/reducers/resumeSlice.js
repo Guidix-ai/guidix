@@ -6,7 +6,7 @@ import {
   updateResume,
   deleteResume,
   generateAIResume,
-} from '../actions/resumeAction';
+} from '../actions/resumeActions';
 
 const initialState = {
   resumes: [],

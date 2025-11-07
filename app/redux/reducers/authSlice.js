@@ -200,8 +200,15 @@ const authSlice = createSlice({
         state.loading.login = false;
         state.isAuthenticated = true;
         state.hasTokens = true;
-        state.user = action.payload.user;
+        // Handle both response formats: action.payload.user or action.payload directly
+        state.user = action.payload?.user || action.payload;
         state.error.login = null;
+
+        // Store user in localStorage
+        if (typeof window !== 'undefined' && state.user) {
+          localStorage.setItem('user', JSON.stringify(state.user));
+          localStorage.setItem('isAuthenticated', 'true');
+        }
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading.login = false;
@@ -209,6 +216,12 @@ const authSlice = createSlice({
         state.hasTokens = false;
         state.user = null;
         state.error.login = action.payload;
+
+        // Clear localStorage on login failure
+        if (typeof window !== 'undefined') {
+          localStorage.removeItem('user');
+          localStorage.removeItem('isAuthenticated');
+        }
       });
 
     /**
@@ -283,6 +296,12 @@ const authSlice = createSlice({
         state.user = action.payload;
         state.isAuthenticated = true;
         state.error.profile = null;
+
+        // Store user in localStorage
+        if (typeof window !== 'undefined' && action.payload) {
+          localStorage.setItem('user', JSON.stringify(action.payload));
+          localStorage.setItem('isAuthenticated', 'true');
+        }
       })
       .addCase(getUserProfile.rejected, (state, action) => {
         state.loading.profile = false;

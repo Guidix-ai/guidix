@@ -130,9 +130,9 @@ export function DashboardLayout({ children, progressBar }) {
   const [isDesktop, setIsDesktop] = useState(false);
 
   useEffect(() => {
-    // Check if access token exists in localStorage
-    const accessToken = localStorage.getItem("access_token");
-    const authenticated = !!accessToken;
+    // Check authentication status with cookie-based auth
+    // With HTTP-only cookies, we check isAuthenticated flag in localStorage
+    const authenticated = localStorage.getItem("isAuthenticated") === "true";
     setIsAuthenticated(authenticated);
 
     if (authenticated) {
