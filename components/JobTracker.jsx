@@ -8,6 +8,7 @@ import { AddJobDialog } from "@/components/AddJobDialog";
 import { MoveJobDialog } from "@/components/MoveJobDialog";
 import styles from "@/app/styles/components/JobTracker.module.css";
 
+/* ---------------- data ---------------- */
 const initialColumns = [
   { id: "shortlist", title: "Shortlist", jobs: [] },
   { id: "auto-apply", title: "Auto Apply", jobs: [] },
@@ -52,13 +53,43 @@ const sampleJobs = [
   },
 ];
 
+/* ---------- corner background under header (glow + dots) ---------- */
+/* Tuned to match your reference image:
+   - slightly inset from the top-left
+   - compact height
+   - horizontal fade to the right
+*/
+function CornerBG() {
+  return (
+    <>
+      {/* soft glow */}
+      <div
+        className="
+          absolute top-[10px] left-[12px] w-[300px] h-[120px] z-0 pointer-events-none
+          bg-[radial-gradient(140px_95px_at_110px_20px,rgba(100,167,255,0.34)_0%,rgba(100,167,255,0.20)_45%,rgba(100,167,255,0.10)_70%,transparent_100%)]
+          [mask-image:radial-gradient(220px_150px_at_135px_52px,#000_0%,rgba(0,0,0,0.9)_45%,transparent_85%)]
+        "
+      />
+      {/* dotted layer */}
+      <div
+        className="
+          absolute top-[10px] left-[12px] w-[300px] h-[120px] z-0 pointer-events-none opacity-55
+          bg-[radial-gradient(#a5c6ff_1px,transparent_1px)]
+          [background-size:8px_8px]
+          [mask-image:radial-gradient(220px_150px_at_135px_52px,#000_0%,rgba(0,0,0,0.9)_45%,transparent_85%)]
+        "
+      />
+    </>
+  );
+}
+
 export function JobTracker() {
-  const [columns, setColumns] = useState(() => {
-    return initialColumns.map((column) => ({
+  const [columns, setColumns] = useState(() =>
+    initialColumns.map((column) => ({
       ...column,
       jobs: sampleJobs.filter((job) => job.status === column.id),
-    }));
-  });
+    }))
+  );
 
   const [isAddJobOpen, setIsAddJobOpen] = useState(false);
   const [selectedColumn, setSelectedColumn] = useState("shortlist");
@@ -135,26 +166,9 @@ export function JobTracker() {
     }));
   }, [columns, searchQuery, activeFilters]);
 
-  // COLUMN background (on the Card itself). It cannot overlap content due to z-index plan.
-  const columnBackgroundClass =
-    "relative overflow-hidden " + // card is the stacking context host
-    // soft blue glow
-    "before:content-[''] before:absolute before:top-0 before:left-0 before:w-[260px] before:h-[180px] " +
-    "before:z-0 before:pointer-events-none " +
-    "before:bg-[radial-gradient(130px_95px_at_70px_48px,rgba(100,167,255,0.32)_0%,rgba(100,167,255,0.18)_45%,rgba(100,167,255,0.08)_75%,transparent_100%)] " +
-    "before:[mask-image:radial-gradient(170px_120px_at_95px_60px,#000_0%,transparent_82%)] " +
-    // dotted layer
-    "after:content-[''] after:absolute after:top-0 after:left-0 after:w-[260px] after:h-[180px] " +
-    "after:z-0 after:pointer-events-none after:opacity-60 after:text-[#a5c6ff] " +
-    "after:bg-[radial-gradient(currentColor_1px,transparent_1px)] after:[background-size:8px_8px] " +
-    "after:[mask-image:radial-gradient(170px_120px_at_95px_60px,#000_0%,transparent_82%)]";
-
-  // All visible content inside card should be above z-0 background
-  const sectionContentClass = "relative z-[1]";
-
   const handleDragEnd = useCallback(
     (result) => {
-      const { destination, source, draggableId } = result;
+      const { destination, source, draggableId } = result || {};
       if (!destination) return;
       if (
         destination.droppableId === source.droppableId &&
@@ -163,7 +177,11 @@ export function JobTracker() {
         return;
 
       const sourceCol = columns.find((c) => c.id === source.droppableId);
+      if (!sourceCol) return;
+
       const moved = sourceCol.jobs.find((j) => j.id === draggableId);
+      if (!moved) return;
+
       const updated = { ...moved, status: destination.droppableId };
 
       setColumns((prev) =>
@@ -191,9 +209,7 @@ export function JobTracker() {
   const handleSaveJob = (newJob) => {
     const job = { ...newJob, id: Date.now().toString() };
     setColumns((prev) =>
-      prev.map((c) =>
-        c.id === job.status ? { ...c, jobs: [...c.jobs, job] } : c
-      )
+      prev.map((c) => (c.id === job.status ? { ...c, jobs: [...c.jobs, job] } : c))
     );
     setIsAddJobOpen(false);
   };
@@ -230,7 +246,10 @@ export function JobTracker() {
 
   const handleMoveJob = (id, status) => {
     const col = columns.find((c) => c.jobs.some((j) => j.id === id));
+    if (!col) return;
     const job = col.jobs.find((j) => j.id === id);
+    if (!job) return;
+
     const updated = { ...job, status };
 
     setColumns((prev) =>
@@ -345,37 +364,43 @@ export function JobTracker() {
       {isMobile ? (
         <div className="space-y-4">
           {filteredColumns.map((col) => (
-            <Card key={col.id} className={`border shadow-sm ${columnBackgroundClass}`}>
-              <div className={sectionContentClass}>
-                <CardHeader className="px-4 pt-4 pb-3">
+            <Card
+              key={col.id}
+              className="relative isolate overflow-hidden border shadow-sm bg-white"
+            >
+              {/* Corner graphics inside card at z-0; content sits at z-10 */}
+              <div className="relative">
+                <CornerBG />
+                <CardHeader className="px-4 pt-4 pb-3 relative z-10">
                   <div className="flex items-center justify-between">
                     <CardTitle className="text-base font-semibold text-blue-900">
                       {col.title}
                     </CardTitle>
-                    <Badge className="bg-white/80 border text-xs">
-                      {col.jobs.length}
-                    </Badge>
+                    <Badge className="bg-white/80 border text-xs">{col.jobs.length}</Badge>
                   </div>
                 </CardHeader>
-
-                <CardContent className="space-y-3 p-4">
-                  {col.jobs.length === 0 ? (
-                    <p className="text-center text-gray-400 text-sm">No jobs</p>
-                  ) : (
-                    col.jobs.map((job) => (
-                    <div key={job.id} className="relative z-[50]">
-                        <JobCard
-                          job={job}
-                          isMobile={true}
-                          onUpdate={handleUpdateJob}
-                          onDelete={handleDeleteJob}
-                          onMove={() => openMoveDialog(job)}
-                        />
-                      </div>
-                    ))
-                  )}
-                </CardContent>
               </div>
+
+              <CardContent className="space-y-3 p-4 relative z-10">
+                {col.jobs.length === 0 ? (
+                  <p className="text-center text-gray-400 text-sm">No jobs</p>
+                ) : (
+                  col.jobs.map((job) => (
+                    <div
+                      key={job.id}
+                      className="bg-white rounded-lg shadow-sm border border-gray-200"
+                    >
+                      <JobCard
+                        job={job}
+                        isMobile={true}
+                        onUpdate={handleUpdateJob}
+                        onDelete={handleDeleteJob}
+                        onMove={() => openMoveDialog(job)}
+                      />
+                    </div>
+                  ))
+                )}
+              </CardContent>
             </Card>
           ))}
         </div>
@@ -384,9 +409,10 @@ export function JobTracker() {
           <div className="flex gap-4 overflow-x-auto pb-4">
             {filteredColumns.map((col) => (
               <div key={col.id} className="w-72 flex-shrink-0">
-                <Card className={`border shadow-sm hover:shadow-md transition-shadow ${columnBackgroundClass}`}>
-                  <div className={sectionContentClass}>
-                    <CardHeader className="px-4 pt-4 pb-3">
+                <Card className="relative isolate overflow-hidden border shadow-sm bg-white hover:shadow-md transition-shadow">
+                  <div className="relative">
+                    <CornerBG />
+                    <CardHeader className="px-4 pt-4 pb-3 relative z-10">
                       <div className="flex items-center justify-between">
                         <CardTitle className="text-blue-900 font-semibold">
                           {col.title}
@@ -396,47 +422,46 @@ export function JobTracker() {
                         </Badge>
                       </div>
                     </CardHeader>
-
-                    <Droppable droppableId={col.id}>
-                      {(provided, snapshot) => (
-                        <CardContent
-                          ref={provided.innerRef}
-                          {...provided.droppableProps}
-                          className={`p-4 space-y-3 min-h-[400px] transition-colors ${
-                            snapshot.isDraggingOver ? "bg-blue-50/40" : ""
-                          }`}
-                        >
-                          {col.jobs.length === 0 ? (
-                            <p className="text-center text-gray-400 text-sm">No jobs</p>
-                          ) : (
-                            col.jobs.map((job, index) => (
-                              <Draggable key={job.id} draggableId={job.id} index={index}>
-                                {(providedDrag, snapshotDrag) => (
-<div
-  ref={providedDrag.innerRef}
-  {...providedDrag.draggableProps}
-  {...providedDrag.dragHandleProps}
-  className={`relative z-[50] ${
-    snapshotDrag.isDragging ? "scale-[1.02] z-[60]" : ""
-  }`}
->
-
-                                    <JobCard
-                                      job={job}
-                                      onUpdate={handleUpdateJob}
-                                      onDelete={handleDeleteJob}
-                                      isMobile={false}
-                                    />
-                                  </div>
-                                )}
-                              </Draggable>
-                            ))
-                          )}
-                          {provided.placeholder}
-                        </CardContent>
-                      )}
-                    </Droppable>
                   </div>
+
+                  <Droppable droppableId={col.id}>
+                    {(provided, snapshot) => (
+                      <CardContent
+                        ref={provided.innerRef}
+                        {...provided.droppableProps}
+                        className={`p-4 space-y-3 min-h-[400px] relative z-10 transition-colors ${
+                          snapshot.isDraggingOver ? "bg-blue-50/40" : ""
+                        }`}
+                      >
+                        {col.jobs.length === 0 ? (
+                          <p className="text-center text-gray-400 text-sm">No jobs</p>
+                        ) : (
+                          col.jobs.map((job, index) => (
+                            <Draggable key={job.id} draggableId={job.id} index={index}>
+                              {(providedDrag, snapshotDrag) => (
+                                <div
+                                  ref={providedDrag.innerRef}
+                                  {...providedDrag.draggableProps}
+                                  {...providedDrag.dragHandleProps}
+                                  className={`bg-white rounded-lg shadow-sm border border-gray-200 ${
+                                    snapshotDrag.isDragging ? "z-[60] scale-[1.02]" : ""
+                                  }`}
+                                >
+                                  <JobCard
+                                    job={job}
+                                    onUpdate={handleUpdateJob}
+                                    onDelete={handleDeleteJob}
+                                    isMobile={false}
+                                  />
+                                </div>
+                              )}
+                            </Draggable>
+                          ))
+                        )}
+                        {provided.placeholder}
+                      </CardContent>
+                    )}
+                  </Droppable>
                 </Card>
               </div>
             ))}
