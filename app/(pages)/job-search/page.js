@@ -13,6 +13,7 @@ import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 import {
   getJobsWithResumeUpload,
+  getJobsWithResumeIdPost,
   addToWishlist,
   removeFromWishlist,
   markNotInterested,
@@ -1864,12 +1865,64 @@ const JobSearchPage = () => {
         const savedResumeId =
           sessionStorage.getItem("uploadedResumeId") ||
           sessionStorage.getItem("createdResumeId");
-        setJobs(allJobs);
+
+        if (!savedResumeId) {
+          console.warn("No resume ID found, using demo jobs");
+          setJobs(allJobs);
+          setLoading(false);
+          return;
+        }
+
+        // Fetch jobs from backend API using resume ID
+        const response = await getJobsWithResumeIdPost(
+          savedResumeId,
+          100, // limit
+          0,   // offset
+          false // forceRefresh
+        );
+
+        if (response.success && response.data && response.data.jobs) {
+          // Map backend jobs to frontend format
+          const mappedJobs = response.data.jobs.map(job => ({
+            id: job.id,
+            title: job.title,
+            company: job.company,
+            companyType: job.company_type || "",
+            location: job.location,
+            remote: job.job_type?.toLowerCase().includes('remote') || false,
+            type: job.job_type || "Full-time",
+            level: job.experience_level || "Mid Level",
+            salary: job.salary_min && job.salary_max
+              ? `${job.salary_min/100000}-${job.salary_max/100000} LPA`
+              : "Competitive",
+            posted: job.posted_date || "Recently",
+            applicants: Math.floor(Math.random() * 300) + 50,
+            matchScore: job.match_score?.overall_score || 75,
+            predictabilityScore: job.match_score?.overall_score || 75,
+            experienceMatch: job.match_score?.experience_match || 75,
+            skillsMatch: job.match_score?.skills_match || 75,
+            teamSize: "20-50",
+            linkedinUrl: job.linkedin_url || "",
+            hrLinkedinUrl: job.hr_linkedin_url || "",
+            foundedYear: job.founded_year || 2020,
+            companyDescription: job.description || "",
+            shortDescription: job.description?.substring(0, 150) || "",
+            companyWebsite: job.application_url || job.company_website || "",
+            company_logo_url: job.company_logo_url,
+            isUrgent: false,
+          }));
+
+          setJobs(mappedJobs);
+        } else {
+          console.warn("Invalid response format, using demo jobs");
+          setJobs(allJobs);
+        }
         setLoading(false);
       } catch (err) {
         const errorMessage = handleApiError(err);
         logError("JobSearchPage - Fetch Jobs", err);
         setError(errorMessage);
+        // Fallback to demo jobs on error
         setJobs(allJobs);
         setLoading(false);
       }
@@ -1985,18 +2038,31 @@ const JobSearchPage = () => {
 
   const handleSaveJob = async (jobId) => {
     const isSaved = savedJobs.has(jobId);
-    try {
-      if (isSaved) await removeFromWishlist(jobId);
-      else await addToWishlist(jobId);
 
-      setSavedJobs((prev) => {
-        const next = new Set(prev);
-        if (next.has(jobId)) next.delete(jobId);
-        else next.add(jobId);
-        return next;
-      });
+    // Optimistic update
+    setSavedJobs((prev) => {
+      const next = new Set(prev);
+      if (next.has(jobId)) next.delete(jobId);
+      else next.add(jobId);
+      return next;
+    });
+
+    try {
+      if (isSaved) {
+        // Remove from wishlist
+        const response = await removeFromWishlist(jobId);
+        console.log("Removed from wishlist:", response);
+      } else {
+        // Add to wishlist
+        const response = await addToWishlist(jobId);
+        console.log("Added to wishlist:", response);
+      }
     } catch (err) {
+      // Revert optimistic update on error
       logError("JobSearchPage - Save", err);
+      const errorMessage = handleApiError(err);
+      alert(errorMessage || "Failed to update wishlist. Please try again.");
+
       setSavedJobs((prev) => {
         const next = new Set(prev);
         if (next.has(jobId)) next.delete(jobId);
@@ -2007,12 +2073,23 @@ const JobSearchPage = () => {
   };
 
   const handleBlock = async (jobId) => {
+    // Optimistic update - immediately hide the job
+    setDismissedJobs((prev) => new Set(prev).add(jobId));
+
     try {
-      await markNotInterested(jobId);
-      setDismissedJobs((prev) => new Set(prev).add(jobId));
+      const response = await markNotInterested(jobId);
+      console.log("Marked as not interested:", response);
     } catch (err) {
       logError("JobSearchPage - Block", err);
-      setDismissedJobs((prev) => new Set(prev).add(jobId));
+      const errorMessage = handleApiError(err);
+
+      // Revert optimistic update on error
+      alert(errorMessage || "Failed to mark as not interested. Please try again.");
+      setDismissedJobs((prev) => {
+        const next = new Set(prev);
+        next.delete(jobId);
+        return next;
+      });
     }
   };
 
