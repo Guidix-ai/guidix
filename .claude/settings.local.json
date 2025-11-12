@@ -12,7 +12,13 @@
       "Bash(npm run build:*)",
       "Bash(wc:*)",
       "Bash(if exist .next rmdir /s /q .next)",
-      "Bash(dir:*)"
+      "Bash(dir:*)",
+      "Bash(timeout /t 2)",
+      "Bash(nul)",
+      "Bash(ping:*)",
+      "Bash(taskkill:*)",
+      "Bash(git restore:*)",
+      "Bash(tasklist:*)"
     ],
     "deny": [],
     "ask": []
