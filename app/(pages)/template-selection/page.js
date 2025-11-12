@@ -171,7 +171,7 @@ function TemplateSelectionContent() {
         );
         const response = await enhanceResume(resumeId, selectedTemplate); // Pass template ID
 
-        if (response.success) {
+        if (response?.success) {
           // Store the enhanced data and navigate
           sessionStorage.setItem(
             "enhancedResumeData",
@@ -184,7 +184,8 @@ function TemplateSelectionContent() {
           params.set("from", "upload");
           router.push(`/enhanced-resume?${params.toString()}`);
         } else {
-          setError(response.message || "Failed to enhance resume");
+          const errorMsg = response?.message || "Failed to enhance resume. Please try again.";
+          setError(errorMsg);
           setLoading(false);
         }
       } else {
@@ -207,7 +208,7 @@ function TemplateSelectionContent() {
           selectedTemplate // Pass the selected template ID
         );
 
-        if (response.success) {
+        if (response?.success) {
           // Store the resume data and navigate
           sessionStorage.setItem("createdResumeId", response.data.resume_id);
           sessionStorage.setItem(
@@ -221,15 +222,28 @@ function TemplateSelectionContent() {
           params.set("from", "ai");
           router.push(`/enhanced-resume?${params.toString()}`);
         } else {
-          setError(response.message || "Failed to create resume");
+          const errorMsg = response?.message || "Failed to create resume. Please try again.";
+          setError(errorMsg);
           setLoading(false);
         }
       }
     } catch (err) {
-      const errorMessage = handleApiError(err);
+      console.error("❌ Error in handleContinue:", err);
+
+      // Use error handler to get structured error information
+      const errorInfo = handleApiError(err);
       logError("TemplateSelectionPage", err);
-      setError(errorMessage);
+
+      // Set the error message from errorInfo
+      setError(errorInfo.message || "An unexpected error occurred. Please try again.");
       setLoading(false);
+
+      // Handle redirects if needed (e.g., auth errors)
+      if (errorInfo.shouldRedirect && errorInfo.redirectUrl) {
+        setTimeout(() => {
+          router.push(errorInfo.redirectUrl);
+        }, 2000);
+      }
     }
   };
 

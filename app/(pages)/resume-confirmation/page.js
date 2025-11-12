@@ -215,13 +215,12 @@ function ResumeConfirmationPageContent() {
   const handleJobTypeSelect = async (type) => {
     setJobType(type);
 
-    // Navigate immediately
     const targetUrl =
       path === "ai" || !path
         ? `/ai-prompt?fields=${branch}&education=${academicYear}&career=${type}`
         : `/upload-resume?fields=${branch}&education=${academicYear}&career=${type}`;
 
-    console.log("🚀 Resume Confirmation - Navigating to:", targetUrl);
+    console.log("🚀 Resume Confirmation - Preparing to navigate to:", targetUrl);
     console.log(
       "📋 Path:",
       path,
@@ -233,9 +232,7 @@ function ResumeConfirmationPageContent() {
       type
     );
 
-    router.push(targetUrl);
-
-    // Call API in background
+    // Call API and wait for it to complete before navigating
     try {
       // Year mapping
       const yearMapping = {
@@ -250,7 +247,9 @@ function ResumeConfirmationPageContent() {
         engineeringFields[branch]?.name || "Computer Science & Engineering";
       const careerType = type === "internship" ? "internship" : "job";
 
-      // Call the suggested prompts API
+      console.log("💡 Fetching suggested prompts before navigation...");
+
+      // Call the suggested prompts API and wait for response
       const response = await getSuggestedPrompts(
         academicYearNum,
         "Bachelor of Technology",
@@ -263,11 +262,17 @@ function ResumeConfirmationPageContent() {
           "suggestedPrompts",
           JSON.stringify(response.data.suggested_prompts)
         );
+        console.log("✅ Suggested prompts stored, now navigating");
       }
     } catch (err) {
       const errorMessage = handleApiError(err);
       logError("ResumeConfirmationPage:handleJobTypeSelect", err);
       console.warn("Failed to fetch suggested prompts:", errorMessage);
+      // Continue with navigation even if API fails - will use fallback prompts
+    } finally {
+      // Navigate after API call completes (or fails)
+      console.log("🚀 Navigating to:", targetUrl);
+      router.push(targetUrl);
     }
   };
 

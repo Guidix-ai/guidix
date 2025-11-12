@@ -3,7 +3,95 @@
 import React, { useState, useEffect } from "react";
 import * as Templates from "./pdf-templates";
 
-// Sample resume data for preview
+// Sample internship resume data for preview
+const sampleInternshipData = {
+  personalInfo: {
+    firstName: "Sarah",
+    lastName: "Johnson",
+    title: "Computer Science Student",
+    email: "sarah.johnson@university.edu",
+    phone: "+1 (555) 987-6543",
+    location: "Boston, MA",
+    linkedin: "linkedin.com/in/sarahjohnson",
+    github: "github.com/sarahjohnson",
+    photo: "/api/placeholder/120/120",
+  },
+  summary:
+    "Motivated Computer Science student with strong foundation in programming, algorithms, and web development. Seeking internship opportunities to apply academic knowledge and gain hands-on experience in software development.",
+  experience: [
+    {
+      position: "Teaching Assistant",
+      company: "University Computer Science Department",
+      location: "Boston, MA",
+      startDate: "2024-01",
+      endDate: "Present",
+      achievements: [
+        "Assisted professor in teaching Introduction to Programming course with 150+ students",
+        "Conducted weekly lab sessions and office hours to help students understand key concepts",
+        "Graded assignments and provided constructive feedback to improve student learning",
+      ],
+    },
+    {
+      position: "Web Development Intern",
+      company: "Local Startup Inc.",
+      location: "Boston, MA",
+      startDate: "2023-06",
+      endDate: "2023-08",
+      achievements: [
+        "Developed responsive landing pages using HTML, CSS, and JavaScript",
+        "Collaborated with design team to implement user interface improvements",
+        "Participated in daily stand-ups and sprint planning meetings",
+      ],
+    },
+  ],
+  education: [
+    {
+      degree: "Bachelor of Science in Computer Science",
+      school: "Boston University",
+      year: "Expected May 2025",
+      gpa: "3.7",
+    },
+  ],
+  skills: [
+    "Python",
+    "Java",
+    "JavaScript",
+    "HTML/CSS",
+    "React",
+    "Git",
+    "SQL",
+    "Data Structures",
+    "Algorithms",
+    "Problem Solving",
+  ],
+  projects: [
+    {
+      name: "Student Course Planner",
+      description:
+        "Web application to help students plan their course schedules with conflict detection",
+      technologies: ["React", "Node.js", "MongoDB"],
+    },
+    {
+      name: "Recipe Finder App",
+      description:
+        "Mobile-friendly application that suggests recipes based on available ingredients",
+      technologies: ["JavaScript", "REST API", "Bootstrap"],
+    },
+  ],
+  certifications: [
+    {
+      name: "Python Programming Certification",
+      issuer: "Coursera",
+      year: "2024",
+    },
+  ],
+  languages: [
+    { name: "English", level: "Native" },
+    { name: "Spanish", level: "Intermediate" },
+  ],
+};
+
+// Sample professional resume data for preview
 const sampleResumeData = {
   personalInfo: {
     firstName: "John",
@@ -116,41 +204,74 @@ const sampleResumeData = {
 
 const PDFPreview = ({
   templateId,
-  resumeData = sampleResumeData,
+  resumeData,
   width = 300,
   height = 400,
+  sectionOrder = [
+    "experience",
+    "education",
+    "projects",
+    "skills",
+    "certifications",
+    "languages",
+  ],
 }) => {
   const [mounted, setMounted] = useState(false);
   const [pdfUrl, setPdfUrl] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [canvasImage, setCanvasImage] = useState(null);
+  const canvasRef = React.useRef(null);
+
+  // Use ref to track previous values and prevent infinite loops
+  const prevResumeDataRef = React.useRef();
+  const prevSectionOrderRef = React.useRef();
+  const prevTemplateIdRef = React.useRef();
+
+  // Determine if this is an internship template and use appropriate sample data
+  const isInternshipTemplate = templateId?.includes("internship");
+  const defaultResumeData = isInternshipTemplate
+    ? sampleInternshipData
+    : sampleResumeData;
+  const actualResumeData = resumeData || defaultResumeData;
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
+  // Memoize sectionOrder to prevent infinite loops
+  const sectionOrderKey = React.useMemo(() => {
+    const key = sectionOrder?.join(",") || "";
+    console.log("🔑 sectionOrderKey computed:", key);
+    return key;
+  }, [sectionOrder]);
+
   // Transform resume data
   const transformedResumeData = React.useMemo(() => {
-    if (!resumeData) return sampleResumeData;
+    if (!actualResumeData) return defaultResumeData;
 
     // Check if this is enhanced-resume format (has name instead of firstName/lastName)
     if (
-      resumeData.personalInfo &&
-      resumeData.personalInfo.name &&
-      !resumeData.personalInfo.firstName
+      actualResumeData.personalInfo &&
+      actualResumeData.personalInfo.name &&
+      !actualResumeData.personalInfo.firstName
     ) {
-      const nameParts = (resumeData.personalInfo.name || "").split(" ");
+      const nameParts = (actualResumeData.personalInfo.name || "").split(" ");
       return {
         personalInfo: {
-          ...resumeData.personalInfo,
+          ...actualResumeData.personalInfo,
           firstName: nameParts[0] || "",
           lastName: nameParts.slice(1).join(" ") || nameParts[0] || "",
         },
-        summary: resumeData.personalInfo?.summary || resumeData.summary || "",
-        experience: (resumeData.experience || []).map((exp) => ({
+        summary:
+          actualResumeData.personalInfo?.summary ||
+          actualResumeData.summary ||
+          "",
+        experience: (actualResumeData.experience || []).map((exp) => ({
           position: exp.position,
           company: exp.company,
-          location: exp.location || resumeData.personalInfo?.location || "",
+          location:
+            exp.location || actualResumeData.personalInfo?.location || "",
           startDate: exp.duration
             ? exp.duration.split(" - ")[0].trim()
             : exp.startDate || "Present",
@@ -159,7 +280,7 @@ const PDFPreview = ({
             : exp.endDate || "Present",
           responsibilities: exp.achievements || exp.responsibilities || [],
         })),
-        education: (resumeData.education || []).map((edu) => ({
+        education: (actualResumeData.education || []).map((edu) => ({
           degree: edu.degree || "Bachelor of Science",
           fieldOfStudy:
             edu.fieldOfStudy ||
@@ -173,8 +294,8 @@ const PDFPreview = ({
           endDate: edu.endDate || edu.year || "2020",
           gpa: edu.gpa || "",
         })),
-        skills: resumeData.skills || [],
-        projects: (resumeData.projects || []).map((proj) => ({
+        skills: actualResumeData.skills || [],
+        projects: (actualResumeData.projects || []).map((proj) => ({
           name: proj.name || "",
           description: proj.description || "",
           technologies: proj.technologies || [],
@@ -182,37 +303,84 @@ const PDFPreview = ({
           endDate: proj.endDate || "",
           liveLink: proj.liveLink || "",
         })),
-        certifications: (resumeData.certifications || []).map((cert) => ({
+        certifications: (actualResumeData.certifications || []).map((cert) => ({
           name: cert.name || "",
           issuer: cert.issuer || "",
           date: cert.date || cert.year || "",
         })),
-        languages: (resumeData.languages || []).map((lang) => ({
+        languages: (actualResumeData.languages || []).map((lang) => ({
           language: lang.language || lang.name || "",
           proficiency: lang.proficiency || lang.level || "",
         })),
       };
     }
 
-    return resumeData;
-  }, [resumeData]);
+    return actualResumeData;
+  }, [actualResumeData]);
 
   useEffect(() => {
-    if (!mounted || !templateId) return;
+    console.log(
+      "📊 PDFPreview useEffect triggered - mounted:",
+      mounted,
+      "templateId:",
+      templateId
+    );
+    if (!mounted || !templateId) {
+      console.log(
+        "⚠️ Early return - mounted:",
+        mounted,
+        "templateId:",
+        templateId
+      );
+      return;
+    }
+
+    // Check if anything actually changed
+    const resumeDataStr = JSON.stringify(actualResumeData);
+    const sectionOrderStr = sectionOrderKey;
+    console.log("🔍 Checking for changes...");
+
+    if (
+      prevResumeDataRef.current === resumeDataStr &&
+      prevSectionOrderRef.current === sectionOrderStr &&
+      prevTemplateIdRef.current === templateId
+    ) {
+      console.log("✅ No changes detected, skipping regeneration");
+      return; // Nothing changed, don't regenerate
+    }
+
+    console.log("🔄 Changes detected, regenerating PDF...");
+    // Update refs
+    prevResumeDataRef.current = resumeDataStr;
+    prevSectionOrderRef.current = sectionOrderStr;
+    prevTemplateIdRef.current = templateId;
 
     const generatePDF = async () => {
       try {
+        console.log("🎨 Starting PDF generation for template:", templateId);
         setIsLoading(true);
         setError(null);
 
+        // Add timeout safety
+        const timeoutId = setTimeout(() => {
+          console.error("⏱️ PDF generation timeout - taking too long!");
+          setError("PDF generation timed out");
+          setIsLoading(false);
+        }, 10000); // 10 second timeout
+
         // Map template ID to component name
         const componentMap = {
-          // UUID mappings
+          // UUID mappings - Job Templates
           "aa97e710-4457-46fb-ac6f-1765ad3a6d43": "ATSTemplateWithoutPhoto",
           "41aab622-839d-454e-bf99-9d5a2ce027ec": "ATSTemplateWithPhoto",
+          // UUID mappings - Internship Templates
+          "b3c8f1a2-5d7e-4f9b-a1c3-8e2f5d9b7a4c": "InternshipTemplateWithoutPhoto",
+          "d5e9a3f1-7b2c-4e8d-9f1a-6c3b8d2e5f7a": "InternshipTemplateWithPhoto",
           // Legacy string IDs (for backward compatibility)
           "ats-template-with-photo": "ATSTemplateWithPhoto",
           "ats-template-without-photo": "ATSTemplateWithoutPhoto",
+          "internship-template-with-photo": "InternshipTemplateWithPhoto",
+          "internship-template-without-photo": "InternshipTemplateWithoutPhoto",
           "saanvi-patel-1": "InternshipTemplate1WithoutPhoto",
           "saanvi-patel-2": "InternshipTemplate2WithoutPhoto",
           "saanvi-patel-3": "InternshipTemplate3WithoutPhoto",
@@ -246,14 +414,20 @@ const PDFPreview = ({
         // Dynamically import react-pdf renderer
         const { pdf } = await import("@react-pdf/renderer");
         const blob = await pdf(
-          <TemplateComponent resumeData={transformedResumeData} />
+          <TemplateComponent
+            resumeData={transformedResumeData}
+            sectionOrder={sectionOrder}
+          />
         ).toBlob();
+        clearTimeout(timeoutId); // Clear timeout on success
         const url = URL.createObjectURL(blob);
+        console.log("✅ PDF generated successfully");
         setPdfUrl(url);
         setIsLoading(false);
       } catch (err) {
+        clearTimeout(timeoutId); // Clear timeout on error
+        console.error("❌ Error generating PDF:", err);
         setError(err.message);
-        console.error("Error generating PDF:", err);
         setIsLoading(false);
       }
     };
@@ -266,7 +440,7 @@ const PDFPreview = ({
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [templateId, transformedResumeData, mounted]);
+  }, [templateId, actualResumeData, mounted, sectionOrderKey]);
 
   if (!mounted || isLoading) {
     return (
@@ -318,7 +492,7 @@ const PDFPreview = ({
           width: calc(100% + 40px);
           height: calc(100% + 40px);
           position: absolute;
-          top: -20px;
+          top: -5px;
           left: -20px;
           overflow: hidden !important;
         }

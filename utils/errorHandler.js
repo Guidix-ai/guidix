@@ -1,6 +1,7 @@
 /**
  * Standardized API Error Handler
  * Returns structured error information
+ * Handles both Axios and Fetch API errors
  */
 export function handleApiError(error) {
   console.error('API Error:', error);
@@ -90,14 +91,49 @@ export function handleApiError(error) {
         errorInfo.type = 'unknown';
     }
   }
-  // Network error
+  // Network error (Axios)
   else if (error.request) {
     errorInfo.message = 'Network error. Please check your connection';
     errorInfo.type = 'network';
   }
-  // Other errors
+  // Handle plain Error objects (from fetch or thrown errors)
+  else if (error instanceof Error) {
+    const message = error.message || 'An unexpected error occurred';
+
+    // Check if error message contains auth-related keywords
+    if (message.includes('Session expired') || message.includes('401') || message.includes('Unauthorized')) {
+      errorInfo.message = 'Session expired. Please log in again';
+      errorInfo.type = 'auth';
+      errorInfo.shouldRedirect = true;
+      errorInfo.redirectUrl = '/login?message=session_expired';
+      if (typeof window !== 'undefined') {
+        localStorage.clear();
+      }
+    }
+    // Check if error is a network issue
+    else if (message.includes('Network error') || message.includes('Failed to fetch') || message.includes('NetworkError')) {
+      errorInfo.message = 'Network error. Please check your connection';
+      errorInfo.type = 'network';
+    }
+    // Check if error indicates server issues
+    else if (message.includes('500') || message.includes('502') || message.includes('503') || message.includes('Server error')) {
+      errorInfo.message = 'Server error. Please try again later';
+      errorInfo.type = 'server';
+    }
+    // Check if error is not found
+    else if (message.includes('404') || message.includes('not found')) {
+      errorInfo.message = message;
+      errorInfo.type = 'not_found';
+    }
+    // Generic error handling
+    else {
+      errorInfo.message = message;
+      errorInfo.type = 'unknown';
+    }
+  }
+  // Fallback for non-Error objects
   else {
-    errorInfo.message = error.message || 'An unexpected error occurred';
+    errorInfo.message = 'An unexpected error occurred';
     errorInfo.type = 'unknown';
   }
 

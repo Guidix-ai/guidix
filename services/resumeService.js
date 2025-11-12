@@ -230,9 +230,11 @@ export const getSuggestedPrompts = async (academicYear, degree, branch, type) =>
   try {
     console.log('💡 getSuggestedPrompts - Fetching prompts');
 
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.guidix.ai'}/api/v1/resumes/suggested_prompts`, {
+    // Use Next.js API proxy route instead of direct backend call
+    // This handles cookie forwarding properly
+    const response = await fetch('/api/v1/resumes/suggested_prompts', {
       method: 'POST',
-      credentials: 'include',
+      credentials: 'include',  // Send cookies
       headers: {
         'Content-Type': 'application/json',
       },
@@ -246,12 +248,18 @@ export const getSuggestedPrompts = async (academicYear, degree, branch, type) =>
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
+      console.error('❌ Get suggested prompts failed:', errorData);
       throw new Error(errorData.message || errorData.detail || 'Failed to get suggested prompts');
     }
 
     const data = await response.json();
-    console.log('✅ Suggested prompts fetched successfully');
-    return data.data || data;
+    console.log('✅ Suggested prompts fetched successfully:', {
+      has_data: !!data.data,
+      prompts_count: data.data?.suggested_prompts?.length || 0
+    });
+
+    // Return the full response with success flag
+    return data;
   } catch (error) {
     console.error('❌ Get prompts error:', error);
     throw new Error(error.message || 'Failed to get suggested prompts');

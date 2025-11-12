@@ -1,5 +1,12 @@
 import React from "react";
-import { Document, Page, Text, View, StyleSheet, Link } from "@react-pdf/renderer";
+import {
+  Document,
+  Page,
+  Text,
+  View,
+  StyleSheet,
+  Link,
+} from "@react-pdf/renderer";
 
 // Utility function to strip markdown
 const stripMarkdown = (text) => {
@@ -18,30 +25,31 @@ const stripMarkdown = (text) => {
 // Utility function to format date from YYYY-MM to Month Year
 const formatDate = (dateStr) => {
   if (!dateStr) return "";
-  const [year, month] = dateStr.split('-');
+  const [year, month] = dateStr.split("-");
   if (!year || !month) return dateStr;
-  const monthNames = ["January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December"];
+  const monthNames = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
   const monthIndex = parseInt(month, 10) - 1;
   return `${monthNames[monthIndex]} ${year}`;
 };
 
 /**
- * ATS-COMPLIANT TEMPLATE WITHOUT PHOTO
- * Template ID: ats-template-without-photo
- * Backend ID: TMPL_001
+ * ATS-COMPLIANT TEMPLATE WITHOUT PHOTO - TEST VERSION
+ * Template ID: ats-template-without-photo-test
  *
- * Key features:
- * - Single column layout
- * - Standard fonts (Helvetica)
- * - Proper heading hierarchy
- * - Standard section names
- * - Consistent spacing (1.5 line height)
- * - Black text on white background
- * - Standard margins (50pt = ~0.7 inch)
- * - Simple bullet points
- * - No headers/footers/text boxes
- * - No graphics or photos
+ * This is a temporary test version for debugging
  */
 
 const styles = StyleSheet.create({
@@ -53,7 +61,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 30,
     fontFamily: "Helvetica",
     fontSize: 10,
-    lineHeight: 1.2,
+    lineHeight: 1.2, // decreased by 0.3 from 1.5
   },
   // Header Section
   header: {
@@ -61,22 +69,22 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   name: {
-    fontSize: 20,
-    fontWeight: 700,
-    color: "#111111",
+    fontSize: 20, // main-header (name part): 20px
+    fontWeight: 700, // bold
+    color: "#111111", // Headings color
     letterSpacing: 1,
     marginBottom: 12,
   },
   jobTitle: {
     fontSize: 12,
-    color: "#1A1A1A",
+    color: "#1A1A1A", // Subheadings color
     marginBottom: 4,
   },
   contactInfo: {
-    fontSize: 10,
-    fontWeight: 300,
-    color: "#444444",
-    lineHeight: 1.3,
+    fontSize: 10, // main-header (info/social-handles): 10px
+    fontWeight: 300, // light
+    color: "#444444", // Secondary info color
+    lineHeight: 1.3, // decreased by 0.3 from 1.6
     marginBottom: 8,
   },
   contactLine: {
@@ -88,22 +96,22 @@ const styles = StyleSheet.create({
     marginBottom: 2,
   },
   sectionTitle: {
-    fontSize: 14,
-    fontWeight: 600,
-    color: "#111111",
+    fontSize: 14, // section-headings: 14px
+    fontWeight: 600, // bold
+    color: "#111111", // Headings color
     marginBottom: 10,
     textTransform: "uppercase",
     letterSpacing: 0.8,
     borderBottomWidth: 1,
-    borderBottomColor: "#AAAAAA",
+    borderBottomColor: "#AAAAAA", // Dividers color
     paddingBottom: 5,
   },
   // Summary Section
   summaryText: {
-    fontSize: 11,
-    fontWeight: 100,
-    color: "#222222",
-    lineHeight: 1.3,
+    fontSize: 11, // section-content: 11px
+    fontWeight: 100, // lighter
+    color: "#222222", // Body text color
+    lineHeight: 1.3, // decreased by 0.3 from 1.6
     textAlign: "left",
     marginTop: 2,
   },
@@ -118,29 +126,30 @@ const styles = StyleSheet.create({
     marginBottom: 3,
   },
   jobPosition: {
-    fontSize: 12,
-    fontWeight: 600,
-    color: "#1A1A1A",
+    fontSize: 12, // section-subheading: 12px
+    fontWeight: 600, // bold
+    color: "#1A1A1A", // Subheadings color
     flex: 1,
   },
   companyName: {
-    fontSize: 11,
-    fontWeight: 100,
-    color: "#1A1A1A",
+    fontSize: 11, // section-content: 11px
+    fontWeight: 100, // lighter
+    color: "#1A1A1A", // Subheadings color
     marginBottom: 8,
   },
   jobDate: {
-    fontSize: 11,
-    fontWeight: 100,
-    color: "#444444",
+    fontSize: 11, // section-content: 11px
+    fontWeight: 100, // lighter
+    color: "#444444", // Secondary info color
     fontStyle: "italic",
   },
   bulletPoint: {
-    fontSize: 11,
-    fontWeight: 100,
-    color: "#222222",
+    fontSize: 11, // section-content: 11px
+    fontWeight: 100, // lighter
+    color: "#222222", // Body text color
     marginBottom: 4,
-    lineHeight: 1.2,
+    // marginLeft: 15,
+    lineHeight: 1.2, // decreased by 0.3 from 1.5
   },
   // Education Section
   educationItem: {
@@ -153,21 +162,21 @@ const styles = StyleSheet.create({
     marginBottom: 3,
   },
   degree: {
-    fontSize: 12,
-    fontWeight: 600,
-    color: "#1A1A1A",
+    fontSize: 12, // section-subheading: 12px
+    fontWeight: 600, // bold
+    color: "#1A1A1A", // Subheadings color
     flex: 1,
   },
   institution: {
-    fontSize: 11,
-    fontWeight: 100,
-    color: "#1A1A1A",
+    fontSize: 11, // section-content: 11px
+    fontWeight: 100, // lighter
+    color: "#1A1A1A", // Subheadings color
     marginBottom: 2,
   },
   eduDate: {
-    fontSize: 11,
-    fontWeight: 100,
-    color: "#444444",
+    fontSize: 11, // section-content: 11px
+    fontWeight: 100, // lighter
+    color: "#444444", // Secondary info color
     fontStyle: "italic",
   },
   // Skills Section
@@ -179,16 +188,16 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   skillCategoryName: {
-    fontSize: 12,
-    fontWeight: 600,
-    color: "#1A1A1A",
+    fontSize: 12, // section-subheading: 12px
+    fontWeight: 600, // bold
+    color: "#1A1A1A", // Subheadings color
     marginBottom: 3,
   },
   skillsList: {
-    fontSize: 11,
-    fontWeight: 100,
-    color: "#222222",
-    lineHeight: 1.2,
+    fontSize: 11, // section-content: 11px
+    fontWeight: 100, // lighter
+    color: "#222222", // Body text color
+    lineHeight: 1.2, // decreased by 0.3 from 1.5
   },
   // Projects Section
   projectItem: {
@@ -201,34 +210,36 @@ const styles = StyleSheet.create({
     marginBottom: 3,
   },
   projectName: {
-    fontSize: 12,
-    fontWeight: 600,
-    color: "#1A1A1A",
+    fontSize: 12, // section-subheading: 12px
+    fontWeight: 600, // bold
+    color: "#1A1A1A", // Subheadings color
     flex: 1,
   },
   projectDemo: {
-    fontSize: 11,
-    fontWeight: 100,
-    color: "#1A73E8",
-    textDecoration: "underline",
+    fontSize: 11, // section-content: 11px
+    fontWeight: 100, // lighter
+    color: "#1A73E8", // Hyperlinks color (Google blue)
+    // textDecoration: "underline",
+    // lineHeight: 1.5,
+    fontStyle: "italic",
   },
   projectTech: {
-    fontSize: 11,
-    fontWeight: 100,
-    color: "#444444",
+    fontSize: 11, // section-content: 11px
+    fontWeight: 100, // lighter
+    color: "#444444", // Secondary info color
     fontStyle: "italic",
     marginBottom: 4,
   },
   projectDesc: {
-    fontSize: 11,
-    fontWeight: 100,
-    color: "#222222",
-    lineHeight: 1.2,
+    fontSize: 11, // section-content: 11px
+    fontWeight: 100, // lighter
+    color: "#222222", // Body text color
+    lineHeight: 1.2, // decreased by 0.3 from 1.5
   },
   projectDate: {
-    fontSize: 11,
-    fontWeight: 100,
-    color: "#444444",
+    fontSize: 11, // section-content: 11px
+    fontWeight: 100, // lighter
+    color: "#444444", // Secondary info color
     fontStyle: "italic",
   },
   // Certifications Section
@@ -236,19 +247,19 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   certName: {
-    fontSize: 12,
-    fontWeight: 600,
-    color: "#1A1A1A",
+    fontSize: 12, // section-subheading: 12px
+    fontWeight: 600, // bold
+    color: "#1A1A1A", // Subheadings color
     marginBottom: 2,
   },
   certIssuer: {
-    fontSize: 11,
-    fontWeight: 100,
-    color: "#444444",
+    fontSize: 11, // section-content: 11px
+    fontWeight: 100, // lighter
+    color: "#444444", // Secondary info color
   },
 });
 
-const ATSTemplateWithoutPhoto = ({ resumeData, templateId }) => {
+const ATSTemplateWithoutPhoto_TEST = ({ resumeData, templateId }) => {
   const {
     personalInfo = {},
     experience = [],
@@ -275,10 +286,12 @@ const ATSTemplateWithoutPhoto = ({ resumeData, templateId }) => {
 
   return (
     <Document
-      title={`${personalInfo.firstName || 'Resume'} ${personalInfo.lastName || ''} - ATS Template`}
-      author={`${personalInfo.firstName || ''} ${personalInfo.lastName || ''}`}
-      subject="Professional Resume"
-      creator="Resume Builder"
+      title={`${personalInfo.firstName || "Resume"} ${
+        personalInfo.lastName || ""
+      } - ATS Template TEST`}
+      author={`${personalInfo.firstName || ""} ${personalInfo.lastName || ""}`}
+      subject="Professional Resume - Test Version"
+      creator="Resume Builder Test"
     >
       <Page size="A4" style={styles.page}>
         {/* HEADER - Contact Information */}
@@ -321,7 +334,8 @@ const ATSTemplateWithoutPhoto = ({ resumeData, templateId }) => {
                 <View style={styles.experienceHeader}>
                   <Text style={styles.jobPosition}>{exp.position}</Text>
                   <Text style={styles.jobDate}>
-                    {formatDate(exp.startDate)} - {exp.endDate ? formatDate(exp.endDate) : "Present"}
+                    {formatDate(exp.startDate)} -{" "}
+                    {exp.endDate ? formatDate(exp.endDate) : "Present"}
                   </Text>
                 </View>
                 <Text style={styles.companyName}>
@@ -352,10 +366,11 @@ const ATSTemplateWithoutPhoto = ({ resumeData, templateId }) => {
                 <View style={styles.educationHeader}>
                   <Text style={styles.degree}>
                     {edu.degree}
-                    {/* {edu.fieldOfStudy} */}
+                    {edu.fieldOfStudy && ` in ${edu.fieldOfStudy}`}
                   </Text>
                   <Text style={styles.eduDate}>
-                    {formatDate(edu.startDate)} - {edu.endDate ? formatDate(edu.endDate) : "Expected"}
+                    {formatDate(edu.startDate)} -{" "}
+                    {edu.endDate ? formatDate(edu.endDate) : "Expected"}
                   </Text>
                 </View>
                 <Text style={styles.institution}>
@@ -410,40 +425,44 @@ const ATSTemplateWithoutPhoto = ({ resumeData, templateId }) => {
             <Text style={styles.sectionTitle}>PROJECTS</Text>
             {projects.map((project, index) => {
               console.log(`Project ${index}:`, project);
-              console.log(`Project ${index} liveLink:`, project.liveLink, typeof project.liveLink);
+              console.log(
+                `Project ${index} liveLink:`,
+                project.liveLink,
+                typeof project.liveLink
+              );
               return (
-              <View key={index} style={styles.projectItem}>
-                <View style={styles.projectHeader}>
-                  <Text style={styles.projectName}>{project.name}</Text>
-                  {project.liveLink && (
-                    <Link
-                      src={project.liveLink.startsWith('http') ? project.liveLink : `https://${project.liveLink}`}
-                      style={styles.projectDemo}
-                    >
-                      Demo
-                    </Link>
+                <View key={index} style={styles.projectItem}>
+                  <View style={styles.projectHeader}>
+                    <Text style={styles.projectName}>{project.name}</Text>
+                    {project.liveLink && (
+                      <Link
+                        src={
+                          project.liveLink.startsWith("http")
+                            ? project.liveLink
+                            : `https://${project.liveLink}`
+                        }
+                        style={styles.projectDemo}
+                      >
+                        Live Link
+                      </Link>
+                    )}
+                  </View>
+                  {project.technologies && project.technologies.length > 0 && (
+                    <Text style={styles.projectTech}>
+                      Technologies:{" "}
+                      {Array.isArray(project.technologies)
+                        ? project.technologies.join(", ")
+                        : project.technologies}
+                    </Text>
+                  )}
+                  {project.description && (
+                    <Text style={styles.projectDesc}>
+                      {stripMarkdown(project.description)}
+                    </Text>
                   )}
                 </View>
-                {(project.startDate || project.endDate) && (
-                  <Text style={styles.projectDate}>
-                    {formatDate(project.startDate)} - {project.endDate ? formatDate(project.endDate) : "Present"}
-                  </Text>
-                )}
-                {project.technologies && project.technologies.length > 0 && (
-                  <Text style={styles.projectTech}>
-                    Technologies:{" "}
-                    {Array.isArray(project.technologies)
-                      ? project.technologies.join(", ")
-                      : project.technologies}
-                  </Text>
-                )}
-                {project.description && (
-                  <Text style={styles.projectDesc}>
-                    {stripMarkdown(project.description)}
-                  </Text>
-                )}
-              </View>
-            )})}
+              );
+            })}
           </View>
         )}
       </Page>
@@ -452,9 +471,9 @@ const ATSTemplateWithoutPhoto = ({ resumeData, templateId }) => {
 };
 
 // Template metadata for identification
-ATSTemplateWithoutPhoto.templateId = "ats-template-without-photo";
-ATSTemplateWithoutPhoto.backendId = "TMPL_001";
-ATSTemplateWithoutPhoto.displayName = "ATS Professional Template";
-ATSTemplateWithoutPhoto.hasPhoto = false;
+ATSTemplateWithoutPhoto_TEST.templateId = "ats-template-without-photo-test";
+ATSTemplateWithoutPhoto_TEST.backendId = "TMPL_001_TEST";
+ATSTemplateWithoutPhoto_TEST.displayName = "ATS Professional Template - TEST";
+ATSTemplateWithoutPhoto_TEST.hasPhoto = false;
 
-export default ATSTemplateWithoutPhoto;
+export default ATSTemplateWithoutPhoto_TEST;

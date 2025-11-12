@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect, useMemo, Suspense } from "react";
 import Image from "next/image";
 import { ArrowRight, ArrowLeft } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -28,6 +28,8 @@ function AIPromptInputContent() {
   const [typewriterText, setTypewriterText] = useState("");
   const [showCursor, setShowCursor] = useState(true);
   const [isClient, setIsClient] = useState(false);
+  const [suggestedPrompts, setSuggestedPrompts] = useState([]);
+  const [loadingPrompts, setLoadingPrompts] = useState(true);
   const fullText = "Tell Us About Yourself";
 
   // Get user data from Redux
@@ -57,11 +59,47 @@ function AIPromptInputContent() {
     setUserEmail(email);
     setUserPhone(phone);
 
+    // Load suggested prompts from sessionStorage
+    const loadSuggestedPrompts = () => {
+      try {
+        const storedPrompts = sessionStorage.getItem("suggestedPrompts");
+        if (storedPrompts) {
+          const prompts = JSON.parse(storedPrompts);
+          console.log('📋 Loaded suggested prompts from sessionStorage:', prompts.length);
+          console.log('📋 Prompts data:', prompts);
+
+          // Validate that prompts have the expected structure
+          if (Array.isArray(prompts) && prompts.length > 0 && prompts[0].title && prompts[0].prompt) {
+            setSuggestedPrompts(prompts);
+            setLoadingPrompts(false);
+          } else {
+            console.warn('⚠️ Invalid prompts structure, using fallback');
+            setLoadingPrompts(false);
+          }
+        } else {
+          console.log('⚠️ No suggested prompts found in sessionStorage, will use fallback');
+          setLoadingPrompts(false);
+        }
+      } catch (error) {
+        console.error('❌ Failed to load suggested prompts:', error);
+        setLoadingPrompts(false);
+      }
+    };
+
+    // Small delay to ensure sessionStorage is updated from previous page
+    const timer = setTimeout(() => {
+      loadSuggestedPrompts();
+    }, 100);
+
     // Check viewport size
     const checkDesktop = () => setIsDesktop(window.innerWidth >= 1024);
     checkDesktop();
     window.addEventListener('resize', checkDesktop);
-    return () => window.removeEventListener('resize', checkDesktop);
+
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('resize', checkDesktop);
+    };
   }, [user]);
 
   const MAX_WORDS = 100;
@@ -280,7 +318,19 @@ function AIPromptInputContent() {
     return fieldMap[resolvedFieldId] || fieldMap["cse"];
   };
 
-  const generateDynamicPrompts = () => {
+  // Use useMemo to recalculate prompts when suggestedPrompts, userName, userEmail, or userPhone changes
+  const dynamicPrompts = useMemo(() => {
+    // If we have suggested prompts from API, use them
+    if (suggestedPrompts && suggestedPrompts.length > 0) {
+      console.log('📋 Using API suggested prompts:', suggestedPrompts.length);
+      console.log('📋 First prompt:', suggestedPrompts[0]);
+      return suggestedPrompts;
+    }
+
+    // Fallback to hardcoded prompts if API prompts are not available
+    console.log('📋 Using fallback hardcoded prompts');
+    console.log('📋 suggestedPrompts state:', suggestedPrompts);
+
     const primaryField = getFieldData(userFields[0] || "cse");
     const yearText =
       userEducation === "first"
@@ -341,9 +391,7 @@ My best skills? [Skill 1, Skill 2, Skill 3]
 My experience? [Key Project] from [Year], and an internship [Role/Company] with dates [Start Date - End Date].`,
       },
     ];
-  };
-
-  const dynamicPrompts = generateDynamicPrompts();
+  }, [suggestedPrompts, userName, userEmail, userPhone, userFields, userEducation, userCareer]);
 
   const handleNext = () => {
     if (prompt.trim() && wordCount <= MAX_WORDS) {
@@ -543,61 +591,76 @@ My experience? [Key Project] from [Year], and an internship [Role/Company] with 
                 </p>
 
                 <div className="grid grid-cols-1 gap-3">
-                  {dynamicPrompts.map((example, index) => (
-                    <div
-                      key={index}
-                      onClick={() => handleSamplePrompt(example.prompt)}
-                      className="p-4 cursor-pointer transition-all"
-                      style={{
-                        border: "1px solid #D5E4FF",
-                        borderRadius: 16,
-                        backgroundColor: colorTokens.bgLight,
-                        boxShadow:
-                          "0px 0px 2px 0px rgba(0,19,88,0.10), 0px 2px 2px 0px rgba(0,19,88,0.02)",
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.borderColor =
-                          colorTokens.secondary600;
-                        e.currentTarget.style.backgroundColor = "#E9F1FF";
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.borderColor = "#D5E4FF";
-                        e.currentTarget.style.backgroundColor =
-                          colorTokens.bgLight;
-                      }}
-                    >
-                      <div className="flex flex-col md:flex-row items-start gap-3">
-                        <div
-                          className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0"
-                          style={{
-                            background:
-                              "linear-gradient(180deg, #679CFF 0%, #2370FF 100%)",
-                            boxShadow: "0 1px 6px rgba(35, 112, 255, 0.2)",
-                          }}
-                        >
-                          <span className="text-white text-xs font-bold">
-                            {index + 1}
-                          </span>
-                        </div>
-                        <div className="flex-1 min-w-0">
+                  {loadingPrompts ? (
+                    // Loading state
+                    <div className="flex items-center justify-center py-8">
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                    </div>
+                  ) : dynamicPrompts.length === 0 ? (
+                    // No prompts available
+                    <div className="text-center py-8">
+                      <p className="text-sm" style={{ color: colorTokens.paragraph }}>
+                        No suggested prompts available. Please try again.
+                      </p>
+                    </div>
+                  ) : (
+                    // Display prompts
+                    dynamicPrompts.map((example, index) => (
+                      <div
+                        key={index}
+                        onClick={() => handleSamplePrompt(example.prompt)}
+                        className="p-4 cursor-pointer transition-all"
+                        style={{
+                          border: "1px solid #D5E4FF",
+                          borderRadius: 16,
+                          backgroundColor: colorTokens.bgLight,
+                          boxShadow:
+                            "0px 0px 2px 0px rgba(0,19,88,0.10), 0px 2px 2px 0px rgba(0,19,88,0.02)",
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.borderColor =
+                            colorTokens.secondary600;
+                          e.currentTarget.style.backgroundColor = "#E9F1FF";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.borderColor = "#D5E4FF";
+                          e.currentTarget.style.backgroundColor =
+                            colorTokens.bgLight;
+                        }}
+                      >
+                        <div className="flex flex-col md:flex-row items-start gap-3">
                           <div
-                            className="font-medium text-sm mb-1"
-                            style={{ color: colorTokens.title }}
+                            className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0"
+                            style={{
+                              background:
+                                "linear-gradient(180deg, #679CFF 0%, #2370FF 100%)",
+                              boxShadow: "0 1px 6px rgba(35, 112, 255, 0.2)",
+                            }}
                           >
-                            {example.title}
+                            <span className="text-white text-xs font-bold">
+                              {index + 1}
+                            </span>
                           </div>
-                          <div
-                            className="text-xs"
-                            style={{ color: colorTokens.paragraph }}
-                          >
-                            {example.type === "fillable"
-                              ? "Template with placeholders for your personal details"
-                              : clampToWords(example.prompt, 25) + "..."}
+                          <div className="flex-1 min-w-0">
+                            <div
+                              className="font-medium text-sm mb-1"
+                              style={{ color: colorTokens.title }}
+                            >
+                              {example.title}
+                            </div>
+                            <div
+                              className="text-xs"
+                              style={{ color: colorTokens.paragraph }}
+                            >
+                              {example.type === "fillable" || example.type === "professional" || example.type === "creative" || example.type === "targeted"
+                                ? clampToWords(example.prompt, 15) + "..."
+                                : clampToWords(example.prompt, 25) + "..."}
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    ))
+                  )}
                 </div>
               </div>
 

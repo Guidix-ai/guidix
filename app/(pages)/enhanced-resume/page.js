@@ -11,7 +11,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
-import React, { useState, useEffect, Suspense } from "react";
+import React, { useState, useEffect, Suspense, useRef } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { DashboardLayout } from "@/components/layout/dashboard-layout";
 import ResumeBreadcrumbs from "@/components/ResumeBreadcrumbs";
@@ -154,13 +154,13 @@ const customStyles = `
 function EnhancedResumeContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const [isEditing, setIsEditing] = useState(null);
   const [userName, setUserName] = useState("Advika Sharma");
   const [editingField, setEditingField] = useState(null);
   const [editingValue, setEditingValue] = useState("");
   const [isMobile, setIsMobile] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [profilePhoto, setProfilePhoto] = useState(null);
+  const photoInputRef = useRef(null);
   const [showPreview, setShowPreview] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -462,13 +462,36 @@ function EnhancedResumeContent() {
 
         case "education":
           // Append to existing education entries (API might return multiple education sections)
-          const newEducation = (Array.isArray(section.details) ? section.details : []).map((edu, index) => ({
-            id: transformed.education.length + index + 1,
-            degree: edu.degree || "",
-            school: edu.university || edu.institution || edu.school || "",
-            year: edu.graduation_date || edu.end_date || edu.year || "",
-            gpa: edu.gpa_or_percentage || edu.gpa || "",
-          }));
+          const newEducation = (Array.isArray(section.details) ? section.details : []).map((edu, index) => {
+            let degree = edu.degree || "";
+
+            // Fix duplication in degree field (e.g., "Bachelor of Technology in Civil Engineering in Technology in Civil Engineering")
+            // Pattern: "X in Y in Z" where Y contains part of Z -> should just be "X in Z"
+            if (degree.includes(" in ")) {
+              const parts = degree.split(" in ");
+              if (parts.length >= 3) {
+                // If we have multiple "in" splits, likely have duplication
+                // Check if the last part appears in earlier parts
+                const lastPart = parts[parts.length - 1].trim();
+                const middlePart = parts[parts.length - 2].trim();
+
+                // If middle part is contained in or is similar to last part, remove middle part
+                if (lastPart.toLowerCase().includes(middlePart.toLowerCase()) ||
+                    middlePart.toLowerCase().includes(lastPart.toLowerCase())) {
+                  // Reconstruct without the duplicate middle part
+                  degree = parts.slice(0, -2).join(" in ") + " in " + lastPart;
+                }
+              }
+            }
+
+            return {
+              id: transformed.education.length + index + 1,
+              degree: degree,
+              school: edu.university || edu.institution || edu.school || "",
+              year: edu.graduation_date || edu.end_date || edu.year || "",
+              gpa: edu.gpa_or_percentage || edu.gpa || "",
+            };
+          });
           transformed.education = [...transformed.education, ...newEducation];
           break;
 
@@ -669,15 +692,6 @@ function EnhancedResumeContent() {
     },
   ];
 
-  const handleEdit = (field) => {
-    setIsEditing(field);
-  };
-
-  const handleSave = (field) => {
-    setIsEditing(null);
-    // Save logic would go here
-  };
-
   const handlePhotoUpload = (event) => {
     const file = event.target.files?.[0];
     if (file) {
@@ -697,13 +711,17 @@ function EnhancedResumeContent() {
       reader.onloadend = () => {
         const base64String = reader.result;
         setProfilePhoto(base64String);
-        setResumeData((prev) => ({
-          ...prev,
-          personalInfo: {
-            ...prev.personalInfo,
-            photo: base64String,
-          },
-        }));
+        // Only update tempFormData - don't auto-save to resumeData
+        // Changes will be saved to resumeData when user clicks "Save Changes"
+        if (tempFormData) {
+          setTempFormData((prev) => ({
+            ...prev,
+            personalInfo: {
+              ...prev.personalInfo,
+              photo: base64String,
+            },
+          }));
+        }
       };
       reader.readAsDataURL(file);
     }
@@ -732,12 +750,17 @@ function EnhancedResumeContent() {
 
       // Map template ID to component name (includes UUID mappings)
       const componentMap = {
-        // UUID mappings
+        // UUID mappings - Job Templates
         'aa97e710-4457-46fb-ac6f-1765ad3a6d43': 'ATSTemplateWithoutPhoto',
         '41aab622-839d-454e-bf99-9d5a2ce027ec': 'ATSTemplateWithPhoto',
+        // UUID mappings - Internship Templates
+        'b3c8f1a2-5d7e-4f9b-a1c3-8e2f5d9b7a4c': 'InternshipTemplateWithoutPhoto',
+        'd5e9a3f1-7b2c-4e8d-9f1a-6c3b8d2e5f7a': 'InternshipTemplateWithPhoto',
         // Legacy string IDs (for backward compatibility)
         'ats-template-with-photo': 'ATSTemplateWithPhoto',
         'ats-template-without-photo': 'ATSTemplateWithoutPhoto',
+        'internship-template-with-photo': 'InternshipTemplateWithPhoto',
+        'internship-template-without-photo': 'InternshipTemplateWithoutPhoto',
         'internship-1-with-photo': 'InternshipTemplate1WithPhoto',
         'internship-2-with-photo': 'InternshipTemplate2WithPhoto',
         'internship-3-with-photo': 'InternshipTemplate3WithPhoto',
@@ -796,14 +819,24 @@ function EnhancedResumeContent() {
           endDate: exp.duration ? (exp.duration.split(' - ')[1]?.trim() || 'Present') : (exp.endDate || 'Present'),
           responsibilities: exp.achievements || exp.responsibilities || [],
         })),
-        education: (resumeData.education || []).map(edu => ({
-          degree: edu.degree || 'Bachelor of Science',
-          fieldOfStudy: edu.fieldOfStudy || (edu.degree ? edu.degree.replace(/Bachelor of Science in |Bachelor of /gi, '') : 'Computer Science'),
-          institution: edu.school || edu.institution || 'University',
-          startDate: edu.startDate || (edu.year ? (parseInt(edu.year) - 4).toString() : '2016'),
-          endDate: edu.endDate || edu.year || '2020',
-          gpa: edu.gpa || '',
-        })),
+        education: (resumeData.education || []).map(edu => {
+          // Check if degree already contains " in " (e.g., "Bachelor of Technology in Civil Engineering")
+          const degreeContainsField = edu.degree && edu.degree.match(/\s+in\s+/i);
+
+          // If degree already contains the field, don't extract fieldOfStudy separately
+          const extractedField = degreeContainsField
+            ? ''
+            : (edu.degree ? edu.degree.replace(/Bachelor of Technology in |Bachelor of Science in |Bachelor of Engineering in |Bachelor of Arts in |Bachelor of /gi, '') : 'Computer Science');
+
+          return {
+            degree: edu.degree || 'Bachelor of Science',
+            fieldOfStudy: edu.fieldOfStudy || extractedField,
+            institution: edu.school || edu.institution || 'University',
+            startDate: edu.startDate || (edu.year ? (parseInt(edu.year) - 4).toString() : '2016'),
+            endDate: edu.endDate || edu.year || '2020',
+            gpa: edu.gpa || '',
+          };
+        }),
         skills: resumeData.skills || [],
         projects: (resumeData.projects || []).map(proj => ({
           name: proj.name || 'Project',
@@ -1049,7 +1082,8 @@ function EnhancedResumeContent() {
   };
 
   const handleSectionClick = (sectionName) => {
-    setIsEditing(sectionName);
+    // Switch to the appropriate tab in the new system
+    handleTabClick(sectionName);
   };
 
   const handlePrev = () => {
@@ -1097,8 +1131,22 @@ function EnhancedResumeContent() {
   };
 
   // Tab system handlers
+  // Section order state - default order
+  const [sectionOrder, setSectionOrder] = useState([
+    "experience",
+    "education",
+    "projects",
+    "skills",
+    "certifications",
+    "languages"
+  ]);
+
+  // Temporary section order for editing (follows same pattern as tempFormData)
+  const [tempSectionOrder, setTempSectionOrder] = useState(null);
+
   const tabs = [
     { id: "preview", label: "Preview", icon: Eye },
+    { id: "arrangeSections", label: "Arrange Sections", icon: FileText },
     { id: "personalInfo", label: "Personal Info", icon: User },
     { id: "summary", label: "Professional Summary", icon: Star },
     { id: "education", label: "Education", icon: FileText },
@@ -1118,6 +1166,12 @@ function EnhancedResumeContent() {
       // This preserves unsaved changes when switching between edit tabs
       if (!tempFormData) {
         setTempFormData(JSON.parse(JSON.stringify(resumeData)));
+        // Also initialize profilePhoto from resumeData
+        setProfilePhoto(resumeData?.personalInfo?.photo || null);
+      }
+      // Initialize tempSectionOrder when entering arrangeSections tab
+      if (tabId === "arrangeSections" && !tempSectionOrder) {
+        setTempSectionOrder([...sectionOrder]);
       }
       setActiveTab(tabId);
     }
@@ -1134,13 +1188,21 @@ function EnhancedResumeContent() {
         sessionStorage.setItem('createdResumeData', JSON.stringify(tempFormData));
       }
     }
+    // Save section order changes
+    if (tempSectionOrder) {
+      setSectionOrder(tempSectionOrder);
+      setTempSectionOrder(null);
+    }
     setActiveTab("preview");
     setTempFormData(null);
   };
 
   const handleCancelForm = () => {
+    // Revert photo to the saved version
+    setProfilePhoto(resumeData?.personalInfo?.photo || null);
     setActiveTab("preview");
     setTempFormData(null);
+    setTempSectionOrder(null);
   };
 
   const handlePhotoClick = () => {
@@ -3658,16 +3720,11 @@ function EnhancedResumeContent() {
                   >
                     <div className="h-full overflow-y-auto overflow-x-hidden">
                       <PDFPreview
-                        key={JSON.stringify(tempFormData || resumeData)}
                         templateId={selectedTemplate}
                         width="100%"
                         height="100%"
-                        resumeData={(() => {
-                          const data = tempFormData || resumeData;
-                          console.log('📄 PDFPreview receiving data:', data);
-                          console.log('📄 PDFPreview projects:', data?.projects);
-                          return data;
-                        })()}
+                        sectionOrder={tempSectionOrder || sectionOrder}
+                        resumeData={tempFormData || resumeData}
                       />
                     </div>
                   </div>
@@ -3731,6 +3788,106 @@ function EnhancedResumeContent() {
                   {/* Form content based on active tab */}
                   {activeTab === "personalInfo" && tempFormData && (
                     <div className="space-y-4">
+                      {/* Photo Upload - Only show if template supports it */}
+                      {currentTemplate?.hasPhoto && (
+                        <div>
+                          <label style={labelStyles}>Profile Photo</label>
+                          <div
+                            onClick={handlePhotoClick}
+                            style={{
+                              ...inputStyles,
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '16px',
+                              cursor: 'pointer',
+                              minHeight: '100px',
+                              padding: '16px'
+                            }}
+                          >
+                            <div
+                              style={{
+                                width: '80px',
+                                height: '80px',
+                                borderRadius: '50%',
+                                border: '2px solid #E1E4EB',
+                                overflow: 'hidden',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                background: '#FFFFFF',
+                                flexShrink: 0
+                              }}
+                            >
+                              {profilePhoto ? (
+                                <img
+                                  src={profilePhoto}
+                                  alt="Profile"
+                                  style={{
+                                    width: '100%',
+                                    height: '100%',
+                                    objectFit: 'cover'
+                                  }}
+                                />
+                              ) : (
+                                <Camera style={{ height: '32px', width: '32px', color: '#9CA3AF' }} />
+                              )}
+                            </div>
+                            <div style={{ flex: 1 }}>
+                              <p style={{
+                                fontSize: '14px',
+                                color: colorTokens.paragraph,
+                                marginBottom: '4px',
+                                fontFamily: 'Inter, sans-serif',
+                                fontWeight: 500
+                              }}>
+                                {profilePhoto ? 'Click to change photo' : 'Click to upload photo'}
+                              </p>
+                              <p style={{
+                                fontSize: '12px',
+                                color: '#9CA3AF',
+                                fontFamily: 'Inter, sans-serif'
+                              }}>
+                                Recommended: Square image, max 5MB
+                              </p>
+                            </div>
+                          </div>
+                          {profilePhoto && (
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setProfilePhoto(null);
+                                // Only update tempFormData - don't auto-save to resumeData
+                                setTempFormData(prev => ({
+                                  ...prev,
+                                  personalInfo: { ...prev.personalInfo, photo: null }
+                                }));
+                              }}
+                              style={{
+                                marginTop: '8px',
+                                fontSize: '12px',
+                                color: '#EF4444',
+                                background: 'none',
+                                border: 'none',
+                                cursor: 'pointer',
+                                padding: 0,
+                                fontFamily: 'Inter, sans-serif'
+                              }}
+                              onMouseOver={(e) => e.currentTarget.style.color = '#DC2626'}
+                              onMouseOut={(e) => e.currentTarget.style.color = '#EF4444'}
+                            >
+                              Remove photo
+                            </button>
+                          )}
+                          <input
+                            ref={photoInputRef}
+                            type="file"
+                            accept="image/*"
+                            onChange={handlePhotoUpload}
+                            style={{ display: 'none' }}
+                          />
+                        </div>
+                      )}
+
                       <div>
                         <label style={labelStyles}>Full Name</label>
                         <input
@@ -3869,6 +4026,99 @@ function EnhancedResumeContent() {
                           rows={8}
                           style={textareaStyles}
                         />
+                      </div>
+                    </div>
+                  )}
+
+                  {activeTab === "arrangeSections" && tempSectionOrder && (
+                    <div className="space-y-4">
+                      <div className="mb-4">
+                        <p style={{
+                          ...labelStyles,
+                          marginBottom: '12px'
+                        }}>
+                          Drag and drop sections to reorder them on your resume. Header and Summary will remain at the top.
+                        </p>
+                      </div>
+                      <div className="space-y-2">
+                        {tempSectionOrder.map((sectionId, index) => {
+                          const sectionLabels = {
+                            experience: "Work Experience",
+                            education: "Education",
+                            projects: "Projects",
+                            skills: "Skills",
+                            certifications: "Certifications",
+                            languages: "Languages"
+                          };
+
+                          return (
+                            <div
+                              key={sectionId}
+                              draggable
+                              onDragStart={(e) => {
+                                e.dataTransfer.effectAllowed = "move";
+                                e.dataTransfer.setData("text/html", index.toString());
+                              }}
+                              onDragOver={(e) => {
+                                e.preventDefault();
+                                e.dataTransfer.dropEffect = "move";
+                              }}
+                              onDrop={(e) => {
+                                e.preventDefault();
+                                const dragIndex = parseInt(e.dataTransfer.getData("text/html"));
+                                const dropIndex = index;
+
+                                if (dragIndex === dropIndex) return;
+
+                                const newOrder = [...tempSectionOrder];
+                                const [removed] = newOrder.splice(dragIndex, 1);
+                                newOrder.splice(dropIndex, 0, removed);
+                                setTempSectionOrder(newOrder);
+                              }}
+                              className="cursor-move transition-all"
+                              style={{
+                                minHeight: 56,
+                                paddingLeft: 16,
+                                paddingRight: 16,
+                                paddingTop: 12,
+                                paddingBottom: 12,
+                                backgroundColor: colorTokens.bgLight,
+                                borderRadius: 16,
+                                border: 'none',
+                                boxShadow: "0px 0px 2px 0px rgba(0,19,88,0.15), 0px 4px 4px 0px rgba(0,19,88,0.04), 0px 4px 16px 0px rgba(0,19,88,0.04), inset 0px -4px 4px 0px rgba(0,19,88,0.10)",
+                                outline: "1px solid #C7D6ED",
+                              }}
+                            >
+                              <div className="flex items-center gap-3">
+                                <div style={{
+                                  fontSize: '18px',
+                                  color: 'rgb(15, 38, 120)',
+                                  opacity: 0.5
+                                }}>
+                                  ⋮⋮
+                                </div>
+                                <div style={{
+                                  flex: 1,
+                                  fontFamily: 'Inter, sans-serif',
+                                  fontSize: '14px',
+                                  fontWeight: 500,
+                                  color: "rgb(15, 38, 120)",
+                                  letterSpacing: "-0.32px",
+                                }}>
+                                  {sectionLabels[sectionId]}
+                                </div>
+                                <div style={{
+                                  fontSize: '12px',
+                                  color: 'rgb(15, 38, 120)',
+                                  fontFamily: 'Inter, sans-serif',
+                                  opacity: 0.6
+                                }}>
+                                  Position {index + 1}
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        })}
                       </div>
                     </div>
                   )}
@@ -4025,6 +4275,11 @@ function EnhancedResumeContent() {
                                 onChange={(e) => {
                                   const newExperience = [...tempFormData.experience];
                                   newExperience[index].startDate = e.target.value;
+                                  // Update duration field as well
+                                  const endDate = newExperience[index].endDate;
+                                  newExperience[index].duration = e.target.value && endDate ?
+                                    `${e.target.value} - ${endDate}` :
+                                    e.target.value ? `${e.target.value} - Present` : '';
                                   setTempFormData(prev => ({ ...prev, experience: newExperience }));
                                 }}
                                 placeholder="2022-01"
@@ -4039,6 +4294,11 @@ function EnhancedResumeContent() {
                                 onChange={(e) => {
                                   const newExperience = [...tempFormData.experience];
                                   newExperience[index].endDate = e.target.value;
+                                  // Update duration field as well
+                                  const startDate = newExperience[index].startDate;
+                                  newExperience[index].duration = startDate && e.target.value ?
+                                    `${startDate} - ${e.target.value}` :
+                                    startDate ? `${startDate} - Present` : '';
                                   setTempFormData(prev => ({ ...prev, experience: newExperience }));
                                 }}
                                 placeholder="2024-12"
@@ -4597,8 +4857,6 @@ function EnhancedResumeContent() {
             className={`${
               sidebarCollapsed
                 ? "lg:col-span-1"
-                : isEditing
-                ? "col-span-1 md:col-span-1 lg:col-span-1"
                 : "col-span-1 md:col-span-2 lg:col-span-2"
             } order-1 md:order-2 lg:order-2 transition-all duration-300`}
           >
@@ -4710,451 +4968,6 @@ function EnhancedResumeContent() {
               </CardContent>
             </Card>
           </div>
-
-          {/* Right Sidebar - Edit Panel */}
-          {isEditing && (
-            <div className="col-span-1 order-3 transition-all duration-300">
-              <Card className="bg-white shadow-lg border-2 border-blue-200 sticky top-20">
-                <CardHeader className="pb-3 bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-blue-100">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center">
-                        <Edit3 className="h-4 w-4 text-white" />
-                      </div>
-                      <CardTitle className="text-base font-bold text-gray-900">
-                        Edit {isEditing === "personalInfo" ? "Personal Info" :
-                             isEditing === "summary" ? "Summary" :
-                             isEditing.charAt(0).toUpperCase() + isEditing.slice(1)}
-                      </CardTitle>
-                    </div>
-                    <button
-                      onClick={() => setIsEditing(null)}
-                      className="p-1.5 text-gray-500 hover:text-gray-700 hover:bg-white rounded-lg transition-colors"
-                      title="Close"
-                    >
-                      <X className="h-5 w-5" />
-                    </button>
-                  </div>
-                </CardHeader>
-                <CardContent className="max-h-[calc(100vh-180px)] overflow-y-auto p-4">
-                  {isEditing === "personalInfo" && (
-                    <div className="space-y-4">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
-                        <Input
-                          value={resumeData.personalInfo.name}
-                          onChange={(e) => setResumeData(prev => ({
-                            ...prev,
-                            personalInfo: { ...prev.personalInfo, name: e.target.value }
-                          }))}
-                          placeholder="Your Name"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Title/Position</label>
-                        <Input
-                          value={resumeData.personalInfo.title}
-                          onChange={(e) => setResumeData(prev => ({
-                            ...prev,
-                            personalInfo: { ...prev.personalInfo, title: e.target.value }
-                          }))}
-                          placeholder="Software Engineer"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                        <Input
-                          type="email"
-                          value={resumeData.personalInfo.email}
-                          onChange={(e) => setResumeData(prev => ({
-                            ...prev,
-                            personalInfo: { ...prev.personalInfo, email: e.target.value }
-                          }))}
-                          placeholder="your.email@example.com"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
-                        <Input
-                          type="tel"
-                          value={resumeData.personalInfo.phone}
-                          onChange={(e) => setResumeData(prev => ({
-                            ...prev,
-                            personalInfo: { ...prev.personalInfo, phone: e.target.value }
-                          }))}
-                          placeholder="+1 (555) 123-4567"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Location</label>
-                        <Input
-                          value={resumeData.personalInfo.location}
-                          onChange={(e) => setResumeData(prev => ({
-                            ...prev,
-                            personalInfo: { ...prev.personalInfo, location: e.target.value }
-                          }))}
-                          placeholder="City, Country"
-                        />
-                      </div>
-                    </div>
-                  )}
-
-                  {isEditing === "summary" && (
-                    <div className="space-y-4">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Professional Summary</label>
-                        <Textarea
-                          value={resumeData.personalInfo.summary}
-                          onChange={(e) => setResumeData(prev => ({
-                            ...prev,
-                            personalInfo: { ...prev.personalInfo, summary: e.target.value }
-                          }))}
-                          placeholder="Write a brief professional summary..."
-                          rows={6}
-                        />
-                        <p className="text-xs text-gray-500 mt-1">2-3 sentences about your career goals and specialization</p>
-                      </div>
-                    </div>
-                  )}
-
-                  {isEditing === "education" && (
-                    <div className="space-y-4">
-                      {resumeData.education.map((edu, index) => (
-                        <div key={edu.id} className="p-4 border border-gray-200 rounded-lg space-y-3">
-                          <div className="flex justify-between items-start">
-                            <h4 className="font-medium text-sm">Education {index + 1}</h4>
-                            <button
-                              onClick={() => handleRemoveFromSection("education", edu.id)}
-                              className="text-red-600 hover:text-red-800"
-                            >
-                              <X className="h-4 w-4" />
-                            </button>
-                          </div>
-                          <Input
-                            value={edu.degree}
-                            onChange={(e) => {
-                              const newEdu = [...resumeData.education];
-                              newEdu[index].degree = e.target.value;
-                              setResumeData(prev => ({ ...prev, education: newEdu }));
-                            }}
-                            placeholder="Degree"
-                          />
-                          <Input
-                            value={edu.school}
-                            onChange={(e) => {
-                              const newEdu = [...resumeData.education];
-                              newEdu[index].school = e.target.value;
-                              setResumeData(prev => ({ ...prev, education: newEdu }));
-                            }}
-                            placeholder="Institution"
-                          />
-                          <Input
-                            value={edu.year}
-                            onChange={(e) => {
-                              const newEdu = [...resumeData.education];
-                              newEdu[index].year = e.target.value;
-                              setResumeData(prev => ({ ...prev, education: newEdu }));
-                            }}
-                            placeholder="Year"
-                          />
-                        </div>
-                      ))}
-                      <Button
-                        onClick={() => handleAddToSection("education")}
-                        variant="outline"
-                        className="w-full"
-                      >
-                        <Plus className="h-4 w-4 mr-2" />
-                        Add Education
-                      </Button>
-                    </div>
-                  )}
-
-                  {isEditing === "experience" && (
-                    <div className="space-y-4">
-                      {resumeData.experience.map((exp, index) => (
-                        <div key={exp.id} className="p-4 border border-gray-200 rounded-lg space-y-3">
-                          <div className="flex justify-between items-start">
-                            <h4 className="font-medium text-sm">Experience {index + 1}</h4>
-                            <button
-                              onClick={() => handleRemoveFromSection("experience", exp.id)}
-                              className="text-red-600 hover:text-red-800"
-                            >
-                              <X className="h-4 w-4" />
-                            </button>
-                          </div>
-                          <Input
-                            value={exp.company}
-                            onChange={(e) => {
-                              const newExp = [...resumeData.experience];
-                              newExp[index].company = e.target.value;
-                              setResumeData(prev => ({ ...prev, experience: newExp }));
-                            }}
-                            placeholder="Company"
-                          />
-                          <Input
-                            value={exp.position}
-                            onChange={(e) => {
-                              const newExp = [...resumeData.experience];
-                              newExp[index].position = e.target.value;
-                              setResumeData(prev => ({ ...prev, experience: newExp }));
-                            }}
-                            placeholder="Position"
-                          />
-                          <Input
-                            value={exp.duration}
-                            onChange={(e) => {
-                              const newExp = [...resumeData.experience];
-                              newExp[index].duration = e.target.value;
-                              setResumeData(prev => ({ ...prev, experience: newExp }));
-                            }}
-                            placeholder="2020 - Present"
-                          />
-                          <div>
-                            <label className="block text-xs font-medium text-gray-700 mb-2">Achievements</label>
-                            {exp.achievements.map((ach, achIndex) => (
-                              <div key={achIndex} className="flex gap-2 mb-2">
-                                <Textarea
-                                  value={ach}
-                                  onChange={(e) => {
-                                    const newExp = [...resumeData.experience];
-                                    newExp[index].achievements[achIndex] = e.target.value;
-                                    setResumeData(prev => ({ ...prev, experience: newExp }));
-                                  }}
-                                  rows={2}
-                                  className="flex-1"
-                                />
-                                <button
-                                  onClick={() => {
-                                    const newExp = [...resumeData.experience];
-                                    newExp[index].achievements.splice(achIndex, 1);
-                                    setResumeData(prev => ({ ...prev, experience: newExp }));
-                                  }}
-                                  className="text-red-600 hover:text-red-800"
-                                >
-                                  <X className="h-4 w-4" />
-                                </button>
-                              </div>
-                            ))}
-                            <Button
-                              onClick={() => {
-                                const newExp = [...resumeData.experience];
-                                newExp[index].achievements.push("New achievement");
-                                setResumeData(prev => ({ ...prev, experience: newExp }));
-                              }}
-                              variant="outline"
-                              size="sm"
-                              className="mt-2"
-                            >
-                              <Plus className="h-3 w-3 mr-1" />
-                              Add Achievement
-                            </Button>
-                          </div>
-                        </div>
-                      ))}
-                      <Button
-                        onClick={() => handleAddToSection("experience")}
-                        variant="outline"
-                        className="w-full"
-                      >
-                        <Plus className="h-4 w-4 mr-2" />
-                        Add Experience
-                      </Button>
-                    </div>
-                  )}
-
-                  {isEditing === "projects" && (
-                    <div className="space-y-4">
-                      {resumeData.projects.map((project, index) => (
-                        <div key={project.id} className="p-4 border border-gray-200 rounded-lg space-y-3">
-                          <div className="flex justify-between items-start">
-                            <h4 className="font-medium text-sm">Project {index + 1}</h4>
-                            <button
-                              onClick={() => handleRemoveFromSection("projects", project.id)}
-                              className="text-red-600 hover:text-red-800"
-                            >
-                              <X className="h-4 w-4" />
-                            </button>
-                          </div>
-                          <Input
-                            value={project.name}
-                            onChange={(e) => {
-                              const newProjects = [...resumeData.projects];
-                              newProjects[index].name = e.target.value;
-                              setResumeData(prev => ({ ...prev, projects: newProjects }));
-                            }}
-                            placeholder="Project Name"
-                          />
-                          <Textarea
-                            value={project.description}
-                            onChange={(e) => {
-                              const newProjects = [...resumeData.projects];
-                              newProjects[index].description = e.target.value;
-                              setResumeData(prev => ({ ...prev, projects: newProjects }));
-                            }}
-                            placeholder="Project description"
-                            rows={3}
-                          />
-                          <Input
-                            value={project.technologies.join(", ")}
-                            onChange={(e) => {
-                              const newProjects = [...resumeData.projects];
-                              newProjects[index].technologies = e.target.value.split(",").map(t => t.trim());
-                              setResumeData(prev => ({ ...prev, projects: newProjects }));
-                            }}
-                            placeholder="React, Node.js, MongoDB"
-                          />
-                        </div>
-                      ))}
-                      <Button
-                        onClick={() => handleAddToSection("projects")}
-                        variant="outline"
-                        className="w-full"
-                      >
-                        <Plus className="h-4 w-4 mr-2" />
-                        Add Project
-                      </Button>
-                    </div>
-                  )}
-
-                  {isEditing === "skills" && (
-                    <div className="space-y-4">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Skills</label>
-                        {resumeData.skills.map((skill, index) => (
-                          <div key={index} className="flex gap-2 mb-2">
-                            <Input
-                              value={skill}
-                              onChange={(e) => {
-                                const newSkills = [...resumeData.skills];
-                                newSkills[index] = e.target.value;
-                                setResumeData(prev => ({ ...prev, skills: newSkills }));
-                              }}
-                              placeholder="Skill"
-                            />
-                            <button
-                              onClick={() => {
-                                const newSkills = resumeData.skills.filter((_, i) => i !== index);
-                                setResumeData(prev => ({ ...prev, skills: newSkills }));
-                              }}
-                              className="text-red-600 hover:text-red-800"
-                            >
-                              <X className="h-4 w-4" />
-                            </button>
-                          </div>
-                        ))}
-                        <Button
-                          onClick={() => handleAddToSection("skills")}
-                          variant="outline"
-                          className="w-full mt-2"
-                        >
-                          <Plus className="h-4 w-4 mr-2" />
-                          Add Skill
-                        </Button>
-                      </div>
-                    </div>
-                  )}
-
-                  {isEditing === "certifications" && (
-                    <div className="space-y-4">
-                      {resumeData.certifications.map((cert, index) => (
-                        <div key={cert.id} className="p-4 border border-gray-200 rounded-lg space-y-3">
-                          <div className="flex justify-between items-start">
-                            <h4 className="font-medium text-sm">Certification {index + 1}</h4>
-                            <button
-                              onClick={() => handleRemoveFromSection("certifications", cert.id)}
-                              className="text-red-600 hover:text-red-800"
-                            >
-                              <X className="h-4 w-4" />
-                            </button>
-                          </div>
-                          <Input
-                            value={cert.name}
-                            onChange={(e) => {
-                              const newCerts = [...resumeData.certifications];
-                              newCerts[index].name = e.target.value;
-                              setResumeData(prev => ({ ...prev, certifications: newCerts }));
-                            }}
-                            placeholder="Certification Name"
-                          />
-                          <Input
-                            value={cert.issuer}
-                            onChange={(e) => {
-                              const newCerts = [...resumeData.certifications];
-                              newCerts[index].issuer = e.target.value;
-                              setResumeData(prev => ({ ...prev, certifications: newCerts }));
-                            }}
-                            placeholder="Issuing Organization"
-                          />
-                          <Input
-                            value={cert.year}
-                            onChange={(e) => {
-                              const newCerts = [...resumeData.certifications];
-                              newCerts[index].year = e.target.value;
-                              setResumeData(prev => ({ ...prev, certifications: newCerts }));
-                            }}
-                            placeholder="Year"
-                          />
-                        </div>
-                      ))}
-                      <Button
-                        onClick={() => handleAddToSection("certifications")}
-                        variant="outline"
-                        className="w-full"
-                      >
-                        <Plus className="h-4 w-4 mr-2" />
-                        Add Certification
-                      </Button>
-                    </div>
-                  )}
-
-                  {isEditing === "languages" && (
-                    <div className="space-y-4">
-                      {resumeData.languages.map((lang, index) => (
-                        <div key={lang.id} className="p-4 border border-gray-200 rounded-lg space-y-3">
-                          <div className="flex justify-between items-start">
-                            <h4 className="font-medium text-sm">Language {index + 1}</h4>
-                            <button
-                              onClick={() => handleRemoveFromSection("languages", lang.id)}
-                              className="text-red-600 hover:text-red-800"
-                            >
-                              <X className="h-4 w-4" />
-                            </button>
-                          </div>
-                          <Input
-                            value={lang.name}
-                            onChange={(e) => {
-                              const newLangs = [...resumeData.languages];
-                              newLangs[index].name = e.target.value;
-                              setResumeData(prev => ({ ...prev, languages: newLangs }));
-                            }}
-                            placeholder="Language"
-                          />
-                          <Input
-                            value={lang.level}
-                            onChange={(e) => {
-                              const newLangs = [...resumeData.languages];
-                              newLangs[index].level = e.target.value;
-                              setResumeData(prev => ({ ...prev, languages: newLangs }));
-                            }}
-                            placeholder="Proficiency Level"
-                          />
-                        </div>
-                      ))}
-                      <Button
-                        onClick={() => handleAddToSection("languages")}
-                        variant="outline"
-                        className="w-full"
-                      >
-                        <Plus className="h-4 w-4 mr-2" />
-                        Add Language
-                      </Button>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            </div>
-          )}
         </div>
 
         </div> {/* END OLD LAYOUT - HIDDEN */}
