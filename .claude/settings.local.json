@@ -13,10 +13,12 @@
       "Bash(wc:*)",
       "Bash(if exist .next rmdir /s /q .next)",
       "Bash(dir:*)",
+      "Bash(timeout /t 2)",
+      "Bash(nul)",
+      "Bash(ping:*)",
       "Bash(taskkill:*)",
-      "Bash(cmd //c \"if exist .next (rmdir /s /q .next && echo Cache cleared) else (echo No .next directory found)\")",
-      "Bash(timeout /t 5 /nobreak)",
-      "Bash(npm install:*)"
+      "Bash(git restore:*)",
+      "Bash(tasklist:*)"
     ],
     "deny": [],
     "ask": []
