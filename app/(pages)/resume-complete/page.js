@@ -6,7 +6,10 @@ import { DashboardLayout } from "@/components/layout/dashboard-layout";
 import { ArrowRight, Loader2 } from "lucide-react";
 import confetti from "canvas-confetti";
 import Image from "next/image";
-import { getIntegratedJobsWithResumeId } from "@/services/jobService";
+import {
+  getIntegratedJobsWithResumeId,
+  getJobsWithResumeId,
+} from "@/services/jobService";
 import { handleApiError, logError } from "@/utils/errorHandler";
 
 const colorTokens = {
@@ -103,7 +106,7 @@ export default function ResumeCompletePage() {
       console.log('🚀 Fetching integrated jobs with resume ID:', resumeId);
 
       // Call the integrated jobs API
-      const response = await getIntegratedJobsWithResumeId(resumeId);
+      const response = await getJobsWithResumeId(resumeId);
 
       if (response.success) {
         console.log('✅ Integrated jobs fetched successfully!');

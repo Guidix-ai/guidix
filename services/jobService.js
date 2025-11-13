@@ -1,4 +1,4 @@
-import { jobApiClient } from '@/lib/api/jobClient';
+const JOB_SERVICE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://api.guidix.ai";
 
 /**
  * Get jobs with AI match scores using resume upload
@@ -9,15 +9,57 @@ import { jobApiClient } from '@/lib/api/jobClient';
  * @param {boolean} forceRefresh - Force fresh fetch from TheirStack API (default: false)
  * @returns {Promise} Jobs with AI match scores
  */
-export const getJobsWithResumeUpload = async (file, limit = 20, offset = 0, forceRefresh = false) => {
-  const formData = new FormData();
-  formData.append('resume_file', file);
+export const getJobsWithResumeUpload = async (
+  file,
+  limit = 20,
+  offset = 0,
+  forceRefresh = false
+) => {
+  try {
+    console.log('📤 getJobsWithResumeUpload - Starting upload');
 
-  const response = await jobApiClient.post('/api/v1/auto-apply/integrated-jobs/with-resume-upload', formData, {
-    headers: { 'Content-Type': 'multipart/form-data' },
-    params: { limit, offset, force_refresh: forceRefresh }
-  });
-  return response.data;
+    const formData = new FormData();
+    formData.append("resume_file", file);
+
+    const url = new URL(`${JOB_SERVICE_URL}/api/v1/integrated-jobs/with-resume-upload`);
+    url.searchParams.append('limit', limit);
+    url.searchParams.append('offset', offset);
+    url.searchParams.append('force_refresh', forceRefresh);
+
+    const response = await fetch(url.toString(), {
+      method: 'POST',
+      credentials: 'include',  // Send cookies
+      body: formData,
+      // Don't set Content-Type - browser sets it automatically with boundary
+    });
+
+    console.log('📤 Response status:', response.status);
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      console.error('❌ Get jobs with resume upload failed:', errorData);
+
+      switch (response.status) {
+        case 400:
+          throw new Error(errorData.detail || 'Invalid file. Please upload PDF, DOCX, or TXT');
+        case 413:
+          throw new Error('File is too large. Maximum size is 10MB');
+        case 422:
+          throw new Error(errorData.detail || 'File validation failed');
+        case 401:
+          throw new Error('Session expired. Please log in again');
+        default:
+          throw new Error(errorData.message || errorData.detail || 'Failed to fetch jobs');
+      }
+    }
+
+    const data = await response.json();
+    console.log('✅ Jobs fetched successfully');
+    return data;
+  } catch (error) {
+    console.error('❌ Get jobs error:', error);
+    throw new Error(error.message || 'Network error. Please check your connection');
+  }
 };
 
 /**
@@ -26,8 +68,32 @@ export const getJobsWithResumeUpload = async (file, limit = 20, offset = 0, forc
  * @returns {Promise} Job details
  */
 export const getJobDetails = async (jobId) => {
-  const response = await jobApiClient.get(`/api/v1/auto-apply/integrated-jobs/${jobId}`);
-  return response.data;
+  try {
+    console.log('📄 getJobDetails - Fetching job:', jobId);
+
+    const response = await fetch(`${JOB_SERVICE_URL}/api/v1/integrated-jobs/${jobId}`, {
+      method: 'GET',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      if (response.status === 404) {
+        throw new Error('Job not found');
+      }
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || errorData.detail || 'Failed to load job details');
+    }
+
+    const data = await response.json();
+    console.log('✅ Job details fetched successfully');
+    return data;
+  } catch (error) {
+    console.error('❌ Get job details error:', error);
+    throw new Error(error.message || 'Failed to load job details');
+  }
 };
 
 /**
@@ -36,8 +102,30 @@ export const getJobDetails = async (jobId) => {
  * @returns {Promise} Wishlist response
  */
 export const addToWishlist = async (jobId) => {
-  const response = await jobApiClient.post(`/api/v1/auto-apply/integrated-jobs/${jobId}/wishlist`);
-  return response.data;
+  try {
+    console.log('⭐ addToWishlist - Adding job to wishlist:', jobId);
+
+    const response = await fetch(`${JOB_SERVICE_URL}/api/v1/integrated-jobs/${jobId}/wishlist`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      console.error('❌ Add to wishlist failed:', errorData);
+      throw new Error(errorData.message || errorData.detail || 'Failed to add to wishlist');
+    }
+
+    const data = await response.json();
+    console.log('✅ Job added to wishlist successfully');
+    return data;
+  } catch (error) {
+    console.error('❌ Add to wishlist error:', error);
+    throw new Error(error.message || 'Failed to add to wishlist');
+  }
 };
 
 /**
@@ -46,12 +134,32 @@ export const addToWishlist = async (jobId) => {
  * @returns {Promise} Response
  */
 export const removeFromWishlist = async (jobId) => {
-  // Backend extracts user_id from access_token cookie
-  const response = await jobApiClient.patch(
-    `/api/v1/auto-apply/integrated-jobs/job/${jobId}/status`, // No user_id in path
-    { status: 'viewed' } // Change status from wishlist to viewed
-  );
-  return response.data;
+  try {
+    console.log('⭐ removeFromWishlist - Removing job from wishlist:', jobId);
+
+    // Backend extracts user_id from access_token cookie
+    const response = await fetch(`${JOB_SERVICE_URL}/api/v1/integrated-jobs/job/${jobId}/status`, {
+      method: 'PATCH',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ status: "viewed" }), // Change status from wishlist to viewed
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      console.error('❌ Remove from wishlist failed:', errorData);
+      throw new Error(errorData.message || errorData.detail || 'Failed to remove from wishlist');
+    }
+
+    const data = await response.json();
+    console.log('✅ Job removed from wishlist successfully');
+    return data;
+  } catch (error) {
+    console.error('❌ Remove from wishlist error:', error);
+    throw new Error(error.message || 'Failed to remove from wishlist');
+  }
 };
 
 /**
@@ -60,8 +168,30 @@ export const removeFromWishlist = async (jobId) => {
  * @returns {Promise} Response
  */
 export const markNotInterested = async (jobId) => {
-  const response = await jobApiClient.post(`/api/v1/auto-apply/integrated-jobs/${jobId}/not-interested`);
-  return response.data;
+  try {
+    console.log('🚫 markNotInterested - Marking job as not interested:', jobId);
+
+    const response = await fetch(`${JOB_SERVICE_URL}/api/v1/integrated-jobs/${jobId}/not-interested`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      console.error('❌ Mark not interested failed:', errorData);
+      throw new Error(errorData.message || errorData.detail || 'Failed to mark as not interested');
+    }
+
+    const data = await response.json();
+    console.log('✅ Job marked as not interested successfully');
+    return data;
+  } catch (error) {
+    console.error('❌ Mark not interested error:', error);
+    throw new Error(error.message || 'Failed to mark as not interested');
+  }
 };
 
 /**
@@ -72,12 +202,32 @@ export const markNotInterested = async (jobId) => {
  * @returns {Promise} Status response
  */
 export const setJobStatus = async (jobId, status, statusData = {}) => {
-  // Backend extracts user_id from access_token cookie
-  const response = await jobApiClient.patch(
-    `/api/v1/auto-apply/integrated-jobs/job/${jobId}/status`, // No user_id in path
-    { status, status_data: statusData }
-  );
-  return response.data;
+  try {
+    console.log('🔄 setJobStatus - Setting job status:', { jobId, status });
+
+    // Backend extracts user_id from access_token cookie
+    const response = await fetch(`${JOB_SERVICE_URL}/api/v1/integrated-jobs/job/${jobId}/status`, {
+      method: 'PATCH',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ status, status_data: statusData }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      console.error('❌ Set job status failed:', errorData);
+      throw new Error(errorData.message || errorData.detail || 'Failed to set job status');
+    }
+
+    const data = await response.json();
+    console.log('✅ Job status set successfully');
+    return data;
+  } catch (error) {
+    console.error('❌ Set job status error:', error);
+    throw new Error(error.message || 'Failed to set job status');
+  }
 };
 
 /**
@@ -87,15 +237,41 @@ export const setJobStatus = async (jobId, status, statusData = {}) => {
  * @param {number} offset - Offset for pagination (default: 0)
  * @returns {Promise} User job statuses
  */
-export const getUserJobStatuses = async (status = null, limit = 50, offset = 0) => {
-  // Backend extracts user_id from cookie
-  const params = { limit, offset };
-  if (status) params.status = status;
+export const getUserJobStatuses = async (
+  status = null,
+  limit = 50,
+  offset = 0
+) => {
+  try {
+    console.log('📋 getUserJobStatuses - Fetching user job statuses');
 
-  const response = await jobApiClient.get('/api/v1/auto-apply/integrated-jobs/job-statuses', { // No user_id in path
-    params
-  });
-  return response.data;
+    // Backend extracts user_id from cookie
+    const url = new URL(`${JOB_SERVICE_URL}/api/v1/integrated-jobs/job-statuses`);
+    url.searchParams.append('limit', limit);
+    url.searchParams.append('offset', offset);
+    if (status) url.searchParams.append('status', status);
+
+    const response = await fetch(url.toString(), {
+      method: 'GET',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      console.error('❌ Get user job statuses failed:', errorData);
+      throw new Error(errorData.message || errorData.detail || 'Failed to fetch job statuses');
+    }
+
+    const data = await response.json();
+    console.log('✅ User job statuses fetched successfully');
+    return data;
+  } catch (error) {
+    console.error('❌ Get user job statuses error:', error);
+    throw new Error(error.message || 'Failed to fetch job statuses');
+  }
 };
 
 /**
@@ -105,10 +281,34 @@ export const getUserJobStatuses = async (status = null, limit = 50, offset = 0) 
  * @returns {Promise} Wishlist jobs
  */
 export const getWishlist = async (limit = 50, offset = 0) => {
-  const response = await jobApiClient.get('/api/v1/auto-apply/integrated-jobs/wishlist', {
-    params: { limit, offset }
-  });
-  return response.data;
+  try {
+    console.log('⭐ getWishlist - Fetching wishlist jobs');
+
+    const url = new URL(`${JOB_SERVICE_URL}/api/v1/integrated-jobs/wishlist`);
+    url.searchParams.append('limit', limit);
+    url.searchParams.append('offset', offset);
+
+    const response = await fetch(url.toString(), {
+      method: 'GET',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      console.error('❌ Get wishlist failed:', errorData);
+      throw new Error(errorData.message || errorData.detail || 'Failed to fetch wishlist');
+    }
+
+    const data = await response.json();
+    console.log('✅ Wishlist fetched successfully');
+    return data;
+  } catch (error) {
+    console.error('❌ Get wishlist error:', error);
+    throw new Error(error.message || 'Failed to fetch wishlist');
+  }
 };
 
 /**
@@ -118,10 +318,33 @@ export const getWishlist = async (limit = 50, offset = 0) => {
  * @returns {Promise} Similar jobs
  */
 export const getSimilarJobs = async (jobId, limit = 10) => {
-  const response = await jobApiClient.get(`/api/v1/auto-apply/integrated-jobs/${jobId}/similar`, {
-    params: { limit }
-  });
-  return response.data;
+  try {
+    console.log('🔍 getSimilarJobs - Fetching similar jobs for:', jobId);
+
+    const url = new URL(`${JOB_SERVICE_URL}/api/v1/integrated-jobs/${jobId}/similar`);
+    url.searchParams.append('limit', limit);
+
+    const response = await fetch(url.toString(), {
+      method: 'GET',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      console.error('❌ Get similar jobs failed:', errorData);
+      throw new Error(errorData.message || errorData.detail || 'Failed to fetch similar jobs');
+    }
+
+    const data = await response.json();
+    console.log('✅ Similar jobs fetched successfully');
+    return data;
+  } catch (error) {
+    console.error('❌ Get similar jobs error:', error);
+    throw new Error(error.message || 'Failed to fetch similar jobs');
+  }
 };
 
 /**
@@ -132,19 +355,42 @@ export const getSimilarJobs = async (jobId, limit = 10) => {
  * @returns {Promise} Search results with jobs
  */
 export const searchJobs = async (query, filters = {}, pageToken = null) => {
-  const requestBody = {
-    // No user_id - backend extracts from cookie
-    query,
-    page_size: 20,
-    ...filters
-  };
+  try {
+    console.log('🔍 searchJobs - Searching jobs with query:', query);
 
-  if (pageToken) {
-    requestBody.page_token = pageToken;
+    const requestBody = {
+      // No user_id - backend extracts from cookie
+      query,
+      page_size: 20,
+      ...filters,
+    };
+
+    if (pageToken) {
+      requestBody.page_token = pageToken;
+    }
+
+    const response = await fetch(`${JOB_SERVICE_URL}/api/v1/integrated-jobs/search`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(requestBody),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      console.error('❌ Search jobs failed:', errorData);
+      throw new Error(errorData.message || errorData.detail || 'Failed to search jobs');
+    }
+
+    const data = await response.json();
+    console.log('✅ Jobs search completed successfully');
+    return data;
+  } catch (error) {
+    console.error('❌ Search jobs error:', error);
+    throw new Error(error.message || 'Failed to search jobs');
   }
-
-  const response = await jobApiClient.post('/api/v1/auto-apply/integrated-jobs/search', requestBody);
-  return response.data;
 };
 
 /**
@@ -156,8 +402,15 @@ export const searchJobs = async (query, filters = {}, pageToken = null) => {
  * @returns {Promise} Jobs with AI match scores
  * @deprecated Use getJobsWithResumeId instead
  */
-export const getJobsWithAIScoring = async (resumeId, limit = 20, offset = 0, forceRefresh = false) => {
-  console.warn('⚠️ getJobsWithAIScoring is deprecated. Use getJobsWithResumeId instead.');
+export const getJobsWithAIScoring = async (
+  resumeId,
+  limit = 20,
+  offset = 0,
+  forceRefresh = false
+) => {
+  console.warn(
+    "⚠️ getJobsWithAIScoring is deprecated. Use getJobsWithResumeId instead."
+  );
   return getJobsWithResumeId(resumeId, limit, offset, forceRefresh);
 };
 
@@ -169,19 +422,44 @@ export const getJobsWithAIScoring = async (resumeId, limit = 20, offset = 0, for
  * @param {boolean} forceRefresh - Force refresh from external API (default: false)
  * @returns {Promise} Jobs with AI match scores
  */
-export const getJobsWithResumeId = async (resumeId, limit = 20, offset = 0, forceRefresh = false) => {
-  const response = await jobApiClient.get(
-    '/api/v1/auto-apply/integrated-jobs',
-    {
-      params: {
-        resume_id: resumeId,
-        limit: limit,
-        offset: offset,
-        force_refresh: forceRefresh
-      }
+export const getJobsWithResumeId = async (
+  resumeId,
+  limit = 20,
+  offset = 0,
+  forceRefresh = false
+) => {
+  try {
+    console.log('🎯 getJobsWithResumeId - Fetching jobs with resume ID:', resumeId);
+
+    const response = await fetch(`${JOB_SERVICE_URL}/api/v1/integrated-jobs/with-resume-id`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        params: {
+          resume_id: resumeId,
+          limit: limit,
+          offset: offset,
+          force_refresh: forceRefresh,
+        },
+      }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      console.error('❌ Get jobs with resume ID failed:', errorData);
+      throw new Error(errorData.message || errorData.detail || 'Failed to fetch jobs');
     }
-  );
-  return response.data;
+
+    const data = await response.json();
+    console.log('✅ Jobs with resume ID fetched successfully');
+    return data;
+  } catch (error) {
+    console.error('❌ Get jobs with resume ID error:', error);
+    throw new Error(error.message || 'Failed to fetch jobs');
+  }
 };
 
 /**
@@ -192,20 +470,42 @@ export const getJobsWithResumeId = async (resumeId, limit = 20, offset = 0, forc
  * @param {boolean} forceRefresh - Force refresh from external API (default: false)
  * @returns {Promise} Jobs with AI match scores
  */
-export const getJobsWithResumeIdPost = async (resumeId, limit = 20, offset = 0, forceRefresh = false) => {
-  const response = await jobApiClient.post(
-    '/api/v1/auto-apply/integrated-jobs/with-resume-id',
-    null, // No request body
-    {
-      params: {
-        resume_id: resumeId,
-        limit: limit,
-        offset: offset,
-        force_refresh: forceRefresh
-      }
+export const getJobsWithResumeIdPost = async (
+  resumeId,
+  limit = 20,
+  offset = 0,
+  forceRefresh = false
+) => {
+  try {
+    console.log('🎯 getJobsWithResumeIdPost - Fetching jobs with resume ID:', resumeId);
+
+    const url = new URL(`${JOB_SERVICE_URL}/api/v1/integrated-jobs/with-resume-id`);
+    url.searchParams.append('resume_id', resumeId);
+    url.searchParams.append('limit', limit);
+    url.searchParams.append('offset', offset);
+    url.searchParams.append('force_refresh', forceRefresh);
+
+    const response = await fetch(url.toString(), {
+      method: 'POST',
+      credentials: 'include',  // Send cookies
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      console.error('❌ Get jobs with resume ID (POST) failed:', errorData);
+      throw new Error(errorData.message || errorData.detail || 'Failed to fetch jobs');
     }
-  );
-  return response.data;
+
+    const data = await response.json();
+    console.log('✅ Jobs with resume ID (POST) fetched successfully');
+    return data;
+  } catch (error) {
+    console.error('❌ Get jobs with resume ID (POST) error:', error);
+    throw new Error(error.message || 'Failed to fetch jobs');
+  }
 };
 
 /**
@@ -214,10 +514,33 @@ export const getJobsWithResumeIdPost = async (resumeId, limit = 20, offset = 0, 
  * @returns {Promise} Recommended jobs
  */
 export const getRecommendations = async (limit = 10) => {
-  const response = await jobApiClient.get('/api/v1/auto-apply/integrated-jobs/recommendations', {
-    params: { limit }
-  });
-  return response.data;
+  try {
+    console.log('💡 getRecommendations - Fetching job recommendations');
+
+    const url = new URL(`${JOB_SERVICE_URL}/api/v1/integrated-jobs/recommendations`);
+    url.searchParams.append('limit', limit);
+
+    const response = await fetch(url.toString(), {
+      method: 'GET',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      console.error('❌ Get recommendations failed:', errorData);
+      throw new Error(errorData.message || errorData.detail || 'Failed to fetch recommendations');
+    }
+
+    const data = await response.json();
+    console.log('✅ Job recommendations fetched successfully');
+    return data;
+  } catch (error) {
+    console.error('❌ Get recommendations error:', error);
+    throw new Error(error.message || 'Failed to fetch recommendations');
+  }
 };
 
 /**
@@ -228,13 +551,42 @@ export const getRecommendations = async (limit = 10) => {
  * @param {number} limit - Number of results (default: 20)
  * @returns {Promise} Trending jobs with view counts
  */
-export const getTrendingJobs = async (timePeriod = 'week', location = null, industry = null, limit = 20) => {
-  const params = { time_period: timePeriod, limit };
-  if (location) params.location = location;
-  if (industry) params.industry = industry;
+export const getTrendingJobs = async (
+  timePeriod = "week",
+  location = null,
+  industry = null,
+  limit = 20
+) => {
+  try {
+    console.log('📈 getTrendingJobs - Fetching trending jobs');
 
-  const response = await jobApiClient.get('/api/v1/auto-apply/integrated-jobs/trending', { params });
-  return response.data;
+    const url = new URL(`${JOB_SERVICE_URL}/api/v1/integrated-jobs/trending`);
+    url.searchParams.append('time_period', timePeriod);
+    url.searchParams.append('limit', limit);
+    if (location) url.searchParams.append('location', location);
+    if (industry) url.searchParams.append('industry', industry);
+
+    const response = await fetch(url.toString(), {
+      method: 'GET',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      console.error('❌ Get trending jobs failed:', errorData);
+      throw new Error(errorData.message || errorData.detail || 'Failed to fetch trending jobs');
+    }
+
+    const data = await response.json();
+    console.log('✅ Trending jobs fetched successfully');
+    return data;
+  } catch (error) {
+    console.error('❌ Get trending jobs error:', error);
+    throw new Error(error.message || 'Failed to fetch trending jobs');
+  }
 };
 
 /**
@@ -246,7 +598,7 @@ export const getIntegratedJobsWithResumeId = getJobsWithResumeId;
 
 /**
  * REMOVED - getIntegratedJobsWithUpload
- * This function used the wrong endpoint path: /auto-apply/integrated-jobs/upload
+ * This function used the wrong endpoint path: /integrated-jobs/upload
  * Use getJobsWithResumeUpload instead, which uses the correct path: /api/v1/integrated-jobs/with-resume-upload
  */
 
@@ -254,11 +606,11 @@ export const getIntegratedJobsWithResumeId = getJobsWithResumeId;
  * Job status enum
  */
 export const JobStatusEnum = {
-  VIEWED: 'viewed',
-  WISHLIST: 'wishlist',
-  APPLIED: 'applied',
-  INTERVIEWED: 'interviewed',
-  ACCEPTED: 'accepted',
-  REJECTED: 'rejected',
-  UNINTERESTED: 'uninterested'
+  VIEWED: "viewed",
+  WISHLIST: "wishlist",
+  APPLIED: "applied",
+  INTERVIEWED: "interviewed",
+  ACCEPTED: "accepted",
+  REJECTED: "rejected",
+  UNINTERESTED: "uninterested",
 };
