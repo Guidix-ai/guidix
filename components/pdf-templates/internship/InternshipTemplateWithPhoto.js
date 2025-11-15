@@ -24,12 +24,14 @@ const stripMarkdown = (text) => {
 
 // Utility function to format date from YYYY-MM to Month Year
 const formatDate = (dateStr) => {
-  if (!dateStr) return "";
+  if (!dateStr || typeof dateStr !== 'string') return "";
   const [year, month] = dateStr.split('-');
-  if (!year || !month) return dateStr;
+  if (!year || !month) return "";
   const monthNames = ["January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December"];
   const monthIndex = parseInt(month, 10) - 1;
+  // Validate month index is in valid range
+  if (isNaN(monthIndex) || monthIndex < 0 || monthIndex > 11) return "";
   return `${monthNames[monthIndex]} ${year}`;
 };
 
@@ -303,18 +305,28 @@ const InternshipTemplateWithPhoto = ({ resumeData, templateId, sectionOrder = ["
         <Text style={styles.sectionTitle}>EDUCATION</Text>
         {education.map((edu, index) => {
           const degree = stripMarkdown(edu?.degree || "");
-          const school = stripMarkdown(edu?.school || "");
-          const year = stripMarkdown(edu?.year || "");
+          const school = stripMarkdown(edu?.school || edu?.institution || "");
+          const gpa = edu?.gpa || "";
 
-          if (!degree && !school && !year) return null;
+          // Format dates similar to ATS template
+          const eduDate = edu?.year || (edu?.startDate && edu?.endDate) ?
+            (edu?.year || `${formatDate(edu.startDate)} - ${edu.endDate ? formatDate(edu.endDate) : "Expected"}`) :
+            "";
+
+          if (!degree && !school) return null;
 
           return (
             <View key={index} style={styles.educationItem}>
               <View style={styles.educationHeader}>
                 {degree && <Text style={styles.degree}>{degree}</Text>}
-                {year && <Text style={styles.eduDate}>{year}</Text>}
+                {eduDate && <Text style={styles.eduDate}>{eduDate}</Text>}
               </View>
-              {school && <Text style={styles.institution}>{school}</Text>}
+              {school && (
+                <Text style={styles.institution}>
+                  {school}
+                  {gpa && ` | GPA: ${gpa}`}
+                </Text>
+              )}
             </View>
           );
         })}
@@ -331,8 +343,8 @@ const InternshipTemplateWithPhoto = ({ resumeData, templateId, sectionOrder = ["
           const position = stripMarkdown(exp?.position || "");
           const company = stripMarkdown(exp?.company || "");
           const startDate = exp?.startDate ? formatDate(exp.startDate) : "";
-          const endDate = exp?.endDate ? (exp.endDate === "Present" ? "Present" : formatDate(exp.endDate)) : "";
-          const duration = startDate && endDate ? `${startDate} - ${endDate}` : stripMarkdown(exp?.duration || "");
+          const endDate = exp?.endDate ? (exp.endDate === "Present" ? "Present" : formatDate(exp.endDate)) : "Present";
+          const duration = startDate || endDate ? `${startDate || "Start Date"} - ${endDate}` : stripMarkdown(exp?.duration || "");
           const achievements = exp?.achievements || [];
 
           if (!position && !company) return null;
@@ -343,7 +355,12 @@ const InternshipTemplateWithPhoto = ({ resumeData, templateId, sectionOrder = ["
                 {position && <Text style={styles.jobPosition}>{position}</Text>}
                 {duration && <Text style={styles.jobDate}>{duration}</Text>}
               </View>
-              {company && <Text style={styles.companyName}>{company}</Text>}
+              {company && (
+                <Text style={styles.companyName}>
+                  {company}
+                  {exp?.location && ` | ${exp.location}`}
+                </Text>
+              )}
               {achievements.length > 0 &&
                 achievements.map((achievement, achIndex) => {
                   const cleanAchievement = stripMarkdown(achievement || "");
@@ -378,6 +395,11 @@ const InternshipTemplateWithPhoto = ({ resumeData, templateId, sectionOrder = ["
               <View style={styles.projectHeader}>
                 {name && <Text style={styles.projectName}>{name}</Text>}
               </View>
+              {(project.startDate || project.endDate) && (
+                <Text style={styles.projectDate}>
+                  {project.startDate ? formatDate(project.startDate) : "Start Date"} - {project.endDate ? formatDate(project.endDate) : "Present"}
+                </Text>
+              )}
               {technologies.length > 0 && (
                 <Text style={styles.projectTech}>
                   Technologies: {technologies.map(tech => stripMarkdown(tech)).join(", ")}
@@ -478,11 +500,13 @@ const InternshipTemplateWithPhoto = ({ resumeData, templateId, sectionOrder = ["
               {portfolio && ` | Portfolio`}
             </Text>
           </View>
-          {photo && (
-            <View style={styles.photoContainer}>
-              <Image src={photo} style={styles.photo} />
-            </View>
-          )}
+          <View style={styles.photoContainer}>
+            {/* eslint-disable-next-line jsx-a11y/alt-text */}
+            <Image
+              style={styles.photo}
+              src={photo || "/api/placeholder/70/70"}
+            />
+          </View>
         </View>
 
         {/* SUMMARY */}

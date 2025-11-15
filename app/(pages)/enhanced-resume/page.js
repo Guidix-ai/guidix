@@ -3723,8 +3723,8 @@ function EnhancedResumeContent() {
                         templateId={selectedTemplate}
                         width="100%"
                         height="100%"
-                        sectionOrder={tempSectionOrder || sectionOrder}
-                        resumeData={tempFormData || resumeData}
+                        sectionOrder={sectionOrder}
+                        resumeData={resumeData}
                       />
                     </div>
                   </div>
@@ -4960,6 +4960,7 @@ function EnhancedResumeContent() {
                         templateId={selectedTemplate}
                         width="100%"
                         height="100%"
+                        sectionOrder={sectionOrder}
                         resumeData={resumeData}
                       />
                     </div>
@@ -5076,6 +5077,7 @@ function EnhancedResumeContent() {
                         templateId={selectedTemplate}
                         width="100%"
                         height="100%"
+                        sectionOrder={sectionOrder}
                         resumeData={resumeData}
                       />
                     </div>

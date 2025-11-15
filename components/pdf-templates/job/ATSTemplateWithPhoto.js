@@ -25,12 +25,14 @@ const stripMarkdown = (text) => {
 
 // Utility function to format date from YYYY-MM to Month Year
 const formatDate = (dateStr) => {
-  if (!dateStr) return "";
+  if (!dateStr || typeof dateStr !== 'string') return "";
   const [year, month] = dateStr.split('-');
-  if (!year || !month) return dateStr;
+  if (!year || !month) return "";
   const monthNames = ["January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December"];
   const monthIndex = parseInt(month, 10) - 1;
+  // Validate month index is in valid range
+  if (isNaN(monthIndex) || monthIndex < 0 || monthIndex > 11) return "";
   return `${monthNames[monthIndex]} ${year}`;
 };
 
@@ -332,7 +334,7 @@ const ATSTemplateWithPhoto = ({ resumeData, templateId, sectionOrder = ["experie
           const validDuration = isValidDuration(exp.duration) ? exp.duration : null;
 
           const displayDate = validDuration || (validStartDate || validEndDate) ?
-            (validDuration || `${validStartDate ? formatDate(validStartDate) : ""} - ${validEndDate ? formatDate(validEndDate) : "Present"}`) :
+            (validDuration || `${validStartDate ? formatDate(validStartDate) : "Start Date"} - ${validEndDate ? formatDate(validEndDate) : "Present"}`) :
             "";
 
           return (
@@ -436,7 +438,7 @@ const ATSTemplateWithPhoto = ({ resumeData, templateId, sectionOrder = ["experie
             </View>
             {(project.startDate || project.endDate) && (
               <Text style={styles.projectDate}>
-                {formatDate(project.startDate)} - {project.endDate ? formatDate(project.endDate) : "Present"}
+                {project.startDate ? formatDate(project.startDate) : "Start Date"} - {project.endDate ? formatDate(project.endDate) : "Present"}
               </Text>
             )}
             {project.technologies && project.technologies.length > 0 && (

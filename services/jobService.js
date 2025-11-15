@@ -518,7 +518,7 @@ export const getRecommendations = async (limit = 10) => {
     console.log('💡 getRecommendations - Fetching job recommendations');
 
     const url = new URL(`${JOB_SERVICE_URL}/api/v1/integrated-jobs/recommendations`);
-    url.searchParams.append('limit', limit);
+    url.searchParams.append('limit', limit); 
 
     const response = await fetch(url.toString(), {
       method: 'GET',
@@ -581,7 +581,7 @@ export const getTrendingJobs = async (
     }
 
     const data = await response.json();
-    console.log('✅ Trending jobs fetched successfully');
+    console.log('✅ Trending jobs fetched successfully'); 
     return data;
   } catch (error) {
     console.error('❌ Get trending jobs error:', error);

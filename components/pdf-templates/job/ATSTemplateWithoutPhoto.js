@@ -248,7 +248,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const ATSTemplateWithoutPhoto = ({ resumeData, templateId }) => {
+const ATSTemplateWithoutPhoto = ({ resumeData, templateId, sectionOrder = ["experience", "education", "projects", "skills", "certifications", "languages"] }) => {
   const {
     personalInfo = {},
     experience = [],
@@ -257,6 +257,7 @@ const ATSTemplateWithoutPhoto = ({ resumeData, templateId }) => {
     projects = [],
     summary = "",
     certifications = [],
+    languages = [],
   } = resumeData || {};
 
   // Group skills by category if they have category property
@@ -272,6 +273,206 @@ const ATSTemplateWithoutPhoto = ({ resumeData, templateId }) => {
     }
     return acc;
   }, {});
+
+  // Section renderers - each returns JSX for their section
+  const renderExperience = () => {
+    if (!experience || experience.length === 0) return null;
+
+    return (
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>PROFESSIONAL EXPERIENCE</Text>
+        {experience.map((exp, index) => {
+          // Helper to check if date is valid (not placeholder text)
+          const isValidDate = (dateStr) => {
+            if (!dateStr) return false;
+            // Check if it's a valid YYYY-MM format
+            return /^\d{4}-\d{2}$/.test(dateStr);
+          };
+
+          // Helper to check if duration is valid (not placeholder text)
+          const isValidDuration = (duration) => {
+            if (!duration) return false;
+            // Check if it contains placeholder brackets
+            return !duration.includes('[') && !duration.includes(']');
+          };
+
+          const validStartDate = isValidDate(exp.startDate) ? exp.startDate : null;
+          const validEndDate = isValidDate(exp.endDate) ? exp.endDate : null;
+          const validDuration = isValidDuration(exp.duration) ? exp.duration : null;
+
+          const displayDate = validDuration || (validStartDate || validEndDate) ?
+            (validDuration || `${validStartDate ? formatDate(validStartDate) : "Start Date"} - ${validEndDate ? formatDate(validEndDate) : "Present"}`) :
+            "";
+
+          return (
+            <View key={index} style={styles.experienceItem}>
+              <View style={styles.experienceHeader}>
+                <Text style={styles.jobPosition}>{exp.position}</Text>
+                <Text style={styles.jobDate}>{displayDate}</Text>
+              </View>
+              <Text style={styles.companyName}>
+                {exp.company}
+                {exp.location && ` | ${exp.location}`}
+              </Text>
+
+              {(exp.achievements || exp.responsibilities) && (exp.achievements || exp.responsibilities).length > 0 && (
+                <View>
+                  {(exp.achievements || exp.responsibilities).map((item, idx) => (
+                    <Text key={idx} style={styles.bulletPoint}>
+                      • {stripMarkdown(item)}
+                    </Text>
+                  ))}
+                </View>
+              )}
+            </View>
+          );
+        })}
+      </View>
+    );
+  };
+
+  const renderEducation = () => {
+    if (!education || education.length === 0) return null;
+
+    return (
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>EDUCATION</Text>
+        {education.map((edu, index) => (
+          <View key={index} style={styles.educationItem}>
+            <View style={styles.educationHeader}>
+              <Text style={styles.degree}>
+                {edu.degree}
+                {/* {edu.fieldOfStudy} */}
+              </Text>
+              <Text style={styles.eduDate}>
+                {edu.year || (edu.startDate && edu.endDate) ?
+                  (edu.year || `${formatDate(edu.startDate)} - ${edu.endDate ? formatDate(edu.endDate) : "Expected"}`) :
+                  ""}
+              </Text>
+            </View>
+            <Text style={styles.institution}>
+              {edu.school || edu.institution}
+              {edu.gpa && ` | GPA: ${edu.gpa}`}
+            </Text>
+          </View>
+        ))}
+      </View>
+    );
+  };
+
+  const renderSkills = () => {
+    if (!skills || skills.length === 0) return null;
+
+    return (
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>SKILLS</Text>
+        <View style={styles.skillsContainer}>
+          {Object.entries(groupedSkills).map(
+            ([category, skillList], index) => (
+              <View key={index} style={styles.skillCategory}>
+                {category !== "General" && (
+                  <Text style={styles.skillCategoryName}>{category}:</Text>
+                )}
+                <Text style={styles.skillsList}>
+                  {skillList.join(" • ")}
+                </Text>
+              </View>
+            )
+          )}
+        </View>
+      </View>
+    );
+  };
+
+  const renderProjects = () => {
+    if (!projects || projects.length === 0) return null;
+
+    return (
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>PROJECTS</Text>
+        {projects.map((project, index) => (
+          <View key={index} style={styles.projectItem}>
+            <View style={styles.projectHeader}>
+              <Text style={styles.projectName}>{project.name}</Text>
+              {project.liveLink && (
+                <Link
+                  src={project.liveLink.startsWith('http') ? project.liveLink : `https://${project.liveLink}`}
+                  style={styles.projectDemo}
+                >
+                  Demo
+                </Link>
+              )}
+            </View>
+            {(project.startDate || project.endDate) && (
+              <Text style={styles.projectDate}>
+                {project.startDate ? formatDate(project.startDate) : "Start Date"} - {project.endDate ? formatDate(project.endDate) : "Present"}
+              </Text>
+            )}
+            {project.technologies && project.technologies.length > 0 && (
+              <Text style={styles.projectTech}>
+                Technologies:{" "}
+                {Array.isArray(project.technologies)
+                  ? project.technologies.join(", ")
+                  : project.technologies}
+              </Text>
+            )}
+            {project.description && (
+              <Text style={styles.projectDesc}>
+                {stripMarkdown(project.description)}
+              </Text>
+            )}
+          </View>
+        ))}
+      </View>
+    );
+  };
+
+  const renderCertifications = () => {
+    if (!certifications || certifications.length === 0) return null;
+
+    return (
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>CERTIFICATIONS</Text>
+        {certifications.map((cert, index) => (
+          <View key={index} style={styles.certItem}>
+            <Text style={styles.certName}>{cert.name}</Text>
+            <Text style={styles.certIssuer}>
+              {cert.issuer}
+              {cert.date && ` | ${cert.date}`}
+            </Text>
+          </View>
+        ))}
+      </View>
+    );
+  };
+
+  const renderLanguages = () => {
+    if (!languages || languages.length === 0) return null;
+
+    return (
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>LANGUAGES</Text>
+        {languages.map((lang, index) => (
+          <View key={index} style={styles.certItem}>
+            <Text style={styles.certName}>{lang.language || lang.name}</Text>
+            <Text style={styles.certIssuer}>
+              {lang.proficiency || lang.level}
+            </Text>
+          </View>
+        ))}
+      </View>
+    );
+  };
+
+  // Map section IDs to their render functions
+  const sectionRenderers = {
+    experience: renderExperience,
+    education: renderEducation,
+    skills: renderSkills,
+    projects: renderProjects,
+    certifications: renderCertifications,
+    languages: renderLanguages,
+  };
 
   return (
     <Document
@@ -312,140 +513,11 @@ const ATSTemplateWithoutPhoto = ({ resumeData, templateId }) => {
           </View>
         )}
 
-        {/* PROFESSIONAL EXPERIENCE */}
-        {experience && experience.length > 0 && (
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>PROFESSIONAL EXPERIENCE</Text>
-            {experience.map((exp, index) => (
-              <View key={index} style={styles.experienceItem}>
-                <View style={styles.experienceHeader}>
-                  <Text style={styles.jobPosition}>{exp.position}</Text>
-                  <Text style={styles.jobDate}>
-                    {formatDate(exp.startDate)} - {exp.endDate ? formatDate(exp.endDate) : "Present"}
-                  </Text>
-                </View>
-                <Text style={styles.companyName}>
-                  {exp.company}
-                  {exp.location && ` | ${exp.location}`}
-                </Text>
-
-                {exp.responsibilities && exp.responsibilities.length > 0 && (
-                  <View>
-                    {exp.responsibilities.map((resp, idx) => (
-                      <Text key={idx} style={styles.bulletPoint}>
-                        • {stripMarkdown(resp)}
-                      </Text>
-                    ))}
-                  </View>
-                )}
-              </View>
-            ))}
-          </View>
-        )}
-
-        {/* EDUCATION */}
-        {education && education.length > 0 && (
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>EDUCATION</Text>
-            {education.map((edu, index) => (
-              <View key={index} style={styles.educationItem}>
-                <View style={styles.educationHeader}>
-                  <Text style={styles.degree}>
-                    {edu.degree}
-                    {/* {edu.fieldOfStudy} */}
-                  </Text>
-                  <Text style={styles.eduDate}>
-                    {formatDate(edu.startDate)} - {edu.endDate ? formatDate(edu.endDate) : "Expected"}
-                  </Text>
-                </View>
-                <Text style={styles.institution}>
-                  {edu.institution}
-                  {edu.gpa && ` | GPA: ${edu.gpa}`}
-                </Text>
-              </View>
-            ))}
-          </View>
-        )}
-
-        {/* SKILLS */}
-        {skills && skills.length > 0 && (
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>SKILLS</Text>
-            <View style={styles.skillsContainer}>
-              {Object.entries(groupedSkills).map(
-                ([category, skillList], index) => (
-                  <View key={index} style={styles.skillCategory}>
-                    {category !== "General" && (
-                      <Text style={styles.skillCategoryName}>{category}:</Text>
-                    )}
-                    <Text style={styles.skillsList}>
-                      {skillList.join(" • ")}
-                    </Text>
-                  </View>
-                )
-              )}
-            </View>
-          </View>
-        )}
-
-        {/* CERTIFICATIONS */}
-        {certifications && certifications.length > 0 && (
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>CERTIFICATIONS</Text>
-            {certifications.map((cert, index) => (
-              <View key={index} style={styles.certItem}>
-                <Text style={styles.certName}>{cert.name}</Text>
-                <Text style={styles.certIssuer}>
-                  {cert.issuer}
-                  {cert.date && ` | ${cert.date}`}
-                </Text>
-              </View>
-            ))}
-          </View>
-        )}
-
-        {/* PROJECTS */}
-        {projects && projects.length > 0 && (
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>PROJECTS</Text>
-            {projects.map((project, index) => {
-              console.log(`Project ${index}:`, project);
-              console.log(`Project ${index} liveLink:`, project.liveLink, typeof project.liveLink);
-              return (
-              <View key={index} style={styles.projectItem}>
-                <View style={styles.projectHeader}>
-                  <Text style={styles.projectName}>{project.name}</Text>
-                  {project.liveLink && (
-                    <Link
-                      src={project.liveLink.startsWith('http') ? project.liveLink : `https://${project.liveLink}`}
-                      style={styles.projectDemo}
-                    >
-                      Demo
-                    </Link>
-                  )}
-                </View>
-                {(project.startDate || project.endDate) && (
-                  <Text style={styles.projectDate}>
-                    {formatDate(project.startDate)} - {project.endDate ? formatDate(project.endDate) : "Present"}
-                  </Text>
-                )}
-                {project.technologies && project.technologies.length > 0 && (
-                  <Text style={styles.projectTech}>
-                    Technologies:{" "}
-                    {Array.isArray(project.technologies)
-                      ? project.technologies.join(", ")
-                      : project.technologies}
-                  </Text>
-                )}
-                {project.description && (
-                  <Text style={styles.projectDesc}>
-                    {stripMarkdown(project.description)}
-                  </Text>
-                )}
-              </View>
-            )})}
-          </View>
-        )}
+        {/* DYNAMIC SECTIONS - Rendered based on sectionOrder */}
+        {sectionOrder.map((sectionId) => {
+          const renderer = sectionRenderers[sectionId];
+          return renderer ? <React.Fragment key={sectionId}>{renderer()}</React.Fragment> : null;
+        })}
       </Page>
     </Document>
   );

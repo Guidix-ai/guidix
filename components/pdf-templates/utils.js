@@ -14,3 +14,16 @@ export const formatText = (text) => {
   if (!text) return '';
   return stripMarkdown(String(text));
 };
+
+// Utility function to format date from YYYY-MM to Month Year
+export const formatDate = (dateStr) => {
+  if (!dateStr || typeof dateStr !== 'string') return "";
+  const [year, month] = dateStr.split('-');
+  if (!year || !month) return "";
+  const monthNames = ["January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"];
+  const monthIndex = parseInt(month, 10) - 1;
+  // Validate month index is in valid range
+  if (isNaN(monthIndex) || monthIndex < 0 || monthIndex > 11) return "";
+  return `${monthNames[monthIndex]} ${year}`;
+};
