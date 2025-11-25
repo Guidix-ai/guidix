@@ -4,6 +4,10 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { DashboardLayout } from "@/components/layout/dashboard-layout";
 import Image from "next/image";
+import ComingSoon from "@/components/ComingSoon";
+
+// Set this to true to show the actual content, false to show Coming Soon
+const SHOW_CONTENT = false;
 
 const shadowBoxStyle = `
   0 0 6px 0 rgba(0, 0, 0, 0.12),
@@ -184,6 +188,15 @@ export default function LinkedInOptimiserPage() {
     const element = document.querySelector(`#${sectionId}`);
     element?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
+
+  // Show Coming Soon if SHOW_CONTENT is false
+  if (!SHOW_CONTENT) {
+    return (
+      <DashboardLayout>
+        <ComingSoon title="LinkedIn Optimizer" />
+      </DashboardLayout>
+    );
+  }
 
   return (
     <DashboardLayout>

@@ -86,6 +86,18 @@ const sidebarItems = [
     ),
     href: "/ai-career-coach",
   },
+  {
+    title: "Upskill",
+    icon: (
+      <Image
+        src="/upskill.svg"
+        alt="Upskill"
+        width={16}
+        height={16}
+      />
+    ),
+    href: "/upskill",
+  },
 ];
 
 // const footerItems = [
