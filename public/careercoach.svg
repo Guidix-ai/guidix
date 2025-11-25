@@ -1,0 +1,21 @@
+<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g filter="url(#filter0_d_career_coach)">
+<circle cx="10" cy="5.5" r="3" fill="#E9F1FF"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M10 3C8.61929 3 7.5 4.11929 7.5 5.5C7.5 6.88071 8.61929 8 10 8C11.3807 8 12.5 6.88071 12.5 5.5C12.5 4.11929 11.3807 3 10 3ZM6.5 5.5C6.5 3.567 8.067 2 10 2C11.933 2 13.5 3.567 13.5 5.5C13.5 7.433 11.933 9 10 9C8.067 9 6.5 7.433 6.5 5.5Z" fill="#2370FF"/>
+<path d="M3.5 18.5C3.5 18.5 3 18.5 3 18C3 16.5 4.5 11.5 10 11.5C15.5 11.5 17 16.5 17 18C17 18.5 16.5 18.5 16.5 18.5H3.5Z" fill="#E9F1FF"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M10 12.5C7.5 12.5 5.73333 13.65 4.8 14.6C4.33333 15.075 4.08333 15.5333 3.95 15.85C3.88333 16.0083 3.84667 16.1333 3.825 16.215C3.81417 16.2558 3.80833 16.2842 3.805 16.3H16.195C16.1917 16.2842 16.1858 16.2558 16.175 16.215C16.1533 16.1333 16.1167 16.0083 16.05 15.85C15.9167 15.5333 15.6667 15.075 15.2 14.6C14.2667 13.65 12.5 12.5 10 12.5ZM3.5 17.5C3.22667 17.5 3 17.2733 3 17C3 16.8042 3.00833 16.5858 3.05 16.36C3.09167 16.1342 3.16667 15.8917 3.3 15.65C3.56667 15.1667 3.99167 14.575 4.6 13.975C5.81667 12.775 7.91667 11.5 10 11.5C12.0833 11.5 14.1833 12.775 15.4 13.975C16.0083 14.575 16.4333 15.1667 16.7 15.65C16.8333 15.8917 16.9083 16.1342 16.95 16.36C16.9917 16.5858 17 16.8042 17 17C17 17.2733 16.7733 17.5 16.5 17.5H3.5Z" fill="#2370FF"/>
+<path d="M14.5 5L16.5 3M16.5 3L18.5 1M16.5 3L14.5 1M16.5 3L18.5 5" stroke="#2370FF" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<filter id="filter0_d_career_coach" x="-2" y="0" width="24" height="24" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feOffset dy="2"/>
+<feGaussianBlur stdDeviation="1"/>
+<feComposite in2="hardAlpha" operator="out"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0.137255 0 0 0 0 0.439216 0 0 0 0 1 0 0 0 0.15 0"/>
+<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_career_coach"/>
+<feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_career_coach" result="shape"/>
+</filter>
+</defs>
+</svg>

@@ -41,6 +41,8 @@ import {
   Camera,
   Upload,
   Loader2,
+  GitCompare,
+  Info,
 } from "lucide-react";
 import { TextSelectionMenu } from "@/components/TextSelectionMenu";
 import { allTemplates, getTemplateById } from "@/components/pdf-templates";
@@ -72,7 +74,7 @@ const buttonTextStyles = {
   textAlign: 'center',
   textShadow: '0 0.5px 1.5px rgba(0, 19, 88, 0.30), 0 2px 5px rgba(0, 19, 88, 0.10)',
   fontFamily: 'Inter, sans-serif',
-  fontSize: '14px',
+  fontSize: '13px',
   fontStyle: 'normal',
   fontWeight: 500,
   lineHeight: '125%',
@@ -151,6 +153,320 @@ const customStyles = `
   }
 `;
 
+// Comparison helper components
+const CompareField = ({ label, original, enhanced, isOriginal }) => {
+  const value = isOriginal ? original : enhanced;
+  const otherValue = isOriginal ? enhanced : original;
+
+  let bgColor = 'transparent';
+  let textColor = colorTokens.title;
+  let badge = null;
+
+  if (value !== otherValue) {
+    if (!value && otherValue) {
+      // Addition (green)
+      bgColor = isOriginal ? 'transparent' : '#E2F8EA';
+      textColor = isOriginal ? colorTokens.paragraph : '#166534';
+      if (!isOriginal) {
+        badge = { text: 'Added', color: '#166534', bg: '#E2F8EA' };
+      }
+    } else if (value && !otherValue) {
+      // Deletion (red)
+      bgColor = isOriginal ? '#FACDD0' : 'transparent';
+      textColor = isOriginal ? '#991b1b' : colorTokens.paragraph;
+      if (isOriginal) {
+        badge = { text: 'Removed', color: '#991b1b', bg: '#FACDD0' };
+      }
+    } else if (value !== otherValue) {
+      // Modified (yellow) - for small field changes
+      bgColor = '#FAEDBF';
+      textColor = '#92400e';
+      badge = { text: 'Modified', color: '#92400e', bg: '#FAEDBF' };
+    }
+  }
+
+  return (
+    <div style={{
+      padding: '8px',
+      borderRadius: '6px',
+      backgroundColor: bgColor,
+      marginBottom: '4px',
+      position: 'relative'
+    }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '2px' }}>
+        <p style={{
+          color: colorTokens.paragraph,
+          fontFamily: 'Inter, sans-serif',
+          fontSize: '11px',
+          fontWeight: 600
+        }}>{label}:</p>
+        {badge && (
+          <span style={{
+            padding: '2px 6px',
+            borderRadius: '4px',
+            backgroundColor: badge.bg,
+            color: badge.color,
+            fontSize: '9px',
+            fontWeight: 600,
+            fontFamily: 'Inter, sans-serif',
+            textTransform: 'uppercase',
+            letterSpacing: '0.5px'
+          }}>
+            {badge.text}
+          </span>
+        )}
+      </div>
+      <p style={{
+        color: textColor,
+        fontFamily: 'Inter, sans-serif',
+        fontSize: '13px'
+      }}>{value || '-'}</p>
+    </div>
+  );
+};
+
+const CompareText = ({ original, enhanced, isOriginal }) => {
+  const value = isOriginal ? original : enhanced;
+  const otherValue = isOriginal ? enhanced : original;
+
+  let bgColor = 'transparent';
+  let textColor = colorTokens.title;
+  let badge = null;
+
+  if (value !== otherValue) {
+    if (!value && otherValue) {
+      // Addition (green)
+      bgColor = isOriginal ? 'transparent' : '#E2F8EA';
+      textColor = isOriginal ? colorTokens.paragraph : '#166534';
+      if (!isOriginal) {
+        badge = { text: 'Added', color: '#166534', bg: '#E2F8EA' };
+      }
+    } else if (value && !otherValue) {
+      // Deletion (red)
+      bgColor = isOriginal ? '#FACDD0' : 'transparent';
+      textColor = isOriginal ? '#991b1b' : colorTokens.paragraph;
+      if (isOriginal) {
+        badge = { text: 'Removed', color: '#991b1b', bg: '#FACDD0' };
+      }
+    } else if (value !== otherValue) {
+      // AI Enhanced (blue)
+      bgColor = '#C3D0FF';
+      textColor = '#1e3a8a';
+      badge = { text: 'AI Enhanced', color: '#1e3a8a', bg: '#C3D0FF' };
+    }
+  }
+
+  return (
+    <div style={{
+      padding: '12px',
+      borderRadius: '8px',
+      backgroundColor: bgColor,
+      border: `1px solid ${bgColor === 'transparent' ? '#E1E4EB' : bgColor}`,
+      position: 'relative'
+    }}>
+      {badge && (
+        <span style={{
+          position: 'absolute',
+          top: '8px',
+          right: '8px',
+          padding: '2px 6px',
+          borderRadius: '4px',
+          backgroundColor: badge.bg,
+          color: badge.color,
+          fontSize: '9px',
+          fontWeight: 600,
+          fontFamily: 'Inter, sans-serif',
+          textTransform: 'uppercase',
+          letterSpacing: '0.5px'
+        }}>
+          {badge.text}
+        </span>
+      )}
+      <p style={{
+        color: textColor,
+        fontFamily: 'Inter, sans-serif',
+        fontSize: '13px',
+        lineHeight: '1.6',
+        paddingRight: badge ? '80px' : '0'
+      }}>{value || '-'}</p>
+    </div>
+  );
+};
+
+const CompareListItem = ({ original, enhanced, isOriginal }) => {
+  const value = isOriginal ? original : enhanced;
+  const otherValue = isOriginal ? enhanced : original;
+
+  let bgColor = 'transparent';
+  let textColor = colorTokens.title;
+  let bulletColor = colorTokens.paragraph;
+  let badge = null;
+
+  if (value !== otherValue) {
+    if (!value && otherValue) {
+      // Addition (green)
+      bgColor = isOriginal ? 'transparent' : '#E2F8EA';
+      textColor = isOriginal ? colorTokens.paragraph : '#166534';
+      bulletColor = isOriginal ? colorTokens.paragraph : '#166534';
+      if (!isOriginal) {
+        badge = { text: 'New', color: '#166534', bg: '#E2F8EA' };
+      }
+    } else if (value && !otherValue) {
+      // Deletion (red)
+      bgColor = isOriginal ? '#FACDD0' : 'transparent';
+      textColor = isOriginal ? '#991b1b' : colorTokens.paragraph;
+      bulletColor = isOriginal ? '#991b1b' : colorTokens.paragraph;
+      if (isOriginal) {
+        badge = { text: 'Removed', color: '#991b1b', bg: '#FACDD0' };
+      }
+    } else if (value !== otherValue) {
+      // AI Enhanced (blue)
+      bgColor = '#C3D0FF';
+      textColor = '#1e3a8a';
+      bulletColor = '#1e3a8a';
+      badge = { text: 'AI Enhanced', color: '#1e3a8a', bg: '#C3D0FF' };
+    }
+  }
+
+  if (!value) return null;
+
+  return (
+    <div style={{
+      display: 'flex',
+      gap: '8px',
+      padding: '6px 8px',
+      borderRadius: '4px',
+      backgroundColor: bgColor,
+      marginBottom: '4px',
+      position: 'relative'
+    }}>
+      <span style={{
+        color: bulletColor,
+        fontSize: '12px',
+        marginTop: '2px',
+        flexShrink: 0
+      }}>•</span>
+      <p style={{
+        color: textColor,
+        fontFamily: 'Inter, sans-serif',
+        fontSize: '12px',
+        lineHeight: '1.5',
+        flex: 1,
+        paddingRight: badge ? '70px' : '0'
+      }}>{value}</p>
+      {badge && (
+        <span style={{
+          position: 'absolute',
+          top: '6px',
+          right: '8px',
+          padding: '2px 6px',
+          borderRadius: '4px',
+          backgroundColor: badge.bg,
+          color: badge.color,
+          fontSize: '8px',
+          fontWeight: 600,
+          fontFamily: 'Inter, sans-serif',
+          textTransform: 'uppercase',
+          letterSpacing: '0.5px'
+        }}>
+          {badge.text}
+        </span>
+      )}
+    </div>
+  );
+};
+
+// Dummy data for comparison when actual data is not available
+const dummyOriginalData = {
+  personalInfo: {
+    name: "John Doe",
+    email: "john.doe@email.com",
+    phone: "+1 234 567 8900",
+    location: ""
+  },
+  summary: "Software developer with experience in web development.",
+  experience: [
+    {
+      position: "Software Developer",
+      company: "Tech Corp",
+      location: "New York, NY",
+      duration: "2020 - 2023",
+      achievements: [
+        "Developed web applications",
+        "Worked on team projects",
+        "Fixed bugs and issues"
+      ]
+    }
+  ],
+  education: [
+    {
+      degree: "Bachelor of Science",
+      field: "Computer Science",
+      institution: "University of Tech",
+      year: "2020"
+    }
+  ],
+  projects: [
+    {
+      name: "E-commerce Platform",
+      description: "Built an online store with basic features"
+    }
+  ],
+  skills: ["JavaScript", "React", "Node.js", "jQuery"],
+  certifications: [
+    { name: "JavaScript Basics" }
+  ],
+  languages: [
+    { name: "English", proficiency: "Native" },
+    { name: "Spanish", proficiency: "Basic" }
+  ]
+};
+
+const dummyEnhancedData = {
+  personalInfo: {
+    name: "John Doe",
+    email: "john.professional@email.com",
+    phone: "+1 234 567 8900",
+    location: "New York, NY"
+  },
+  summary: "Results-driven Software Engineer with 3+ years of experience in full-stack web development, specializing in building scalable applications and delivering high-quality solutions.",
+  experience: [
+    {
+      position: "Senior Software Developer",
+      company: "Tech Corp",
+      location: "New York, NY",
+      duration: "2020 - 2023",
+      achievements: [
+        "Architected and developed 5+ enterprise-level web applications using modern frameworks, resulting in 40% improvement in user engagement",
+        "Collaborated with cross-functional teams of 10+ members to deliver projects 20% ahead of schedule",
+        "Implemented CI/CD pipelines reducing deployment time by 60%"
+      ]
+    }
+  ],
+  education: [
+    {
+      degree: "Bachelor of Science",
+      field: "Computer Science",
+      institution: "University of Tech",
+      year: "2020"
+    }
+  ],
+  projects: [
+    {
+      name: "Enterprise E-commerce Platform",
+      description: "Architected and developed a scalable e-commerce solution handling 10K+ daily transactions with 99.9% uptime"
+    }
+  ],
+  skills: ["JavaScript", "React", "Node.js", "TypeScript", "AWS", "Docker"],
+  certifications: [
+    { name: "AWS Certified Developer" }
+  ],
+  languages: [
+    { name: "English", proficiency: "Native" },
+    { name: "French", proficiency: "Intermediate" }
+  ]
+};
+
 function EnhancedResumeContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -167,6 +483,8 @@ function EnhancedResumeContent() {
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState("preview");
   const [tempFormData, setTempFormData] = useState(null);
+  const [originalResumeData, setOriginalResumeData] = useState(null);
+  const [enhancedResumeData, setEnhancedResumeData] = useState(null);
 
   const isFromUpload = searchParams.get("from") === "upload";
   const isFromAI = searchParams.get("from") === "ai";
@@ -260,6 +578,22 @@ function EnhancedResumeContent() {
           const storedData = sessionStorage.getItem('enhancedResumeData');
           if (storedData) {
             resumeDataFromAPI = JSON.parse(storedData);
+            console.log('📦 Loaded from enhancedResumeData sessionStorage');
+          }
+
+          // Also try to get original resume data from sessionStorage if not in the main data
+          const storedOriginal = sessionStorage.getItem('originalResumeData');
+          if (storedOriginal && resumeDataFromAPI) {
+            try {
+              const originalData = JSON.parse(storedOriginal);
+              // Merge original data into the API response if not already present
+              if (!resumeDataFromAPI.original_resume && originalData) {
+                resumeDataFromAPI.original_resume = originalData;
+                console.log('📦 Merged originalResumeData from sessionStorage');
+              }
+            } catch (e) {
+              console.error('Failed to parse originalResumeData from sessionStorage', e);
+            }
           }
         } else if (isFromAI) {
           const storedData = sessionStorage.getItem('createdResumeData');
@@ -291,25 +625,35 @@ function EnhancedResumeContent() {
               }
             }
           }
-          // Check if we have enhanced_resume data (from enhance API - Upload flow after template selection)
-          else if (resumeDataFromAPI.enhanced_resume && Array.isArray(resumeDataFromAPI.enhanced_resume)) {
-            const transformedData = transformAPIStructureToUI(resumeDataFromAPI.enhanced_resume);
-            if (transformedData) {
-              console.log('✅ Transformed Data from enhanced_resume:', transformedData);
-              setResumeData(transformedData);
-              if (transformedData.personalInfo?.name) {
-                setUserName(transformedData.personalInfo.name);
+          // Check if we have both enhanced_resume and original_resume data (Upload flow after enhancement)
+          else if (resumeDataFromAPI.enhanced_resume || resumeDataFromAPI.original_resume) {
+            // Process enhanced resume if available
+            if (resumeDataFromAPI.enhanced_resume && Array.isArray(resumeDataFromAPI.enhanced_resume)) {
+              const transformedEnhanced = transformAPIStructureToUI(resumeDataFromAPI.enhanced_resume);
+              if (transformedEnhanced) {
+                console.log('✅ Transformed Data from enhanced_resume:', transformedEnhanced);
+                setResumeData(transformedEnhanced);
+                setEnhancedResumeData(transformedEnhanced);
+                if (transformedEnhanced.personalInfo?.name) {
+                  setUserName(transformedEnhanced.personalInfo.name);
+                }
               }
             }
-          }
-          // Check if we have original_resume data (from upload_and_process API - Upload flow)
-          else if (resumeDataFromAPI.original_resume && Array.isArray(resumeDataFromAPI.original_resume)) {
-            const transformedData = transformAPIStructureToUI(resumeDataFromAPI.original_resume);
-            if (transformedData) {
-              console.log('✅ Transformed Data from original_resume:', transformedData);
-              setResumeData(transformedData);
-              if (transformedData.personalInfo?.name) {
-                setUserName(transformedData.personalInfo.name);
+
+            // Process original resume if available
+            if (resumeDataFromAPI.original_resume && Array.isArray(resumeDataFromAPI.original_resume)) {
+              const transformedOriginal = transformAPIStructureToUI(resumeDataFromAPI.original_resume);
+              if (transformedOriginal) {
+                console.log('✅ Transformed Data from original_resume (for comparison):', transformedOriginal);
+                setOriginalResumeData(transformedOriginal);
+
+                // If we don't have enhanced data, use original as main data
+                if (!resumeDataFromAPI.enhanced_resume) {
+                  setResumeData(transformedOriginal);
+                  if (transformedOriginal.personalInfo?.name) {
+                    setUserName(transformedOriginal.personalInfo.name);
+                  }
+                }
               }
             }
           }
@@ -1144,8 +1488,10 @@ function EnhancedResumeContent() {
   // Temporary section order for editing (follows same pattern as tempFormData)
   const [tempSectionOrder, setTempSectionOrder] = useState(null);
 
+  // Conditionally include Compare tab only for upload flow
   const tabs = [
     { id: "preview", label: "Preview", icon: Eye },
+    ...(isFromUpload ? [{ id: "compare", label: "Compare", icon: GitCompare }] : []),
     { id: "arrangeSections", label: "Arrange Sections", icon: FileText },
     { id: "personalInfo", label: "Personal Info", icon: User },
     { id: "summary", label: "Professional Summary", icon: Star },
@@ -1158,8 +1504,8 @@ function EnhancedResumeContent() {
   ];
 
   const handleTabClick = (tabId) => {
-    if (tabId === "preview") {
-      setActiveTab("preview");
+    if (tabId === "preview" || tabId === "compare") {
+      setActiveTab(tabId);
       // Don't clear tempFormData - keep it so edits persist when switching back to edit tabs
     } else {
       // Only initialize tempFormData if it doesn't exist yet
@@ -2075,7 +2421,7 @@ function EnhancedResumeContent() {
                 <h1 className="font-bold mb-1" style={{fontSize: '24px', color: '#1f2937', marginBottom: '5px'}}>
                   <EditableText field="personalInfo.name" value={templateData.name} className="text-gray-800" onSave={(value) => setResumeData(prev => ({...prev, personalInfo: {...prev.personalInfo, name: value}}))} />
                 </h1>
-                <h2 className="font-bold mb-2" style={{fontSize: '14px', color: '#2563eb', marginBottom: '8px'}}>
+                <h2 className="font-bold mb-2" style={{fontSize: '13px', color: '#2563eb', marginBottom: '8px'}}>
                   <EditableText field="personalInfo.title" value={templateData.title} className="text-blue-600" onSave={(value) => setResumeData(prev => ({...prev, personalInfo: {...prev.personalInfo, title: value}}))} />
                 </h2>
                 <div className="flex flex-wrap" style={{fontSize: '10px', color: '#6b7280'}}>
@@ -2088,7 +2434,7 @@ function EnhancedResumeContent() {
 
             {/* Professional Summary */}
             <div style={{marginBottom: '15px'}}>
-              <h3 className="font-bold uppercase" style={{fontSize: '14px', color: '#2563eb', marginBottom: '8px', letterSpacing: '1px'}}>Professional Summary</h3>
+              <h3 className="font-bold uppercase" style={{fontSize: '13px', color: '#2563eb', marginBottom: '8px', letterSpacing: '1px'}}>Professional Summary</h3>
               <div style={{fontSize: '10px', color: '#374151', lineHeight: '1.5'}}>
                 <EditableText field="personalInfo.summary" value={templateData.summary} className="text-gray-700" multiline={true} onSave={(value) => setResumeData(prev => ({...prev, personalInfo: {...prev.personalInfo, summary: value}}))} />
               </div>
@@ -2096,9 +2442,9 @@ function EnhancedResumeContent() {
 
             {/* Experience */}
             <div style={{marginBottom: '15px'}}>
-              <h3 className="font-bold uppercase" style={{fontSize: '14px', color: '#2563eb', marginBottom: '8px', letterSpacing: '1px'}}>Experience</h3>
+              <h3 className="font-bold uppercase" style={{fontSize: '13px', color: '#2563eb', marginBottom: '8px', letterSpacing: '1px'}}>Experience</h3>
               {templateData.experience.map((exp, index) => (
-                <div key={exp.id || index} style={{marginBottom: '12px'}}>
+                <div key={exp.id || index} style={{marginBottom: '10px'}}>
                   <h4 className="font-bold" style={{fontSize: '12px', color: '#1f2937', marginBottom: '3px'}}>
                     <EditableText field={`experience.${index}.position`} value={exp.position} className="text-gray-800" onSave={(value) => {const newExperience = [...templateData.experience]; newExperience[index] = {...newExperience[index], position: value}; setResumeData(prev => ({...prev, experience: newExperience}));}} />
                   </h4>
@@ -2119,13 +2465,13 @@ function EnhancedResumeContent() {
 
             {/* Skills */}
             <div style={{marginBottom: '15px'}}>
-              <h3 className="font-bold uppercase" style={{fontSize: '14px', color: '#2563eb', marginBottom: '8px', letterSpacing: '1px'}}>Skills</h3>
+              <h3 className="font-bold uppercase" style={{fontSize: '13px', color: '#2563eb', marginBottom: '8px', letterSpacing: '1px'}}>Skills</h3>
               <div style={{fontSize: '10px', color: '#374151', lineHeight: '1.5'}}>{templateData.skills.join(" • ")}</div>
             </div>
 
             {/* Education */}
             <div style={{marginBottom: '15px'}}>
-              <h3 className="font-bold uppercase" style={{fontSize: '14px', color: '#2563eb', marginBottom: '8px', letterSpacing: '1px'}}>Education</h3>
+              <h3 className="font-bold uppercase" style={{fontSize: '13px', color: '#2563eb', marginBottom: '8px', letterSpacing: '1px'}}>Education</h3>
               {templateData.education.map((edu, index) => (
                 <div key={edu.id || index} style={{marginBottom: '10px'}}>
                   <div className="font-bold" style={{fontSize: '12px', color: '#1f2937', marginBottom: '3px'}}>
@@ -3582,7 +3928,7 @@ function EnhancedResumeContent() {
         }
       `}</style>
 
-      <div className="w-full py-6">
+      <div className="w-full pb-6">
         {/* Tab Navigation */}
         <div className="mb-6">
           <div
@@ -3639,15 +3985,15 @@ function EnhancedResumeContent() {
 
         {/* Content Area */}
         {activeTab === "preview" ? (
-          /* Preview Tab - Show Resume Preview */
           <div className="w-full">
+            {/* Preview Tab - Show Resume Preview */}
             <Card className="bg-white" style={{
               backgroundColor: '#FFFFFF',
               border: '1px solid #F1F3F7',
               boxShadow: shadowBoxStyle,
               borderRadius: '16px'
             }}>
-              <CardHeader className="pb-3 lg:pb-4 border-b" style={{ borderColor: '#F1F3F7' }}>
+              <CardHeader className="p-4 border-b" style={{ borderColor: '#F1F3F7' }}>
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                   <CardTitle style={{
                     color: colorTokens.title,
@@ -3708,17 +4054,111 @@ function EnhancedResumeContent() {
                 </div>
               </CardHeader>
               <CardContent className="p-4 lg:p-6">
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <div
-                    className="bg-white border border-gray-200 shadow-lg mx-auto overflow-hidden"
+                <div className="flex flex-col lg:flex-row justify-between lg:items-start" style={{ backgroundColor: colorTokens.bgLight, padding: '16px', borderRadius: '16px', gap: '16px' }}>
+                  {/* ATS Score Panel - Left */}
+                  <Card
+                    className="hidden lg:block bg-white"
                     style={{
-                      width: isMobile ? "100%" : "210mm",
-                      height: isMobile ? "auto" : "297mm",
-                      aspectRatio: "210/297",
-                      maxWidth: "100%",
+                      width: "230px",
+                      flexShrink: 0,
+                      backgroundColor: '#FFFFFF',
+                      border: '1px solid #F1F3F7',
+                      boxShadow: shadowBoxStyle,
+                      borderRadius: '16px',
+                      position: 'sticky',
+                      top: '80px',
+                      alignSelf: 'flex-start',
                     }}
                   >
-                    <div className="h-full overflow-y-auto overflow-x-hidden">
+                    <CardHeader className="pb-3 border-b" style={{ borderColor: '#F1F3F7' }}>
+                      <CardTitle style={{
+                        color: colorTokens.title,
+                        fontFamily: 'Inter, sans-serif',
+                        fontSize: '16px',
+                        fontWeight: 600
+                      }}>
+                        ATS Score
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="p-5">
+                      <div className="text-center">
+                        <div style={{
+                          fontSize: '48px',
+                          fontWeight: 700,
+                          fontFamily: 'Inter, sans-serif',
+                          lineHeight: '1'
+                        }}><span style={{ color: '#002A79' }}>94</span><span style={{ color: 'rgb(35, 112, 255)' }}>%</span></div>
+                        <div style={{
+                          fontSize: '13px',
+                          fontWeight: 500,
+                          color: '#002A79',
+                          fontFamily: 'Inter, sans-serif',
+                          marginTop: '8px',
+                          marginBottom: '16px'
+                        }}>Excellent score!</div>
+                        <div style={{
+                          width: '100%',
+                          backgroundColor: colorTokens.bgLight,
+                          borderRadius: '9999px',
+                          height: '8px',
+                          marginBottom: '20px',
+                          boxShadow: 'inset 0 1px 2px rgba(0,0,0,0.1)'
+                        }}>
+                          <div
+                            style={{
+                              background: 'linear-gradient(180deg, #679CFF 0%, #2370FF 100%)',
+                              height: '8px',
+                              borderRadius: '9999px',
+                              width: '94%'
+                            }}
+                          ></div>
+                        </div>
+                      </div>
+
+                      {/* Score Breakdown */}
+                      <div style={{ borderTop: '1px solid #F1F3F7', paddingTop: '16px' }}>
+                        <div style={{
+                          fontSize: '12px',
+                          fontWeight: 600,
+                          color: colorTokens.title,
+                          fontFamily: 'Inter, sans-serif',
+                          marginBottom: '10px'
+                        }}>Score Breakdown</div>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <span style={{ fontSize: '13px', color: colorTokens.paragraph, fontFamily: 'Inter, sans-serif' }}>Keywords Match</span>
+                            <span style={{ fontSize: '13px', fontWeight: 600, color: '#22C55E', fontFamily: 'Inter, sans-serif' }}>92%</span>
+                          </div>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <span style={{ fontSize: '13px', color: colorTokens.paragraph, fontFamily: 'Inter, sans-serif' }}>Formatting</span>
+                            <span style={{ fontSize: '13px', fontWeight: 600, color: '#22C55E', fontFamily: 'Inter, sans-serif' }}>96%</span>
+                          </div>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <span style={{ fontSize: '13px', color: colorTokens.paragraph, fontFamily: 'Inter, sans-serif' }}>Content Quality</span>
+                            <span style={{ fontSize: '13px', fontWeight: 600, color: '#22C55E', fontFamily: 'Inter, sans-serif' }}>94%</span>
+                          </div>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <span style={{ fontSize: '13px', color: colorTokens.paragraph, fontFamily: 'Inter, sans-serif' }}>Structure</span>
+                            <span style={{ fontSize: '13px', fontWeight: 600, color: '#F59E0B', fontFamily: 'Inter, sans-serif' }}>65%</span>
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Resume Preview - Center */}
+                  <div className="flex-1 flex justify-center">
+                    <div
+                      className="overflow-hidden"
+                      style={{
+                        width: isMobile ? "100%" : "100%",
+                        height: "auto",
+                        aspectRatio: "210/297",
+                        backgroundColor: '#FFFFFF',
+                        border: '1px solid #F1F3F7',
+                        boxShadow: shadowBoxStyle,
+                      }}
+                    >
                       <PDFPreview
                         templateId={selectedTemplate}
                         width="100%"
@@ -3728,13 +4168,996 @@ function EnhancedResumeContent() {
                       />
                     </div>
                   </div>
+
+                  {/* Suggestions Panel - Right */}
+                  <Card
+                    className="hidden lg:block bg-white"
+                    style={{
+                      width: "300px",
+                      flexShrink: 0,
+                      backgroundColor: '#FFFFFF',
+                      border: '1px solid #F1F3F7',
+                      boxShadow: shadowBoxStyle,
+                      borderRadius: '16px',
+                      position: 'sticky',
+                      top: '80px',
+                      alignSelf: 'flex-start',
+                    }}
+                  >
+                    <CardHeader className="pb-3 border-b" style={{ borderColor: '#F1F3F7' }}>
+                      <CardTitle style={{
+                        color: colorTokens.title,
+                        fontFamily: 'Inter, sans-serif',
+                        fontSize: '16px',
+                        fontWeight: 600
+                      }}>
+                        Suggestions
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="p-4">
+                      {/* What's Good */}
+                      <div style={{ marginBottom: '20px' }}>
+                        <div style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '8px',
+                          marginBottom: '10px'
+                        }}>
+                          <CheckCircle style={{ width: '16px', height: '16px', color: '#22C55E' }} />
+                          <span style={{
+                            fontSize: '13px',
+                            fontWeight: 600,
+                            color: colorTokens.title,
+                            fontFamily: 'Inter, sans-serif'
+                          }}>What&apos;s Good</span>
+                        </div>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                          <div style={{
+                            display: 'flex',
+                            alignItems: 'flex-start',
+                            gap: '8px',
+                            padding: '10px 12px',
+                            backgroundColor: '#F0FDF4',
+                            borderRadius: '8px',
+                            border: '1px solid #DCFCE7'
+                          }}>
+                            <span style={{ fontSize: '12px', color: '#166534', fontFamily: 'Inter, sans-serif', lineHeight: '1.4' }}>
+                              Strong action verbs used in experience section
+                            </span>
+                          </div>
+                          <div style={{
+                            display: 'flex',
+                            alignItems: 'flex-start',
+                            gap: '8px',
+                            padding: '10px 12px',
+                            backgroundColor: '#F0FDF4',
+                            borderRadius: '8px',
+                            border: '1px solid #DCFCE7'
+                          }}>
+                            <span style={{ fontSize: '12px', color: '#166534', fontFamily: 'Inter, sans-serif', lineHeight: '1.4' }}>
+                              Clear and concise professional summary
+                            </span>
+                          </div>
+                          <div style={{
+                            display: 'flex',
+                            alignItems: 'flex-start',
+                            gap: '8px',
+                            padding: '10px 12px',
+                            backgroundColor: '#F0FDF4',
+                            borderRadius: '8px',
+                            border: '1px solid #DCFCE7'
+                          }}>
+                            <span style={{ fontSize: '12px', color: '#166534', fontFamily: 'Inter, sans-serif', lineHeight: '1.4' }}>
+                              Skills section is well-organized
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* What Needs Improvement */}
+                      <div>
+                        <div style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '8px',
+                          marginBottom: '10px'
+                        }}>
+                          <AlertCircle style={{ width: '16px', height: '16px', color: '#F59E0B' }} />
+                          <span style={{
+                            fontSize: '13px',
+                            fontWeight: 600,
+                            color: colorTokens.title,
+                            fontFamily: 'Inter, sans-serif'
+                          }}>Needs Improvement</span>
+                        </div>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                          <div style={{
+                            display: 'flex',
+                            alignItems: 'flex-start',
+                            gap: '8px',
+                            padding: '10px 12px',
+                            backgroundColor: '#FFFBEB',
+                            borderRadius: '8px',
+                            border: '1px solid #FEF3C7'
+                          }}>
+                            <span style={{ fontSize: '12px', color: '#92400E', fontFamily: 'Inter, sans-serif', lineHeight: '1.4' }}>
+                              Add more quantifiable achievements
+                            </span>
+                          </div>
+                          <div style={{
+                            display: 'flex',
+                            alignItems: 'flex-start',
+                            gap: '8px',
+                            padding: '10px 12px',
+                            backgroundColor: '#FFFBEB',
+                            borderRadius: '8px',
+                            border: '1px solid #FEF3C7'
+                          }}>
+                            <span style={{ fontSize: '12px', color: '#92400E', fontFamily: 'Inter, sans-serif', lineHeight: '1.4' }}>
+                              Consider adding relevant certifications
+                            </span>
+                          </div>
+                          <div style={{
+                            display: 'flex',
+                            alignItems: 'flex-start',
+                            gap: '8px',
+                            padding: '10px 12px',
+                            backgroundColor: '#FFFBEB',
+                            borderRadius: '8px',
+                            border: '1px solid #FEF3C7'
+                          }}>
+                            <span style={{ fontSize: '12px', color: '#92400E', fontFamily: 'Inter, sans-serif', lineHeight: '1.4' }}>
+                              Include more industry keywords
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
                 </div>
               </CardContent>
             </Card>
           </div>
-        ) : (
-          /* Form Tabs - Show Section Form */
+        ) : activeTab === "compare" ? (
           <div className="w-full">
+            {(!originalResumeData || !enhancedResumeData) && (
+              <div style={{
+                backgroundColor: '#E9F1FF',
+                border: '1px solid #2370FF',
+                borderRadius: '12px',
+                padding: '16px 20px',
+                marginBottom: '20px',
+                display: 'flex',
+                alignItems: 'flex-start',
+                gap: '12px'
+              }}>
+                <AlertCircle style={{ color: colorTokens.secondary600, width: '20px', height: '20px', flexShrink: 0, marginTop: '2px' }} />
+                <div>
+                  <p style={{
+                    color: colorTokens.title,
+                    fontFamily: 'Inter, sans-serif',
+                    fontSize: '13px',
+                    fontWeight: 600,
+                    marginBottom: '4px'
+                  }}>
+                    Preview Mode - Demo Data
+                  </p>
+                  <p style={{
+                    color: colorTokens.paragraph,
+                    fontFamily: 'Inter, sans-serif',
+                    fontSize: '13px',
+                    lineHeight: '1.5'
+                  }}>
+                    This is a demonstration of the comparison feature. Your actual resume data will appear here once available.
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {/* Legend - Enhanced Design */}
+            <Card className="bg-white" style={{
+              backgroundColor: '#FFFFFF',
+              border: '1px solid #F1F3F7',
+              borderRadius: '16px',
+              boxShadow: shadowBoxStyle,
+              marginBottom: '24px',
+              overflow: 'hidden'
+            }}>
+              <CardHeader className="p-4 border-b" style={{
+                borderColor: '#F1F3F7',
+                background: 'linear-gradient(135deg, #F8F9FF 0%, #FFFFFF 100%)'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <Info style={{ width: '18px', height: '18px', color: colorTokens.secondary600 }} />
+                  <CardTitle style={{
+                    color: colorTokens.title,
+                    fontFamily: 'Inter, sans-serif',
+                    fontSize: '15px',
+                    fontWeight: 600
+                  }}>
+                    Comparison Guide
+                  </CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent style={{
+                padding: '16px 20px'
+              }}>
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+                  gap: '10px'
+                }}>
+                {/* AI Enhancement - Blue */}
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '10px',
+                  padding: '10px',
+                  backgroundColor: colorTokens.bgLight,
+                  borderRadius: '8px',
+                  border: '1px solid #D6E3FF'
+                }}>
+                  <div style={{
+                    width: '24px',
+                    height: '24px',
+                    backgroundColor: '#C3D0FF',
+                    borderRadius: '6px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexShrink: 0,
+                    fontSize: '14px',
+                    fontWeight: 700,
+                    color: '#1e3a8a'
+                  }}>~</div>
+                  <div style={{ flex: 1 }}>
+                    <div style={{
+                      fontSize: '12px',
+                      fontFamily: 'Inter, sans-serif',
+                      color: colorTokens.title,
+                      fontWeight: 600,
+                      lineHeight: 1.2
+                    }}>AI Enhanced</div>
+                    <div style={{
+                      fontSize: '10px',
+                      fontFamily: 'Inter, sans-serif',
+                      color: colorTokens.paragraph,
+                      fontWeight: 400,
+                      marginTop: '2px'
+                    }}>Optimized content</div>
+                  </div>
+                </div>
+
+                {/* Added - Green */}
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '10px',
+                  padding: '10px',
+                  backgroundColor: colorTokens.bgLight,
+                  borderRadius: '8px',
+                  border: '1px solid #D6E3FF'
+                }}>
+                  <div style={{
+                    width: '24px',
+                    height: '24px',
+                    backgroundColor: '#E2F8EA',
+                    borderRadius: '6px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexShrink: 0,
+                    fontSize: '14px',
+                    fontWeight: 700,
+                    color: '#166534'
+                  }}>+</div>
+                  <div style={{ flex: 1 }}>
+                    <div style={{
+                      fontSize: '12px',
+                      fontFamily: 'Inter, sans-serif',
+                      color: colorTokens.title,
+                      fontWeight: 600,
+                      lineHeight: 1.2
+                    }}>Added</div>
+                    <div style={{
+                      fontSize: '10px',
+                      fontFamily: 'Inter, sans-serif',
+                      color: colorTokens.paragraph,
+                      fontWeight: 400,
+                      marginTop: '2px'
+                    }}>New content</div>
+                  </div>
+                </div>
+
+
+                {/* Modified - Yellow */}
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '10px',
+                  padding: '10px',
+                  backgroundColor: colorTokens.bgLight,
+                  borderRadius: '8px',
+                  border: '1px solid #D6E3FF'
+                }}>
+                  <div style={{
+                    width: '24px',
+                    height: '24px',
+                    backgroundColor: '#FAEDBF',
+                    borderRadius: '6px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexShrink: 0,
+                    fontSize: '14px',
+                    fontWeight: 700,
+                    color: '#92400e'
+                  }}>≠</div>
+                  <div style={{ flex: 1 }}>
+                    <div style={{
+                      fontSize: '12px',
+                      fontFamily: 'Inter, sans-serif',
+                      color: colorTokens.title,
+                      fontWeight: 600,
+                      lineHeight: 1.2
+                    }}>Modified</div>
+                    <div style={{
+                      fontSize: '10px',
+                      fontFamily: 'Inter, sans-serif',
+                      color: colorTokens.paragraph,
+                      fontWeight: 400,
+                      marginTop: '2px'
+                    }}>Changed value</div>
+                  </div>
+                </div>
+
+                {/* Removed - Red */}
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '10px',
+                  padding: '10px',
+                  backgroundColor: colorTokens.bgLight,
+                  borderRadius: '8px',
+                  border: '1px solid #D6E3FF'
+                }}>
+                  <div style={{
+                    width: '24px',
+                    height: '24px',
+                    backgroundColor: '#FACDD0',
+                    borderRadius: '6px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexShrink: 0,
+                    fontSize: '14px',
+                    fontWeight: 700,
+                    color: '#991b1b'
+                  }}>−</div>
+                  <div style={{ flex: 1 }}>
+                    <div style={{
+                      fontSize: '12px',
+                      fontFamily: 'Inter, sans-serif',
+                      color: colorTokens.title,
+                      fontWeight: 600,
+                      lineHeight: 1.2
+                    }}>Removed</div>
+                    <div style={{
+                      fontSize: '10px',
+                      fontFamily: 'Inter, sans-serif',
+                      color: colorTokens.paragraph,
+                      fontWeight: 400,
+                      marginTop: '2px'
+                    }}>Deleted content</div>
+                  </div>
+                </div>
+              </div>
+              </CardContent>
+            </Card>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {/* Original Resume Column */}
+                <Card className="bg-white" style={{
+                  backgroundColor: '#FFFFFF',
+                  border: '1px solid #F1F3F7',
+                  boxShadow: shadowBoxStyle,
+                  borderRadius: '16px',
+                  overflow: 'hidden'
+                }}>
+                  <CardHeader className="p-4 border-b" style={{
+                    borderColor: '#F1F3F7',
+                    background: 'linear-gradient(135deg, #F8F9FF 0%, #FFFFFF 100%)'
+                  }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <FileText style={{ width: '18px', height: '18px', color: colorTokens.paragraph }} />
+                      <CardTitle style={{
+                        color: colorTokens.title,
+                        fontFamily: 'Inter, sans-serif',
+                        fontSize: '15px',
+                        fontWeight: 600
+                      }}>
+                        Original Resume
+                      </CardTitle>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="p-5" style={{ maxHeight: '700px', overflowY: 'auto' }}>
+                    {/* Personal Info Comparison */}
+                    <div className="mb-6">
+                      <h3 style={{
+                        color: colorTokens.title,
+                        fontFamily: 'Inter, sans-serif',
+                        fontSize: '13px',
+                        fontWeight: 600,
+                        marginBottom: '10px'
+                      }}>Personal Information</h3>
+                      <div className="space-y-2">
+                        <CompareField
+                          label="Name"
+                          original={(originalResumeData || dummyOriginalData).personalInfo?.name}
+                          enhanced={(enhancedResumeData || dummyEnhancedData).personalInfo?.name}
+                          isOriginal={true}
+                        />
+                        <CompareField
+                          label="Email"
+                          original={(originalResumeData || dummyOriginalData).personalInfo?.email}
+                          enhanced={(enhancedResumeData || dummyEnhancedData).personalInfo?.email}
+                          isOriginal={true}
+                        />
+                        <CompareField
+                          label="Phone"
+                          original={(originalResumeData || dummyOriginalData).personalInfo?.phone}
+                          enhanced={(enhancedResumeData || dummyEnhancedData).personalInfo?.phone}
+                          isOriginal={true}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Summary Comparison */}
+                    {((originalResumeData || dummyOriginalData).summary || (enhancedResumeData || dummyEnhancedData).summary) && (
+                      <div className="mb-6">
+                        <h3 style={{
+                          color: colorTokens.title,
+                          fontFamily: 'Inter, sans-serif',
+                          fontSize: '13px',
+                          fontWeight: 600,
+                          marginBottom: '10px'
+                        }}>Professional Summary</h3>
+                        <CompareText
+                          original={(originalResumeData || dummyOriginalData).summary}
+                          enhanced={(enhancedResumeData || dummyEnhancedData).summary}
+                          isOriginal={true}
+                        />
+                      </div>
+                    )}
+
+                    {/* Experience Comparison */}
+                    {(originalResumeData || dummyOriginalData).experience?.length > 0 && (
+                      <div className="mb-6">
+                        <h3 style={{
+                          color: colorTokens.title,
+                          fontFamily: 'Inter, sans-serif',
+                          fontSize: '13px',
+                          fontWeight: 600,
+                          marginBottom: '10px'
+                        }}>Work Experience</h3>
+                        {(originalResumeData || dummyOriginalData).experience.map((exp, index) => (
+                          <div key={index} className="mb-4 p-3 rounded" style={{ backgroundColor: '#F8F9FF' }}>
+                            <CompareField
+                              label="Position"
+                              original={exp.position}
+                              enhanced={(enhancedResumeData || dummyEnhancedData).experience?.[index]?.position}
+                              isOriginal={true}
+                            />
+                            <CompareField
+                              label="Company"
+                              original={exp.company}
+                              enhanced={(enhancedResumeData || dummyEnhancedData).experience?.[index]?.company}
+                              isOriginal={true}
+                            />
+                            <div className="mt-2">
+                              <p style={{
+                                color: colorTokens.paragraph,
+                                fontFamily: 'Inter, sans-serif',
+                                fontSize: '12px',
+                                fontWeight: 600,
+                                marginBottom: '4px'
+                              }}>Responsibilities:</p>
+                              {exp.achievements?.map((achievement, aIndex) => (
+                                <CompareListItem
+                                  key={aIndex}
+                                  original={achievement}
+                                  enhanced={(enhancedResumeData || dummyEnhancedData).experience?.[index]?.achievements?.[aIndex]}
+                                  isOriginal={true}
+                                />
+                              ))}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Education Comparison */}
+                    {(originalResumeData || dummyOriginalData).education?.length > 0 && (
+                      <div className="mb-6">
+                        <h3 style={{
+                          color: colorTokens.title,
+                          fontFamily: 'Inter, sans-serif',
+                          fontSize: '13px',
+                          fontWeight: 600,
+                          marginBottom: '10px'
+                        }}>Education</h3>
+                        {(originalResumeData || dummyOriginalData).education.map((edu, index) => (
+                          <div key={index} className="mb-3 p-3 rounded" style={{ backgroundColor: '#F8F9FF' }}>
+                            <CompareField
+                              label="Degree"
+                              original={edu.degree}
+                              enhanced={(enhancedResumeData || dummyEnhancedData).education?.[index]?.degree}
+                              isOriginal={true}
+                            />
+                            <CompareField
+                              label="Field"
+                              original={edu.field}
+                              enhanced={(enhancedResumeData || dummyEnhancedData).education?.[index]?.field}
+                              isOriginal={true}
+                            />
+                            <CompareField
+                              label="Institution"
+                              original={edu.institution}
+                              enhanced={(enhancedResumeData || dummyEnhancedData).education?.[index]?.institution}
+                              isOriginal={true}
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Projects Comparison */}
+                    {(originalResumeData || dummyOriginalData).projects?.length > 0 && (
+                      <div className="mb-6">
+                        <h3 style={{
+                          color: colorTokens.title,
+                          fontFamily: 'Inter, sans-serif',
+                          fontSize: '13px',
+                          fontWeight: 600,
+                          marginBottom: '10px'
+                        }}>Projects</h3>
+                        {(originalResumeData || dummyOriginalData).projects.map((proj, index) => (
+                          <div key={index} className="mb-3 p-3 rounded" style={{ backgroundColor: '#F8F9FF' }}>
+                            <CompareField
+                              label="Project Name"
+                              original={proj.name}
+                              enhanced={(enhancedResumeData || dummyEnhancedData).projects?.[index]?.name}
+                              isOriginal={true}
+                            />
+                            <CompareText
+                              original={proj.description}
+                              enhanced={(enhancedResumeData || dummyEnhancedData).projects?.[index]?.description}
+                              isOriginal={true}
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Skills Comparison */}
+                    {(originalResumeData || dummyOriginalData).skills?.length > 0 && (
+                      <div className="mb-6">
+                        <h3 style={{
+                          color: colorTokens.title,
+                          fontFamily: 'Inter, sans-serif',
+                          fontSize: '13px',
+                          fontWeight: 600,
+                          marginBottom: '10px'
+                        }}>Skills</h3>
+                        <div style={{
+                          display: 'flex',
+                          flexWrap: 'wrap',
+                          gap: '8px'
+                        }}>
+                          {(originalResumeData || dummyOriginalData).skills.map((skill, index) => {
+                            const enhancedHasSkill = (enhancedResumeData || dummyEnhancedData).skills?.includes(skill);
+                            const isRemoved = !enhancedHasSkill;
+                            return (
+                              <div
+                                key={index}
+                                style={{
+                                  position: 'relative',
+                                  padding: '8px 14px',
+                                  paddingRight: isRemoved ? '20px' : '14px',
+                                  borderRadius: '6px',
+                                  backgroundColor: isRemoved ? '#FACDD0' : '#F8F9FF',
+                                  border: `1px solid ${isRemoved ? '#f87171' : '#E1E4EB'}`,
+                                  fontSize: '12px',
+                                  fontFamily: 'Inter, sans-serif',
+                                  color: isRemoved ? '#991b1b' : colorTokens.title,
+                                  fontWeight: 500,
+                                  overflow: 'hidden'
+                                }}
+                              >
+                                {skill}
+                                {isRemoved && (
+                                  <div style={{
+                                    position: 'absolute',
+                                    top: '-1px',
+                                    right: '-1px',
+                                    width: '18px',
+                                    height: '18px',
+                                    backgroundColor: '#dc2626',
+                                    borderBottomLeftRadius: '6px',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    fontSize: '12px',
+                                    fontWeight: 700,
+                                    color: '#fff'
+                                  }}>
+                                    −
+                                  </div>
+                                )}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Certifications Comparison */}
+                    {(originalResumeData || dummyOriginalData).certifications?.length > 0 && (
+                      <div className="mb-6">
+                        <h3 style={{
+                          color: colorTokens.title,
+                          fontFamily: 'Inter, sans-serif',
+                          fontSize: '13px',
+                          fontWeight: 600,
+                          marginBottom: '10px'
+                        }}>Certifications</h3>
+                        {(originalResumeData || dummyOriginalData).certifications.map((cert, index) => (
+                          <div key={index} className="mb-3 p-3 rounded" style={{ backgroundColor: '#F8F9FF' }}>
+                            <CompareField
+                              label="Certification"
+                              original={cert.name}
+                              enhanced={(enhancedResumeData || dummyEnhancedData).certifications?.[index]?.name}
+                              isOriginal={true}
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Languages Comparison */}
+                    {(originalResumeData || dummyOriginalData).languages?.length > 0 && (
+                      <div className="mb-6">
+                        <h3 style={{
+                          color: colorTokens.title,
+                          fontFamily: 'Inter, sans-serif',
+                          fontSize: '13px',
+                          fontWeight: 600,
+                          marginBottom: '10px'
+                        }}>Languages</h3>
+                        {(originalResumeData || dummyOriginalData).languages.map((lang, index) => (
+                          <div key={index} className="mb-3 p-3 rounded" style={{ backgroundColor: '#F8F9FF' }}>
+                            <CompareField
+                              label="Language"
+                              original={lang.name}
+                              enhanced={(enhancedResumeData || dummyEnhancedData).languages?.[index]?.name}
+                              isOriginal={true}
+                            />
+                            <CompareField
+                              label="Proficiency"
+                              original={lang.proficiency}
+                              enhanced={(enhancedResumeData || dummyEnhancedData).languages?.[index]?.proficiency}
+                              isOriginal={true}
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+
+                {/* Enhanced Resume Column */}
+                <Card className="bg-white" style={{
+                  backgroundColor: '#FFFFFF',
+                  border: '1px solid #F1F3F7',
+                  boxShadow: shadowBoxStyle,
+                  borderRadius: '16px',
+                  overflow: 'hidden'
+                }}>
+                  <CardHeader className="p-4 border-b" style={{
+                    borderColor: '#F1F3F7',
+                    background: 'linear-gradient(135deg, #F8F9FF 0%, #FFFFFF 100%)'
+                  }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <Sparkles style={{ width: '18px', height: '18px', color: colorTokens.secondary600 }} />
+                      <CardTitle style={{
+                        color: colorTokens.title,
+                        fontFamily: 'Inter, sans-serif',
+                        fontSize: '15px',
+                        fontWeight: 600
+                      }}>
+                        Enhanced Resume
+                      </CardTitle>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="p-5" style={{ maxHeight: '700px', overflowY: 'auto' }}>
+                    {/* Personal Info Comparison */}
+                    <div className="mb-6">
+                      <h3 style={{
+                        color: colorTokens.title,
+                        fontFamily: 'Inter, sans-serif',
+                        fontSize: '13px',
+                        fontWeight: 600,
+                        marginBottom: '10px'
+                      }}>Personal Information</h3>
+                      <div className="space-y-2">
+                        <CompareField
+                          label="Name"
+                          original={(originalResumeData || dummyOriginalData).personalInfo?.name}
+                          enhanced={(enhancedResumeData || dummyEnhancedData).personalInfo?.name}
+                          isOriginal={false}
+                        />
+                        <CompareField
+                          label="Email"
+                          original={(originalResumeData || dummyOriginalData).personalInfo?.email}
+                          enhanced={(enhancedResumeData || dummyEnhancedData).personalInfo?.email}
+                          isOriginal={false}
+                        />
+                        <CompareField
+                          label="Phone"
+                          original={(originalResumeData || dummyOriginalData).personalInfo?.phone}
+                          enhanced={(enhancedResumeData || dummyEnhancedData).personalInfo?.phone}
+                          isOriginal={false}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Summary Comparison */}
+                    {((originalResumeData || dummyOriginalData).summary || (enhancedResumeData || dummyEnhancedData).summary) && (
+                      <div className="mb-6">
+                        <h3 style={{
+                          color: colorTokens.title,
+                          fontFamily: 'Inter, sans-serif',
+                          fontSize: '13px',
+                          fontWeight: 600,
+                          marginBottom: '10px'
+                        }}>Professional Summary</h3>
+                        <CompareText
+                          original={(originalResumeData || dummyOriginalData).summary}
+                          enhanced={(enhancedResumeData || dummyEnhancedData).summary}
+                          isOriginal={false}
+                        />
+                      </div>
+                    )}
+
+                    {/* Experience Comparison */}
+                    {(enhancedResumeData || dummyEnhancedData).experience?.length > 0 && (
+                      <div className="mb-6">
+                        <h3 style={{
+                          color: colorTokens.title,
+                          fontFamily: 'Inter, sans-serif',
+                          fontSize: '13px',
+                          fontWeight: 600,
+                          marginBottom: '10px'
+                        }}>Work Experience</h3>
+                        {(enhancedResumeData || dummyEnhancedData).experience.map((exp, index) => (
+                          <div key={index} className="mb-4 p-3 rounded" style={{ backgroundColor: '#F8F9FF' }}>
+                            <CompareField
+                              label="Position"
+                              original={(originalResumeData || dummyOriginalData).experience?.[index]?.position}
+                              enhanced={exp.position}
+                              isOriginal={false}
+                            />
+                            <CompareField
+                              label="Company"
+                              original={(originalResumeData || dummyOriginalData).experience?.[index]?.company}
+                              enhanced={exp.company}
+                              isOriginal={false}
+                            />
+                            <div className="mt-2">
+                              <p style={{
+                                color: colorTokens.paragraph,
+                                fontFamily: 'Inter, sans-serif',
+                                fontSize: '12px',
+                                fontWeight: 600,
+                                marginBottom: '4px'
+                              }}>Responsibilities:</p>
+                              {exp.achievements?.map((achievement, aIndex) => (
+                                <CompareListItem
+                                  key={aIndex}
+                                  original={(originalResumeData || dummyOriginalData).experience?.[index]?.achievements?.[aIndex]}
+                                  enhanced={achievement}
+                                  isOriginal={false}
+                                />
+                              ))}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Education Comparison */}
+                    {(enhancedResumeData || dummyEnhancedData).education?.length > 0 && (
+                      <div className="mb-6">
+                        <h3 style={{
+                          color: colorTokens.title,
+                          fontFamily: 'Inter, sans-serif',
+                          fontSize: '13px',
+                          fontWeight: 600,
+                          marginBottom: '10px'
+                        }}>Education</h3>
+                        {(enhancedResumeData || dummyEnhancedData).education.map((edu, index) => (
+                          <div key={index} className="mb-3 p-3 rounded" style={{ backgroundColor: '#F8F9FF' }}>
+                            <CompareField
+                              label="Degree"
+                              original={(originalResumeData || dummyOriginalData).education?.[index]?.degree}
+                              enhanced={edu.degree}
+                              isOriginal={false}
+                            />
+                            <CompareField
+                              label="Field"
+                              original={(originalResumeData || dummyOriginalData).education?.[index]?.field}
+                              enhanced={edu.field}
+                              isOriginal={false}
+                            />
+                            <CompareField
+                              label="Institution"
+                              original={(originalResumeData || dummyOriginalData).education?.[index]?.institution}
+                              enhanced={edu.institution}
+                              isOriginal={false}
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Projects Comparison */}
+                    {(enhancedResumeData || dummyEnhancedData).projects?.length > 0 && (
+                      <div className="mb-6">
+                        <h3 style={{
+                          color: colorTokens.title,
+                          fontFamily: 'Inter, sans-serif',
+                          fontSize: '13px',
+                          fontWeight: 600,
+                          marginBottom: '10px'
+                        }}>Projects</h3>
+                        {(enhancedResumeData || dummyEnhancedData).projects.map((proj, index) => (
+                          <div key={index} className="mb-3 p-3 rounded" style={{ backgroundColor: '#F8F9FF' }}>
+                            <CompareField
+                              label="Project Name"
+                              original={(originalResumeData || dummyOriginalData).projects?.[index]?.name}
+                              enhanced={proj.name}
+                              isOriginal={false}
+                            />
+                            <CompareText
+                              original={(originalResumeData || dummyOriginalData).projects?.[index]?.description}
+                              enhanced={proj.description}
+                              isOriginal={false}
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Skills Comparison */}
+                    {(enhancedResumeData || dummyEnhancedData).skills?.length > 0 && (
+                      <div className="mb-6">
+                        <h3 style={{
+                          color: colorTokens.title,
+                          fontFamily: 'Inter, sans-serif',
+                          fontSize: '13px',
+                          fontWeight: 600,
+                          marginBottom: '10px'
+                        }}>Skills</h3>
+                        <div style={{
+                          display: 'flex',
+                          flexWrap: 'wrap',
+                          gap: '8px'
+                        }}>
+                          {(enhancedResumeData || dummyEnhancedData).skills.map((skill, index) => {
+                            const originalHasSkill = (originalResumeData || dummyOriginalData).skills?.includes(skill);
+                            const isAdded = !originalHasSkill;
+                            return (
+                              <div
+                                key={index}
+                                style={{
+                                  position: 'relative',
+                                  padding: '8px 14px',
+                                  paddingRight: isAdded ? '20px' : '14px',
+                                  borderRadius: '6px',
+                                  backgroundColor: isAdded ? '#E2F8EA' : '#F8F9FF',
+                                  border: `1px solid ${isAdded ? '#86efac' : '#E1E4EB'}`,
+                                  fontSize: '12px',
+                                  fontFamily: 'Inter, sans-serif',
+                                  color: isAdded ? '#166534' : colorTokens.title,
+                                  fontWeight: 500,
+                                  overflow: 'hidden'
+                                }}
+                              >
+                                {skill}
+                                {isAdded && (
+                                  <div style={{
+                                    position: 'absolute',
+                                    top: '-1px',
+                                    right: '-1px',
+                                    width: '18px',
+                                    height: '18px',
+                                    backgroundColor: '#16a34a',
+                                    borderBottomLeftRadius: '6px',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    fontSize: '12px',
+                                    fontWeight: 700,
+                                    color: '#fff'
+                                  }}>
+                                    +
+                                  </div>
+                                )}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Certifications Comparison */}
+                    {(enhancedResumeData || dummyEnhancedData).certifications?.length > 0 && (
+                      <div className="mb-6">
+                        <h3 style={{
+                          color: colorTokens.title,
+                          fontFamily: 'Inter, sans-serif',
+                          fontSize: '13px',
+                          fontWeight: 600,
+                          marginBottom: '10px'
+                        }}>Certifications</h3>
+                        {(enhancedResumeData || dummyEnhancedData).certifications.map((cert, index) => (
+                          <div key={index} className="mb-3 p-3 rounded" style={{ backgroundColor: '#F8F9FF' }}>
+                            <CompareField
+                              label="Certification"
+                              original={(originalResumeData || dummyOriginalData).certifications?.[index]?.name}
+                              enhanced={cert.name}
+                              isOriginal={false}
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Languages Comparison */}
+                    {(enhancedResumeData || dummyEnhancedData).languages?.length > 0 && (
+                      <div className="mb-6">
+                        <h3 style={{
+                          color: colorTokens.title,
+                          fontFamily: 'Inter, sans-serif',
+                          fontSize: '13px',
+                          fontWeight: 600,
+                          marginBottom: '10px'
+                        }}>Languages</h3>
+                        {(enhancedResumeData || dummyEnhancedData).languages.map((lang, index) => (
+                          <div key={index} className="mb-3 p-3 rounded" style={{ backgroundColor: '#F8F9FF' }}>
+                            <CompareField
+                              label="Language"
+                              original={(originalResumeData || dummyOriginalData).languages?.[index]?.name}
+                              enhanced={lang.name}
+                              isOriginal={false}
+                            />
+                            <CompareField
+                              label="Proficiency"
+                              original={(originalResumeData || dummyOriginalData).languages?.[index]?.proficiency}
+                              enhanced={lang.proficiency}
+                              isOriginal={false}
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              </div>
+          </div>
+        ) : (
+          <div className="w-full">
+            {/* Form Tabs - Show Section Form */}
             <Card className="bg-white" style={{
               backgroundColor: '#FFFFFF',
               border: '1px solid #F1F3F7',
@@ -3746,7 +5169,7 @@ function EnhancedResumeContent() {
                   <CardTitle style={{
                     color: colorTokens.title,
                     fontFamily: 'Inter, sans-serif',
-                    fontSize: '14px',
+                    fontSize: '13px',
                     fontWeight: 600
                   }}>
                     Edit {tabs.find(t => t.id === activeTab)?.label}
@@ -3834,7 +5257,7 @@ function EnhancedResumeContent() {
                             </div>
                             <div style={{ flex: 1 }}>
                               <p style={{
-                                fontSize: '14px',
+                                fontSize: '13px',
                                 color: colorTokens.paragraph,
                                 marginBottom: '4px',
                                 fontFamily: 'Inter, sans-serif',
@@ -4035,7 +5458,7 @@ function EnhancedResumeContent() {
                       <div className="mb-4">
                         <p style={{
                           ...labelStyles,
-                          marginBottom: '12px'
+                          marginBottom: '10px'
                         }}>
                           Drag and drop sections to reorder them on your resume. Header and Summary will remain at the top.
                         </p>
@@ -4100,7 +5523,7 @@ function EnhancedResumeContent() {
                                 <div style={{
                                   flex: 1,
                                   fontFamily: 'Inter, sans-serif',
-                                  fontSize: '14px',
+                                  fontSize: '13px',
                                   fontWeight: 500,
                                   color: "rgb(15, 38, 120)",
                                   letterSpacing: "-0.32px",
@@ -4128,7 +5551,7 @@ function EnhancedResumeContent() {
                       {tempFormData.education.map((edu, index) => (
                         <div key={edu.id || index} className="p-4 rounded-lg space-y-3" style={{ border: '1px solid #E1E4EB', background: '#F8F9FF' }}>
                           <div className="flex justify-between items-center">
-                            <h4 style={{ color: colorTokens.title, fontSize: '14px', fontWeight: 600, fontFamily: 'Inter, sans-serif' }}>Education {index + 1}</h4>
+                            <h4 style={{ color: colorTokens.title, fontSize: '13px', fontWeight: 600, fontFamily: 'Inter, sans-serif' }}>Education {index + 1}</h4>
                             <button
                               onClick={() => {
                                 const newEducation = tempFormData.education.filter((_, i) => i !== index);
@@ -4212,7 +5635,7 @@ function EnhancedResumeContent() {
                           background: '#F8F9FF',
                           color: '#6477B4',
                           fontFamily: 'Inter, sans-serif',
-                          fontSize: '14px',
+                          fontSize: '13px',
                           fontWeight: 500
                         }}
                       >
@@ -4227,7 +5650,7 @@ function EnhancedResumeContent() {
                       {tempFormData.experience.map((exp, index) => (
                         <div key={exp.id || index} className="p-4 rounded-lg space-y-3" style={{ border: '1px solid #E1E4EB', background: '#F8F9FF' }}>
                           <div className="flex justify-between items-center">
-                            <h4 style={{ color: colorTokens.title, fontSize: '14px', fontWeight: 600, fontFamily: 'Inter, sans-serif' }}>Experience {index + 1}</h4>
+                            <h4 style={{ color: colorTokens.title, fontSize: '13px', fontWeight: 600, fontFamily: 'Inter, sans-serif' }}>Experience {index + 1}</h4>
                             <button
                               onClick={() => {
                                 const newExperience = tempFormData.experience.filter((_, i) => i !== index);
@@ -4360,7 +5783,7 @@ function EnhancedResumeContent() {
                           background: '#F8F9FF',
                           color: '#6477B4',
                           fontFamily: 'Inter, sans-serif',
-                          fontSize: '14px',
+                          fontSize: '13px',
                           fontWeight: 500
                         }}
                       >
@@ -4375,7 +5798,7 @@ function EnhancedResumeContent() {
                       {tempFormData.projects.map((project, index) => (
                         <div key={project.id || index} className="p-4 rounded-lg space-y-3" style={{ border: '1px solid #E1E4EB', background: '#F8F9FF' }}>
                           <div className="flex justify-between items-center">
-                            <h4 style={{ color: colorTokens.title, fontSize: '14px', fontWeight: 600, fontFamily: 'Inter, sans-serif' }}>Project {index + 1}</h4>
+                            <h4 style={{ color: colorTokens.title, fontSize: '13px', fontWeight: 600, fontFamily: 'Inter, sans-serif' }}>Project {index + 1}</h4>
                             <button
                               onClick={() => {
                                 const newProjects = tempFormData.projects.filter((_, i) => i !== index);
@@ -4489,7 +5912,7 @@ function EnhancedResumeContent() {
                           background: '#F8F9FF',
                           color: '#6477B4',
                           fontFamily: 'Inter, sans-serif',
-                          fontSize: '14px',
+                          fontSize: '13px',
                           fontWeight: 500
                         }}
                       >
@@ -4537,7 +5960,7 @@ function EnhancedResumeContent() {
                           background: '#F8F9FF',
                           color: '#6477B4',
                           fontFamily: 'Inter, sans-serif',
-                          fontSize: '14px',
+                          fontSize: '13px',
                           fontWeight: 500
                         }}
                       >
@@ -4552,7 +5975,7 @@ function EnhancedResumeContent() {
                       {tempFormData.certifications.map((cert, index) => (
                         <div key={cert.id || index} className="p-4 rounded-lg space-y-3" style={{ border: '1px solid #E1E4EB', background: '#F8F9FF' }}>
                           <div className="flex justify-between items-center">
-                            <h4 style={{ color: colorTokens.title, fontSize: '14px', fontWeight: 600, fontFamily: 'Inter, sans-serif' }}>Certification {index + 1}</h4>
+                            <h4 style={{ color: colorTokens.title, fontSize: '13px', fontWeight: 600, fontFamily: 'Inter, sans-serif' }}>Certification {index + 1}</h4>
                             <button
                               onClick={() => {
                                 const newCerts = tempFormData.certifications.filter((_, i) => i !== index);
@@ -4622,7 +6045,7 @@ function EnhancedResumeContent() {
                           background: '#F8F9FF',
                           color: '#6477B4',
                           fontFamily: 'Inter, sans-serif',
-                          fontSize: '14px',
+                          fontSize: '13px',
                           fontWeight: 500
                         }}
                       >
@@ -4637,7 +6060,7 @@ function EnhancedResumeContent() {
                       {tempFormData.languages.map((lang, index) => (
                         <div key={lang.id || index} className="p-4 rounded-lg space-y-3" style={{ border: '1px solid #E1E4EB', background: '#F8F9FF' }}>
                           <div className="flex justify-between items-center">
-                            <h4 style={{ color: colorTokens.title, fontSize: '14px', fontWeight: 600, fontFamily: 'Inter, sans-serif' }}>Language {index + 1}</h4>
+                            <h4 style={{ color: colorTokens.title, fontSize: '13px', fontWeight: 600, fontFamily: 'Inter, sans-serif' }}>Language {index + 1}</h4>
                             <button
                               onClick={() => {
                                 const newLangs = tempFormData.languages.filter((_, i) => i !== index);
@@ -4693,7 +6116,7 @@ function EnhancedResumeContent() {
                           background: '#F8F9FF',
                           color: '#6477B4',
                           fontFamily: 'Inter, sans-serif',
-                          fontSize: '14px',
+                          fontSize: '13px',
                           fontWeight: 500
                         }}
                       >
@@ -4943,27 +6366,23 @@ function EnhancedResumeContent() {
               </CardHeader>
 
               <CardContent>
-                <div className="bg-gray-50 p-2 lg:p-4 rounded-lg">
+                <div className="bg-gray-50 p-2 lg:p-4 rounded-lg flex justify-center">
                   <div
-                    className="bg-white border border-gray-200 shadow-lg mx-auto overflow-hidden"
+                    className="bg-white border border-gray-200 shadow-lg overflow-hidden"
                     style={{
-                      aspectRatio: "0.707",
-                      maxWidth: "100%",
-                      width: "100%",
-                      minHeight: isMobile ? "400px" : "600px",
-                      maxHeight: isMobile ? "500px" : "850px",
+                      aspectRatio: "210/297",
+                      width: isMobile ? "100%" : "620px",
+                      height: "auto",
                     }}
                   >
-                    <div className="h-full overflow-y-auto overflow-x-hidden">
-                      <PDFPreview
-                        key={JSON.stringify(resumeData)}
-                        templateId={selectedTemplate}
-                        width="100%"
-                        height="100%"
-                        sectionOrder={sectionOrder}
-                        resumeData={resumeData}
-                      />
-                    </div>
+                    <PDFPreview
+                      key={JSON.stringify(resumeData)}
+                      templateId={selectedTemplate}
+                      width="100%"
+                      height="100%"
+                      sectionOrder={sectionOrder}
+                      resumeData={resumeData}
+                    />
                   </div>
                 </div>
               </CardContent>
@@ -4973,52 +6392,6 @@ function EnhancedResumeContent() {
 
         </div> {/* END OLD LAYOUT - HIDDEN */}
 
-        {/* AI Improvements Panel - Only show for upload flow */}
-        {isFromUpload && (
-          <div className="mt-6">
-            <Card className="bg-gradient-to-r from-green-50 to-emerald-50 border-green-200">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-green-700 text-lg">
-                  <CheckCircle className="h-5 w-5" />
-                  AI Improvements Applied
-                </CardTitle>
-                <CardDescription>
-                  Here&apos;s what we enhanced in your resume
-                </CardDescription>
-              </CardHeader>
-
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                  {aiImprovements.map((improvement, index) => (
-                    <div
-                      key={index}
-                      className="bg-white p-4 rounded-lg border border-green-100"
-                    >
-                      <div className="flex items-center gap-2 mb-2">
-                        <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
-                          {improvement.type === "enhancement" ? (
-                            <CheckCircle className="h-4 w-4 text-green-600" />
-                          ) : (
-                            <AlertCircle className="h-4 w-4 text-blue-600" />
-                          )}
-                        </div>
-                        <span className="font-medium text-sm">
-                          {improvement.title}
-                        </span>
-                      </div>
-                      <p className="text-xs text-gray-600 mb-2">
-                        {improvement.description}
-                      </p>
-                      <Badge variant="secondary" className="text-xs">
-                        {improvement.count} improvements
-                      </Badge>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        )}
 
         {/* Preview Modal */}
         {showPreview && (

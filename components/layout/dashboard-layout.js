@@ -74,6 +74,18 @@ const sidebarItems = [
     ),
     href: "/linkedin-optimizer",
   },
+  {
+    title: "AI Career Coach",
+    icon: (
+      <Image
+        src="/careercoach.svg"
+        alt="AI Career Coach"
+        width={16}
+        height={16}
+      />
+    ),
+    href: "/ai-career-coach",
+  },
 ];
 
 // const footerItems = [

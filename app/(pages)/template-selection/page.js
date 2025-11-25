@@ -63,8 +63,8 @@ function TemplateSelectionContent() {
     checkDesktop();
 
     // Listen for resize
-    window.addEventListener('resize', checkDesktop);
-    return () => window.removeEventListener('resize', checkDesktop);
+    window.addEventListener("resize", checkDesktop);
+    return () => window.removeEventListener("resize", checkDesktop);
   }, []);
 
   // Enhanced filter states - using arrays for multi-select
@@ -184,7 +184,8 @@ function TemplateSelectionContent() {
           params.set("from", "upload");
           router.push(`/enhanced-resume?${params.toString()}`);
         } else {
-          const errorMsg = response?.message || "Failed to enhance resume. Please try again.";
+          const errorMsg =
+            response?.message || "Failed to enhance resume. Please try again.";
           setError(errorMsg);
           setLoading(false);
         }
@@ -222,7 +223,8 @@ function TemplateSelectionContent() {
           params.set("from", "ai");
           router.push(`/enhanced-resume?${params.toString()}`);
         } else {
-          const errorMsg = response?.message || "Failed to create resume. Please try again.";
+          const errorMsg =
+            response?.message || "Failed to create resume. Please try again.";
           setError(errorMsg);
           setLoading(false);
         }
@@ -235,7 +237,9 @@ function TemplateSelectionContent() {
       logError("TemplateSelectionPage", err);
 
       // Set the error message from errorInfo
-      setError(errorInfo.message || "An unexpected error occurred. Please try again.");
+      setError(
+        errorInfo.message || "An unexpected error occurred. Please try again."
+      );
       setLoading(false);
 
       // Handle redirects if needed (e.g., auth errors)
@@ -609,7 +613,7 @@ function TemplateSelectionContent() {
             {/* Right Content - Templates Grid */}
             <div style={{ flex: 1 }}>
               {/* Templates Grid - 2 columns */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+              <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-8">
                 {filteredTemplates.map((template) => (
                   <div
                     key={template.id}
