@@ -34,11 +34,6 @@ const nextConfig = {
       '@': __dirname,
     };
 
-    // Disable CSS minification in production to avoid PostCSS errors
-    if (!dev) {
-      config.optimization.minimize = false;
-    }
-
     return config;
   },
 };

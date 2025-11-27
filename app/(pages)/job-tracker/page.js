@@ -1,7 +1,7 @@
 'use client'
 import React, { useState, useEffect } from "react";
 import { DashboardLayout } from "@/components/layout/dashboard-layout";
-import { JobTracker } from "@/components/JobTracker";
+import { JobTrackerNew } from "@/components/JobTrackerNew";
 import styles from "@/app/styles/pages/job-tracker.module.css";
 
 export default function JobTrackerPage() {
@@ -63,8 +63,8 @@ export default function JobTrackerPage() {
           </div>
         </div>
 
-        {/* Kanban Board */}
-        <JobTracker />
+        {/* New Job Tracker Layout */}
+        <JobTrackerNew />
       </div>
     </DashboardLayout>
   );

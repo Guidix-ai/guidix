@@ -2160,7 +2160,7 @@ const JobSearchPage = () => {
   const [typewriterText, setTypewriterText] = useState("");
   const [showCursor, setShowCursor] = useState(true);
   const userName = user?.full_name || "User";
-  const fullText = `85+ Matches, 25 Portals,  5+ Hours Saved`;
+  const fullText = `AI Job Search`;
   const [jobs, setJobs] = useState(allJobs);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
