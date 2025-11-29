@@ -9,39 +9,8 @@ import styles from "@/app/styles/pages/resume-builder.module.css";
 import { getAllResumes } from "@/services/resumeService";
 import { handleApiError, logError } from "@/utils/errorHandler";
 
-// Initial resume data
-const initialResumesData = [
-  {
-    id: "1",
-    title: "Default Resume",
-    completion: 71,
-    previewText:
-      "First Name Preview\nLast Name\nTarget Job Title\n\nIt is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters as...",
-    lastEdited: "21 hours ago",
-    createdAt: "2025-09-10T15:56:00Z",
-    status: "draft",
-  },
-  {
-    id: "2",
-    title: "Software Engineer Resume",
-    completion: 85,
-    previewText:
-      "John Doe\nSenior Software Engineer\n\nExperienced software engineer with 5+ years developing scalable web applications using React, Node.js, and cloud technologies...",
-    lastEdited: "3 days ago",
-    createdAt: "2025-09-07T09:23:00Z",
-    status: "draft",
-  },
-  {
-    id: "3",
-    title: "Marketing Manager Resume",
-    completion: 100,
-    previewText:
-      "Jane Smith\nMarketing Manager\n\nResults-driven marketing professional with 7+ years of experience in digital marketing, brand management, and campaign optimization...",
-    lastEdited: "1 week ago",
-    createdAt: "2025-09-03T14:20:00Z",
-    status: "completed",
-  },
-];
+// Initial resume data - empty array, will be populated from API
+const initialResumesData = [];
 
 // Resume Card Component
 function ResumeCard({ resume, onEdit, onDelete, onDuplicate }) {
@@ -381,13 +350,33 @@ export default function ResumeBuilderPage() {
       setError(null);
       try {
         const response = await getAllResumes();
-        if (response.success && response.data.resumes) {
+        console.log("Resume list API response:", response);
+
+        // Handle different response structures from the API
+        // Could be: { success: true, data: { resumes: [...] } }
+        // Or: { success: true, data: [...] }
+        // Or: { data: [...] }
+        let resumesList = [];
+
+        if (response.success && response.data) {
+          if (Array.isArray(response.data.resumes)) {
+            resumesList = response.data.resumes;
+          } else if (Array.isArray(response.data)) {
+            resumesList = response.data;
+          }
+        } else if (Array.isArray(response.data)) {
+          resumesList = response.data;
+        } else if (Array.isArray(response)) {
+          resumesList = response;
+        }
+
+        if (resumesList.length > 0) {
           // Transform API data to match component structure
-          const transformedResumes = response.data.resumes.map((resume) => ({
+          const transformedResumes = resumesList.map((resume) => ({
             id: resume.resume_id,
-            title: resume.name,
+            title: resume.name || "Untitled Resume",
             completion: resume.ats_score || 0,
-            previewText: `${resume.name}\nATS Score: ${
+            previewText: `${resume.name || "Resume"}\nATS Score: ${
               resume.ats_score || "N/A"
             }%\n\nResume preview...`,
             lastEdited: getRelativeTime(resume.updated_at || resume.created_at),
@@ -397,13 +386,17 @@ export default function ResumeBuilderPage() {
             template_id: resume.template_id,
           }));
           setResumesData(transformedResumes);
+        } else {
+          // No resumes found - show empty state
+          setResumesData([]);
         }
       } catch (err) {
         const errorMessage = handleApiError(err);
         setError(errorMessage);
         logError("ResumeBuilderPage:fetchResumes", err);
-        // Keep using initial mock data if API fails
-        console.warn("Failed to fetch resumes, using mock data:", errorMessage);
+        // Set empty array on error to show empty state instead of mock data
+        setResumesData([]);
+        console.warn("Failed to fetch resumes:", errorMessage);
       } finally {
         setLoading(false);
       }
@@ -684,7 +677,63 @@ export default function ResumeBuilderPage() {
           {/* All Resumes Tab */}
           {activeTab === "all" && (
             <div className="space-y-6 mt-[16px] md:mt-6">
-              {hasResumes && (
+              {/* Loading State */}
+              {loading && (
+                <div
+                  className="bg-white rounded-xl border shadow-sm p-8 lg:p-12 text-center"
+                  style={{ borderColor: "var(--neutral-medium-light)" }}
+                >
+                  <div className="flex flex-col items-center justify-center">
+                    <div className="w-12 h-12 border-4 border-t-transparent rounded-full animate-spin mb-4" style={{ borderColor: "var(--brand-primary)", borderTopColor: "transparent" }}></div>
+                    <h3
+                      className="text-lg font-semibold mb-2"
+                      style={{ color: "var(--neutral-darkest)" }}
+                    >
+                      Loading your resumes...
+                    </h3>
+                    <p style={{ color: "var(--neutral-medium-dark)" }}>
+                      Please wait while we fetch your resumes
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {/* Error State */}
+              {!loading && error && (
+                <div
+                  className="bg-white rounded-xl border shadow-sm p-8 lg:p-12 text-center"
+                  style={{ borderColor: "#FEE2E2" }}
+                >
+                  <div className="flex flex-col items-center justify-center">
+                    <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center mb-4">
+                      <svg className="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                      </svg>
+                    </div>
+                    <h3
+                      className="text-lg font-semibold mb-2"
+                      style={{ color: "var(--neutral-darkest)" }}
+                    >
+                      Failed to load resumes
+                    </h3>
+                    <p className="mb-4" style={{ color: "var(--neutral-medium-dark)" }}>
+                      {error}
+                    </p>
+                    <button
+                      onClick={() => window.location.reload()}
+                      className="px-4 py-2 rounded-lg font-medium text-sm transition-all"
+                      style={{
+                        backgroundColor: "var(--brand-primary)",
+                        color: "#FFFFFF",
+                      }}
+                    >
+                      Try Again
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {!loading && !error && hasResumes && (
                 <div
                   className="bg-white rounded-xl shadow-sm border p-4 lg:p-6 "
                   style={{ borderColor: "var(--neutral-medium-light)" }}
@@ -798,59 +847,62 @@ export default function ResumeBuilderPage() {
                 </div>
               )}
 
-              {hasResumes ? (
-                filteredResumes.length > 0 ? (
-                  <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-                    {filteredResumes.map((resume) => (
-                      <ResumeCard
-                        key={resume.id}
-                        resume={resume}
-                        onEdit={handleEditResume}
-                        onDelete={handleDeleteResume}
-                        onDuplicate={handleDuplicateResume}
-                      />
-                    ))}
-                  </div>
-                ) : (
-                  <div
-                    className="bg-white rounded-xl border shadow-sm p-8 lg:p-12 text-center"
-                    style={{ borderColor: "var(--neutral-medium-light)" }}
-                  >
-                    <div className="mb-4 flex justify-center">
-                      <Image
-                        src="/jobsearching.svg"
-                        alt="Search"
-                        width={64}
-                        height={64}
-                      />
+              {/* Resume Cards or Empty State */}
+              {!loading && !error && (
+                hasResumes ? (
+                  filteredResumes.length > 0 ? (
+                    <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                      {filteredResumes.map((resume) => (
+                        <ResumeCard
+                          key={resume.id}
+                          resume={resume}
+                          onEdit={handleEditResume}
+                          onDelete={handleDeleteResume}
+                          onDuplicate={handleDuplicateResume}
+                        />
+                      ))}
                     </div>
-                    <h3
-                      className="text-lg lg:text-xl font-semibold mb-2"
-                      style={{ color: "var(--neutral-darkest)" }}
+                  ) : (
+                    <div
+                      className="bg-white rounded-xl border shadow-sm p-8 lg:p-12 text-center"
+                      style={{ borderColor: "var(--neutral-medium-light)" }}
                     >
-                      No resumes found
-                    </h3>
-                    <p
-                      className="mb-4"
-                      style={{ color: "var(--neutral-medium-dark)" }}
-                    >
-                      Try adjusting your search or filter criteria
-                    </p>
-                    <button
-                      onClick={() => setSearchQuery("")}
-                      className="font-medium transition-all duration-200"
-                      style={{ color: "var(--brand-primary)" }}
-                      onMouseEnter={(e) => (e.target.style.color = "#0355BE")}
-                      onMouseLeave={(e) =>
-                        (e.target.style.color = "var(--brand-primary)")
-                      }
-                    >
-                      Clear search
-                    </button>
-                  </div>
+                      <div className="mb-4 flex justify-center">
+                        <Image
+                          src="/jobsearching.svg"
+                          alt="Search"
+                          width={64}
+                          height={64}
+                        />
+                      </div>
+                      <h3
+                        className="text-lg lg:text-xl font-semibold mb-2"
+                        style={{ color: "var(--neutral-darkest)" }}
+                      >
+                        No resumes found
+                      </h3>
+                      <p
+                        className="mb-4"
+                        style={{ color: "var(--neutral-medium-dark)" }}
+                      >
+                        Try adjusting your search or filter criteria
+                      </p>
+                      <button
+                        onClick={() => setSearchQuery("")}
+                        className="font-medium transition-all duration-200"
+                        style={{ color: "var(--brand-primary)" }}
+                        onMouseEnter={(e) => (e.target.style.color = "#0355BE")}
+                        onMouseLeave={(e) =>
+                          (e.target.style.color = "var(--brand-primary)")
+                        }
+                      >
+                        Clear search
+                      </button>
+                    </div>
+                  )
+                ) : (
+                  <EmptyState />
                 )
-              ) : (
-                <EmptyState />
               )}
             </div>
           )}

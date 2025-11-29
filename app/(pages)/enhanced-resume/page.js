@@ -168,21 +168,29 @@ const CompareField = ({ label, original, enhanced, isOriginal }) => {
       bgColor = isOriginal ? 'transparent' : '#E2F8EA';
       textColor = isOriginal ? colorTokens.paragraph : '#166534';
       if (!isOriginal) {
-        badge = { text: 'Added', color: '#166534', bg: '#E2F8EA' };
+        badge = { text: 'Added', color: '#fff', bg: '#16a34a' };
       }
     } else if (value && !otherValue) {
       // Deletion (red)
       bgColor = isOriginal ? '#FACDD0' : 'transparent';
       textColor = isOriginal ? '#991b1b' : colorTokens.paragraph;
       if (isOriginal) {
-        badge = { text: 'Removed', color: '#991b1b', bg: '#FACDD0' };
+        badge = { text: 'Removed', color: '#fff', bg: '#dc2626' };
       }
     } else if (value !== otherValue) {
       // Modified (yellow) - for small field changes
       bgColor = '#FAEDBF';
       textColor = '#92400e';
-      badge = { text: 'Modified', color: '#92400e', bg: '#FAEDBF' };
+      badge = { text: 'Modified', color: '#fff', bg: '#d97706' };
     }
+  }
+
+  // Determine border color based on badge type
+  let borderColor = '#E1E4EB';
+  if (badge) {
+    if (badge.bg === '#16a34a') borderColor = '#86efac'; // Added - green
+    else if (badge.bg === '#dc2626') borderColor = '#f87171'; // Removed - red
+    else if (badge.bg === '#d97706') borderColor = '#fcd34d'; // Modified - yellow
   }
 
   return (
@@ -190,9 +198,29 @@ const CompareField = ({ label, original, enhanced, isOriginal }) => {
       padding: '8px',
       borderRadius: '6px',
       backgroundColor: bgColor,
+      border: `1px solid ${borderColor}`,
       marginBottom: '4px',
-      position: 'relative'
+      position: 'relative',
+      overflow: 'hidden'
     }}>
+      {badge && (
+        <div style={{
+          position: 'absolute',
+          top: '-1px',
+          right: '-1px',
+          padding: '2px 8px',
+          backgroundColor: badge.bg,
+          color: badge.color,
+          fontSize: '8px',
+          fontWeight: 600,
+          fontFamily: 'Inter, sans-serif',
+          textTransform: 'uppercase',
+          letterSpacing: '0.5px',
+          borderBottomLeftRadius: '6px'
+        }}>
+          {badge.text}
+        </div>
+      )}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '2px' }}>
         <p style={{
           color: colorTokens.paragraph,
@@ -200,21 +228,6 @@ const CompareField = ({ label, original, enhanced, isOriginal }) => {
           fontSize: '11px',
           fontWeight: 600
         }}>{label}:</p>
-        {badge && (
-          <span style={{
-            padding: '2px 6px',
-            borderRadius: '4px',
-            backgroundColor: badge.bg,
-            color: badge.color,
-            fontSize: '9px',
-            fontWeight: 600,
-            fontFamily: 'Inter, sans-serif',
-            textTransform: 'uppercase',
-            letterSpacing: '0.5px'
-          }}>
-            {badge.text}
-          </span>
-        )}
       </div>
       <p style={{
         color: textColor,
@@ -239,55 +252,64 @@ const CompareText = ({ original, enhanced, isOriginal }) => {
       bgColor = isOriginal ? 'transparent' : '#E2F8EA';
       textColor = isOriginal ? colorTokens.paragraph : '#166534';
       if (!isOriginal) {
-        badge = { text: 'Added', color: '#166534', bg: '#E2F8EA' };
+        badge = { text: 'Added', color: '#fff', bg: '#16a34a' };
       }
     } else if (value && !otherValue) {
       // Deletion (red)
       bgColor = isOriginal ? '#FACDD0' : 'transparent';
       textColor = isOriginal ? '#991b1b' : colorTokens.paragraph;
       if (isOriginal) {
-        badge = { text: 'Removed', color: '#991b1b', bg: '#FACDD0' };
+        badge = { text: 'Removed', color: '#fff', bg: '#dc2626' };
       }
     } else if (value !== otherValue) {
       // AI Enhanced (blue)
       bgColor = '#C3D0FF';
       textColor = '#1e3a8a';
-      badge = { text: 'AI Enhanced', color: '#1e3a8a', bg: '#C3D0FF' };
+      badge = { text: 'AI Enhanced', color: '#fff', bg: '#2370FF' };
     }
+  }
+
+  // Determine border color based on badge type
+  let borderColor = '#E1E4EB';
+  if (badge) {
+    if (badge.bg === '#16a34a') borderColor = '#86efac'; // Added - green
+    else if (badge.bg === '#dc2626') borderColor = '#f87171'; // Removed - red
+    else if (badge.bg === '#2370FF') borderColor = '#93c5fd'; // AI Enhanced - blue
   }
 
   return (
     <div style={{
       padding: '12px',
-      borderRadius: '8px',
+      borderRadius: '6px',
       backgroundColor: bgColor,
-      border: `1px solid ${bgColor === 'transparent' ? '#E1E4EB' : bgColor}`,
-      position: 'relative'
+      border: `1px solid ${borderColor}`,
+      position: 'relative',
+      overflow: 'hidden'
     }}>
       {badge && (
-        <span style={{
+        <div style={{
           position: 'absolute',
-          top: '8px',
-          right: '8px',
-          padding: '2px 6px',
-          borderRadius: '4px',
+          top: '-1px',
+          right: '-1px',
+          padding: '2px 8px',
           backgroundColor: badge.bg,
           color: badge.color,
-          fontSize: '9px',
+          fontSize: '8px',
           fontWeight: 600,
           fontFamily: 'Inter, sans-serif',
           textTransform: 'uppercase',
-          letterSpacing: '0.5px'
+          letterSpacing: '0.5px',
+          borderBottomLeftRadius: '6px'
         }}>
           {badge.text}
-        </span>
+        </div>
       )}
       <p style={{
         color: textColor,
         fontFamily: 'Inter, sans-serif',
         fontSize: '13px',
         lineHeight: '1.6',
-        paddingRight: badge ? '80px' : '0'
+        paddingRight: badge ? '70px' : '0'
       }}>{value || '-'}</p>
     </div>
   );
@@ -309,7 +331,7 @@ const CompareListItem = ({ original, enhanced, isOriginal }) => {
       textColor = isOriginal ? colorTokens.paragraph : '#166534';
       bulletColor = isOriginal ? colorTokens.paragraph : '#166534';
       if (!isOriginal) {
-        badge = { text: 'New', color: '#166534', bg: '#E2F8EA' };
+        badge = { text: 'New', color: '#fff', bg: '#16a34a' };
       }
     } else if (value && !otherValue) {
       // Deletion (red)
@@ -317,15 +339,23 @@ const CompareListItem = ({ original, enhanced, isOriginal }) => {
       textColor = isOriginal ? '#991b1b' : colorTokens.paragraph;
       bulletColor = isOriginal ? '#991b1b' : colorTokens.paragraph;
       if (isOriginal) {
-        badge = { text: 'Removed', color: '#991b1b', bg: '#FACDD0' };
+        badge = { text: 'Removed', color: '#fff', bg: '#dc2626' };
       }
     } else if (value !== otherValue) {
       // AI Enhanced (blue)
       bgColor = '#C3D0FF';
       textColor = '#1e3a8a';
       bulletColor = '#1e3a8a';
-      badge = { text: 'AI Enhanced', color: '#1e3a8a', bg: '#C3D0FF' };
+      badge = { text: 'AI Enhanced', color: '#fff', bg: '#2370FF' };
     }
+  }
+
+  // Determine border color based on badge type
+  let borderColor = '#E1E4EB';
+  if (badge) {
+    if (badge.bg === '#16a34a') borderColor = '#86efac'; // New - green
+    else if (badge.bg === '#dc2626') borderColor = '#f87171'; // Removed - red
+    else if (badge.bg === '#2370FF') borderColor = '#93c5fd'; // AI Enhanced - blue
   }
 
   if (!value) return null;
@@ -335,10 +365,12 @@ const CompareListItem = ({ original, enhanced, isOriginal }) => {
       display: 'flex',
       gap: '8px',
       padding: '6px 8px',
-      borderRadius: '4px',
+      borderRadius: '6px',
       backgroundColor: bgColor,
+      border: `1px solid ${borderColor}`,
       marginBottom: '4px',
-      position: 'relative'
+      position: 'relative',
+      overflow: 'hidden'
     }}>
       <span style={{
         color: bulletColor,
@@ -346,6 +378,24 @@ const CompareListItem = ({ original, enhanced, isOriginal }) => {
         marginTop: '2px',
         flexShrink: 0
       }}>•</span>
+      {badge && (
+        <div style={{
+          position: 'absolute',
+          top: '-1px',
+          right: '-1px',
+          padding: '2px 8px',
+          backgroundColor: badge.bg,
+          color: badge.color,
+          fontSize: '8px',
+          fontWeight: 600,
+          fontFamily: 'Inter, sans-serif',
+          textTransform: 'uppercase',
+          letterSpacing: '0.5px',
+          borderBottomLeftRadius: '4px'
+        }}>
+          {badge.text}
+        </div>
+      )}
       <p style={{
         color: textColor,
         fontFamily: 'Inter, sans-serif',
@@ -354,24 +404,6 @@ const CompareListItem = ({ original, enhanced, isOriginal }) => {
         flex: 1,
         paddingRight: badge ? '70px' : '0'
       }}>{value}</p>
-      {badge && (
-        <span style={{
-          position: 'absolute',
-          top: '6px',
-          right: '8px',
-          padding: '2px 6px',
-          borderRadius: '4px',
-          backgroundColor: badge.bg,
-          color: badge.color,
-          fontSize: '8px',
-          fontWeight: 600,
-          fontFamily: 'Inter, sans-serif',
-          textTransform: 'uppercase',
-          letterSpacing: '0.5px'
-        }}>
-          {badge.text}
-        </span>
-      )}
     </div>
   );
 };
@@ -582,17 +614,36 @@ function EnhancedResumeContent() {
           }
 
           // Also try to get original resume data from sessionStorage if not in the main data
-          const storedOriginal = sessionStorage.getItem('originalResumeData');
-          if (storedOriginal && resumeDataFromAPI) {
-            try {
-              const originalData = JSON.parse(storedOriginal);
-              // Merge original data into the API response if not already present
-              if (!resumeDataFromAPI.original_resume && originalData) {
-                resumeDataFromAPI.original_resume = originalData;
-                console.log('📦 Merged originalResumeData from sessionStorage');
+          // First try 'originalResumeData', then fall back to 'uploadedResumeData' (from upload page)
+          if (resumeDataFromAPI && !resumeDataFromAPI.original_resume) {
+            let storedOriginal = sessionStorage.getItem('originalResumeData');
+
+            // If not found, try to get from uploadedResumeData which contains the parsed original resume
+            if (!storedOriginal) {
+              const uploadedData = sessionStorage.getItem('uploadedResumeData');
+              if (uploadedData) {
+                try {
+                  const parsedUploadedData = JSON.parse(uploadedData);
+                  // uploadedResumeData contains original_resume array from upload API
+                  if (parsedUploadedData.original_resume) {
+                    resumeDataFromAPI.original_resume = parsedUploadedData.original_resume;
+                    console.log('📦 Merged original_resume from uploadedResumeData sessionStorage');
+                  }
+                } catch (e) {
+                  console.error('Failed to parse uploadedResumeData from sessionStorage', e);
+                }
               }
-            } catch (e) {
-              console.error('Failed to parse originalResumeData from sessionStorage', e);
+            } else {
+              try {
+                const originalData = JSON.parse(storedOriginal);
+                // Merge original data into the API response if not already present
+                if (originalData) {
+                  resumeDataFromAPI.original_resume = originalData;
+                  console.log('📦 Merged originalResumeData from sessionStorage');
+                }
+              } catch (e) {
+                console.error('Failed to parse originalResumeData from sessionStorage', e);
+              }
             }
           }
         } else if (isFromAI) {
@@ -4594,26 +4645,26 @@ function EnhancedResumeContent() {
                         <CompareField
                           label="Name"
                           original={(originalResumeData || dummyOriginalData).personalInfo?.name}
-                          enhanced={(enhancedResumeData || dummyEnhancedData).personalInfo?.name}
+                          enhanced={resumeData.personalInfo?.name}
                           isOriginal={true}
                         />
                         <CompareField
                           label="Email"
                           original={(originalResumeData || dummyOriginalData).personalInfo?.email}
-                          enhanced={(enhancedResumeData || dummyEnhancedData).personalInfo?.email}
+                          enhanced={resumeData.personalInfo?.email}
                           isOriginal={true}
                         />
                         <CompareField
                           label="Phone"
                           original={(originalResumeData || dummyOriginalData).personalInfo?.phone}
-                          enhanced={(enhancedResumeData || dummyEnhancedData).personalInfo?.phone}
+                          enhanced={resumeData.personalInfo?.phone}
                           isOriginal={true}
                         />
                       </div>
                     </div>
 
                     {/* Summary Comparison */}
-                    {((originalResumeData || dummyOriginalData).summary || (enhancedResumeData || dummyEnhancedData).summary) && (
+                    {((originalResumeData || dummyOriginalData).summary || resumeData.summary) && (
                       <div className="mb-6">
                         <h3 style={{
                           color: colorTokens.title,
@@ -4624,7 +4675,7 @@ function EnhancedResumeContent() {
                         }}>Professional Summary</h3>
                         <CompareText
                           original={(originalResumeData || dummyOriginalData).summary}
-                          enhanced={(enhancedResumeData || dummyEnhancedData).summary}
+                          enhanced={resumeData.summary}
                           isOriginal={true}
                         />
                       </div>
@@ -4645,13 +4696,13 @@ function EnhancedResumeContent() {
                             <CompareField
                               label="Position"
                               original={exp.position}
-                              enhanced={(enhancedResumeData || dummyEnhancedData).experience?.[index]?.position}
+                              enhanced={resumeData.experience?.[index]?.position}
                               isOriginal={true}
                             />
                             <CompareField
                               label="Company"
                               original={exp.company}
-                              enhanced={(enhancedResumeData || dummyEnhancedData).experience?.[index]?.company}
+                              enhanced={resumeData.experience?.[index]?.company}
                               isOriginal={true}
                             />
                             <div className="mt-2">
@@ -4666,7 +4717,7 @@ function EnhancedResumeContent() {
                                 <CompareListItem
                                   key={aIndex}
                                   original={achievement}
-                                  enhanced={(enhancedResumeData || dummyEnhancedData).experience?.[index]?.achievements?.[aIndex]}
+                                  enhanced={resumeData.experience?.[index]?.achievements?.[aIndex]}
                                   isOriginal={true}
                                 />
                               ))}
@@ -4691,19 +4742,19 @@ function EnhancedResumeContent() {
                             <CompareField
                               label="Degree"
                               original={edu.degree}
-                              enhanced={(enhancedResumeData || dummyEnhancedData).education?.[index]?.degree}
+                              enhanced={resumeData.education?.[index]?.degree}
                               isOriginal={true}
                             />
                             <CompareField
                               label="Field"
                               original={edu.field}
-                              enhanced={(enhancedResumeData || dummyEnhancedData).education?.[index]?.field}
+                              enhanced={resumeData.education?.[index]?.field}
                               isOriginal={true}
                             />
                             <CompareField
                               label="Institution"
                               original={edu.institution}
-                              enhanced={(enhancedResumeData || dummyEnhancedData).education?.[index]?.institution}
+                              enhanced={resumeData.education?.[index]?.institution}
                               isOriginal={true}
                             />
                           </div>
@@ -4726,12 +4777,12 @@ function EnhancedResumeContent() {
                             <CompareField
                               label="Project Name"
                               original={proj.name}
-                              enhanced={(enhancedResumeData || dummyEnhancedData).projects?.[index]?.name}
+                              enhanced={resumeData.projects?.[index]?.name}
                               isOriginal={true}
                             />
                             <CompareText
                               original={proj.description}
-                              enhanced={(enhancedResumeData || dummyEnhancedData).projects?.[index]?.description}
+                              enhanced={resumeData.projects?.[index]?.description}
                               isOriginal={true}
                             />
                           </div>
@@ -4755,7 +4806,7 @@ function EnhancedResumeContent() {
                           gap: '8px'
                         }}>
                           {(originalResumeData || dummyOriginalData).skills.map((skill, index) => {
-                            const enhancedHasSkill = (enhancedResumeData || dummyEnhancedData).skills?.includes(skill);
+                            const enhancedHasSkill = resumeData.skills?.includes(skill);
                             const isRemoved = !enhancedHasSkill;
                             return (
                               <div
@@ -4816,7 +4867,7 @@ function EnhancedResumeContent() {
                             <CompareField
                               label="Certification"
                               original={cert.name}
-                              enhanced={(enhancedResumeData || dummyEnhancedData).certifications?.[index]?.name}
+                              enhanced={resumeData.certifications?.[index]?.name}
                               isOriginal={true}
                             />
                           </div>
@@ -4839,13 +4890,13 @@ function EnhancedResumeContent() {
                             <CompareField
                               label="Language"
                               original={lang.name}
-                              enhanced={(enhancedResumeData || dummyEnhancedData).languages?.[index]?.name}
+                              enhanced={resumeData.languages?.[index]?.name}
                               isOriginal={true}
                             />
                             <CompareField
                               label="Proficiency"
                               original={lang.proficiency}
-                              enhanced={(enhancedResumeData || dummyEnhancedData).languages?.[index]?.proficiency}
+                              enhanced={resumeData.languages?.[index]?.proficiency}
                               isOriginal={true}
                             />
                           </div>
@@ -4875,7 +4926,7 @@ function EnhancedResumeContent() {
                         fontSize: '15px',
                         fontWeight: 600
                       }}>
-                        Enhanced Resume
+                        Current Resume
                       </CardTitle>
                     </div>
                   </CardHeader>
@@ -4893,26 +4944,26 @@ function EnhancedResumeContent() {
                         <CompareField
                           label="Name"
                           original={(originalResumeData || dummyOriginalData).personalInfo?.name}
-                          enhanced={(enhancedResumeData || dummyEnhancedData).personalInfo?.name}
+                          enhanced={resumeData.personalInfo?.name}
                           isOriginal={false}
                         />
                         <CompareField
                           label="Email"
                           original={(originalResumeData || dummyOriginalData).personalInfo?.email}
-                          enhanced={(enhancedResumeData || dummyEnhancedData).personalInfo?.email}
+                          enhanced={resumeData.personalInfo?.email}
                           isOriginal={false}
                         />
                         <CompareField
                           label="Phone"
                           original={(originalResumeData || dummyOriginalData).personalInfo?.phone}
-                          enhanced={(enhancedResumeData || dummyEnhancedData).personalInfo?.phone}
+                          enhanced={resumeData.personalInfo?.phone}
                           isOriginal={false}
                         />
                       </div>
                     </div>
 
                     {/* Summary Comparison */}
-                    {((originalResumeData || dummyOriginalData).summary || (enhancedResumeData || dummyEnhancedData).summary) && (
+                    {((originalResumeData || dummyOriginalData).summary || resumeData.summary) && (
                       <div className="mb-6">
                         <h3 style={{
                           color: colorTokens.title,
@@ -4923,14 +4974,14 @@ function EnhancedResumeContent() {
                         }}>Professional Summary</h3>
                         <CompareText
                           original={(originalResumeData || dummyOriginalData).summary}
-                          enhanced={(enhancedResumeData || dummyEnhancedData).summary}
+                          enhanced={resumeData.summary}
                           isOriginal={false}
                         />
                       </div>
                     )}
 
                     {/* Experience Comparison */}
-                    {(enhancedResumeData || dummyEnhancedData).experience?.length > 0 && (
+                    {resumeData.experience?.length > 0 && (
                       <div className="mb-6">
                         <h3 style={{
                           color: colorTokens.title,
@@ -4939,7 +4990,7 @@ function EnhancedResumeContent() {
                           fontWeight: 600,
                           marginBottom: '10px'
                         }}>Work Experience</h3>
-                        {(enhancedResumeData || dummyEnhancedData).experience.map((exp, index) => (
+                        {resumeData.experience.map((exp, index) => (
                           <div key={index} className="mb-4 p-3 rounded" style={{ backgroundColor: '#F8F9FF' }}>
                             <CompareField
                               label="Position"
@@ -4976,7 +5027,7 @@ function EnhancedResumeContent() {
                     )}
 
                     {/* Education Comparison */}
-                    {(enhancedResumeData || dummyEnhancedData).education?.length > 0 && (
+                    {resumeData.education?.length > 0 && (
                       <div className="mb-6">
                         <h3 style={{
                           color: colorTokens.title,
@@ -4985,7 +5036,7 @@ function EnhancedResumeContent() {
                           fontWeight: 600,
                           marginBottom: '10px'
                         }}>Education</h3>
-                        {(enhancedResumeData || dummyEnhancedData).education.map((edu, index) => (
+                        {resumeData.education.map((edu, index) => (
                           <div key={index} className="mb-3 p-3 rounded" style={{ backgroundColor: '#F8F9FF' }}>
                             <CompareField
                               label="Degree"
@@ -5011,7 +5062,7 @@ function EnhancedResumeContent() {
                     )}
 
                     {/* Projects Comparison */}
-                    {(enhancedResumeData || dummyEnhancedData).projects?.length > 0 && (
+                    {resumeData.projects?.length > 0 && (
                       <div className="mb-6">
                         <h3 style={{
                           color: colorTokens.title,
@@ -5020,7 +5071,7 @@ function EnhancedResumeContent() {
                           fontWeight: 600,
                           marginBottom: '10px'
                         }}>Projects</h3>
-                        {(enhancedResumeData || dummyEnhancedData).projects.map((proj, index) => (
+                        {resumeData.projects.map((proj, index) => (
                           <div key={index} className="mb-3 p-3 rounded" style={{ backgroundColor: '#F8F9FF' }}>
                             <CompareField
                               label="Project Name"
@@ -5039,7 +5090,7 @@ function EnhancedResumeContent() {
                     )}
 
                     {/* Skills Comparison */}
-                    {(enhancedResumeData || dummyEnhancedData).skills?.length > 0 && (
+                    {resumeData.skills?.length > 0 && (
                       <div className="mb-6">
                         <h3 style={{
                           color: colorTokens.title,
@@ -5053,7 +5104,7 @@ function EnhancedResumeContent() {
                           flexWrap: 'wrap',
                           gap: '8px'
                         }}>
-                          {(enhancedResumeData || dummyEnhancedData).skills.map((skill, index) => {
+                          {resumeData.skills.map((skill, index) => {
                             const originalHasSkill = (originalResumeData || dummyOriginalData).skills?.includes(skill);
                             const isAdded = !originalHasSkill;
                             return (
@@ -5101,7 +5152,7 @@ function EnhancedResumeContent() {
                     )}
 
                     {/* Certifications Comparison */}
-                    {(enhancedResumeData || dummyEnhancedData).certifications?.length > 0 && (
+                    {resumeData.certifications?.length > 0 && (
                       <div className="mb-6">
                         <h3 style={{
                           color: colorTokens.title,
@@ -5110,7 +5161,7 @@ function EnhancedResumeContent() {
                           fontWeight: 600,
                           marginBottom: '10px'
                         }}>Certifications</h3>
-                        {(enhancedResumeData || dummyEnhancedData).certifications.map((cert, index) => (
+                        {resumeData.certifications.map((cert, index) => (
                           <div key={index} className="mb-3 p-3 rounded" style={{ backgroundColor: '#F8F9FF' }}>
                             <CompareField
                               label="Certification"
@@ -5124,7 +5175,7 @@ function EnhancedResumeContent() {
                     )}
 
                     {/* Languages Comparison */}
-                    {(enhancedResumeData || dummyEnhancedData).languages?.length > 0 && (
+                    {resumeData.languages?.length > 0 && (
                       <div className="mb-6">
                         <h3 style={{
                           color: colorTokens.title,
@@ -5133,7 +5184,7 @@ function EnhancedResumeContent() {
                           fontWeight: 600,
                           marginBottom: '10px'
                         }}>Languages</h3>
-                        {(enhancedResumeData || dummyEnhancedData).languages.map((lang, index) => (
+                        {resumeData.languages.map((lang, index) => (
                           <div key={index} className="mb-3 p-3 rounded" style={{ backgroundColor: '#F8F9FF' }}>
                             <CompareField
                               label="Language"

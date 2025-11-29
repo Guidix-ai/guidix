@@ -13,7 +13,7 @@
 3. [API Call Patterns](#api-call-patterns)
 4. [State Management Approaches](#state-management-approaches)
 5. [Duplicated API Calls](#duplicated-api-calls)
-6. [Redundant Services & Unused Code](#redundant-services--unused-code)
+6. [Redundant Services &amp; Unused Code](#redundant-services--unused-code)
 7. [Dead Code Files](#dead-code-files)
 8. [State Management Issues](#state-management-issues)
 9. [Authentication Flow Analysis](#authentication-flow-analysis)
@@ -30,15 +30,15 @@ The Guidix codebase currently implements **6 different API call patterns** and *
 
 ### Key Findings
 
-| Issue Type | Count | Severity |
-|------------|-------|----------|
-| API Call Patterns | 6 | High |
-| Duplicate API Endpoints | 8+ | High |
-| Unused API Client Instances | 6 | High |
-| Dead Code Files | 9+ | Medium |
-| Redundant State Patterns | 3+ | Medium |
-| Scattered localStorage Operations | 6+ locations | Medium |
-| State Management Approaches | 3 | Medium |
+| Issue Type                        | Count        | Severity |
+| --------------------------------- | ------------ | -------- |
+| API Call Patterns                 | 6            | High     |
+| Duplicate API Endpoints           | 8+           | High     |
+| Unused API Client Instances       | 6            | High     |
+| Dead Code Files                   | 9+           | Medium   |
+| Redundant State Patterns          | 3+           | Medium   |
+| Scattered localStorage Operations | 6+ locations | Medium   |
+| State Management Approaches       | 3            | Medium   |
 
 ### Critical Issues
 
@@ -53,20 +53,24 @@ The Guidix codebase currently implements **6 different API call patterns** and *
 ## Technology Stack
 
 ### Frontend Framework
+
 - **Next.js 15.5.3** (App Router)
 - **React 19.1.0**
 
 ### State Management
+
 - **Redux Toolkit 2.9.0**
 - **React Redux 9.2.0**
 - **localStorage** (for persistence)
 
 ### HTTP Clients
+
 - **Axios 1.12.2**
 - **Fetch API** (native)
 - **Next.js API Routes** (as middleware)
 
 ### Authentication
+
 - **Cookie-based authentication** (HttpOnly cookies)
 - **`withCredentials: true`** pattern throughout
 
@@ -81,11 +85,13 @@ The codebase uses **6 different patterns** to make API calls:
 **Location:** `app/redux/actions/`
 
 **Files:**
+
 - `authActions.js` - 8 thunks
 - `resumeActions.js` - 6 thunks
 - `jobActions.js` - 7 thunks
 
 **Example:**
+
 ```javascript
 // authActions.js:75-104
 export const loginUser = createAsyncThunk(
@@ -108,12 +114,14 @@ export const loginUser = createAsyncThunk(
 ```
 
 **Usage in Components:**
+
 ```javascript
 // login/page.js
 await dispatch(loginUser({ email, password })).unwrap();
 ```
 
 **Thunks by Feature:**
+
 - **Auth (8):** login, register, logout, getUserProfile, updateProfile, verifyEmail, forgotPassword, resetPassword
 - **Resume (6):** fetchResumes, fetchResumeById, createResume, updateResume, deleteResume, generateAIResume
 - **Job (7):** fetchJobs, fetchJobById, searchJobs, applyForJob, addToWishlist, removeFromWishlist, fetchMyApplications
@@ -125,10 +133,12 @@ await dispatch(loginUser({ email, password })).unwrap();
 **Location:** `services/`
 
 **Files:**
+
 - `resumeService.js` - 9 functions (496 lines)
 - `jobService.js` - 13 functions (617 lines)
 
 **Resume Service Functions:**
+
 1. `uploadAndProcessResume()` - POST /api/v1/resumes/upload_and_process
 2. `enhanceResume()` - POST /api/v1/resumes/{id}/enhance
 3. `createResumeFromPrompt()` - POST /api/v1/resumes/resume-creation
@@ -140,6 +150,7 @@ await dispatch(loginUser({ email, password })).unwrap();
 9. `uploadWithProgress()` - POST with axios progress tracking
 
 **Job Service Functions:**
+
 1. `getJobsWithResumeUpload()` - POST with-resume-upload
 2. `getJobDetails()` - GET /api/v1/integrated-jobs/{id}
 3. `addToWishlist()` - POST /api/v1/integrated-jobs/{id}/wishlist
@@ -155,6 +166,7 @@ await dispatch(loginUser({ email, password })).unwrap();
 13. `getTrendingJobs()` - GET /api/v1/integrated-jobs/trending
 
 **Example:**
+
 ```javascript
 // resumeService.js:318-352
 export const getResume = async (resumeId) => {
@@ -173,6 +185,7 @@ export const getResume = async (resumeId) => {
 ```
 
 **Usage in Components:**
+
 ```javascript
 // resume-builder/page.js
 import { getAllResumes } from "@/services/resumeService";
@@ -186,10 +199,12 @@ const resumes = await getAllResumes();
 **Location:** `lib/api/`
 
 **Files:**
+
 - `resumeClient.js` (69 lines)
 - `jobClient.js` (49 lines)
 
 **Configuration:**
+
 ```javascript
 // resumeClient.js:10-17
 export const resumeApiClient = axios.create({
@@ -221,6 +236,7 @@ resumeApiClient.interceptors.response.use(
 ```
 
 **Used By:**
+
 - Redux actions (resumeActions.js uses resumeApiClient)
 - Service layer (uploadWithProgress in resumeService.js)
 
@@ -231,6 +247,7 @@ resumeApiClient.interceptors.response.use(
 **Location:** `app/api/v1/`
 
 **Routes:**
+
 - `app/api/v1/auth/signin/route.js`
 - `app/api/v1/auth/logout/route.js`
 - `app/api/v1/auth/refresh/route.js`
@@ -246,6 +263,7 @@ resumeApiClient.interceptors.response.use(
 **Purpose:** Act as proxy/middleware between frontend and backend API
 
 **Example:**
+
 ```javascript
 // app/api/v1/resumes/resume-creation/route.js
 export async function POST(request) {
@@ -287,6 +305,7 @@ export async function POST(request) {
 **Location:** `utils/apiClient.js` (147 lines)
 
 **Class Definition:**
+
 ```javascript
 // utils/apiClient.js:7-53
 class APIClient {
@@ -328,6 +347,7 @@ class APIClient {
 ```
 
 **Pre-instantiated Clients (UNUSED!):**
+
 ```javascript
 // utils/apiClient.js:138-143
 export const authAPI = new APIClient(API_BASE_URL);
@@ -347,10 +367,12 @@ export const interviewAPI = new APIClient(API_BASE_URL);
 **Location:** `hooks/`
 
 **Files:**
+
 - `useAuth.js` (34 lines)
 - `useGlobalAuth.js` (51 lines)
 
 **useAuth Hook:**
+
 ```javascript
 // hooks/useAuth.js
 export function useAuth(redirectTo = '/login') {
@@ -376,6 +398,7 @@ export function useAuth(redirectTo = '/login') {
 ```
 
 **useGlobalAuth Hook:**
+
 ```javascript
 // hooks/useGlobalAuth.js
 export function useGlobalAuth() {
@@ -416,11 +439,13 @@ export function useGlobalAuth() {
 **Location:** `app/redux/reducers/`
 
 **Files:**
+
 - `authSlice.js` (413 lines)
 - `resumeSlice.js` (148 lines)
 - `jobSlice.js` (177 lines)
 
 **Auth Slice State:**
+
 ```javascript
 // authSlice.js:18-59
 const initialState = {
@@ -457,6 +482,7 @@ const initialState = {
 ```
 
 **Resume Slice State:**
+
 ```javascript
 // resumeSlice.js:11-17
 const initialState = {
@@ -469,6 +495,7 @@ const initialState = {
 ```
 
 **Job Slice State:**
+
 ```javascript
 // jobSlice.js:12-25
 const initialState = {
@@ -488,6 +515,7 @@ const initialState = {
 ```
 
 **Redux Store:**
+
 ```javascript
 // store.js
 export const store = configureStore({
@@ -513,14 +541,17 @@ export const store = configureStore({
 ### Approach 2: localStorage Persistence
 
 **Used For:**
+
 - User authentication state
 - User profile data
 
 **Keys Stored:**
+
 - `user` - JSON object with user details
 - `isAuthenticated` - boolean string ('true'/'false')
 
 **Synchronization with Redux:**
+
 ```javascript
 // authSlice.js:147-160
 setUser: (state, action) => {
@@ -539,6 +570,7 @@ setUser: (state, action) => {
 ```
 
 **Load on Initial State:**
+
 ```javascript
 // authSlice.js:65-83
 const loadUserFromLocalStorage = () => {
@@ -559,6 +591,7 @@ initialState.isAuthenticated = !!initialState.user;
 ```
 
 **Locations Where localStorage is Cleared:**
+
 1. `lib/api/resumeClient.js:52`
 2. `lib/api/jobClient.js:42`
 3. `utils/auth.js:72, 87`
@@ -573,12 +606,14 @@ initialState.isAuthenticated = !!initialState.user;
 ### Approach 3: Component Local State
 
 **Used For:**
+
 - Form data
 - UI state (modals, dropdowns, tabs, filters)
 - Temporary loading states
 - Local search and filtering
 
 **Example from JobTracker.jsx:**
+
 ```javascript
 // JobTracker.jsx:68-80
 const [columns, setColumns] = useState(initialColumns);
@@ -594,6 +629,7 @@ const [jobToMove, setJobToMove] = useState(null);
 ```
 
 **Example from login/page.js:**
+
 ```javascript
 // login/page.js:166-172
 const [formData, setFormData] = useState({
@@ -612,12 +648,14 @@ const [showPassword, setShowPassword] = useState(false);
 ### 1. Job Status Updates - Three Functions for Same Task
 
 **Functions:**
+
 - `removeFromWishlist()` - services/jobService.js:136-163
 - `setJobStatus()` - services/jobService.js:204-231
 
 **Both call:** `/api/v1/integrated-jobs/job/{jobId}/status` with PATCH
 
 **Code:**
+
 ```javascript
 // jobService.js:136-163
 export const removeFromWishlist = async (jobId) => {
@@ -655,6 +693,7 @@ export const setJobStatus = async (jobId, status) => {
 ### 2. Resume Creation - Multiple Wrappers for Same Endpoint
 
 **Locations:**
+
 - `createResumeFromPrompt()` - services/resumeService.js:132-219
 - `createResume()` - app/redux/actions/resumeActions.js:46-58
 - `generateAIResume()` - app/redux/actions/resumeActions.js:97-113
@@ -662,6 +701,7 @@ export const setJobStatus = async (jobId, status) => {
 **All call:** POST `/api/v1/resumes/resume-creation`
 
 **Code:**
+
 ```javascript
 // Service Layer
 export const createResumeFromPrompt = async (prompt, resumeName, templateId) => {
@@ -707,6 +747,7 @@ export const generateAIResume = createAsyncThunk(
 ### 3. User Profile Fetching - Duplicate Calls
 
 **Locations:**
+
 - `isAuthenticated()` - utils/auth.js:14-27
 - `getCurrentUser()` - utils/auth.js:33-53
 - `getUserProfile()` - app/redux/actions/authActions.js:174-198
@@ -714,6 +755,7 @@ export const generateAIResume = createAsyncThunk(
 **All call:** GET `/api/v1/users/me`
 
 **Code:**
+
 ```javascript
 // utils/auth.js
 export async function isAuthenticated() {
@@ -757,6 +799,7 @@ export const getUserProfile = createAsyncThunk(
 ### 4. Resume List Fetching
 
 **Locations:**
+
 - `getAllResumes()` - services/resumeService.js
 - `fetchResumes()` - app/redux/actions/resumeActions.js:12-24
 
@@ -767,6 +810,7 @@ export const getUserProfile = createAsyncThunk(
 ### 5. Resume by ID Fetching
 
 **Locations:**
+
 - `getResume()` - services/resumeService.js:318-352
 - `fetchResumeById()` - app/redux/actions/resumeActions.js:29-41
 
@@ -777,6 +821,7 @@ export const getUserProfile = createAsyncThunk(
 ### 6. Resume Deletion
 
 **Locations:**
+
 - `deleteResume()` - services/resumeService.js
 - `deleteResume()` - app/redux/actions/resumeActions.js:80-92
 
@@ -787,10 +832,12 @@ export const getUserProfile = createAsyncThunk(
 ### 7. Wishlist Management
 
 **Locations:**
+
 - Service Layer: `addToWishlist()`, `removeFromWishlist()` - services/jobService.js
 - Redux Actions: `addToWishlist()`, `removeFromWishlist()` - app/redux/actions/jobActions.js:83-120
 
 **Different Endpoints:**
+
 - Service: POST `/api/v1/integrated-jobs/{id}/wishlist`
 - Redux: PATCH `/api/v1/jobs/user/0/job/{id}/status`
 
@@ -858,6 +905,7 @@ export const getIntegratedJobsWithResumeId = getJobsWithResumeId;  // Alias
 ### Complete List of Unused Files
 
 **Backup/Old Component Files:**
+
 1. `app/(pages)/enhanced-resume/page-backup.js`
 2. `app/(pages)/enhanced-resume/page-modified.js`
 3. `app/(pages)/template-selection/page-backup.js`
@@ -885,6 +933,7 @@ export const getIntegratedJobsWithResumeId = getJobsWithResumeId;  // Alias
 ### Issue 1: Auth State in 3 Places
 
 **Location 1: Redux authSlice**
+
 ```javascript
 state = {
   user: null,
@@ -894,12 +943,14 @@ state = {
 ```
 
 **Location 2: localStorage**
+
 ```javascript
 localStorage.getItem('user')
 localStorage.getItem('isAuthenticated')
 ```
 
 **Location 3: Cookies (HttpOnly)**
+
 ```javascript
 // Set by backend, inaccessible from JavaScript
 // Sent automatically with withCredentials: true
@@ -908,6 +959,7 @@ localStorage.getItem('isAuthenticated')
 **Problem:** Triple redundancy - same auth state maintained in 3 places
 
 **Recommendation:** Choose ONE source of truth:
+
 - **Option A:** Redux only (remove localStorage sync)
 - **Option B:** Cookies only (minimal Redux state for UI)
 
@@ -918,21 +970,22 @@ localStorage.getItem('isAuthenticated')
 **4 Different Ways to Check Auth:**
 
 1. **useAuth Hook** - Checks localStorage
+
    ```javascript
    const authStatus = localStorage.getItem('isAuthenticated') === 'true';
    ```
-
 2. **useGlobalAuth Hook** - Dispatches Redux action
+
    ```javascript
    await dispatch(getUserProfile()).unwrap();
    ```
-
 3. **auth.js Utility** - Makes API call
+
    ```javascript
    const response = await fetch('/api/v1/users/me', { credentials: 'include' });
    ```
-
 4. **authSlice** - Reads from localStorage on init
+
    ```javascript
    const loadUserFromLocalStorage = () => { /* ... */ };
    ```
@@ -946,6 +999,7 @@ localStorage.getItem('isAuthenticated')
 ### Issue 3: Error Handling in 5 Places
 
 **Locations:**
+
 1. Axios interceptors (resumeClient.js:35-67, jobClient.js:35-48)
 2. Redux thunks (authActions.js)
 3. Service functions (resumeService.js, jobService.js)
@@ -953,6 +1007,7 @@ localStorage.getItem('isAuthenticated')
 5. Component catch blocks
 
 **All doing similar things:**
+
 ```javascript
 if (error.response?.status === 401) {
   localStorage.clear();
@@ -969,6 +1024,7 @@ if (error.response?.status === 401) {
 ### Issue 4: localStorage.clear() Scattered Everywhere
 
 **6+ Locations:**
+
 1. `lib/api/resumeClient.js:52`
 2. `lib/api/jobClient.js:42`
 3. `utils/auth.js:72, 87`
@@ -987,6 +1043,7 @@ if (error.response?.status === 401) {
 ### Current Cookie-Based Authentication
 
 **Login Flow:**
+
 ```
 1. User submits credentials
    ↓
@@ -1014,6 +1071,7 @@ if (error.response?.status === 401) {
 ```
 
 **Subsequent Authenticated Requests:**
+
 ```
 1. Component calls API (via Redux or service)
    ↓
@@ -1031,12 +1089,14 @@ if (error.response?.status === 401) {
 ### How `withCredentials: true` Works
 
 **Browser Behavior:**
+
 - Automatically includes cookies in request
 - Automatically stores Set-Cookie from response
 - Cookies are HttpOnly (JavaScript cannot access)
 - No manual token management needed
 
 **Configuration in Codebase:**
+
 ```javascript
 // All axios clients
 export const resumeApiClient = axios.create({
@@ -1051,6 +1111,7 @@ fetch('/api/v1/endpoint', {
 ```
 
 **Request Interceptor Analysis:**
+
 ```javascript
 // resumeClient.js:23-29
 resumeApiClient.interceptors.request.use(
@@ -1083,6 +1144,7 @@ resumeApiClient.interceptors.request.use(
 **Redux calls that hit backend directly (20 calls):**
 
 **Auth Actions (6 of 8):**
+
 - `registerUser` → axios → `https://api.guidix.ai/api/v1/auth/signup`
 - `getUserProfile` → axios → `https://api.guidix.ai/api/v1/users/me`
 - `updateUserProfile` → axios → `https://api.guidix.ai/api/v1/user-management/me/profile`
@@ -1091,6 +1153,7 @@ resumeApiClient.interceptors.request.use(
 - `resetPassword` → axios → `https://api.guidix.ai/api/v1/auth/reset-password`
 
 **Resume Actions (all 6):**
+
 - `fetchResumes` → resumeApiClient → Backend
 - `fetchResumeById` → resumeApiClient → Backend
 - `createResume` → resumeApiClient → Backend
@@ -1099,6 +1162,7 @@ resumeApiClient.interceptors.request.use(
 - `generateAIResume` → resumeApiClient → Backend
 
 **Job Actions (all 7):**
+
 - `fetchJobs` → jobApiClient → Backend
 - `fetchJobById` → jobApiClient → Backend
 - `searchJobs` → jobApiClient → Backend
@@ -1110,11 +1174,13 @@ resumeApiClient.interceptors.request.use(
 ### Why This Inconsistency?
 
 **Login/Logout use Next.js routes:**
+
 - Comment says: "Call Next.js API route (NOT backend directly!)"
 - Purpose: Cookie forwarding and Set-Cookie header handling
 - **BUT:** This is unnecessary! Axios with `withCredentials: true` already handles this
 
 **Everything else hits backend:**
+
 - Uses axios clients with `withCredentials: true`
 - Cookies sent/received automatically
 - Works perfectly without Next.js middleware
@@ -1122,6 +1188,7 @@ resumeApiClient.interceptors.request.use(
 ### Configuration
 
 **All axios clients point to backend:**
+
 ```javascript
 // authActions.js:14
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://api.guidix.ai";
@@ -1134,6 +1201,7 @@ const JOB_SERVICE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://api.gui
 ```
 
 **Next.js routes are proxies:**
+
 ```javascript
 // app/api/v1/auth/signin/route.js
 const backendUrl = `${API_BASE_URL}/api/v1/auth/signin`;
@@ -1147,16 +1215,19 @@ const backendUrl = `${API_BASE_URL}/api/v1/auth/signin`;
 ### Authentication Feature
 
 **API Methods Used:**
+
 1. Redux Async Thunks (primary)
 2. Direct fetch calls (in authActions via Redux)
 3. Utility functions (auth.js)
 
 **State Management:**
+
 - Redux auth slice (complete auth state)
 - localStorage (user, isAuthenticated)
 - Component local state (form data, UI state)
 
 **Endpoints:**
+
 - POST `/api/v1/auth/signin` - Login (via Next.js route)
 - POST `/api/v1/auth/signup` - Register (direct to backend)
 - POST `/api/v1/auth/logout` - Logout (via Next.js route)
@@ -1167,6 +1238,7 @@ const backendUrl = `${API_BASE_URL}/api/v1/auth/signin`;
 - POST `/api/v1/auth/reset-password` - Reset password
 
 **Usage Pattern:**
+
 ```javascript
 // Component: login/page.js
 const dispatch = useDispatch();
@@ -1190,15 +1262,18 @@ const handleLogin = async (e) => {
 ### Resume Feature
 
 **API Methods Used:**
+
 1. Service Layer Functions (primary)
 2. Redux Async Thunks (secondary)
 3. Axios Instance (for progress tracking)
 
 **State Management:**
+
 - Redux resume slice (resumes[], currentResume, loading, error)
 - Component local state (form data, UI state)
 
 **Endpoints:**
+
 - POST `/api/v1/resumes/upload_and_process` - Upload resume
 - POST `/api/v1/resumes/{id}/enhance` - Enhance resume
 - POST `/api/v1/resumes/resume-creation` - Create from prompt
@@ -1209,6 +1284,7 @@ const handleLogin = async (e) => {
 - DELETE `/api/v1/resumes/{id}` - Delete resume
 
 **Usage Pattern:**
+
 ```javascript
 // Component: resume-builder/page.js
 import { getAllResumes } from "@/services/resumeService";
@@ -1232,14 +1308,17 @@ const resume = await getResume(resumeId);
 ### Job Feature
 
 **API Methods Used:**
+
 1. Service Layer Functions (primary)
 2. Redux Async Thunks (secondary)
 
 **State Management:**
+
 - Redux job slice (jobs[], currentJob, wishlist[], myApplications[], filters)
 - Component local state (columns, search, filters, UI state)
 
 **Endpoints:**
+
 - POST `/api/v1/integrated-jobs/with-resume-upload` - Upload resume to get jobs
 - POST `/api/v1/integrated-jobs/with-resume-id` - Get jobs with resume ID
 - GET `/api/v1/integrated-jobs/{id}` - Get job details
@@ -1254,6 +1333,7 @@ const resume = await getResume(resumeId);
 - GET `/api/v1/integrated-jobs/trending` - Get trending jobs
 
 **Usage Pattern:**
+
 ```javascript
 // Component: job-search/page.js
 import {
@@ -1289,6 +1369,7 @@ const fetchJobs = async () => {
 ### Priority 1: Critical Cleanups (High Impact, Low Risk)
 
 #### 1.1 Delete Dead Code Files (Immediate)
+
 ```bash
 # Delete these 9 files immediately
 rm app/(pages)/enhanced-resume/page-backup.js
@@ -1313,6 +1394,7 @@ rm app/redux/EXAMPLE_COMPONENT.js
 **File:** `utils/apiClient.js:138-143`
 
 **Delete:**
+
 ```javascript
 export const authAPI = new APIClient(API_BASE_URL);
 export const resumeAPI = new APIClient(API_BASE_URL);
@@ -1335,6 +1417,7 @@ export const interviewAPI = new APIClient(API_BASE_URL);
 **File:** `services/jobService.js`
 
 **Delete:**
+
 ```javascript
 // Line 397-415
 export const getJobsWithAIScoring = async (...) => { /* deprecated */ };
@@ -1380,12 +1463,14 @@ export const getIntegratedJobsWithResumeId = getJobsWithResumeId;
 **Options:**
 
 **Option A:** Use Redux only
+
 ```javascript
 // Remove: isAuthenticated() and getCurrentUser() from utils/auth.js
 // Use: dispatch(getUserProfile()) everywhere
 ```
 
 **Option B:** Use utility functions only
+
 ```javascript
 // Keep: getCurrentUser() in utils/auth.js
 // Remove: getUserProfile() Redux thunk (or keep for state management)
@@ -1406,31 +1491,37 @@ export const getIntegratedJobsWithResumeId = getJobsWithResumeId;
 **Current State:** Mixed - both Redux and Services call APIs
 
 **Option A: Redux-First**
+
 - Move all API calls to Redux thunks
 - Components only dispatch actions
 - Services layer becomes thin wrapper over Redux
 
 **Pros:**
+
 - Centralized state management
 - Consistent pattern across features
 - Easier to track loading/error states
 
 **Cons:**
+
 - More boilerplate
 - Redux overhead for simple calls
 
 **Option B: Service-First** ⭐ **RECOMMENDED**
+
 - Keep service layer for API calls
 - Redux only for global state (user, theme, etc.)
 - Components call services directly
 
 **Pros:**
+
 - Less boilerplate
 - Simpler architecture
 - Easier to understand and maintain
 - Services can be reused without React/Redux
 
 **Cons:**
+
 - More prop drilling for shared state
 - Need to manage loading states in components
 
@@ -1445,12 +1536,14 @@ export const getIntegratedJobsWithResumeId = getJobsWithResumeId;
 **Solution:**
 
 **Phase 1: Remove localStorage Sync**
+
 ```javascript
 // authSlice.js - Remove all localStorage.setItem calls
 // Keep only cookies (backend) and Redux (UI state)
 ```
 
 **Phase 2: Load User on App Init Only**
+
 ```javascript
 // app/layout.js or _app.js
 useEffect(() => {
@@ -1459,6 +1552,7 @@ useEffect(() => {
 ```
 
 **Phase 3: Remove localStorage Checks**
+
 ```javascript
 // Remove: localStorage.getItem('isAuthenticated')
 // Use: Redux state only
@@ -1478,6 +1572,7 @@ const { isAuthenticated } = useSelector(state => state.auth);
 **Solution:**
 
 **Create Centralized Error Handler:**
+
 ```javascript
 // utils/errorHandler.js (already exists - use it!)
 
@@ -1517,6 +1612,7 @@ try {
 **Solution:**
 
 **Option A: Remove Next.js Routes** ⭐ **RECOMMENDED**
+
 ```javascript
 // authActions.js - Change loginUser to use axios
 export const loginUser = createAsyncThunk(
@@ -1535,6 +1631,7 @@ export const loginUser = createAsyncThunk(
 ```
 
 **Delete:**
+
 - `app/api/v1/auth/signin/route.js`
 - `app/api/v1/auth/logout/route.js`
 - `app/api/v1/auth/refresh/route.js`
@@ -1542,6 +1639,7 @@ export const loginUser = createAsyncThunk(
 **Why:** Axios with `withCredentials: true` already handles cookies perfectly. No need for Next.js middleware.
 
 **Option B: Use Next.js Routes for Everything**
+
 - Add Next.js routes for all endpoints
 - Use fetch() everywhere instead of axios
 
@@ -1558,6 +1656,7 @@ export const loginUser = createAsyncThunk(
 #### 4.1 Create Architecture Decision Record (ADR)
 
 **Document Decisions:**
+
 - Why cookie-based authentication?
 - Why service-first architecture?
 - When to use Redux vs local state?
@@ -1571,6 +1670,7 @@ export const loginUser = createAsyncThunk(
 #### 4.2 Add API Client Usage Guide
 
 **Document:**
+
 - How to make authenticated API calls
 - How `withCredentials: true` works
 - Why request interceptors are no-ops
@@ -1583,6 +1683,7 @@ export const loginUser = createAsyncThunk(
 #### 4.3 Create Coding Standards
 
 **Define:**
+
 - When to create service functions vs Redux thunks
 - How to handle errors consistently
 - State management guidelines
@@ -1597,6 +1698,7 @@ export const loginUser = createAsyncThunk(
 ### Immediate Actions (Do First)
 
 - [ ] **Delete 9 dead code files**
+
   - `app/(pages)/enhanced-resume/page-backup.js`
   - `app/(pages)/enhanced-resume/page-modified.js`
   - `app/(pages)/template-selection/page-backup.js`
@@ -1606,16 +1708,16 @@ export const loginUser = createAsyncThunk(
   - `components/JobTrackerOld.jsx`
   - `components/JobTrackerOld2.jsx`
   - `app/redux/EXAMPLE_COMPONENT.js`
-
 - [ ] **Remove 6 unused APIClient exports from `utils/apiClient.js`**
+
   - `authAPI`
   - `resumeAPI`
   - `autoApplyAPI`
   - `walletAPI`
   - `linkedinAPI`
   - `interviewAPI`
-
 - [ ] **Remove deprecated functions from `services/jobService.js`**
+
   - `getJobsWithAIScoring()`
   - `getIntegratedJobsWithResumeId` alias
 
@@ -1624,16 +1726,17 @@ export const loginUser = createAsyncThunk(
 ### Short-Term Actions (This Week)
 
 - [ ] **Consolidate job status functions**
+
   - Remove `removeFromWishlist()` from services
   - Replace all calls with `setJobStatus(jobId, "viewed")`
   - Test wishlist functionality
-
 - [ ] **Standardize user profile fetching**
+
   - Choose Redux OR utility function approach
   - Update all call sites
   - Remove duplicate implementations
-
 - [ ] **Centralize error handling**
+
   - Update all axios interceptors to use `handleApiError()`
   - Update component catch blocks
   - Test error scenarios (401, 500, network errors)
@@ -1643,18 +1746,19 @@ export const loginUser = createAsyncThunk(
 ### Medium-Term Actions (This Month)
 
 - [ ] **Choose and implement Service-First architecture**
+
   - Document decision in ADR
   - Keep Redux for auth state only
   - Move to service functions for all API calls
   - Update components to call services directly
-
 - [ ] **Simplify auth state management**
+
   - Remove localStorage sync from authSlice
   - Use Redux as single source of truth
   - Update useAuth and useGlobalAuth hooks
   - Test auth flow thoroughly
-
 - [ ] **Remove Next.js API routes for auth**
+
   - Update login/logout to use axios directly
   - Delete unused Next.js route files
   - Test cookie handling
@@ -1664,17 +1768,18 @@ export const loginUser = createAsyncThunk(
 ### Long-Term Actions (Future)
 
 - [ ] **Consolidate Redux resume/job actions**
+
   - Decide if Redux is needed for these features
   - If not, remove Redux thunks
   - Update components to use services only
-
 - [ ] **Create comprehensive documentation**
+
   - Architecture Decision Records
   - API Client Usage Guide
   - Coding Standards
   - Contributing Guide
-
 - [ ] **Add API integration tests**
+
   - Test cookie authentication flow
   - Test error handling
   - Test state management
@@ -1685,27 +1790,27 @@ export const loginUser = createAsyncThunk(
 
 ### Before Cleanup
 
-| Metric | Current |
-|--------|---------|
-| Total Lines of Code | ~50,000+ |
-| API Call Patterns | 6 |
-| Duplicate API Calls | 8+ |
-| Dead Code Files | 9 |
-| Unused Exports | 6 |
-| localStorage Operations | 6+ locations |
-| Error Handling Locations | 5 |
+| Metric                   | Current      |
+| ------------------------ | ------------ |
+| Total Lines of Code      | ~50,000+     |
+| API Call Patterns        | 6            |
+| Duplicate API Calls      | 8+           |
+| Dead Code Files          | 9            |
+| Unused Exports           | 6            |
+| localStorage Operations  | 6+ locations |
+| Error Handling Locations | 5            |
 
 ### After Cleanup (Target)
 
-| Metric | Target |
-|--------|--------|
-| Total Lines of Code | ~45,000 (10% reduction) |
-| API Call Patterns | 2 (Services + Redux for auth only) |
-| Duplicate API Calls | 0 |
-| Dead Code Files | 0 |
-| Unused Exports | 0 |
-| localStorage Operations | 0 (use Redux only) |
-| Error Handling Locations | 1 (centralized) |
+| Metric                   | Target                             |
+| ------------------------ | ---------------------------------- |
+| Total Lines of Code      | ~45,000 (10% reduction)            |
+| API Call Patterns        | 2 (Services + Redux for auth only) |
+| Duplicate API Calls      | 0                                  |
+| Dead Code Files          | 0                                  |
+| Unused Exports           | 0                                  |
+| localStorage Operations  | 0 (use Redux only)                 |
+| Error Handling Locations | 1 (centralized)                    |
 
 ---
 
@@ -1775,6 +1880,7 @@ guidix/
 ```
 
 **Legend:**
+
 - ✅ Keep as-is or minor updates
 - ⚠️ Needs cleanup/refactoring
 - ❌ Delete immediately
@@ -1784,6 +1890,7 @@ guidix/
 ### B. API Endpoints Reference
 
 **Auth Endpoints:**
+
 - POST `/api/v1/auth/signin` - Login
 - POST `/api/v1/auth/signup` - Register
 - POST `/api/v1/auth/logout` - Logout
@@ -1794,6 +1901,7 @@ guidix/
 - POST `/api/v1/auth/reset-password` - Reset password
 
 **Resume Endpoints:**
+
 - POST `/api/v1/resumes/upload_and_process` - Upload resume
 - POST `/api/v1/resumes/resume-creation` - Create resume
 - POST `/api/v1/resumes/{id}/enhance` - Enhance resume
@@ -1804,6 +1912,7 @@ guidix/
 - DELETE `/api/v1/resumes/{id}` - Delete resume
 
 **Job Endpoints:**
+
 - POST `/api/v1/integrated-jobs/with-resume-upload` - Upload resume for jobs
 - POST `/api/v1/integrated-jobs/with-resume-id` - Get jobs by resume
 - POST `/api/v1/integrated-jobs/search` - Search jobs
@@ -1825,6 +1934,7 @@ NEXT_PUBLIC_API_BASE_URL=https://api.guidix.ai
 ```
 
 **Used in:**
+
 - `app/redux/actions/authActions.js:14`
 - `lib/api/resumeClient.js:3`
 - `lib/api/jobClient.js:3`
@@ -1839,6 +1949,7 @@ NEXT_PUBLIC_API_BASE_URL=https://api.guidix.ai
 The Guidix codebase has significant architectural inconsistencies with 6 different API call patterns and redundant state management. However, the issues are well-documented and fixable with systematic refactoring.
 
 **Key Recommendations:**
+
 1. ✅ Delete dead code immediately (9 files)
 2. ✅ Remove unused exports (6 APIClient instances)
 3. ✅ Standardize on Service-First architecture
@@ -1847,12 +1958,14 @@ The Guidix codebase has significant architectural inconsistencies with 6 differe
 6. ✅ Remove unnecessary Next.js API routes
 
 **Estimated Impact:**
+
 - **Code Reduction:** ~10% (5,000+ lines)
 - **Maintenance:** Significantly easier
 - **Consistency:** Single pattern for API calls
 - **Performance:** Minimal impact (slight improvement)
 
 **Next Steps:**
+
 1. Review and approve this analysis
 2. Start with Priority 1 cleanups (low risk)
 3. Plan Priority 2-3 refactoring (coordinate with team)

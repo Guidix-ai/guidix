@@ -353,13 +353,14 @@ export const getResume = async (resumeId) => {
 
 /**
  * Get all resumes for the authenticated user
- * @returns {Promise} List of resumes
+ * @returns {Promise} Response object with success flag and data containing resumes array
  */
 export const getAllResumes = async () => {
   try {
     console.log('📋 getAllResumes - Fetching all resumes');
 
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.guidix.ai'}/api/v1/resumes/resume-list`, {
+    // Use Next.js API proxy route to properly forward cookies
+    const response = await fetch('/api/v1/resumes/resume-list', {
       method: 'GET',
       credentials: 'include',
       headers: {
@@ -373,16 +374,11 @@ export const getAllResumes = async () => {
     }
 
     const data = await response.json();
-    const resumes = data.data || data;
+    console.log('📋 getAllResumes - Raw response:', data);
 
-    // Ensure response is an array
-    if (!Array.isArray(resumes)) {
-      console.warn('Response is not an array, returning empty array');
-      return [];
-    }
-
-    console.log('✅ Fetched', resumes.length, 'resumes');
-    return resumes;
+    // Return the full response structure for the component to handle
+    // Expected structure: { success: true, data: { resumes: [...] } } or { success: true, data: [...] }
+    return data;
   } catch (error) {
     console.error('❌ Get resumes error:', error);
     throw new Error(error.message || 'Failed to load resumes');
