@@ -6,10 +6,7 @@ import { DashboardLayout } from "@/components/layout/dashboard-layout";
 import Image from "next/image";
 
 const shadowBoxStyle = `
-  0 0 6px 0 rgba(0, 0, 0, 0.12),
-  0 2px 3px 0 rgba(0, 0, 0, 0.04),
-  0 2px 6px 0 rgba(0, 0, 0, 0.04),
-  inset 0 -2px 3px 0 rgba(0, 0, 0, 0.08)
+  0 4px 12px rgba(0, 0, 0, 0.08)
 `;
 
 export default function DashboardPage() {
@@ -42,15 +39,26 @@ export default function DashboardPage() {
 
   useEffect(() => {
     let currentIndex = 0;
-    const interval = setInterval(() => {
-      setTypewriterText(fullText.slice(0, currentIndex));
-      currentIndex++;
-      if (currentIndex > fullText.length) {
-        clearInterval(interval);
-        setShowCursor(false);
+    let animationFrame;
+    let lastTime = performance.now();
+    const frameDelay = 80;
+
+    const animate = (currentTime) => {
+      if (currentTime - lastTime >= frameDelay) {
+        setTypewriterText(fullText.slice(0, currentIndex));
+        currentIndex++;
+        lastTime = currentTime;
+
+        if (currentIndex > fullText.length) {
+          setShowCursor(false);
+          return;
+        }
       }
-    }, 80);
-    return () => clearInterval(interval);
+      animationFrame = requestAnimationFrame(animate);
+    };
+
+    animationFrame = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(animationFrame);
   }, []);
 
   const features = [
@@ -163,8 +171,8 @@ export default function DashboardPage() {
                     : "md:col-auto col-span-2 min-h-[70px]"
                 }`}
                 style={{
-                  backgroundColor: "#FFFFFF",
-                  border: "1px solid #F1F3F7",
+                  backgroundColor: "#F8FAFC",
+                  border: "1px solid rgba(226, 232, 240, 0.8)",
                   boxShadow: shadowBoxStyle,
                   // gridColumn: feature.size === "large" ? "span 2" : "span 1",
                   // minHeight: feature.size === "large" ? "85px" : "70px",
@@ -271,9 +279,9 @@ export default function DashboardPage() {
               <div
                 className="p-3 rounded-lg"
                 style={{
-                  backgroundColor: "rgba(255, 255, 255, 1)",
-                  boxShadow:
-                    "var(--ShadowPositioningNone) var(--ShadowPositioningNone) var(--ShadowBlur2XSmall) var(--ShadowSpreadNone) var(--ColorsOverlayColorsDark15), var(--ShadowPositioningNone) var(--ShadowPositioningMedium) var(--ShadowBlurExtraSmall) var(--ShadowSpreadNone) var(--ColorsOverlayColorsDark4), var(--ShadowPositioningNone) var(--ShadowPositioningMedium) var(--ShadowBlurMedium) var(--ShadowSpreadNone) var(--ColorsOverlayColorsDark4), var(--ShadowPositioningNone) var(--ShadowPositioningNegativeMedium) var(--ShadowBlurExtraSmall) var(--ShadowBlurNone) var(--ColorsOverlayColorsDark10) inset",
+                  backgroundColor: "#F8FAFC",
+                  border: "1px solid rgba(226, 232, 240, 0.8)",
+                  boxShadow: shadowBoxStyle,
                 }}
               >
                 <div className="text-2xl font-bold mb-1">
@@ -293,9 +301,9 @@ export default function DashboardPage() {
               <div
                 className="p-3 rounded-lg"
                 style={{
-                  backgroundColor: "rgba(255, 255, 255, 1)",
-                  boxShadow:
-                    "var(--ShadowPositioningNone) var(--ShadowPositioningNone) var(--ShadowBlur2XSmall) var(--ShadowSpreadNone) var(--ColorsOverlayColorsDark15), var(--ShadowPositioningNone) var(--ShadowPositioningMedium) var(--ShadowBlurExtraSmall) var(--ShadowSpreadNone) var(--ColorsOverlayColorsDark4), var(--ShadowPositioningNone) var(--ShadowPositioningMedium) var(--ShadowBlurMedium) var(--ShadowSpreadNone) var(--ColorsOverlayColorsDark4), var(--ShadowPositioningNone) var(--ShadowPositioningNegativeMedium) var(--ShadowBlurExtraSmall) var(--ShadowBlurNone) var(--ColorsOverlayColorsDark10) inset",
+                  backgroundColor: "#F8FAFC",
+                  border: "1px solid rgba(226, 232, 240, 0.8)",
+                  boxShadow: shadowBoxStyle,
                 }}
               >
                 <div className="text-2xl font-bold mb-1">
@@ -319,9 +327,9 @@ export default function DashboardPage() {
               <div
                 className="p-3 rounded-lg"
                 style={{
-                  backgroundColor: "rgba(255, 255, 255, 1)",
-                  boxShadow:
-                    "var(--ShadowPositioningNone) var(--ShadowPositioningNone) var(--ShadowBlur2XSmall) var(--ShadowSpreadNone) var(--ColorsOverlayColorsDark15), var(--ShadowPositioningNone) var(--ShadowPositioningMedium) var(--ShadowBlurExtraSmall) var(--ShadowSpreadNone) var(--ColorsOverlayColorsDark4), var(--ShadowPositioningNone) var(--ShadowPositioningMedium) var(--ShadowBlurMedium) var(--ShadowSpreadNone) var(--ColorsOverlayColorsDark4), var(--ShadowPositioningNone) var(--ShadowPositioningNegativeMedium) var(--ShadowBlurExtraSmall) var(--ShadowBlurNone) var(--ColorsOverlayColorsDark10) inset",
+                  backgroundColor: "#F8FAFC",
+                  border: "1px solid rgba(226, 232, 240, 0.8)",
+                  boxShadow: shadowBoxStyle,
                 }}
               >
                 <div className="text-2xl font-bold mb-1">
@@ -343,9 +351,9 @@ export default function DashboardPage() {
               <div
                 className="p-3 rounded-lg"
                 style={{
-                  backgroundColor: "rgba(255, 255, 255, 1)",
-                  boxShadow:
-                    "var(--ShadowPositioningNone) var(--ShadowPositioningNone) var(--ShadowBlur2XSmall) var(--ShadowSpreadNone) var(--ColorsOverlayColorsDark15), var(--ShadowPositioningNone) var(--ShadowPositioningMedium) var(--ShadowBlurExtraSmall) var(--ShadowSpreadNone) var(--ColorsOverlayColorsDark4), var(--ShadowPositioningNone) var(--ShadowPositioningMedium) var(--ShadowBlurMedium) var(--ShadowSpreadNone) var(--ColorsOverlayColorsDark4), var(--ShadowPositioningNone) var(--ShadowPositioningNegativeMedium) var(--ShadowBlurExtraSmall) var(--ShadowBlurNone) var(--ColorsOverlayColorsDark10) inset",
+                  backgroundColor: "#F8FAFC",
+                  border: "1px solid rgba(226, 232, 240, 0.8)",
+                  boxShadow: shadowBoxStyle,
                 }}
               >
                 <div className="text-2xl font-bold mb-1">

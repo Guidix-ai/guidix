@@ -1852,7 +1852,12 @@ const JobSearchPage = () => {
   const [showSortDropdown, setShowSortDropdown] = useState(false);
   const [typewriterText, setTypewriterText] = useState("");
   const [showCursor, setShowCursor] = useState(true);
+<<<<<<< HEAD
   const fullText = `85+ Matches, 25 Portals,  5+ Hours Saved`;
+=======
+  const userName = user?.full_name || "User";
+  const fullText = `AI Job Search`;
+>>>>>>> d970cdc63d8ea3d699948c3e4d0b459bfef75249
   const [jobs, setJobs] = useState(allJobs);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);

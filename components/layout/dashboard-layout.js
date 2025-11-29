@@ -208,9 +208,7 @@ export function DashboardLayout({ children, progressBar }) {
         <header
           className="px-4 sm:px-6 py-4 sticky top-0 z-30 h-16 w-full relative"
           style={{
-            backgroundColor: "rgba(233, 241, 255, 0.8)",
-            backdropFilter: "blur(10px)",
-            WebkitBackdropFilter: "blur(10px)",
+            backgroundColor: "#E9F1FF",
           }}
         >
           <div
